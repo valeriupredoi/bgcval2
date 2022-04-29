@@ -1,0 +1,15 @@
+*.pyc
+*.gz
+*.nc
+*.png
+.eggs/
+BGCVal.egg-info/
+bgcval/bgcvaltools/__pycache__
+bgcval/netcdf_manipulation/__pycache__
+bgcval/timeseries/__pycache__
+bgcval/Paths/__pycache__
+bgcval/p2p/__pycache__
+bgcval/html5/__pycache__
+bgcval/comparison/__pycache__
+__pycache__
+bgcval/__pycache__
