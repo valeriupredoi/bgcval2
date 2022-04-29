@@ -46,14 +46,14 @@ from getpass import getuser
 
 #####
 # Load specific local code:
-import UKESMpython as ukp
-from timeseries import timeseriesAnalysis
-from timeseries import profileAnalysis
-from timeseries import timeseriesPlots as tsp
+from . import UKESMpython as ukp
+from .timeseries import timeseriesAnalysis
+from .timeseries import profileAnalysis
+from .timeseries import timeseriesPlots as tsp
 
 #####
 # User defined set of paths pointing towards the datasets.
-import Paths.paths_template as paths
+from .Paths import paths as paths
 
 medusaCoords = {
     't': 'time_counter',

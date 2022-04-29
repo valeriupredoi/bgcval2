@@ -51,23 +51,23 @@ from collections import defaultdict
 
 #####
 # Load specific local code:
-import UKESMpython as ukp
-from timeseries import timeseriesAnalysis
-from timeseries import profileAnalysis
-from timeseries import timeseriesPlots as tsp
+from . import UKESMpython as ukp
+from .timeseries import timeseriesAnalysis
+from .timeseries import profileAnalysis
+from .timeseries import timeseriesPlots as tsp
 try:
-    from bgcvaltools.pftnames import getLongName
+    from .bgcvaltools.pftnames import getLongName
 except:
-    from pftnames import getLongName
-from bgcvaltools.mergeMonthlyFiles import mergeMonthlyFiles, meanDJF
-from netcdf_manipulation.alwaysInclude import alwaysInclude
-from makeReport import comparehtml5Maker
-import Paths.paths_template
+    from .pftnames import getLongName
+from .bgcvaltools.mergeMonthlyFiles import mergeMonthlyFiles, meanDJF
+from .netcdf_manipulation.alwaysInclude import alwaysInclude
+from .makeReport import comparehtml5Maker
+from .Paths import paths
 
-from comparison.shifttimes import shifttimes
-from comparison.ensembles import build_ensemble
-from config.configToDict import configToDict
-from bgcvaltools.dataset import dataset
+from .comparison.shifttimes import shifttimes
+from .comparison.ensembles import build_ensemble
+from .config.configToDict import configToDict
+from .bgcvaltools.dataset import dataset
 
 
 def titleify(ls):
