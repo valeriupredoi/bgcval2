@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""BGCVal installation script."""
+"""BGCVal2 installation script."""
 # This script only installs dependencies available on PyPI
 
 import json
@@ -13,7 +13,7 @@ from setuptools import Command, setup
 sys.path.insert(0, os.path.dirname(__file__))
 
 PACKAGES = [
-    'bgcval',
+    'bgcval2',
 ]
 
 REQUIREMENTS = {
@@ -141,15 +141,26 @@ class RunLinter(CustomCommand):
         sys.exit(errno)
 
 
+def read_authors(filename):
+    """Read the list of authors from .zenodo.json file."""
+    with Path(filename).open() as file:
+        info = json.load(file)
+        authors = []
+        for author in info['creators']:
+            name = ' '.join(author['name'].split(',')[::-1]).strip()
+            authors.append(name)
+        return ', '.join(authors)
+
+
 setup(
-    name='BGCVal',
+    name='BGCVal2',
     version="2.0",
-    author="Lee and V",
-    description="Prototype for BGCVal 2.0",
+    author=read_authors(".zenodo.json"),
+    description="BGCVal 2.0",
     long_description=Path('README.md').read_text(),
     long_description_content_type='text/markdown',
-    url='',
-    download_url='',
+    url='https://github.com/valeriupredoi/bgcval2',
+    download_url='https://github.com/valeriupredoi/bgcval2',
     license='probably GPL',
     classifiers=[
         'Development Status :: 0 - initial',
@@ -178,11 +189,19 @@ setup(
         'develop': REQUIREMENTS['develop'] + REQUIREMENTS['test'],
         'test': REQUIREMENTS['test'],
     },
-    #entry_points={
-    #    'console_scripts': [
-    #        'bgcval = bgcval._main:run',
-    #    ],
-    #},
+    entry_points={
+        'console_scripts': [
+            'analysis_compare = bgcval2.analysis_compare:main',
+            'analysis_level3_amoc = bgcval2.analysis_level3_amoc:main',
+            'analysis_level3_dms = bgcval2.analysis_level3_dms:main',
+            'analysis_level3_omz = bgcval2.analysis_level3_omz:main',
+            'analysis_level3_sameYear = bgcval2.analysis_level3_sameYear:main',
+            'analysis_p2p = gbcval2.analysis_p2p',
+            'analysis_timeseries = bgcval2.analysis_timeseries:main',
+            'bgcval = bgcval2.bgcval',
+            'makeReport = bgcval2.makeReport:main',
+        ],
+    },
     cmdclass={
         #         'test': RunTests,
         'lint': RunLinter,
