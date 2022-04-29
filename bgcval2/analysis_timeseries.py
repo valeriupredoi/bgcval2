@@ -4331,7 +4331,9 @@ def analysis_timeseries(
             nc.close()
 
             # load basin mask
-            nc = dataset('data/basinlandmask_eORCA1.nc', 'r')
+            basedir = os.path.dirname(__file__)
+            nc = dataset(os.path.join(basedir,
+                                      'data/basinlandmask_eORCA1.nc'), 'r')
             alttmask[name] = nc.variables['tmaskatl'][
                 latslice, :]  # 2D Atlantic mask
             if name == [
