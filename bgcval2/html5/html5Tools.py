@@ -30,7 +30,7 @@
 """
 
 import os
-from bgcvaltools.pftnames import getLongName
+from ..bgcvaltools.pftnames import getLongName
 
 
 def AddtoFile(filepath, linenumber, text):
@@ -131,7 +131,8 @@ def fnToTitle(fn, jobID='u-a'):
 def addImagesText(imagePath, title=''):
     """ Creates the appropriate text to insert an image onto the page.
 	"""
-    f = open("html5/figure-template.html", "r")
+    basedir = os.path.dirname(__file__)
+    f = open(os.path.join(basedir, "figure-template.html"), "r")
     contents = f.readlines()
     f.close()
     if title == '': title = fnToTitle(imagePath)
@@ -213,7 +214,8 @@ def AddTableSection(filepath,
 
     #####
     # Copy the template and add the images.
-    f = open("html5/section-template.html", "r")
+    basedir = os.path.dirname(__file__)
+    f = open(os.path.join(basedir, "section-template.html"), "r")
     contents = f.readlines()
     f.close()
 
@@ -271,7 +273,8 @@ def AddSubSections(filepath,
 
         #####
         # Copy the template and add the images.
-        f = open("html5/section-template.html", "r")
+        basedir = os.path.dirname(__file__)
+        f = open(os.path.join(basedir, "section-template.html"), "r")
         contents = f.readlines()
         f.close()
         if type(Files) == type([

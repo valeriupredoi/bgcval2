@@ -30,8 +30,8 @@
 import numpy as np
 from calendar import month_name
 
-from bgcvaltools.dataset import dataset
-from UKESMpython import makeLonSafeArr
+from .dataset import dataset
+from .. import UKESMpython as ukp
 
 ####
 

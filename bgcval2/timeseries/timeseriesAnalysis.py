@@ -35,9 +35,9 @@ import os
 import shutil
 
 #Specific local code:
-import UKESMpython as ukp
-from bgcvaltools.pftnames import getLongName
-from bgcvaltools.dataset import dataset
+from .. import UKESMpython as ukp
+from ..bgcvaltools.pftnames import getLongName
+from ..bgcvaltools.dataset import dataset
 from . import timeseriesTools as tst
 from . import timeseriesPlots as tsp
 #getTimes, loadData

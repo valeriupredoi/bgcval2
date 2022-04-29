@@ -35,12 +35,12 @@ import os
 import shutil
 
 #Specific local code:
-import UKESMpython as ukp
+from .. import UKESMpython as ukp
 from . import timeseriesTools as tst
 from . import timeseriesPlots as tsp
-from bgcvaltools.makeEORCAmasks import makeMaskNC
-from bgcvaltools.pftnames import getLongName
-from bgcvaltools.dataset import dataset
+from ..bgcvaltools.makeEORCAmasks import makeMaskNC
+from ..bgcvaltools.pftnames import getLongName
+from ..bgcvaltools.dataset import dataset
 
 
 class profileAnalysis:

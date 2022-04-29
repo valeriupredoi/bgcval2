@@ -33,8 +33,8 @@ from shelve import open as shopen
 from sys import argv, exit
 import os
 import numpy as np
-from bgcvaltools.pftnames import getLongName
-from Paths.paths import shelvedir
+from ..bgcvaltools.pftnames import getLongName
+from ..Paths.paths import shelvedir
 
 def printableName(field, region, layer, metric):
     #####

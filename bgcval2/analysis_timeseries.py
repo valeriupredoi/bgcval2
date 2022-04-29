@@ -49,18 +49,18 @@ from getpass import getuser
 
 #####
 # Load specific local code:
-import UKESMpython as ukp
-from timeseries import timeseriesAnalysis
-from timeseries import profileAnalysis
-from timeseries import timeseriesTools as tst
+from . import UKESMpython as ukp
+from .timeseries import timeseriesAnalysis
+from .timeseries import profileAnalysis
+from .timeseries import timeseriesTools as tst
 
-from bgcvaltools.mergeMonthlyFiles import mergeMonthlyFiles, meanDJF
-from bgcvaltools.AOU import AOU
-from bgcvaltools.dataset import dataset
+from .bgcvaltools.mergeMonthlyFiles import mergeMonthlyFiles, meanDJF
+from .bgcvaltools.AOU import AOU
+from .bgcvaltools.dataset import dataset
 
 #####
 # User defined set of paths pointing towards the datasets.
-import Paths.paths_template as paths
+from .Paths import paths as paths
 
 #####
 # Biogeochemistry keys

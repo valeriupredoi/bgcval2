@@ -29,10 +29,10 @@ from datetime import datetime, timedelta
 #from pyproj import Proj
 
 #Specific local code:
-import UKESMpython as ukp
-from netcdf_manipulation import convertToOneDNC
-from bgcvaltools.dataset import dataset
-from bgcvaltools.makeMask import makeMask
+from .. import UKESMpython as ukp
+from ..netcdf_manipulation import convertToOneDNC
+from ..bgcvaltools.dataset import dataset
+from ..bgcvaltools.makeMask import makeMask
 """
 .. module:: timeseriesTools
    :platform: Unix

@@ -37,12 +37,12 @@ import shutil
 
 #####
 # Load specific local code:
-from UKESMpython import folder, shouldIMakeFile, round_sig
-from html5 import html5Tools, htmltables
-from bgcvaltools.pftnames import getLongName
-from timeseries.analysis_level0 import analysis_level0, analysis_level0_insitu
+from .UKESMpython import folder, shouldIMakeFile, round_sig
+from .html5 import html5Tools, htmltables
+from .bgcvaltools.pftnames import getLongName
+from .timeseries.analysis_level0 import analysis_level0, analysis_level0_insitu
 
-from paths import imagedir
+from .Paths.paths import imagedir
 
 
 def copytree(src, dst, symlinks=False, ignore=None):
@@ -115,7 +115,8 @@ def html5Maker(
     ####
     # Copy all necceasiry objects and templates to the report location:
     print("Copying html and js assets to", reportdir)
-    copytree('html5/html5Assets', reportdir)
+    basedir = os.path.dirname(__file__)
+    copytree(os.path.join(basedir, 'html5/html5Assets'), reportdir)
     indexhtmlfn = reportdir + "index.html"
     try:
         os.rename(reportdir + 'index-template.html', indexhtmlfn)

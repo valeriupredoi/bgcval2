@@ -31,11 +31,11 @@
 """
 
 from netCDF4 import Dataset
-import UKESMpython as ukp
+from .. import UKESMpython as ukp
 import numpy as np
-from netcdf_manipulation.changeNC import changeNC, AutoVivification
-import Paths
-from bgcvaltools.makeMask import makeMask
+from ..netcdf_manipulation.changeNC import changeNC, AutoVivification
+from .. import Paths
+from .makeMask import makeMask
 """ 	This code makes a mask netcdf for the regions written below.
 	this code is needed for profileAnalysis.py
 """

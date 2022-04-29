@@ -43,9 +43,9 @@ from collections import defaultdict
 #from statsmodels.nonparametric.smoothers_lowess import lowess
 
 from . import timeseriesTools as tst
-from bgcvaltools.viridis import viridis, discrete_viridis
-import UKESMpython as ukp
-from bgcvaltools.pftnames import getLongName
+from ..bgcvaltools.viridis import viridis, discrete_viridis
+from .. import UKESMpython as ukp
+from ..bgcvaltools.pftnames import getLongName
 
 try:
     defcmap = pyplot.cm.jet
