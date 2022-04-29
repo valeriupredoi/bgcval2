@@ -1,0 +1,16 @@
+---
+name: bgcval
+channels:
+  - conda-forge
+
+dependencies:
+  # basic list of dependencies to be extended as we require packages
+  - basemap
+  - cartopy
+  - matplotlib
+  - netcdf4
+  - numpy
+  - pip!=21.3
+  - python>=3.9
+  - pyyaml
+  - scipy
