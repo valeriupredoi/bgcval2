@@ -6,6 +6,8 @@ BGCVal
 
 This is the Python3 (Python 3.9+) version of [BGCVal](https://gmd.copernicus.org/articles/11/4215/2018/).
 
+**This is a fully deployable Python3 package.**
+
 Environment and installation
 ============================
 
