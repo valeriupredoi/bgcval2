@@ -29,3 +29,33 @@ then install the development dependencies:
 ```
 pip install -e .[develop]
 ```
+
+Running the tool
+================
+
+The tool has a number of executables one can invoke individually, e.g.:
+
+```
+analysis_timeseries u-bc179 level2
+```
+
+or to make the summary HTML page:
+
+```
+makeReport u-bc179 2010
+```
+
+### Available executables
+
+Executable name | What it does
+:--------------:|:------------:
+`analysis_compare` | runs comparison
+`analysis_level3_amoc` | something
+`analysis_level3_dms` | something
+`analysis_level3_omz` | something
+`analysis_level3_sameYear` | something
+`analysis_p2p` | runs p2p
+`analysis_timeseries` | runs timeseries
+`bgcval` | runs everything
+`makeReport` | makes the HTML report
+
