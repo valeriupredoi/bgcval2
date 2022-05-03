@@ -53,7 +53,7 @@ from .p2p.shelveToDictionary import shelveToDictionary
 
 #####
 # User defined set of paths pointing towards the datasets.
-import Paths.paths_template as paths
+from .Paths import paths as paths
 
 #####
 # code plan:
@@ -1499,7 +1499,7 @@ def single_p2p(jobID, key, year):
         print("Error: %s" % sys.exc_info()[0])
 
 
-if __name__ == "__main__":
+def run():
     try:
         jobID = argv[1]
     except:

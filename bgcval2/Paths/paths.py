@@ -27,10 +27,12 @@
 .. moduleauthor:: Lee de Mora <ledm@pml.ac.uk>
 """
 
+import importlib
 from socket import gethostname
 #import UKESMpython as ukp
 from getpass import getuser
 import os
+import sys
 
 
 def folder(name):
@@ -47,61 +49,62 @@ def folder(name):
     return name
 
 
-#####
-# JASMIN
-machinelocation = ''
-
-#####
 # JASMIN
 if gethostname().find('ceda.ac.uk') > -1 or gethostname().find(
         'jasmin') > -1 or gethostname().find('jc.rl.ac.uk') > -1:
     print("analysis-timeseries.py:\tBeing run at CEDA on ", gethostname())
-    machinelocation = 'JASMIN'
-    jasmin2 = "/gws/nopw/j04/ukesm/"
-    #####
-    # Post processed Data location
-    #shelvedir 	= folder("/group_workspaces/jasmin2/ukesm/BGC_data/"+getuser()+"/shelves/")
-    shelvedir = folder(jasmin2 + "BGC_data/" + getuser() + "/shelves/")
+    paths = importlib.import_module('bgcval2.Paths.paths_jasmin')
+# MONSOON
+elif gethostname().find('monsoon') > -1:
+    print("Being run at the Met Office on ", gethostname())
+    paths = importlib.import_module('bgcval2.Paths.paths_monsoon')
+# PML
+elif gethostname().find('pmpc') > -1:
+    print("Paths.py:\tBeing run at PML on ", gethostname())
+    paths = importlib.import_module('bgcval2.Paths.paths_pml')
+# local
+elif gethostname().find('valeriu-PORTEGE-Z30-C') > -1:
+    print("Paths.py:\tBeing run at V laptop on ", gethostname())
+    paths = importlib.import_module('bgcval2.Paths.paths_local')
+    # sys.modules["paths"] = paths
 
-    #####
-    # Post processed p2p Data location
-    #p2p_ppDir = folder("/group_workspaces/jasmin2/ukesm/BGC_data/ukesm_postProcessed/")
-    p2p_ppDir = folder(jasmin2 + "BGC_data/ukesm_postProcessed/")
+machinelocation = paths.machinelocation
+root_dir = paths.root_dir
+#####
+# Post processed Data location
+shelvedir = paths.shelvedir
 
-    ######
-    # Output location for plots.
-    #imagedir	 = folder('images/')
-    #magedir	 = folder('/group_workspaces/jasmin2/ukesm/BGC_data/ldemora/images/')
-    #imagedir = folder(jasmin2 + 'BGC_data/ldemora/images/')
-    #V imagedir = /gws/nopw/j04/ukesm/BGC_data/valeriu/
-    imagedir = folder(jasmin2 + 'BGC_data/valeriu/images/')
+#####
+# Post processed p2p Data location
+p2p_ppDir = paths.p2p_ppDir
 
-    #####
-    # Location of model files.
-    #esmvalFolder 	= "/group_workspaces/jasmin2/ukesm/BGC_data/"
-    ModelFolder_pref = folder(jasmin2 + "BGC_data/")
+######
+# Output location for plots.
+imagedir = paths.imagedir
 
-    #####
-    # eORCA1 grid
-    #orcaGridfn 	= '/group_workspaces/jasmin4/esmeval/example_data/bgc/mesh_mask_eORCA1_wrk.nc'
-    orcaGridfn = '/gws/nopw/j04/esmeval/example_data/bgc/mesh_mask_eORCA1_wrk.nc'
+#####
+# Location of model files.
+ModelFolder_pref = paths.ModelFolder_pref
 
-    #####
-    # Location of data files.
-    ObsFolder = "/gws/nopw/j04/esmeval/example_data/bgc/"
-    #	ObsFolder 	= "/group_workspaces/jasmin4/esmeval/example_data/bgc/"
-    Dustdir = ObsFolder + "/MahowaldDust/"
-    WOAFolder_annual = ObsFolder + "WOA/annual/"
-    WOAFolder = ObsFolder + "WOA/"
-    DMSDir = ObsFolder + "/DMS_Lana2011nc/"
-    MAREDATFolder = ObsFolder + "/MAREDAT/MAREDAT/"
-    GEOTRACESFolder = ObsFolder + "/GEOTRACES/GEOTRACES_PostProccessed/"
-    GODASFolder = ObsFolder + "/GODAS/"
-    TakahashiFolder = ObsFolder + "/Takahashi2009_pCO2/"
-    MLDFolder = ObsFolder + "/IFREMER-MLD/"
-    iMarNetFolder = ObsFolder + "/LestersReportData/"
-    GlodapDir = ObsFolder + "/GLODAP/"
-    GLODAPv2Dir = ObsFolder + "/GLODAPv2/GLODAPv2_Mapped_Climatologies/"
-    OSUDir = ObsFolder + "OSU/"
-    CCIDir = ObsFolder + "CCI/"
-    icFold = ObsFolder + "/InitialConditions/"
+#####
+# eORCA1 grid
+orcaGridfn = paths.orcaGridfn
+
+#####
+# Location of data files.
+ObsFolder = paths.ObsFolder
+Dustdir = ObsFolder + "/MahowaldDust/"
+WOAFolder_annual = ObsFolder + "WOA/annual/"
+WOAFolder = ObsFolder + "WOA/"
+DMSDir = ObsFolder + "/DMS_Lana2011nc/"
+MAREDATFolder = ObsFolder + "/MAREDAT/MAREDAT/"
+GEOTRACESFolder = ObsFolder + "/GEOTRACES/GEOTRACES_PostProccessed/"
+GODASFolder = ObsFolder + "/GODAS/"
+TakahashiFolder = ObsFolder + "/Takahashi2009_pCO2/"
+MLDFolder = ObsFolder + "/IFREMER-MLD/"
+iMarNetFolder = ObsFolder + "/LestersReportData/"
+GlodapDir = ObsFolder + "/GLODAP/"
+GLODAPv2Dir = ObsFolder + "/GLODAPv2/GLODAPv2_Mapped_Climatologies/"
+OSUDir = ObsFolder + "OSU/"
+CCIDir = ObsFolder + "CCI/"
+icFold = ObsFolder + "/InitialConditions/"

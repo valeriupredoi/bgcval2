@@ -32,11 +32,9 @@ from glob import glob
 from os.path import basename, exists
 from sys import argv
 import numpy as np
-import UKESMpython as ukp
-#from UKESMpython import folder
-#from UKESMpython import getFileList,shouldIMakeFile#,getCalendar
+from .. import UKESMpython as ukp
 
-from mergeNC import mergeNC
+from ..netcdf_manipulation.mergeNC import mergeNC
 """	The goal of this code is to have a simple way to make climatology code.
 """
 
