@@ -62,9 +62,7 @@ p2p_ppDir = folder(root_dir + "/BGC_data/ukesm_postProcessed/")
 
 ######
 # Output location for plots.
-#imagedir	 = folder('images/')
-#magedir	 = folder('/group_workspaces/root_dir/ukesm/BGC_data/ldemora/images/')
-imagedir = folder(root_dir + '/BGC_data/ldemora/images/')
+imagedir = folder(root_dir + '/BGC_data/' + getuser() + "/images/")
 
 #####
 # Location of model files.
