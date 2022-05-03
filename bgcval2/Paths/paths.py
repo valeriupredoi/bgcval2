@@ -66,7 +66,8 @@ elif gethostname().find('pmpc') > -1:
 elif gethostname().find('valeriu-PORTEGE-Z30-C') > -1:
     print("Paths.py:\tBeing run at V laptop on ", gethostname())
     paths = importlib.import_module('bgcval2.Paths.paths_local')
-    # sys.modules["paths"] = paths
+else:
+    raise ValueError("Unidentified host. Run at either JASMIN, MONSOON or PML.")
 
 machinelocation = paths.machinelocation
 root_dir = paths.root_dir
