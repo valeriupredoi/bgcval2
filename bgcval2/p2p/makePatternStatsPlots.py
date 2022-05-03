@@ -32,8 +32,8 @@
 from matplotlib import pyplot
 from glob import glob
 
-from bgcvaltools.StatsDiagram import rmsds
-import bgcvaltools.unbiasedSymmetricMetrics as usm
+from ..bgcvaltools.StatsDiagram import rmsds
+from ..bgcvaltools import unbiasedSymmetricMetrics as usm
 from netCDF4 import Dataset
 
 import UKESMpython as ukp
