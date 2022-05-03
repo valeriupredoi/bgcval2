@@ -246,6 +246,8 @@ def theWholePackage(jobID, year=False, suite='level1'):
                physicsOnly=physicsOnly)
 
 def run():
+    from ._version import __version__
+    print(f'BGCVal2: {__version__}')
     if "--help" in argv or len(argv) == 1:
         print("Running with no arguments. Exiting.")
         if "--help" in argv:

@@ -1500,6 +1500,8 @@ def single_p2p(jobID, key, year):
 
 
 def run():
+    from ._version import __version__
+    print(f'BGCVal2: {__version__}')
     if "--help" in argv or len(argv) == 1:
         print("Running with no arguments. Exiting.")
         if "--help" in argv:
