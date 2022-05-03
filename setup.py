@@ -198,7 +198,7 @@ setup(
             'analysis_level3_sameYear = bgcval2.analysis_level3_sameYear:main',
             'analysis_p2p = bgcval2.analysis_p2p:run',
             'analysis_timeseries = bgcval2.analysis_timeseries:main',
-            'bgcval = bgcval2.bgcval:theWholePackage',
+            'bgcval = bgcval2.bgcval:run',
             'makeReport = bgcval2.makeReport:main',
         ],
     },
