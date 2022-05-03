@@ -21,7 +21,7 @@
 # ledm@pml.ac.uk
 
 from socket import gethostname
-import UKESMpython as ukp
+from .. import UKESMpython as ukp
 
 #####
 # MONSOON

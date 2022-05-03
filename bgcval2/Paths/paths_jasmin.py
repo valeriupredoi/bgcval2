@@ -48,32 +48,32 @@ def folder(name):
 
 
 machinelocation = 'JASMIN'
-jasmin2 = "/gws/nopw/j04/ukesm/"
+root_dir = "/gws/nopw/j04/ukesm/"
 #####
 # Post processed Data location
-#shelvedir 	= folder("/group_workspaces/jasmin2/ukesm/BGC_data/"+getuser()+"/shelves/")
-shelvedir = folder(jasmin2 + "BGC_data/" + getuser() + "/shelves/")
+#shelvedir 	= folder("/group_workspaces/root_dir/ukesm/BGC_data/"+getuser()+"/shelves/")
+shelvedir = folder(root_dir + "BGC_data/" + getuser() + "/shelves/")
 
 #####
 # Post processed p2p Data location
-#p2p_ppDir = folder("/group_workspaces/jasmin2/ukesm/BGC_data/ukesm_postProcessed/")
-p2p_ppDir = folder(jasmin2 + "BGC_data/ukesm_postProcessed/")
+#p2p_ppDir = folder("/group_workspaces/root_dir/ukesm/BGC_data/ukesm_postProcessed/")
+p2p_ppDir = folder(root_dir + "BGC_data/ukesm_postProcessed/")
 
 ######
 # Output location for plots.
 #imagedir	 = folder('images/')
-#magedir	 = folder('/group_workspaces/jasmin2/ukesm/BGC_data/ldemora/images/')
-imagedir = folder(jasmin2 + 'BGC_data/ldemora/images/')
+#magedir	 = folder('/group_workspaces/root_dir/ukesm/BGC_data/ldemora/images/')
+imagedir = folder(root_dir + 'BGC_data/ldemora/images/')
 
 #####
 # Location of model files.
-#esmvalFolder 	= "/group_workspaces/jasmin2/ukesm/BGC_data/"
-ModelFolder_pref = folder(jasmin2 + "BGC_data/")
+#esmvalFolder 	= "/group_workspaces/root_dir/ukesm/BGC_data/"
+ModelFolder_pref = folder(root_dir + "BGC_data/")
 
 #####
 # eORCA1 grid
 #orcaGridfn 	= '/group_workspaces/jasmin4/esmeval/example_data/bgc/mesh_mask_eORCA1_wrk.nc'
-orcaGridfn = '/home/users/ldemora/workspace/ukesm-validation/data/mesh_mask_eORCA1_wrk.nc'
+orcaGridfn = '/gws/nopw/j04/esmeval/bgc-val/mesh_mask_eORCA1_wrk.nc'
 
 #####
 # Location of data files.

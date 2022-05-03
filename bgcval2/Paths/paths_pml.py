@@ -29,7 +29,7 @@
 """
 
 from socket import gethostname
-import UKESMpython as ukp
+from .. import UKESMpython as ukp
 from getpass import getuser
 
 #####
