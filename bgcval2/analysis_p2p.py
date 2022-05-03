@@ -1500,6 +1500,11 @@ def single_p2p(jobID, key, year):
 
 
 def run():
+    if "--help" in argv or len(argv) == 1:
+        print("Running with no arguments. Exiting.")
+        if "--help" in argv:
+            print("Read the documentation.")
+        sys.exit(0)
     try:
         jobID = argv[1]
     except:

@@ -4075,6 +4075,12 @@ def CompareTwoRuns(jobIDA,
 
 
 def main():
+    if "--help" in argv or len(argv) == 1:
+        print("Running with no arguments. Exiting.")
+        if "--help" in argv:
+            print("Read the documentation.")
+        exit(0)
+
     standards = configToDict('config/jobIDcolours.ini')
     thicknesses = defaultdict(lambda: 0.75)
     thicknesses['u-ar783'] = 2.2
@@ -6198,4 +6204,5 @@ def main():
         print("Finished... ")
         return
 
-if __name__ == "__main__": main()
+if __name__ == "__main__": 
+    main()

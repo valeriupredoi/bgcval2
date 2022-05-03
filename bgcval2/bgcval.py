@@ -34,6 +34,7 @@
 import matplotlib
 # Force matplotlib to not use any Xwindows backend.
 matplotlib.use('Agg')
+import sys
 from sys import argv, exit
 from multiprocessing import Pool
 
@@ -107,7 +108,7 @@ def p2pParrallel_phys(index):
     print("p2pParrallel_phys", index, jobID, 'SUCESS', key)
 
 
-def theWholePackage(jobI=0, year=False, suite='level1'):
+def theWholePackage(jobID, year=False, suite='level1'):
     """
 	theWholePackage function. This function runs the whole default package analysis suite
 	and outputs it to an html report.
@@ -244,8 +245,12 @@ def theWholePackage(jobI=0, year=False, suite='level1'):
                clean=True,
                physicsOnly=physicsOnly)
 
-if __name__ == "__main__":
-
+def run():
+    if "--help" in argv or len(argv) == 1:
+        print("Running with no arguments. Exiting.")
+        if "--help" in argv:
+            print("Read the documentation.")
+        sys.exit(0)
     try:
         jobID = argv[1]
     except:

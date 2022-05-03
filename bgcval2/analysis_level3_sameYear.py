@@ -359,6 +359,11 @@ def analysis_sy(
 
 
 def main():
+    if "--help" in argv or len(argv) == 1:
+        print("Running with no arguments. Exiting.")
+        if "--help" in argv:
+            print("Read the documentation.")
+        sys.exit(0)
     try:
         jobID1 = argv[1]
         jobID2 = argv[2]

@@ -401,6 +401,11 @@ def analysis_omz(jobID=''):
 
 
 def main():
+    if "--help" in argv or len(argv) == 1:
+        print("Running with no arguments. Exiting.")
+        if "--help" in argv:
+            print("Read the documentation.")
+        sys.exit(0)
     try:
         jobID = argv[1]
     except:
