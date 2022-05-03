@@ -49,7 +49,7 @@ from shapely.geometry import shape
 from os.path import basename, exists
 from sys import argv
 from shelve import open as shOpen
-from bgcvaltools.pftnames import getLongName
+from ..bgcvaltools.pftnames import getLongName
 
 purple = [125. / 256., 38. / 256., 205. / 256.]
 
