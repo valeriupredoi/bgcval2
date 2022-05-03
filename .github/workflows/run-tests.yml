@@ -1,0 +1,47 @@
+name: Test
+
+# runs on a push on main and at the end of every day
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: '0 0 * * *'  # nightly
+
+jobs:
+  linux:
+    runs-on: "ubuntu-latest"
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10"]
+      fail-fast: false
+    name: Linux Python ${{ matrix.python-version }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: bgcval2
+          environment-file: environment.yml
+          python-version: ${{ matrix.python-version }}
+          miniforge-version: "latest"
+          miniforge-variant: Mambaforge
+          use-mamba: true
+      - shell: bash -l {0}
+        run: conda --version
+      - shell: bash -l {0}
+        run: python -V
+      - shell: bash -l {0}
+        run: pip install -e .[develop]
+      - shell: bash -l {0}
+        run: |
+          analysis_compare --help
+          analysis_level3_amoc --help
+          analysis_level3_dms --help
+          analysis_level3_omz --help
+          analysis_level3_sameYear --help
+          analysis_p2p --help
+          analysis_timeseries --help
+          bgcval --help           
+      #- shell: bash -l {0}
+      #  run: pytest -n 2
+
