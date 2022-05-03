@@ -32,12 +32,11 @@ from os.path import exists
 from calendar import month_name
 
 #Specific local code:
-import UKESMpython as ukp
-from p2p import matchDataAndModel, makeTargets, makePatternStatsPlots
-from p2p.p2pPlots import makePlots
-from p2p.slicesDict import populateSlicesList, slicesDict
-#from
-from bgcvaltools.pftnames import MaredatTypes, WOATypes, Ocean_names, OceanMonth_names, months, Seasons, Hemispheres, HemispheresMonths, OceanSeason_names
+from .. import UKESMpython as ukp
+from . import matchDataAndModel, makeTargets, makePatternStatsPlots
+from .p2pPlots import makePlots
+from .slicesDict import populateSlicesList, slicesDict
+from ..bgcvaltools.pftnames import MaredatTypes, WOATypes, Ocean_names, OceanMonth_names, months, Seasons, Hemispheres, HemispheresMonths, OceanSeason_names
 
 ###	Potential problems?
 ###		Reliance on ORCA1 grid

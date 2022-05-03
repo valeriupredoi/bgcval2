@@ -28,7 +28,7 @@
 
 """
 
-from UKESMpython import reducesShelves, listShelvesContents
+from ..UKESMpython import reducesShelves, listShelvesContents
 from shelve import open as shOpen
 
 

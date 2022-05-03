@@ -28,10 +28,10 @@
 
 """
 
-from p2p import makePatternStatsPlots, makeTargets
-from UKESMpython import folder, reducesShelves, listShelvesContents
-from bgcvaltools.pftnames import months, Ocean_names, SouthHemispheresMonths, NorthHemispheresMonths
-from p2p.slicesDict import populateSlicesList, slicesDict
+from . import makePatternStatsPlots, makeTargets
+from ..UKESMpython import folder, reducesShelves, listShelvesContents
+from ..bgcvaltools.pftnames import months, Ocean_names, SouthHemispheresMonths, NorthHemispheresMonths
+from .slicesDict import populateSlicesList, slicesDict
 
 
 def InterAnnualPatterns(shelvesAV, jobID, years, Grid):

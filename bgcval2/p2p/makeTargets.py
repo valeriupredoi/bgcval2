@@ -48,12 +48,12 @@ from sys import argv
 from shelve import open as shOpen
 from calendar import month_name
 
-import UKESMpython as ukp
-from bgcvaltools.pftnames import AutoVivification, getLongName
+from .. import UKESMpython as ukp
+from ..bgcvaltools.pftnames import AutoVivification, getLongName
 
-from bgcvaltools.StatsDiagram import TaylorDiagram, TargetDiagram, TaylorDiagramMulti
-from bgcvaltools.robust import TargetDiagram as robustTargetDiagram  #, TargetDiagram,TaylorDiagramMulti
-from bgcvaltools.robust import StatsDiagram as robustStatsDiagram
+from ..bgcvaltools.StatsDiagram import TaylorDiagram, TargetDiagram, TaylorDiagramMulti
+from ..bgcvaltools.robust import TargetDiagram as robustTargetDiagram  #, TargetDiagram,TaylorDiagramMulti
+from ..bgcvaltools.robust import StatsDiagram as robustStatsDiagram
 
 
 class makeTargets:

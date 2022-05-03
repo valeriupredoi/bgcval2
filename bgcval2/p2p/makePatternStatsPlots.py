@@ -36,7 +36,7 @@ from ..bgcvaltools.StatsDiagram import rmsds
 from ..bgcvaltools import unbiasedSymmetricMetrics as usm
 from netCDF4 import Dataset
 
-import UKESMpython as ukp
+from .. import UKESMpython as ukp
 from itertools import product
 import os
 import numpy as np

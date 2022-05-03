@@ -41,16 +41,16 @@ import numpy as np
 
 ######
 # local imports
-import UKESMpython as ukp
-from bgcvaltools.pftnames import CMIP5models
+from .. import UKESMpython as ukp
+from ..bgcvaltools.pftnames import CMIP5models
 
 #####
 # These are availalble in the module:
 #	https://gitlab.ecosystem-modelling.pml.ac.uk/ledm/netcdf_manip
-from netcdf_manipulation.pruneNC import pruneNC
-from netcdf_manipulation.convertToOneDNC import convertToOneDNC
-from netcdf_manipulation.mergeNC import mergeNC
-from netcdf_manipulation.changeNC import changeNC, AutoVivification
+from ..netcdf_manipulation.pruneNC import pruneNC
+from ..netcdf_manipulation.convertToOneDNC import convertToOneDNC
+from ..netcdf_manipulation.mergeNC import mergeNC
+from ..netcdf_manipulation.changeNC import changeNC, AutoVivification
 
 #TO DO
 #	This still requires the netcdf_manip library, the ORCA1bathy file
