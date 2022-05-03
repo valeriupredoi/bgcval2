@@ -13,7 +13,7 @@ jobs:
     runs-on: "ubuntu-latest"
     strategy:
       matrix:
-        python-version: ["3.9", "3.10"]
+        python-version: ["3.9"]  # issue with geos/cartopy for 3.10
       fail-fast: false
     name: Linux Python ${{ matrix.python-version }}
     steps:
