@@ -196,7 +196,7 @@ setup(
             'analysis_level3_dms = bgcval2.analysis_level3_dms:main',
             'analysis_level3_omz = bgcval2.analysis_level3_omz:main',
             'analysis_level3_sameYear = bgcval2.analysis_level3_sameYear:main',
-            'analysis_p2p = gbcval2.analysis_p2p',
+            'analysis_p2p = bgcval2.analysis_p2p:run',
             'analysis_timeseries = bgcval2.analysis_timeseries:main',
             'bgcval = bgcval2.bgcval',
             'makeReport = bgcval2.makeReport:main',
