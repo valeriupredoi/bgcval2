@@ -27,8 +27,8 @@
 
 """
 
-import UKESMpython as ukp
-from p2p import makeTargets
+from .. import UKESMpython as ukp
+from . import makeTargets
 
 
 def summaryTargets(shelvesAV, imageFold, year):
