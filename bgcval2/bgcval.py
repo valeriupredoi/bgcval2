@@ -107,7 +107,7 @@ def p2pParrallel_phys(index):
     print("p2pParrallel_phys", index, jobID, 'SUCESS', key)
 
 
-def theWholePackage(jobID, year=False, suite='level1'):
+def theWholePackage(jobI=0, year=False, suite='level1'):
     """
 	theWholePackage function. This function runs the whole default package analysis suite
 	and outputs it to an html report.
