@@ -73,8 +73,8 @@ ModelFolder_pref = folder(root_dir + "/BGC_data/")
 
 #####
 # eORCA1 grid
-#orcaGridfn 	= '/group_workspaces/jasmin4/esmeval/example_data/bgc/mesh_mask_eORCA1_wrk.nc'
-orcaGridfn = '/home/users/ldemora/workspace/ukesm-validation/data/mesh_mask_eORCA1_wrk.nc'
+basedir = os.path.dirname(__file__)
+orcaGridfn = os.path.join(basedir, "../data/eORCA_masks.nc")
 
 #####
 # Location of data files.
