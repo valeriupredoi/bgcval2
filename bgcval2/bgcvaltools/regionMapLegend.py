@@ -29,15 +29,15 @@
 
 """
 
-from paths import orcaGridfn, WOAFolder_annual
+from ..Paths.paths import orcaGridfn, WOAFolder_annual
 from netCDF4 import Dataset
 import numpy as np
-import UKESMpython as ukp
+from .. import UKESMpython as ukp
 from matplotlib import pyplot
 import cartopy.crs as ccrs
 from cartopy import img_transform, feature as cfeature
-from bgcvaltools.pftnames import getLongName
-from bgcvaltools.makeMask import makeMask
+from ..bgcvaltools.pftnames import getLongName
+from ..bgcvaltools.makeMask import makeMask
 
 
 def robinPlotCustom(lons,
