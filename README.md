@@ -30,7 +30,7 @@ git clone https://github.com/valeriupredoi/bgcval2.git
 conda install -c conda-forge mamba
 ```
 
-- then create the `bgcval` environment and activate it:
+- then create the `bgcval2` environment and activate it:
 
 ```
 cd bgcval2
@@ -50,7 +50,7 @@ Running the tool
 The tool has a number of executables one can invoke individually, e.g.:
 
 ```
-analysis_timeseries u-bc179 level2
+analysis_timeseries u-bc179 level1
 ```
 
 or to make the summary HTML page:
@@ -61,17 +61,13 @@ makeReport u-bc179 2010
 
 ### Available executables
 
-Executable name | What it does
-:--------------:|:------------:
-`analysis_compare` | runs comparison
-`analysis_level3_amoc` | something
-`analysis_level3_dms` | something
-`analysis_level3_omz` | something
-`analysis_level3_sameYear` | something
-`analysis_p2p` | runs p2p
-`analysis_timeseries` | runs timeseries
-`bgcval` | runs everything
-`makeReport` | makes the HTML report
+Executable name | What it does | Command
+:--------------:|:------------:|:------------:
+`analysis_timeseries` | runs timeseries analysis for single model run. | analysis_timeseries jobID key
+`analysis_p2p` | runs point to point analysis of model against observational dataset. | analysis_p2p jobID YEAR
+`bgcval` | runs time series and point to point. | bgcval jobID
+`makeReport` | makes the single model HTML report. | makeReport jobID
+`analysis_compare` | runs comparison of multiple single jobs  | analysis_compare
 
 
 Appendix
