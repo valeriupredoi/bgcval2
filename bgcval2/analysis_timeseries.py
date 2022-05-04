@@ -57,10 +57,12 @@ from .timeseries import timeseriesTools as tst
 from .bgcvaltools.mergeMonthlyFiles import mergeMonthlyFiles, meanDJF
 from .bgcvaltools.AOU import AOU
 from .bgcvaltools.dataset import dataset
+from ._runtime_config import read_config_user_file
 
 #####
 # User defined set of paths pointing towards the datasets.
 from .Paths import paths
+
 
 #####
 # Biogeochemistry keys
@@ -252,6 +254,7 @@ def analysis_timeseries(
     strictFileCheck=True,
     analysisSuite='all',
     regions='all',
+    config_user=None
 ):
     """
 	The role of this code is to produce time series analysis.
@@ -276,6 +279,12 @@ def analysis_timeseries(
 	:param regions:
 
 	"""
+    # see if we have a user config file
+    if config_user:
+        print("XXX", config_user)
+        config_user = read_config_user_file(config_user)
+    else:
+        config_user = read_config_user_file("defaults")
 
     #print "analysis_p2p:",	jobID,clean, annual,strictFileCheck,analysisSuite,regions
     #assert 0
@@ -4921,10 +4930,15 @@ def main():
         suite = 'keymetricsfirst'
     else:
         suite = 'level1'
+    config_user = None
+    if "bgcval2-config-user.yml" in argv[1:]:
+        config_user = "bgcval2-config-user.yml"
+        print(f"analysis_timeseries: Using user config file {config_user}")
 
     analysis_timeseries(
         jobID=jobID,
         analysisSuite=suite,
+        config_user=config_user
     )  #clean=1)
     #if suite == 'all':
     #analysis_timeseries(jobID =jobID,analysisSuite='FullDepth', z_component = 'FullDepth',)#clean=1)
