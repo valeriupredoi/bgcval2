@@ -1,5 +1,5 @@
 ---
-name: bgcval
+name: bgcval2
 channels:
   - conda-forge
 
@@ -11,6 +11,6 @@ dependencies:
   - netcdf4
   - numpy
   - pip!=21.3
-  - python>=3.9
+  - python>=3.8,<3.10  # basemap is no longer supported past 3.9
   - pyyaml
   - scipy
