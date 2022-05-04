@@ -93,3 +93,9 @@ pip install 2to3
 ```
 
 Remove the backup `.py.bak` files or stash them.
+
+## View `html` output pages straight into GitHub
+
+Github renders html straight into the browser, with source being any given `index.html`. For that, one needs to prepend the `https://htmlpreview.github.io/?` before the http address of the `index.html`, example:
+
+https://htmlpreview.github.io/?https://github.com/valeriupredoi/reports-bgc-val/blob/main/bgc-val-initial-report/u-bc179/index.html
