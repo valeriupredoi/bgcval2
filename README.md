@@ -61,7 +61,7 @@ makeReport u-bc179 2010
 
 ### Available executables
 
-Executable name | What it does | command
+Executable name | What it does | Command
 :--------------:|:------------:|:------------:
 `analysis_timeseries` | runs timeseries analysis for single model run. | analysis_timeseries jobID key
 `analysis_p2p` | runs point to point analysis of model against observational dataset. | analysis_p2p jobID YEAR
