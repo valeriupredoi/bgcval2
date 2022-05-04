@@ -5,29 +5,40 @@
 BGCVal
 ======
 
-This is the Python3 (Python 3.9+) version of [BGCVal](https://gmd.copernicus.org/articles/11/4215/2018/).
+This is the Python3 (Python 3.8 and 3.9) version of [BGCVal](https://gmd.copernicus.org/articles/11/4215/2018/).
 
 **This is a fully deployable Python3 package.**
+
+Suport for Python 3.10 is not yet enabled due to the current use of Basemap, that is obsolete, but still usable with Python 3.8-3.9.
 
 Environment and installation
 ============================
 
 **Supported Operating Systems so far**: Linux/UNIX
 
-Grab [miniconda3](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html), install `mamba` in the `base` environment:
+To install locally:
+
+- get the `git` file of this repository:
+
+```
+git clone https://github.com/valeriupredoi/bgcval2.git
+```
+
+- then grab [miniconda3](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html), install `mamba` in the `base` environment:
 
 ```
 conda install -c conda-forge mamba
 ```
 
-then create the `bgcval` environment and activate it:
+- then create the `bgcval` environment and activate it:
 
 ```
-mamba env create -n bgcval -f environment.yml
-conda activate bgcval
+cd bgcval2
+mamba env create -n bgcval2 -f environment.yml
+conda activate bgcval2
 ```
 
-then install the development dependencies:
+- then install the development dependencies and the tool itself:
 
 ```
 pip install -e .[develop]
@@ -62,3 +73,23 @@ Executable name | What it does
 `bgcval` | runs everything
 `makeReport` | makes the HTML report
 
+
+Appendix
+========
+
+## Python2 to Python3 Migration
+
+Migration from the orginal BGCVal code, which was Python2, has been done with the `2to3` tool:
+
+- Install 2to3:
+
+```
+pip install 2to3
+```
+- Usage: use the 3.9 extension and write to disk option:
+
+```
+2to3-3.9 script.py -w
+```
+
+Remove the backup `.py.bak` files or stash them.
