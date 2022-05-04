@@ -13,3 +13,5 @@ bgcval2/html5/__pycache__
 bgcval2/comparison/__pycache__
 __pycache__
 bgcval2/__pycache__
+.coverage
+test-reports
