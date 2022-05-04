@@ -45,12 +45,12 @@ import cartopy.io.shapereader as shapereader
 from cartopy import img_transform, feature as cfeature
 
 #Specific local code:
-import UKESMpython as ukp
-from bgcvaltools.pftnames import getLongName
-from bgcvaltools.dataset import dataset
+from .. import UKESMpython as ukp
+from ..bgcvaltools.pftnames import getLongName
+from ..bgcvaltools.dataset import dataset
 from . import timeseriesTools as tst
 from . import timeseriesPlots as tsp
-import paths
+from ..Paths import paths
 
 try:
     defcmap = pyplot.cm.jet
