@@ -31,7 +31,7 @@ import numpy as np
 from calendar import month_name
 
 from .dataset import dataset
-from .. import UKESMpython as ukp
+from ..UKESMpython import makeLonSafeArr
 
 ####
 
