@@ -281,7 +281,6 @@ def analysis_timeseries(
 	"""
     # see if we have a user config file
     if config_user:
-        print("XXX", config_user)
         config_user = read_config_user_file(config_user)
     else:
         config_user = read_config_user_file("defaults")
