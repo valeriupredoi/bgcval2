@@ -61,7 +61,7 @@ from ._runtime_config import get_run_configuration
 
 #####
 # User defined set of paths pointing towards the datasets.
-from .Paths import paths as paths_obj
+from .Paths.paths import paths_setter
 
 
 #####
@@ -286,7 +286,7 @@ def analysis_timeseries(
         paths_dict, config_user = get_run_configuration("defaults")
 
     # filter paths dict into an object that's usable below
-    paths = paths_obj(paths_dict) 
+    paths = paths_setter(paths_dict) 
 
     #print "analysis_p2p:",	jobID,clean, annual,strictFileCheck,analysisSuite,regions
     #assert 0
