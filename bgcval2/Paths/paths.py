@@ -42,8 +42,8 @@ def _establish_hostname():
         hostname = "github-actions"  # for testing on GA machine
     else:
         print("Got host name: ", gethostname())
-        raise ValueError("Unidentified host.
-                          Run at either JASMIN, MONSOON or PML.")
+        raise ValueError(f"Unidentified host."
+                         f"Run at either JASMIN, MONSOON or PML.")
 
     return hostname
 
