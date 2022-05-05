@@ -1,9 +1,6 @@
 import os
-import sys
-
-from socket import gethostname
 from getpass import getuser
-from pathlib import Path
+from socket import gethostname
 
 import yaml
 
@@ -32,7 +29,6 @@ def get_run_configuration(config_file):
     # return defaults if no user config specified
     if config_file == "defaults":
         paths = _get_paths(defaults)
-        return paths, defaults
     # use user's config file to replace default values
     else:
         # Read user config file
@@ -67,8 +63,9 @@ def _establish_hostname():
     elif gethostname().find('-az') > -1:
         hostname = "github-actions"  # for testing on GA machine
     else:
-        print("Got host name: ", gethostname())
-        raise ValueError(f"Unidentified host."
+        host = gethostname()
+        print("Got host name: ", host)
+        raise ValueError(f"Unidentified hostname {host}"
                          f"Run at either JASMIN, MONSOON or PML.")
 
     return hostname
@@ -101,7 +98,9 @@ def _expand_paths(paths_dict, hostname):
             )
 
         return jasmin_paths
-
+    # TODO do path expansion for the other two sites
+    else:
+        return NotImplementedError
 
 def _get_paths(default_config, user_config=None):
     """Assemble the paths object containing all needed runtime paths."""
@@ -122,7 +121,10 @@ def _get_paths(default_config, user_config=None):
             return paths
         # if they have, check and replace what they have
         else:
-            expanded_user_paths = _expand_paths(
+            if hostname not in user_config["standard-paths"][hostname]:
+                raise ValueError(f"Running on {hostname} but user config"
+                                 f"file does not have {hostname} section.")
+            _expand_paths(
                 user_config["standard-paths"][hostname],
                 hostname
             )
