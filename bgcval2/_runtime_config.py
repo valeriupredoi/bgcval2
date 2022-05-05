@@ -110,7 +110,7 @@ def _get_paths(default_config, user_config=None):
 
     # dict populated with fully working default paths
     paths = _expand_paths(default_paths, hostname)
-    paths = dict(default_paths_expanded)
+    paths = dict(paths)
 
     # replace with user specifics, if any
     if user_config is not None:
