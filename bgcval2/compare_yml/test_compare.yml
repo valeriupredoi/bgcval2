@@ -1,0 +1,27 @@
+"""
+Basic multi-model job comparison.
+
+"""
+
+analysis_name: Skeleton_test
+keys: level1
+jobIDs: 
+    u-ab123: 
+        description: "job number 1"
+        colour: "green"
+        linestyle: "-"
+        linewidth: 1.2
+        year_diff: 0.
+    u-ab122: 
+        description: "job 1 with extra hot sauce"
+        colour: "red"
+        linestyle: "..."
+        linewidth: 1.2
+        year_diff: +75
+    u-ab121: 
+        description: "job 1 hold the hot sauce"
+        colour: "blue"
+        linestyle: ":"
+        linewidth: 1.2
+        year_diff: -1850
+

@@ -68,6 +68,7 @@ from .comparison.shifttimes import shifttimes
 from .comparison.ensembles import build_ensemble
 from .config.configToDict import configToDict
 from .bgcvaltools.dataset import dataset
+from ._runtime_config import _read_yaml
 
 
 def titleify(ls):
@@ -4076,11 +4077,135 @@ def CompareTwoRuns(jobIDA,
 
 def main():
 # For now, there are no arguments needed. 
-#    if "--help" in argv or len(argv) == 1:
-#        print("Running with no arguments. Exiting.")
-#        if "--help" in argv:
-#            print("Read the documentation.")
-#        exit(0)
+    if "--help" in argv or len(argv) == 1:
+        print("Running with no arguments. Exiting.")
+        if "--help" in argv:
+            print("Read the documentation.")
+        exit(0)
+
+    yml_fn = argv[1]
+    if not os.path.exists(yml_fn):
+         print("ERROR:\tInput yml file", yml_fn, "does not exist. Exiting.")
+         exit(0)
+
+    """
+    Sample input file:
+
+    analysis_name: hotsauce
+    keys:
+        level1
+    jobIDs : 
+       u-ab123: 
+        description: job number 1
+        colour: green
+        linestyle: -
+        linewidth: 1.2
+        year_diff: none
+       u-ab122: 
+        description: job 1 with extra hot sauce
+        colour: red
+        linestyle: -
+        linewidth: 1.2
+        year_diff: +75
+       u-ab121: 
+        description:  job 1 hold the hot sauce
+        colour: blue
+        linestyle: -
+        linewidth: 1.2
+        year_diff: -1850
+    """
+
+    with open(yml_fn, 'r') as file:
+        yml = yaml.safe_load(file)
+    #input_yml = _read_yaml(yml_fn)
+    name = yml.get('analysis_name', None)
+    keys = yml.get('keys', 'level1')
+    jobIDs= yml.get('jobIDs', None).keys()
+    if None in [name, keys, jobIDs]:
+        print('ERROR:\t problem with input yaml file,', fn, ':', )
+        print('name:', name)
+        print('keys:', keys)
+        print('jobIDs', jobIDs)
+        exit(0)
+
+ 
+    if isinstance(keys, str): keys = [keys, ]
+
+    physics = False
+    bio = False
+    debug = False
+
+    if 'physics' in keys:
+        physics = True
+    if 'bio'  in keys:
+        bio = True
+    if 'debug' in keys:
+        debug = True
+    if 'level1' in keys:
+        physics = True
+        bio = True
+
+    colours = {jobid:di.get('colour', 'red') for jobid,di in yml['jobIDs'].items()}
+    descriptions = {jobid:di.get('description', '') for jobid,di in yml['jobIDs'].items()}
+    linewidths = {jobid:di.get('linewidth', 1.0) for jobid,di in yml['jobIDs'].items()}
+    linestyles = {jobid:di.get('linestyle', '-') for jobid,di in yml['jobIDs'].items()}
+    time_dict = {jobid:di.get('year_diff', 0.) for jobid,di in yml['jobIDs'].items()}
+    for job in yml['jobIDs'].keys():
+        print('plotting', job,  yml['jobIDs'][job])
+    timeseries_compare(
+        colours,
+        analysisname=name,
+        physics=physics,
+        bio=bio,
+        debug=debug,
+        year0=time_dict, 
+        jobDescriptions=descriptions,
+        lineThicknesses=linewidths,
+        linestyles=linestyles,
+        )
+
+
+    exit(0)
+
+    if 1:
+        if suite == 'all':
+            phys = 1
+            bio = 1
+            debug = 0
+        if suite == 'physics':
+            phys = 1
+            bio = 0
+            debug = 0
+        if suite == 'bio':
+            phys = 0
+            bio = 1
+            debug = 0
+        if suite == 'debug':
+            phys = 0
+            bio = 0
+            debug = 1
+        try:
+            colours = {i: standards[i] for i in jobIDs}
+        except:
+            colours = {}
+            randomcolours = [
+                'red', 'blue', 'purple', 'green', 'gold', 'sienna', 'orange',
+                'black'
+            ]
+            for i, job in enumerate(jobIDs):
+                colours[job] = randomcolours[i]
+        name = '_'.join(jobIDs)
+        timeseries_compare(colours,
+                           physics=phys,
+                           bio=bio,
+                           year0=False,
+                           debug=debug,
+                           analysisname=name,
+                           jobDescriptions=jobDescriptions)
+        print("Successful command line comparison")
+
+    return 
+
 
     #standards = configToDict('config/jobIDcolours.ini')
     thicknesses = defaultdict(lambda: 0.75)
