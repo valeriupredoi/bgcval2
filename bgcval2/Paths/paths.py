@@ -26,55 +26,38 @@
    :synopsis: A list of paths to data files.
 .. moduleauthor:: Lee de Mora <ledm@pml.ac.uk>
 """
-from socket import gethostname
+
+class paths():
+    """Empty class to hold paths."""
 
 
-def _establish_hostname():
-    """Return the hostname where the run is done."""
-    if gethostname().find('ceda.ac.uk') > -1 or gethostname().find(
-            'jasmin') > -1 or gethostname().find('jc.rl.ac.uk') > -1:
-        hostname = "jasmin"
-    elif gethostname().find('monsoon') > -1:
-        hostname = "monsoon"
-    elif gethostname().find('pmpc') > -1:
-        hostname = "pml"
-    elif gethostname().find('-az') > -1:
-        hostname = "github-actions"  # for testing on GA machine
-    else:
-        print("Got host name: ", gethostname())
-        raise ValueError(f"Unidentified host."
-                         f"Run at either JASMIN, MONSOON or PML.")
-
-    return hostname
-
-
-class paths(paths_dict):
+def paths_setter(paths_dict):
     """Grab all paths and return them."""
-    hostname = _establish_hostname()
-
     # [general] paths
-    paths.machinelocation = paths_dict["standard-paths"][hostname]["machinelocation"]
-    paths.root_dir = paths_dict["standard-paths"][hostname]["root_dir"]
-    paths.shelvedir = paths_dict["standard-paths"][hostname]["shelvedir"]
-    paths.p2p_ppDir = paths_dict["standard-paths"][hostname]["p2p_ppDir"]
-    paths.imagedir = paths_dict["standard-paths"][hostname]["imagedir"]
-    paths.ModelFolder_pref = paths_dict["standard-paths"][hostname]["ModelFolder_pref"]
-    paths.orcaGridfn = paths_dict["standard-paths"][hostname]["orcaGridfn"]
+    paths.machinelocation = paths_dict["general"]["machinelocation"]
+    paths.root_dir = paths_dict["general"]["root_dir"]
+    paths.shelvedir = paths_dict["general"]["shelvedir"]
+    paths.p2p_ppDir = paths_dict["general"]["p2p_ppDir"]
+    paths.imagedir = paths_dict["general"]["imagedir"]
+    paths.ModelFolder_pref = paths_dict["general"]["ModelFolder_pref"]
+    paths.orcaGridfn = paths_dict["general"]["orcaGridfn"]
+    paths.ObsFolder = paths_dict["general"]["ObsFolder"]
 
-    # [data-files] paths
-    paths.ObsFolder = paths_dict["standard-paths"][hostname]["ObsFolder"]
-    paths.Dustdir = paths_dict["data-files"][hostname]["Dustdir"]
-    paths.WOAFolder_annual = paths_dict["data-files"][hostname]["WOAFolder_annual"]
-    paths.WOAFolder = paths_dict["data-files"][hostname]["WOAFolder"]
-    paths.DMSDir = paths_dict["data-files"][hostname]["DMSDir"]
-    paths.MAREDATFolder = paths_dict["data-files"][hostname]["MAREDATFolder"]
-    paths.GEOTRACESFolder = paths_dict["data-files"][hostname]["GEOTRACESFolder"]
-    paths.GODASFolder = paths_dict["data-files"][hostname]["GODASFolder"]
-    paths.TakahashiFolder = paths_dict["data-files"][hostname]["TakahashiFolder"]
-    paths.MLDFolder = paths_dict["data-files"][hostname]["MLDFolder"]
-    paths.iMarNetFolder = paths_dict["data-files"][hostname]["iMarNetFolder"]
-    paths.GlodapDir = paths_dict["data-files"][hostname]["GlodapDir"]
-    paths.GLODAPv2Dir = paths_dict["data-files"][hostname]["GLODAPv2Dir"]
-    paths.OSUDir = paths_dict["data-files"][hostname]["OSUDir"]
-    paths.CCIDir = paths_dict["data-files"][hostname]["CCIDir"]
-    paths.icFold = paths_dict["data-files"][hostname]["icFold"]
+    # [tata-files] paths
+    paths.Dustdir = paths_dict["data-files"]["Dustdir"]
+    paths.WOAFolder_annual = paths_dict["data-files"]["WOAFolder_annual"]
+    paths.WOAFolder = paths_dict["data-files"]["WOAFolder"]
+    paths.DMSDir = paths_dict["data-files"]["DMSDir"]
+    paths.MAREDATFolder = paths_dict["data-files"]["MAREDATFolder"]
+    paths.GEOTRACESFolder = paths_dict["data-files"]["GEOTRACESFolder"]
+    paths.GODASFolder = paths_dict["data-files"]["GODASFolder"]
+    paths.TakahashiFolder = paths_dict["data-files"]["TakahashiFolder"]
+    paths.MLDFolder = paths_dict["data-files"]["MLDFolder"]
+    paths.iMarNetFolder = paths_dict["data-files"]["iMarNetFolder"]
+    paths.GlodapDir = paths_dict["data-files"]["GlodapDir"]
+    paths.GLODAPv2Dir = paths_dict["data-files"]["GLODAPv2Dir"]
+    paths.OSUDir = paths_dict["data-files"]["OSUDir"]
+    paths.CCIDir = paths_dict["data-files"]["CCIDir"]
+    paths.icFold = paths_dict["data-files"]["icFold"]
+
+    return paths
