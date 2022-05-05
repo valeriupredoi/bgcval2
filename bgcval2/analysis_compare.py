@@ -101,9 +101,9 @@ def timeseries_compare(colours,
                        physics=True,
                        bio=False,
                        debug=False,
-                       year0=False,
+                       year0=defaultdict(lambda: 0),
                        analysisname='',
-                       jobDescriptions={},
+                       jobDescriptions=defaultdict(lambda: ''),
                        lineThicknesses=defaultdict(lambda: 1),
                        linestyles=defaultdict(lambda: '-'),
                        ensembles={}):
@@ -4075,13 +4075,14 @@ def CompareTwoRuns(jobIDA,
 
 
 def main():
-    if "--help" in argv or len(argv) == 1:
-        print("Running with no arguments. Exiting.")
-        if "--help" in argv:
-            print("Read the documentation.")
-        exit(0)
+# For now, there are no arguments needed. 
+#    if "--help" in argv or len(argv) == 1:
+#        print("Running with no arguments. Exiting.")
+#        if "--help" in argv:
+#            print("Read the documentation.")
+#        exit(0)
 
-    standards = configToDict('config/jobIDcolours.ini')
+    #standards = configToDict('config/jobIDcolours.ini')
     thicknesses = defaultdict(lambda: 0.75)
     thicknesses['u-ar783'] = 2.2
     thicknesses['u-at793'] = 2.2
@@ -4095,8 +4096,8 @@ def main():
     hjthicknesses['u-at793'] = 1.
     hjthicknesses['u-at760'] = 1.
 
-    jobDescriptions = configToDict('config/jobIDdescriptions.ini')
-    live_jobs = configToDict('RemoteScripts/jobids_config.ini')
+    #jobDescriptions = configToDict('config/jobIDdescriptions.ini')
+    #live_jobs = configToDict('RemoteScripts/jobids_config.ini')
 
     try:
         args = argv[1:]
@@ -4158,23 +4159,31 @@ def main():
             customColours = {
                 'u-by230': 'black',  #standard UKESM1.1
                 'u-ck416': 'green',  #CN-fast standard radiation
-                # 'u-cg799' : 'red', #CN-fast rad=3h, two_fsd=1.7
+                'u-cg799' : 'red', #CN-fast rad=3h, two_fsd=1.7
                 # 'u-cg843' : 'blue', #CN-fast, rad=3h, two_fsd=1.65
             }
             cnthicknesses = defaultdict(lambda: 0.7)
             linestyles = defaultdict(lambda: '-')
+            time_dict = defaultdict(lambda: None)
+            time_dict['u-by230'] = 50.
+            time_dict['u-ck416'] = -50.
+
+
             timeseries_compare(
                 customColours,
                 physics=1,
                 bio=1,
                 debug=0,
-                year0='UKESM11_Fast_piControl_2',
-                jobDescriptions=jobDescriptions,
+                year0=time_dict, #'UKESM11_Fast_piControl_2',
+                #obDescriptions=defaultdict(lambda: {} ),
                 analysisname='UKESM11_Fast_piControl_2',
                 lineThicknesses=cnthicknesses,
                 linestyles=linestyles,
             )
 
+        """
+        Below here is the old system.
+        """
         return
         assert 0
 

@@ -21,6 +21,8 @@
 # ledm@pml.ac.uk
 #
 
+from collections import defaultdict
+
 
 def shifttimes(mdata, jobID, year0=False):
 
@@ -28,6 +30,17 @@ def shifttimes(mdata, jobID, year0=False):
     try:
         t0 = float(sorted(mdata.keys())[0])
     except:
+        return times, datas
+
+    """
+    We now accept time0 as dictionary of shifts.
+    """
+    if isinstance(year0, dict) or isinstance(year, defaultdict):
+        for t in sorted(mdata.keys()):
+            diff = year0.get(jobID, 0.)
+            t1 = t + diff 
+            times.append(float(t1))
+            datas.append(mdata[t])
         return times, datas
 
     if year0 == 'piControl':
