@@ -95,7 +95,10 @@ def _expand_paths(paths_dict, hostname):
                                                                    "BGC_data")
         obs_folder = jasmin_paths["general"]["ObsFolder"]
         for obsdir in jasmin_paths["data-files"]:
-            jasmin_paths["data-files"][obsdir] = os.path.join(obs_folder, obsdir)
+            jasmin_paths["data-files"][obsdir] = os.path.join(
+                obs_folder,
+                jasmin_paths["data-files"][obsdir]
+            )
 
         return jasmin_paths
 
@@ -119,16 +122,20 @@ def _get_paths(default_config, user_config=None):
             return paths
         # if they have, check and replace what they have
         else:
-            if "general" in user_config["standard-paths"]:
-                for pth_name in user_config["standard-paths"]["general"]:
+            expanded_user_paths = _expand_paths(
+                user_config["standard-paths"][hostname],
+                hostname
+            )
+            if "general" in user_config["standard-paths"][hostname]:
+                user_generals = user_config["standard-paths"][hostname]["general"]
+                for pth_name in user_generals:
                     if pth_name in paths["general"]:
-                        norm_path = _normalize_path(user_config[pth_name])
-                        paths["general"][pth_name] = norm_path
-            if "data-files" in user_config["standard-paths"]:
-                for pth_name in user_config["standard-paths"]["data-files"]:
+                        paths["general"][pth_name] = user_generals[pth_name]
+            if "data-files" in user_config["standard-paths"][hostname]:
+                user_obses = user_config["standard-paths"][hostname]["data-files"]
+                for pth_name in user_obses:
                     if pth_name in paths["data-files"]:
-                        norm_path = _normalize_path(user_config[pth_name])
-                        paths["data-files"][pth_name] = norm_path
+                        paths["data-files"][pth_name] = user_obses[pth_name]
 
     return paths
 
