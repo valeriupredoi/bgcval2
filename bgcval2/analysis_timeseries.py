@@ -236,15 +236,19 @@ def listModelDataFiles(jobID, filekey, datafolder, annual):
     if annual:
         print(("listing model data files:",
                datafolder + jobID + "/" + jobID + "o_1y_*_" + filekey + ".nc"))
-        return sorted(
-            glob(datafolder + jobID + "/" + jobID + "o_1y_*_" + filekey +
+        datafolder = os.path.join(datafolder, jobID)
+        model_files = sorted(
+            glob(datafolder + "/" + jobID + "o_1y_*_" + filekey +
                  ".nc"))
     else:
         print(("listing model data files:",
                datafolder + jobID + "/" + jobID + "o_1m_*_" + filekey + ".nc"))
-        return sorted(
-            glob(datafolder + jobID + "/" + jobID + "o_1m_*_" + filekey +
+        datafolder = os.path.join(datafolder, jobID)
+        model_file = sorted(
+            glob(datafolder + "/" + jobID + "o_1m_*_" + filekey +
                  ".nc"))
+
+    return model_files
 
 
 def analysis_timeseries(
@@ -286,7 +290,7 @@ def analysis_timeseries(
         paths_dict, config_user = get_run_configuration("defaults")
 
     # filter paths dict into an object that's usable below
-    paths = paths_setter(paths_dict) 
+    paths = paths_setter(paths_dict)
 
     #print "analysis_p2p:",	jobID,clean, annual,strictFileCheck,analysisSuite,regions
     #assert 0
