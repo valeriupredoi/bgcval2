@@ -57,11 +57,11 @@ from .timeseries import timeseriesTools as tst
 from .bgcvaltools.mergeMonthlyFiles import mergeMonthlyFiles, meanDJF
 from .bgcvaltools.AOU import AOU
 from .bgcvaltools.dataset import dataset
-from ._runtime_config import read_config_user_file
+from ._runtime_config import get_run_configuration
 
 #####
 # User defined set of paths pointing towards the datasets.
-from .Paths import paths
+from .Paths import paths as paths_obj
 
 
 #####
@@ -279,11 +279,14 @@ def analysis_timeseries(
 	:param regions:
 
 	"""
-    # see if we have a user config file
+    # get runtime configuration
     if config_user:
-        config_user = read_config_user_file(config_user)
+        paths_dict, config_user = get_run_configuration(config_user)
     else:
-        config_user = read_config_user_file("defaults")
+        paths_dict, config_user = get_run_configuration("defaults")
+
+    # filter paths dict into an object that's usable below
+    paths = paths_obj(paths_dict) 
 
     #print "analysis_p2p:",	jobID,clean, annual,strictFileCheck,analysisSuite,regions
     #assert 0
