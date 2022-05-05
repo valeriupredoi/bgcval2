@@ -121,7 +121,7 @@ def _get_paths(default_config, user_config=None):
             return paths
         # if they have, check and replace what they have
         else:
-            if hostname not in user_config["standard-paths"][hostname]:
+            if hostname not in user_config["standard-paths"]:
                 raise ValueError(f"Running on {hostname} but user config"
                                  f"file does not have {hostname} section.")
             _expand_paths(
