@@ -15,7 +15,7 @@ standard-paths:
       orcaGridfn: "/gws/nopw/j04/esmeval/bgc-val/mesh_mask_eORCA1_wrk.nc"
       ObsFolder: "/gws/nopw/j04/esmeval/example_data/bgc"
     data-files:
-      Dustdir: "MahowaldDust"
+      Dustdir: "MahowaldDust/"
       WOAFolder_annual: "WOA/annual/"
       WOAFolder: "WOA/"
       DMSDir: "DMS_Lana2011nc/"
