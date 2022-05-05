@@ -1665,8 +1665,9 @@ def analysis_timeseries(
             print("Only run one of these at a time")
             assert 0
         if annual:
+            tomzv_dir = os.path.join(paths.ModelFolder_pref, jobID)
             av['TotalOMZVolume']['modelFiles'] = sorted(
-                glob(paths.ModelFolder_pref + jobID + "/" + jobID +
+                glob(tomzv_dir + "/" + jobID +
                      "o_1y_*_ptrc_T.nc"))
             av['TotalOMZVolume'][
                 'dataFile'] = WOAFolder + 'woa13_all_o00_01.nc'
