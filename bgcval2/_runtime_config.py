@@ -16,8 +16,13 @@ def _read_yaml(config_file):
     return cfg
 
 
-def read_config_user_file(config_file):
-    """Read config user file and store settings in a dictionary."""
+def get_run_configuration(config_file):
+    """
+    Get runtime configuration settings
+
+    Read config user and default config file
+    and store settings in dictionaries.
+    """
     # read defaults first
     basedir = os.path.dirname(__file__)
     default_config_file = os.path.join(basedir,
@@ -26,7 +31,8 @@ def read_config_user_file(config_file):
 
     # return defaults if no user config specified
     if config_file == "defaults":
-        return defaults
+        paths = _get_paths(defaults)
+        return paths, defaults
     # use user's config file to replace default values
     else:
         # Read user config file
@@ -37,11 +43,15 @@ def read_config_user_file(config_file):
         user_cfg = _read_yaml(config_file)
 
         # and replace all user-specific values
-        for elem in user_cfg:
+        # treat paths separately though
+        defaults = dict(defaults)
+        paths = _get_paths(defaults, user_cfg)
+        # look for anything that's not [paths, ]
+        for elem in user_cfg if elem not in ["standard-paths", ]:
             defaults[elem] = user_cfg[elem]
 
 
-    return defaults
+    return paths, defaults
 
 
 def _establish_hostname():
@@ -98,15 +108,28 @@ def _get_paths(default_config, user_config=None)
     default_paths = default_config["standard-paths"][hostname]
 
     # dict populated with fully working default paths
-    default_paths_expanded = _expand_paths(default_paths, hostname)
-    default_paths_expanded = dict(default_paths_expanded)
+    paths = _expand_paths(default_paths, hostname)
+    paths = dict(default_paths_expanded)
 
     # replace with user specifics, if any
     if user_config is not None:
-        for pth_name in user_config:
-            if pth_name in default_paths_expanded["general"]:
-                norm_path = _normalize_path(user_config[pth_name])
-                default_paths_expanded["general"][pth_name] = norm_path
+        # return immediately if user has no paths
+        if "standard-paths" not in user_config:
+            return paths
+        # if they have, check and replace what they have
+        else:
+            if "general" in user_config["standard-paths"]:
+                for pth_name in user_config["standard-paths"]["general"]:
+                    if pth_name in paths["general"]:
+                        norm_path = _normalize_path(user_config[pth_name])
+                        paths["general"][pth_name] = norm_path
+            if "data-files" in user_config["standard-paths"]:
+                for pth_name in user_config["standard-paths"]["data-files"]:
+                    if pth_name in paths["data-files"]:
+                        norm_path = _normalize_path(user_config[pth_name])
+                        paths["data-files"][pth_name] = norm_path
+
+    return paths
 
 
 def _normalize_path(path):
