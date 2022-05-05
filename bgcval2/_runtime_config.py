@@ -47,8 +47,9 @@ def get_run_configuration(config_file):
         defaults = dict(defaults)
         paths = _get_paths(defaults, user_cfg)
         # look for anything that's not [paths, ]
-        for elem in user_cfg if elem not in ["standard-paths", ]:
-            defaults[elem] = user_cfg[elem]
+        for elem in user_cfg:
+            if elem not in ["standard-paths", ]:
+                defaults[elem] = user_cfg[elem]
 
 
     return paths, defaults
@@ -67,8 +68,8 @@ def _establish_hostname():
         hostname = "github-actions"  # for testing on GA machine
     else:
         print("Got host name: ", gethostname())
-        raise ValueError("Unidentified host.
-                          Run at either JASMIN, MONSOON or PML.")
+        raise ValueError(f"Unidentified host."
+                         f"Run at either JASMIN, MONSOON or PML.")
 
     return hostname
 
@@ -93,13 +94,13 @@ def _expand_paths(paths_dict, hostname):
         jasmin_paths["general"]["ModelFolder_pref"] = os.path.join(root_dir,
                                                                    "BGC_data")
         obs_folder = jasmin_paths["general"]["ObsFolder"]
-        for obsdir in jasmin_paths["data-files"]
+        for obsdir in jasmin_paths["data-files"]:
             jasmin_paths["data-files"][obsdir] = os.path.join(obs_folder, obsdir)
 
         return jasmin_paths
 
 
-def _get_paths(default_config, user_config=None)
+def _get_paths(default_config, user_config=None):
     """Assemble the paths object containing all needed runtime paths."""
     hostname = _establish_hostname()
     if hostname not in default_config["standard-paths"]:
