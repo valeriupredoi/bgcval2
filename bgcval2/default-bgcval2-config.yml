@@ -1,3 +1,30 @@
-# default analysis variables
-cow: moo
-sheep: baa
+# default options
+
+# standard paths: these are paths to various data dirs and files
+# needed for the run; defaults here, per run site, completely
+# configurable by the user, via their configuration file
+standard-paths:
+  jasmin:
+    machinelocation: "JASMIN"
+    root_dir: "/gws/nopw/j04/ukesm"
+    shelvedir: "shelves"
+    p2p_ppDir: "ukesm_postProcessed"
+    imagedir: "images"
+    ModelFolder_pref: "BGC_data"
+    orcaGridfn: "/gws/nopw/j04/esmeval/bgc-val/mesh_mask_eORCA1_wrk.nc"
+    ObsFolder: "/gws/nopw/j04/esmeval/example_data/bgc"
+    Dustdir: "MahowaldDust"
+    WOAFolder_annual: "WOA/annual"
+    WOAFolder: "WOA"
+    DMSDir: "DMS_Lana2011nc"
+    MAREDATFolder: "MAREDAT/MAREDAT"
+    GEOTRACESFolder: "GEOTRACES/GEOTRACES_PostProccessed"
+    GODASFolder: "GODAS"
+    TakahashiFolder: "Takahashi2009_pCO2"
+    MLDFolder: "IFREMER-MLD"
+    iMarNetFolder: "LestersReportData"
+    GlodapDir: "GLODAP"
+    GLODAPv2Dir: "GLODAPv2/GLODAPv2_Mapped_Climatologies"
+    OSUDir: "OSU"
+    CCIDir: "CCI"
+    icFold: "InitialConditions"
