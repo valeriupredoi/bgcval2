@@ -51,13 +51,16 @@ The tool has a number of executables one can invoke individually, e.g.:
 
 ```
 analysis_timeseries u-bc179 level1
+analysis_p2p u-bc179 level2 2010
 ```
-
-or to make the summary HTML page:
+Once these have completed, a summary HTML page can be generated with the command:
 
 ```
 makeReport u-bc179 2010
 ```
+This produces an html5 mobile-friendly website which can be opened using your
+browser of choice.
+
 
 ### Available executables
 
@@ -68,6 +71,72 @@ Executable name | What it does | Command
 `bgcval` | runs time series and point to point. | bgcval jobID
 `makeReport` | makes the single model HTML report. | makeReport jobID
 `analysis_compare` | runs comparison of multiple single jobs  | analysis_compare
+
+
+Time series analysis
+--------------------
+
+This is an analysis that investigates the time development of specific marine
+physics and Biogeochemistry fields in the given model, and then compares them
+against historical observations.
+
+The command to run it is `analysis_timeseries jobID key`, where jobID is a mass
+job id, such a `u-ab123`, and the key is a pre-defined key, which generates a
+list of variables.
+
+Key | What it is | Description
+:--------------:|:------------:|:------------:
+`kmf` | Key Metrics First | A short and quick list of the most important metrics.
+`physics` | Physics | A comprehensive list of physical metrics.
+`bgc` | Biogeochemistry | A comprehensive list of biogeochemical metrics.
+`level1` | Level 1 | A comprehensive list of physical and biogeochemical metrics.
+`debug` | Debug | A very short list of a couple keys to test code changes.
+`fast` | UKESM1-fast  | A list of metrics tailored to the UKESM1-Fast model.
+
+
+Note that there may be some overlap between the contents of these keys.
+
+
+Point to point analysis
+-----------------------
+
+This is an analysis that compares a specific year of the model
+against several climatological datasets, and produces comparison
+maps, histograms and scatter plots.
+
+
+The command to run it is `analysisp2p jobID YEAR key`, where jobID is a mass
+job id, such a `u-ab123`, `YEAR` is the single year to investigate
+and the key is a pre-defined key, which generates a list of variables.
+
+Key | What it is | Description
+:--------------:|:------------:|:------------:
+`physics` | Physics | A comprehensive list of physical metrics.
+`level2` | Level 2 | A comprehensive list of physical and biogeochemical metrics.
+`debug` | Debug | A very short list of a couple keys to test code changes.
+
+Note that there may be some overlap between the contents of these keys.
+
+
+Single Model report
+-------------------
+
+Once an analysis has run, either time series or point to point, a report
+can be generated from this output, using the command:
+```
+makeReport jobID year
+```
+This  gnerated an HTML5 mobile-friendlyt report, summarising the output of a
+single model run.
+
+
+Multi-model comaprison report
+-----------------------------
+
+Once several models have been analysed using the time series analysis,
+their time development can be compared using the analysis_compare command.
+This is currently hardwired, but work in on-going.
+
 
 
 Appendix
