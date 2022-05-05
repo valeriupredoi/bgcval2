@@ -70,6 +70,32 @@ Executable name | What it does | Command
 `analysis_compare` | runs comparison of multiple single jobs  | analysis_compare
 
 
+Time series analysis
+--------------------
+
+This is an analysis that investigates the time development of specific marine
+physics and Biogeochemistry fields in the given model, and then compares them
+against historical observations.
+
+The command to run it is `analysis_timeseries jobID key`, where jobID is a mass
+job id, such a `u-ab123`, and the key is a pre-defined key, which generates a
+list of variables.
+
+Key | what it is | Description
+:--------------:|:------------:|:------------:
+`kmf` | Key metrics First | A short and quick list of the most important metrics.
+`physics` | Physics | A comprehensive list of physical metrics.
+`bgc` | Biogeochemistry | A comprehensive list of Biogeochemical metrics.
+`level1` | Level 1 | A comprehensive list of physical and Biogeochemical metrics.
+`debug` | Debug | A very short list of a couple keys to test code changes.
+`fast` | UKESM1-fast  | a list of metrics taylored to the UKESM1-Fast model.
+
+
+Note that there mayt be some overlap between the contents of these keys.
+
+
+
+
 Appendix
 ========
 
