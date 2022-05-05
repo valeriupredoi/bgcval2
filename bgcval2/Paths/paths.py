@@ -26,91 +26,55 @@
    :synopsis: A list of paths to data files.
 .. moduleauthor:: Lee de Mora <ledm@pml.ac.uk>
 """
-
-import importlib
 from socket import gethostname
-#import UKESMpython as ukp
-from getpass import getuser
-import os
-import sys
 
 
-def folder(name):
-    """ This snippet takes a string, makes the folder and the string.
-            It also accepts lists of strings.
-        """
-    if type(name) == type(['a', 'b', 'c']):
-        name = '/'.join(name, )
-    if name[-1] != '/':
-        name = name + '/'
-    if os.path.exists(name) is False:
-        os.makedirs(name)
-        print('makedirs ', name)
-    return name
+def _establish_hostname():
+    """Return the hostname where the run is done."""
+    if gethostname().find('ceda.ac.uk') > -1 or gethostname().find(
+            'jasmin') > -1 or gethostname().find('jc.rl.ac.uk') > -1:
+        hostname = "jasmin"
+    elif gethostname().find('monsoon') > -1:
+        hostname = "monsoon"
+    elif gethostname().find('pmpc') > -1:
+        hostname = "pml"
+    elif gethostname().find('-az') > -1:
+        hostname = "github-actions"  # for testing on GA machine
+    else:
+        print("Got host name: ", gethostname())
+        raise ValueError("Unidentified host.
+                          Run at either JASMIN, MONSOON or PML.")
+
+    return hostname
 
 
-# JASMIN
-if gethostname().find('ceda.ac.uk') > -1 or gethostname().find(
-        'jasmin') > -1 or gethostname().find('jc.rl.ac.uk') > -1:
-    print("analysis-timeseries.py:\tBeing run at CEDA on ", gethostname())
-    paths = importlib.import_module('bgcval2.Paths.paths_jasmin')
-# MONSOON
-elif gethostname().find('monsoon') > -1:
-    print("Being run at the Met Office on ", gethostname())
-    paths = importlib.import_module('bgcval2.Paths.paths_monsoon')
-# PML
-elif gethostname().find('pmpc') > -1:
-    print("Paths.py:\tBeing run at PML on ", gethostname())
-    paths = importlib.import_module('bgcval2.Paths.paths_pml')
-# local
-elif gethostname().find('valeriu-PORTEGE-Z30-C') > -1:
-    print("Paths.py:\tBeing run at V laptop on ", gethostname())
-    paths = importlib.import_module('bgcval2.Paths.paths_local')
-# github actions
-elif gethostname().find('-az') > -1:
-    print("Paths.py:\tBeing run at GA machine ", gethostname())
-    paths = importlib.import_module('bgcval2.Paths.paths_local')  # bogus
-else:
-    print("Got host name: ", gethostname())
-    raise ValueError("Unidentified host. Run at either JASMIN, MONSOON or PML.")
+class paths(paths_dict):
+    """Grab all paths and return them."""
+    hostname = _establish_hostname()
 
-machinelocation = paths.machinelocation
-root_dir = paths.root_dir
-#####
-# Post processed Data location
-shelvedir = paths.shelvedir
+    # [general] paths
+    paths.machinelocation = paths_dict["standard-paths"][hostname]["machinelocation"]
+    paths.root_dir = paths_dict["standard-paths"][hostname]["root_dir"]
+    paths.shelvedir = paths_dict["standard-paths"][hostname]["shelvedir"]
+    paths.p2p_ppDir = paths_dict["standard-paths"][hostname]["p2p_ppDir"]
+    paths.imagedir = paths_dict["standard-paths"][hostname]["imagedir"]
+    paths.ModelFolder_pref = paths_dict["standard-paths"][hostname]["ModelFolder_pref"]
+    paths.orcaGridfn = paths_dict["standard-paths"][hostname]["orcaGridfn"]
 
-#####
-# Post processed p2p Data location
-p2p_ppDir = paths.p2p_ppDir
-
-######
-# Output location for plots.
-imagedir = paths.imagedir
-
-#####
-# Location of model files.
-ModelFolder_pref = paths.ModelFolder_pref
-
-#####
-# eORCA1 grid
-orcaGridfn = paths.orcaGridfn
-
-#####
-# Location of data files.
-ObsFolder = paths.ObsFolder
-Dustdir = ObsFolder + "/MahowaldDust/"
-WOAFolder_annual = ObsFolder + "WOA/annual/"
-WOAFolder = ObsFolder + "WOA/"
-DMSDir = ObsFolder + "/DMS_Lana2011nc/"
-MAREDATFolder = ObsFolder + "/MAREDAT/MAREDAT/"
-GEOTRACESFolder = ObsFolder + "/GEOTRACES/GEOTRACES_PostProccessed/"
-GODASFolder = ObsFolder + "/GODAS/"
-TakahashiFolder = ObsFolder + "/Takahashi2009_pCO2/"
-MLDFolder = ObsFolder + "/IFREMER-MLD/"
-iMarNetFolder = ObsFolder + "/LestersReportData/"
-GlodapDir = ObsFolder + "/GLODAP/"
-GLODAPv2Dir = ObsFolder + "/GLODAPv2/GLODAPv2_Mapped_Climatologies/"
-OSUDir = ObsFolder + "OSU/"
-CCIDir = ObsFolder + "CCI/"
-icFold = ObsFolder + "/InitialConditions/"
+    # [data-files] paths
+    paths.ObsFolder = paths_dict["standard-paths"][hostname]["ObsFolder"]
+    paths.Dustdir = paths_dict["data-files"][hostname]["Dustdir"]
+    paths.WOAFolder_annual = paths_dict["data-files"][hostname]["WOAFolder_annual"]
+    paths.WOAFolder = paths_dict["data-files"][hostname]["WOAFolder"]
+    paths.DMSDir = paths_dict["data-files"][hostname]["DMSDir"]
+    paths.MAREDATFolder = paths_dict["data-files"][hostname]["MAREDATFolder"]
+    paths.GEOTRACESFolder = paths_dict["data-files"][hostname]["GEOTRACESFolder"]
+    paths.GODASFolder = paths_dict["data-files"][hostname]["GODASFolder"]
+    paths.TakahashiFolder = paths_dict["data-files"][hostname]["TakahashiFolder"]
+    paths.MLDFolder = paths_dict["data-files"][hostname]["MLDFolder"]
+    paths.iMarNetFolder = paths_dict["data-files"][hostname]["iMarNetFolder"]
+    paths.GlodapDir = paths_dict["data-files"][hostname]["GlodapDir"]
+    paths.GLODAPv2Dir = paths_dict["data-files"][hostname]["GLODAPv2Dir"]
+    paths.OSUDir = paths_dict["data-files"][hostname]["OSUDir"]
+    paths.CCIDir = paths_dict["data-files"][hostname]["CCIDir"]
+    paths.icFold = paths_dict["data-files"][hostname]["icFold"]
