@@ -33,7 +33,7 @@ class paths():
 
 def paths_setter(paths_dict):
     """Grab all paths and return them."""
-    # [general] paths
+    # [general] paths; mandatory everywhere
     paths.machinelocation = paths_dict["general"]["machinelocation"]
     paths.root_dir = paths_dict["general"]["root_dir"]
     paths.shelvedir = paths_dict["general"]["shelvedir"]
@@ -43,21 +43,44 @@ def paths_setter(paths_dict):
     paths.orcaGridfn = paths_dict["general"]["orcaGridfn"]
     paths.ObsFolder = paths_dict["general"]["ObsFolder"]
 
-    # [tata-files] paths
-    paths.Dustdir = paths_dict["data-files"]["Dustdir"]
-    paths.WOAFolder_annual = paths_dict["data-files"]["WOAFolder_annual"]
-    paths.WOAFolder = paths_dict["data-files"]["WOAFolder"]
-    paths.DMSDir = paths_dict["data-files"]["DMSDir"]
-    paths.MAREDATFolder = paths_dict["data-files"]["MAREDATFolder"]
-    paths.GEOTRACESFolder = paths_dict["data-files"]["GEOTRACESFolder"]
-    paths.GODASFolder = paths_dict["data-files"]["GODASFolder"]
-    paths.TakahashiFolder = paths_dict["data-files"]["TakahashiFolder"]
-    paths.MLDFolder = paths_dict["data-files"]["MLDFolder"]
-    paths.iMarNetFolder = paths_dict["data-files"]["iMarNetFolder"]
-    paths.GlodapDir = paths_dict["data-files"]["GlodapDir"]
-    paths.GLODAPv2Dir = paths_dict["data-files"]["GLODAPv2Dir"]
-    paths.OSUDir = paths_dict["data-files"]["OSUDir"]
-    paths.CCIDir = paths_dict["data-files"]["CCIDir"]
-    paths.icFold = paths_dict["data-files"]["icFold"]
+    # [data-files] paths; optional depending on site
+    if "Dustdir" in paths_dict["data-files"]:
+        paths.Dustdir = paths_dict["data-files"]["Dustdir"]
+    if "WOAFolder_annual" in paths_dict["data-files"]:
+        paths.WOAFolder_annual = paths_dict["data-files"]["WOAFolder_annual"]
+    if "WOAFolder" in paths_dict["data-files"]:
+        paths.WOAFolder = paths_dict["data-files"]["WOAFolder"]
+    if "DMSDir" in paths_dict["data-files"]:
+        paths.DMSDir = paths_dict["data-files"]["DMSDir"]
+    if "MAREDATFolder" in paths_dict["data-files"]:
+        paths.MAREDATFolder = paths_dict["data-files"]["MAREDATFolder"]
+    if "GEOTRACESFolder" in paths_dict["data-files"]:
+        paths.GEOTRACESFolder = paths_dict["data-files"]["GEOTRACESFolder"]
+    if "GODASFolder" in paths_dict["data-files"]:
+        paths.GODASFolder = paths_dict["data-files"]["GODASFolder"]
+    if "TakahashiFolder" in paths_dict["data-files"]:
+        paths.TakahashiFolder = paths_dict["data-files"]["TakahashiFolder"]
+    if "MLDFolder" in paths_dict["data-files"]:
+        paths.MLDFolder = paths_dict["data-files"]["MLDFolder"]
+    if "iMarNetFolder" in paths_dict["data-files"]:
+        paths.iMarNetFolder = paths_dict["data-files"]["iMarNetFolder"]
+    if "GlodapDir" in paths_dict["data-files"]:
+        paths.GlodapDir = paths_dict["data-files"]["GlodapDir"]
+    if "GLODAPv2Dir" in paths_dict["data-files"]:
+        paths.GLODAPv2Dir = paths_dict["data-files"]["GLODAPv2Dir"]
+    if "OSUDir" in paths_dict["data-files"]:
+        paths.OSUDir = paths_dict["data-files"]["OSUDir"]
+    if "CCIDir" in paths_dict["data-files"]:
+        paths.CCIDir = paths_dict["data-files"]["CCIDir"]
+    if "icFold" in paths_dict["data-files"]:
+        paths.icFold = paths_dict["data-files"]["icFold"]
+
+    # OPTIONALS: site-specific
+    # special paths for MONSOON
+    if "MEDUSAFolder_pref" in paths_dict["general"]:
+        paths.MEDUSAFolder_pref = paths_dict["general"]["MEDUSAFolder_pref"]
+    if "NEMOFolder_pref" in paths_dict["general"]:
+        paths.NEMOFolder_pref = paths_dict["general"]["NEMOFolder_pref"]
+    
 
     return paths
