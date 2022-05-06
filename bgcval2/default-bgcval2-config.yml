@@ -31,6 +31,7 @@ standard-paths:
       CCIDir: "CCI/"
       icFold: "InitialConditions/"
   monsoon:
+    general:
       machinelocation: "MONSOON"
       root_dir: "/projects/ukesm/"
       shelvedir: "shelves"
