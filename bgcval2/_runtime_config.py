@@ -294,11 +294,7 @@ def _get_paths(default_config, user_config=None):
 
     # replace with user specifics, if any
     if user_config is not None:
-        # return immediately if user has no paths
-        if "standard-paths" not in user_config:
-            return paths
-        # if they have, check and replace what they have
-        else:
+        if "standard-paths" in user_config:
             if hostname not in user_config["standard-paths"]:
                 raise ValueError(f"Running on {hostname} but user config"
                                  f"file does not have {hostname} section.")
