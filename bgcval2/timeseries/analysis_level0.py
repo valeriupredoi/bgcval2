@@ -135,11 +135,13 @@ def analysis_level0_insitu(
     layer='layerless',
     metric='metricless',
     debug=True,
+    paths=None,
 ):
     #####
     # Start and load shelve
     if debug:
         print('analysis_level0_insitu:', jobID, field, region, layer, metric)
+    shelvedir = paths.shelvedir
     shelvefn = shelvedir + "/timeseries/" + jobID + "/" + jobID + "_" + field + "_insitu.shelve"
 
     if debug:
