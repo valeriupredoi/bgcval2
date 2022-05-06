@@ -48,6 +48,7 @@ import numpy as np
 import os, sys, fnmatch
 from getpass import getuser
 from collections import defaultdict
+import yaml
 
 #####
 # Load specific local code:
@@ -62,13 +63,20 @@ except:
 from .bgcvaltools.mergeMonthlyFiles import mergeMonthlyFiles, meanDJF
 from .netcdf_manipulation.alwaysInclude import alwaysInclude
 from .makeReport import comparehtml5Maker
-from .Paths import paths
+#'from .Paths import paths
 
 from .comparison.shifttimes import shifttimes
 from .comparison.ensembles import build_ensemble
 from .config.configToDict import configToDict
 from .bgcvaltools.dataset import dataset
-from ._runtime_config import _read_yaml
+#from ._runtime_config import _read_yaml
+from ._runtime_config import get_run_configuration
+
+
+
+#####
+# User defined set of paths pointing towards the datasets.
+from .Paths.paths import paths_setter
 
 
 def titleify(ls):
@@ -107,15 +115,26 @@ def timeseries_compare(colours,
                        jobDescriptions=defaultdict(lambda: ''),
                        lineThicknesses=defaultdict(lambda: 1),
                        linestyles=defaultdict(lambda: '-'),
-                       ensembles={}):
+                       ensembles={},#
+                       config_user=''):
     ### strategy here is a simple wrapper.
     # It's a little cheat-y, as I'm copying straight from analysis_timeseries.py
+
+
+    # get runtime configuration
+    if config_user:
+        paths_dict, config_user = get_run_configuration(config_user)
+    else:
+        paths_dict, config_user = get_run_configuration("defaults")
+
+    # filter paths dict into an object that's usable below
+    paths = paths_setter(paths_dict)
 
     jobs = sorted(colours.keys())
     for ensemble in list(ensembles.keys()):
         # ensembles names can not be the same as jobIDs
         jobs.remove(ensemble)
-
+    
     if analysisname == '':
         imageFolder = paths.imagedir + '/TimeseriesCompare/'
         if len(jobs) == 1: imageFolder += jobs[0]
@@ -4088,6 +4107,11 @@ def main():
          print("ERROR:\tInput yml file", yml_fn, "does not exist. Exiting.")
          exit(0)
 
+    if len(argv)>2: 
+         config_user = argv[2]
+    else: 
+        config_user = ''
+
     """
     Sample input file:
 
@@ -4128,7 +4152,6 @@ def main():
         print('jobIDs', jobIDs)
         exit(0)
 
- 
     if isinstance(keys, str): keys = [keys, ]
 
     physics = False
@@ -4145,11 +4168,19 @@ def main():
         physics = True
         bio = True
 
-    colours = {jobid:di.get('colour', 'red') for jobid,di in yml['jobIDs'].items()}
+    randomcolours = [
+                'red', 'blue', 'purple', 'green', 'gold', 'sienna', 'orange',
+                'black', 'navy', 'goldenrod', 'dodgerblue',
+            ]
+    colours = {}
+    for i, jobid in enumerate(sorted(yml['jobIDs'].keys())):
+        colours[jobid] = yml['jobIDs'][jobid].get('colour', randomcolours[i])
+
     descriptions = {jobid:di.get('description', '') for jobid,di in yml['jobIDs'].items()}
     linewidths = {jobid:di.get('linewidth', 1.0) for jobid,di in yml['jobIDs'].items()}
     linestyles = {jobid:di.get('linestyle', '-') for jobid,di in yml['jobIDs'].items()}
     time_dict = {jobid:di.get('year_diff', 0.) for jobid,di in yml['jobIDs'].items()}
+
     for job in yml['jobIDs'].keys():
         print('plotting', job,  yml['jobIDs'][job])
     timeseries_compare(
@@ -4162,6 +4193,7 @@ def main():
         jobDescriptions=descriptions,
         lineThicknesses=linewidths,
         linestyles=linestyles,
+        config_user=config_user, 
         )
 
 

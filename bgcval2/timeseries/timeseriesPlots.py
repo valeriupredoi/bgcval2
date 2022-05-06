@@ -756,8 +756,8 @@ def multitimeseries(
     for i, jobID in enumerate(sorted(timesD.keys())):
         if len(arrD[jobID]): emptydat = False
     if emptydat:
-        print(("No data for this figure:", plotStyle, list(timesD.keys()),
-              title, filename))
+        print("No data for this figure:", plotStyle, list(timesD.keys()),
+              title, filename)
         return
 
     fig = pyplot.figure()

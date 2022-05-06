@@ -42,7 +42,14 @@ from .html5 import html5Tools, htmltables
 from .bgcvaltools.pftnames import getLongName
 from .timeseries.analysis_level0 import analysis_level0, analysis_level0_insitu
 
-from .Paths.paths import imagedir
+#####
+# User defined set of paths pointing towards the datasets.
+#from .Paths.paths import paths_setter
+
+#from .Paths.paths import imagedir
+
+#    # filter paths dict into an object that's usable below
+#    paths = paths_setter(paths_dict)
 
 
 def copytree(src, dst, symlinks=False, ignore=None):
@@ -71,8 +78,21 @@ def addImageToHtml(fn, imagesfold, reportdir, debug=True):
     newfn = imagesfold + os.path.basename(fn)
     relfn = newfn.replace(reportdir, './')
 
+    if debug:
+        print('addImageToHtml, fn:', fn, os.path.isdir(fn))
+        print('addImageToHtml, imagesfold:', imagesfold)
+        print('addImageToHtml, reportdir:', reportdir)
+        print('addImageToHtml, newfn:', newfn, os.path.isdir(newfn))
+        print('addImageToHtml, relfn:', relfn)
+
+    # it's a directory:
+    if os.path.isdir(fn) and not os.path.exists(newfn):
+        os.mkdir(newfn)
+        return relfn
+
     if not os.path.exists(newfn):
-        if debug: print("cp", fn, newfn)
+        if debug: 
+            print("cp", fn, newfn)
         shutil.copy2(fn, newfn)
     else:
         ####
