@@ -154,7 +154,7 @@ def _set_monsoon_paths(paths_dict):
     # normalize obs forlder in case user didnt specify abspath
     obs_folder = _normalize_path(mons_paths["general"]["ObsFolder"])
 
-    for obsdir in jasmin_paths["data-files"]:
+    for obsdir in mons_paths["data-files"]:
         mons_paths["data-files"][obsdir] = os.path.join(
             obs_folder,
             mons_paths["data-files"][obsdir]
@@ -189,7 +189,6 @@ def _check_paths(paths_dict):
                              f"specified path parameter {key}."
             )
         print(f"Configuration: [standard-paths][data-files] {key}: {pth}")
-    print(x)
 
 
 def _expand_paths(paths_dict, hostname):
