@@ -335,7 +335,8 @@ def html5Maker(
                                                    field=field,
                                                    region='regionless',
                                                    layer='layerless',
-                                                   metric='metricless')
+                                                   metric='metricless',
+                                                   paths=paths)
                     if rdata == False: rdata = ''
                     else: rdata = round_sig(rdata, 4)
 
@@ -475,6 +476,7 @@ def html5Maker(
             FileLists[href] = {}
             #####
             # Determine the list of files:
+            imagedir = paths.imagedir
             vfiles = glob(imagedir + '/' + jobID +
                           '/timeseries/*/percentiles*' + key + '*' +
                           'Global*10-90pc.png')
