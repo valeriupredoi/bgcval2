@@ -71,36 +71,214 @@ def _establish_hostname():
     return hostname
 
 
+def _set_jasmin_paths(paths_dict):
+    """Fix paths for when running on JASMIN."""
+    jasmin_paths = dict(paths_dict)
+
+    # normalize root dir in case user didnt specify abspath
+    root_dir = _normalize_path(jasmin_paths["general"]["root_dir"])
+
+    user = getuser()
+    shelves_dir = jasmin_paths["general"]["shelvedir"]
+    data_dir = jasmin_paths["general"]["ModelFolder_pref"]
+    jasmin_paths["general"]["shelvedir"] = os.path.join(
+        root_dir,
+        data_dir,
+        user,
+        shelves_dir
+    )
+    p2p_dir = jasmin_paths["general"]["p2p_ppDir"]
+    jasmin_paths["general"]["p2p_ppDir"] = os.path.join(
+        root_dir,
+        data_dir,
+        p2p_dir
+    )
+    images_dir = jasmin_paths["general"]["imagedir"]
+    jasmin_paths["general"]["imagedir"] = os.path.join(
+        root_dir,
+        data_dir, user,
+        images_dir
+    )
+    jasmin_paths["general"]["ModelFolder_pref"] = os.path.join(
+        root_dir,
+        data_dir
+    )
+        
+    # normalize obs forlder in case user didnt specify abspath
+    obs_folder = _normalize_path(jasmin_paths["general"]["ObsFolder"])
+
+    for obsdir in jasmin_paths["data-files"]:
+        jasmin_paths["data-files"][obsdir] = os.path.join(
+            obs_folder,
+            jasmin_paths["data-files"][obsdir]
+        )
+
+    return jasmin_paths
+
+
+def _set_pml_paths(paths_dict):
+    """Fix paths for running on PML."""
+    # import UKESM module
+    from . import UKESMpython as ukp
+
+    pml_paths = dict(paths_dict)
+
+    # normalize root dir in case user didnt specify abspath
+    root_dir = _normalize_path(pml_paths["general"]["root_dir"])
+
+    user = getuser()
+    shelves_dir = ukp.folder(pml_paths["general"]["shelvedir"])
+    data_dir = pml_paths["general"]["ModelFolder_pref"]
+    pml_paths["general"]["shelvedir"] = os.path.join(
+        root_dir,
+        data_dir,
+        user,
+        shelves_dir
+    )
+    p2p_dir = pml_paths["general"]["p2p_ppDir"]
+    pml_paths["general"]["p2p_ppDir"] = os.path.join(
+        root_dir,
+        data_dir,
+        p2p_dir
+    )
+    images_dir = ukp.folder(pml_paths["general"]["imagedir"])
+    pml_paths["general"]["imagedir"] = os.path.join(
+        root_dir,
+        data_dir, user,
+        images_dir
+    )
+    pml_paths["general"]["ModelFolder_pref"] = os.path.join(
+        root_dir,
+        data_dir
+    )
+
+    # normalize obs forlder in case user didnt specify abspath
+    obs_folder = _normalize_path(pml_paths["general"]["ObsFolder"])
+
+    for obsdir in pml_paths["data-files"]:
+        pml_paths["data-files"][obsdir] = os.path.join(
+            obs_folder,
+            pml_paths["data-files"][obsdir]
+        )
+
+    return pml_paths
+
+
+def _set_monsoon_paths(paths_dict):
+    """Fix runtime paths when running on MONSOON."""
+
+    # import UKESM module
+    from . import UKESMpython as ukp
+
+    mons_paths = dict(paths_dict)
+
+    # normalize root dir in case user didnt specify abspath
+    root_dir = _normalize_path(mons_paths["general"]["root_dir"])
+
+    user = getuser()
+    mons_paths["general"]["ObsFolder"] = os.path.join(
+        root_dir,
+        user,
+        mons_paths["general"]["ModelFolder_pref"]
+    )
+    mons_paths["general"]["ModelFolder"] = os.path.join(
+        root_dir,
+        user,
+        "UKESM"
+    )
+    mons_paths["general"]["MEDUSAFolder_pref"] = \
+        ukp.folder(mons_paths["general"]["ModelFolder"])
+    mons_paths["general"]["NEMOFolder_pref"] = \
+        ukp.folder(mons_paths["general"]["ModelFolder"])
+    shelves_dir = mons_paths["general"]["shelvedir"]
+    data_dir = mons_paths["general"]["ModelFolder_pref"]
+    mons_paths["general"]["shelvedir"] = os.path.join(
+        root_dir,
+        data_dir,
+        user,
+        shelves_dir
+    )
+    p2p_dir = mons_paths["general"]["p2p_ppDir"]
+    mons_paths["general"]["p2p_ppDir"] = os.path.join(
+        root_dir,
+        data_dir,
+        p2p_dir
+    )
+    images_dir = mons_paths["general"]["imagedir"]
+    mons_paths["general"]["imagedir"] = os.path.join(
+        root_dir,
+        data_dir, user,
+        images_dir
+    )
+    mons_paths["general"]["ModelFolder_pref"] = os.path.join(
+        root_dir,
+        data_dir
+    )
+
+    # special case for Orca grid file
+    # if jobID in ["xkrus"]: mesh_mask_ORCA1_75.nc
+    # else mesh_mask_eORCA1_wrk.nc
+    if "orcaGridfn_file" in mons_paths["general"]:
+        if not os.path.exists(mons_paths["general"]["orcaGridfn_file"]):
+            mons_paths["general"]["orcaGridfn"] = os.path.join(
+                mons_paths["general"]["ModelFolder"],
+                mons_paths["general"]["orcaGridfn_file"]
+            )
+        else:
+            mons_paths["general"]["orcaGridfn"] = \
+                mons_paths["general"]["orcaGridfn_file"]
+        
+    # normalize obs forlder in case user didnt specify abspath
+    obs_folder = _normalize_path(mons_paths["general"]["ObsFolder"])
+
+    for obsdir in mons_paths["data-files"]:
+        mons_paths["data-files"][obsdir] = os.path.join(
+            obs_folder,
+            mons_paths["data-files"][obsdir]
+        )
+
+    return mons_paths
+
+
+def _check_paths(paths_dict):
+    """Check if each of the paths in paths dict really exists."""
+    # don't check for paths to thsese dirs, they will get created later
+    
+    not_check_dirs = [
+        "machinelocation",
+        "shelvedir",
+        "p2p_ppDir",
+        "imagedir",
+    ]
+    for key, pth in paths_dict["general"].items():
+        if key not in not_check_dirs:
+            if not os.path.exists(pth):
+                raise ValueError(f"Path in [general] {pth} does not exist for "
+                                 f"specified path parameter {key}."
+                )
+        else:
+            print(f"Configuration: WARNING [standard-paths][general] "
+                  f"Not checking {key}: {pth}")
+        print(f"Configuration: [standard-paths][general] {key}: {pth}")
+    for key, pth in paths_dict["data-files"].items():
+        if not os.path.exists(pth):
+            raise ValueError(f"Path in [data-files] {pth} does not exist for "
+                             f"specified path parameter {key}."
+            )
+        print(f"Configuration: [standard-paths][data-files] {key}: {pth}")
+
+
 def _expand_paths(paths_dict, hostname):
     """Expand paths to correct full abspaths depending run host."""
     if hostname == "jasmin":
-        jasmin_paths = dict(paths_dict)
-        root_dir = _normalize_path(jasmin_paths["general"]["root_dir"])
-        user = getuser()
-        jasmin_paths["general"]["shelvedir"] = os.path.join(root_dir,
-                                                            "BGC_data",
-                                                            user, "shelves")
-        jasmin_paths["general"]["p2p_ppDir"] = os.path.join(
-            root_dir,
-            "BGC_data/ukesm_postProcessed"
-        )
-        jasmin_paths["general"]["imagedir"] = os.path.join(
-            root_dir,
-            'BGC_data', user, 'images'
-        )
-        jasmin_paths["general"]["ModelFolder_pref"] = os.path.join(root_dir,
-                                                                   "BGC_data")
-        obs_folder = jasmin_paths["general"]["ObsFolder"]
-        for obsdir in jasmin_paths["data-files"]:
-            jasmin_paths["data-files"][obsdir] = os.path.join(
-                obs_folder,
-                jasmin_paths["data-files"][obsdir]
-            )
+        runtime_paths = _set_jasmin_paths(paths_dict)
+        _check_paths(runtime_paths)
+    elif hostname == "monsoon":
+        runtime_paths = _set_monsoon_paths(paths_dict)
+        _check_paths(runtime_paths)
 
-        return jasmin_paths
-    # TODO do path expansion for the other two sites
-    else:
-        return NotImplementedError
+    return runtime_paths
+
 
 def _get_paths(default_config, user_config=None):
     """Assemble the paths object containing all needed runtime paths."""
