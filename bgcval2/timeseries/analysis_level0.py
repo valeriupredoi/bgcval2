@@ -34,7 +34,6 @@ from sys import argv, exit
 import os
 import numpy as np
 from ..bgcvaltools.pftnames import getLongName
-from ..Paths.paths import shelvedir
 
 def printableName(field, region, layer, metric):
     #####
@@ -53,6 +52,7 @@ def analysis_level0(
     layer='layerless',
     metric='metricless',
     debug=False,
+    paths=None,
 ):
     """
 	Analysis_level0 loads the result of the shelves in  
@@ -72,6 +72,7 @@ def analysis_level0(
     #####
     # Start and load shelve
     if debug: print('analysis_level0:', jobID, field, region, layer, metric)
+    shelvedir = paths.shelvedir
     shelvefn = shelvedir + "/timeseries/" + jobID + "/" + jobID + "_" + field + ".shelve"
 
     if debug: print('analysis_level0:', shelvefn, os.path.exists(shelvefn))
