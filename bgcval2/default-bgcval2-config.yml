@@ -38,7 +38,36 @@ standard-paths:
       imagedir: "images"
       ModelFolder_pref: "BGC_data"
       orcaGridfn: "/gws/nopw/j04/esmeval/bgc-val/mesh_mask_eORCA1_wrk.nc"
+      # orcaGridfn_file: "mesh_mask_eORCA1_wrk.nc"  # if orcaGridfn not set
       ObsFolder: "/projects/ukesm/"
+      # MEDUSAFolder_pref: currently set internally
+      # NEMOFolder_pref: currently set internally
+    data-files:
+      # Dustdir: "MahowaldDust/"
+      WOAFolder_annual: "WOA/annual/"
+      WOAFolder: "WOA/"
+      # DMSDir: "DMS_Lana2011nc/"
+      MAREDATFolder: "MAREDAT/MAREDAT/"
+      GEOTRACESFolder: "GEOTRACES/GEOTRACES_PostProccessed/"
+      # GODASFolder: "GODAS/"
+      TakahashiFolder: "Takahashi2009_pCO2/"
+      MLDFolder: "IFREMER-MLD/"
+      iMarNetFolder: "LestersReportData/"
+      GlodapDir: "GLODAP/"
+      GLODAPv2Dir: "GLODAPv2/GLODAPv2_Mapped_Climatologies/"
+      OSUDir: "OSU/"
+      CCIDir: "CCI/"
+      # icFold: "InitialConditions/"
+  pml:
+    general:
+      machinelocation: "PML"
+      root_dir: "/data/euryale7/scratch"
+      shelvedir: "shelves"
+      p2p_ppDir: "ukesm_postProcessed"
+      imagedir: "images"
+      ModelFolder_pref: "UKESM/MEDUSA/"
+      orcaGridfn: "/data/euryale7/scratch/ledm/UKESM/MEDUSA/mesh_mask_eORCA1_wrk.nc"
+      ObsFolder: "/data/euryale7/backup/ledm/Observations/"
     data-files:
       Dustdir: "MahowaldDust/"
       WOAFolder_annual: "WOA/annual/"
@@ -54,4 +83,4 @@ standard-paths:
       GLODAPv2Dir: "GLODAPv2/GLODAPv2_Mapped_Climatologies/"
       OSUDir: "OSU/"
       CCIDir: "CCI/"
-      icFold: "InitialConditions/"
+      icFold: "/data/euryale7/backup/ledm/UKESM/InitialConditions/"
