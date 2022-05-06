@@ -57,10 +57,12 @@ from .timeseries import timeseriesTools as tst
 from .bgcvaltools.mergeMonthlyFiles import mergeMonthlyFiles, meanDJF
 from .bgcvaltools.AOU import AOU
 from .bgcvaltools.dataset import dataset
+from ._runtime_config import get_run_configuration
 
 #####
 # User defined set of paths pointing towards the datasets.
-from .Paths import paths
+from .Paths.paths import paths_setter
+
 
 #####
 # Biogeochemistry keys
@@ -234,15 +236,19 @@ def listModelDataFiles(jobID, filekey, datafolder, annual):
     if annual:
         print(("listing model data files:",
                datafolder + jobID + "/" + jobID + "o_1y_*_" + filekey + ".nc"))
-        return sorted(
-            glob(datafolder + jobID + "/" + jobID + "o_1y_*_" + filekey +
+        datafolder = os.path.join(datafolder, jobID)
+        model_files = sorted(
+            glob(datafolder + "/" + jobID + "o_1y_*_" + filekey +
                  ".nc"))
     else:
         print(("listing model data files:",
                datafolder + jobID + "/" + jobID + "o_1m_*_" + filekey + ".nc"))
-        return sorted(
-            glob(datafolder + jobID + "/" + jobID + "o_1m_*_" + filekey +
+        datafolder = os.path.join(datafolder, jobID)
+        model_file = sorted(
+            glob(datafolder + "/" + jobID + "o_1m_*_" + filekey +
                  ".nc"))
+
+    return model_files
 
 
 def analysis_timeseries(
@@ -252,6 +258,7 @@ def analysis_timeseries(
     strictFileCheck=True,
     analysisSuite='all',
     regions='all',
+    config_user=None
 ):
     """
 	The role of this code is to produce time series analysis.
@@ -276,6 +283,14 @@ def analysis_timeseries(
 	:param regions:
 
 	"""
+    # get runtime configuration
+    if config_user:
+        paths_dict, config_user = get_run_configuration(config_user)
+    else:
+        paths_dict, config_user = get_run_configuration("defaults")
+
+    # filter paths dict into an object that's usable below
+    paths = paths_setter(paths_dict)
 
     #print "analysis_p2p:",	jobID,clean, annual,strictFileCheck,analysisSuite,regions
     #assert 0
@@ -1650,8 +1665,9 @@ def analysis_timeseries(
             print("Only run one of these at a time")
             assert 0
         if annual:
+            tomzv_dir = os.path.join(paths.ModelFolder_pref, jobID)
             av['TotalOMZVolume']['modelFiles'] = sorted(
-                glob(paths.ModelFolder_pref + jobID + "/" + jobID +
+                glob(tomzv_dir + "/" + jobID +
                      "o_1y_*_ptrc_T.nc"))
             av['TotalOMZVolume'][
                 'dataFile'] = WOAFolder + 'woa13_all_o00_01.nc'
@@ -4921,10 +4937,15 @@ def main():
         suite = 'keymetricsfirst'
     else:
         suite = 'level1'
+    config_user = None
+    if "bgcval2-config-user.yml" in argv[1:]:
+        config_user = "bgcval2-config-user.yml"
+        print(f"analysis_timeseries: Using user config file {config_user}")
 
     analysis_timeseries(
         jobID=jobID,
         analysisSuite=suite,
+        config_user=config_user
     )  #clean=1)
     #if suite == 'all':
     #analysis_timeseries(jobID =jobID,analysisSuite='FullDepth', z_component = 'FullDepth',)#clean=1)
