@@ -71,36 +71,118 @@ def _establish_hostname():
     return hostname
 
 
+def _set_jasmin_paths(paths_dict):
+    """Fix paths for when running on JASMIN."""
+    jasmin_paths = dict(paths_dict)
+
+    # normalize root dir in case user didnt specify abspath
+    root_dir = _normalize_path(jasmin_paths["general"]["root_dir"])
+
+    user = getuser()
+    shelves_dir = jasmin_paths["general"]["shelvedir"]
+    data_dir = jasmin_paths["general"]["ModelFolder_pref"]
+    jasmin_paths["general"]["shelvedir"] = os.path.join(
+        root_dir,
+        data_dir,
+        user,
+        shelves_dir
+    )
+    p2p_dir = jasmin_paths["general"]["p2p_ppDir"]
+    jasmin_paths["general"]["p2p_ppDir"] = os.path.join(
+        root_dir,
+        data_dir,
+        p2p_dir
+    )
+    images_dir = jasmin_paths["general"]["imagedir"]
+    jasmin_paths["general"]["imagedir"] = os.path.join(
+        root_dir,
+        data_dir, user,
+        images_dir
+    )
+    jasmin_paths["general"]["ModelFolder_pref"] = os.path.join(
+        root_dir,
+        data_dir
+    )
+        
+    # normalize obs forlder in case user didnt specify abspath
+    obs_folder = _normalize_path(jasmin_paths["general"]["ObsFolder"])
+
+    for obsdir in jasmin_paths["data-files"]:
+        jasmin_paths["data-files"][obsdir] = os.path.join(
+            obs_folder,
+            jasmin_paths["data-files"][obsdir]
+        )
+
+    return jasmin_paths
+
+
+def _set_monsoon_paths(paths_dict):
+    """Fix runtime paths when running on MONSOON."""
+    # TODO identical structure to JASMIN, we need to
+    # check this configuration better
+    mons_paths = dict(paths_dict)
+
+    # normalize root dir in case user didnt specify abspath
+    root_dir = _normalize_path(mons_paths["general"]["root_dir"])
+
+    user = getuser()
+    shelves_dir = mons_paths["general"]["shelvedir"]
+    data_dir = mons_paths["general"]["ModelFolder_pref"]
+    mons_paths["general"]["shelvedir"] = os.path.join(
+        root_dir,
+        data_dir,
+        user,
+        shelves_dir
+    )
+    p2p_dir = mons_paths["general"]["p2p_ppDir"]
+    mons_paths["general"]["p2p_ppDir"] = os.path.join(
+        root_dir,
+        data_dir,
+        p2p_dir
+    )
+    images_dir = mons_paths["general"]["imagedir"]
+    mons_paths["general"]["imagedir"] = os.path.join(
+        root_dir,
+        data_dir, user,
+        images_dir
+    )
+    mons_paths["general"]["ModelFolder_pref"] = os.path.join(
+        root_dir,
+        data_dir
+    )
+        
+    # normalize obs forlder in case user didnt specify abspath
+    obs_folder = _normalize_path(mons_paths["general"]["ObsFolder"])
+
+    for obsdir in jasmin_paths["data-files"]:
+        mons_paths["data-files"][obsdir] = os.path.join(
+            obs_folder,
+            mons_paths["data-files"][obsdir]
+        )
+
+    return mons_paths
+
+
+def _check_paths(paths_dict):
+    """Check if each of the paths in paths dict really exists."""
+    for key, pth in paths_dict.items():
+        if not os.path.exists(pth):
+            raise ValueError(f"Path {pth} does not exist for "
+                             f"specified path parameter {key}."
+            )
+
+
 def _expand_paths(paths_dict, hostname):
     """Expand paths to correct full abspaths depending run host."""
     if hostname == "jasmin":
-        jasmin_paths = dict(paths_dict)
-        root_dir = _normalize_path(jasmin_paths["general"]["root_dir"])
-        user = getuser()
-        jasmin_paths["general"]["shelvedir"] = os.path.join(root_dir,
-                                                            "BGC_data",
-                                                            user, "shelves")
-        jasmin_paths["general"]["p2p_ppDir"] = os.path.join(
-            root_dir,
-            "BGC_data/ukesm_postProcessed"
-        )
-        jasmin_paths["general"]["imagedir"] = os.path.join(
-            root_dir,
-            'BGC_data', user, 'images'
-        )
-        jasmin_paths["general"]["ModelFolder_pref"] = os.path.join(root_dir,
-                                                                   "BGC_data")
-        obs_folder = jasmin_paths["general"]["ObsFolder"]
-        for obsdir in jasmin_paths["data-files"]:
-            jasmin_paths["data-files"][obsdir] = os.path.join(
-                obs_folder,
-                jasmin_paths["data-files"][obsdir]
-            )
+        runtime_paths = _set_jasmin_paths(paths_dict)
+        _check_paths(runtime_paths)
+    elif hostname == "monsoon":
+        runtime_paths = _set_monsoon_paths(paths_dict)
+        _check_paths(runtime_paths)
 
-        return jasmin_paths
-    # TODO do path expansion for the other two sites
-    else:
-        return NotImplementedError
+    return runtime_paths
+
 
 def _get_paths(default_config, user_config=None):
     """Assemble the paths object containing all needed runtime paths."""
