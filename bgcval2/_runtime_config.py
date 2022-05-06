@@ -272,10 +272,10 @@ def _expand_paths(paths_dict, hostname):
     """Expand paths to correct full abspaths depending run host."""
     if hostname == "jasmin":
         runtime_paths = _set_jasmin_paths(paths_dict)
-        _check_paths(runtime_paths)
     elif hostname == "monsoon":
         runtime_paths = _set_monsoon_paths(paths_dict)
-        _check_paths(runtime_paths)
+    elif hostname == "pml":
+        runtime_paths = _set_pml_paths(paths_dict)
 
     return runtime_paths
 
@@ -316,6 +316,9 @@ def _get_paths(default_config, user_config=None):
                 for pth_name in user_obses:
                     if pth_name in paths["data-files"]:
                         paths["data-files"][pth_name] = user_obses[pth_name]
+
+    # check all paths before passing them
+    _check_paths(paths)
 
     return paths
 
