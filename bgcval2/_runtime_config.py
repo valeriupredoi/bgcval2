@@ -165,11 +165,31 @@ def _set_monsoon_paths(paths_dict):
 
 def _check_paths(paths_dict):
     """Check if each of the paths in paths dict really exists."""
-    for key, pth in paths_dict.items():
+    # don't check for paths to thsese dirs, they will get created later
+    
+    not_check_dirs = [
+        "machinelocation",
+        "shelvedir",
+        "p2p_ppDir",
+        "imagedir",
+    ]
+    for key, pth in paths_dict["general"].items():
+        if key not in not_check_dirs:
+            if not os.path.exists(pth):
+                raise ValueError(f"Path in [general] {pth} does not exist for "
+                                 f"specified path parameter {key}."
+                )
+        else:
+            print(f"Configuration: WARNING [standard-paths][general] "
+                  f"Not checking {key}: {pth}")
+        print(f"Configuration: [standard-paths][general] {key}: {pth}")
+    for key, pth in paths_dict["data-files"].items():
         if not os.path.exists(pth):
-            raise ValueError(f"Path {pth} does not exist for "
+            raise ValueError(f"Path in [data-files] {pth} does not exist for "
                              f"specified path parameter {key}."
             )
+        print(f"Configuration: [standard-paths][data-files] {key}: {pth}")
+    print(x)
 
 
 def _expand_paths(paths_dict, hostname):
