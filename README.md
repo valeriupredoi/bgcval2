@@ -137,7 +137,14 @@ Once several models have been analysed using the time series analysis,
 their time development can be compared using the analysis_compare command.
 This is currently hardwired, but work in on-going.
 
+Documentation
+=============
 
+See available Sphinx [documentation](https://htmlpreview.github.io/?https://github.com/valeriupredoi/bgcval2/blob/main/doc/build/index.html). To build locally the documentation run:
+
+```
+sphinx-build -Ea doc doc/build
+```
 
 Appendix
 ========
