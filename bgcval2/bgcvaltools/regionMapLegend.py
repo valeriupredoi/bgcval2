@@ -26,10 +26,12 @@
    :platform: Unix
    :synopsis: Tool to make a plot showing various regions.
 .. moduleauthor:: Lee de Mora <ledm@pml.ac.uk>
+.. active:: No
 
 """
 
-from ..Paths.paths import orcaGridfn, WOAFolder_annual
+# implement correct import of params if module in use
+# from ..Paths.paths import orcaGridfn, WOAFolder_annual
 from netCDF4 import Dataset
 import numpy as np
 from .. import UKESMpython as ukp
