@@ -34,7 +34,6 @@ from sys import argv, exit
 import os
 import numpy as np
 from ..bgcvaltools.pftnames import getLongName
-#from ..Paths.paths import shelvedir
 from ..Paths.paths import paths_setter
 
 
@@ -55,6 +54,7 @@ def analysis_level0(
     layer='layerless',
     metric='metricless',
     debug=False,
+    paths=None,
 ):
     """
 	Analysis_level0 loads the result of the shelves in  
@@ -76,7 +76,9 @@ def analysis_level0(
     paths = paths_setter(paths_dict)
 
     if debug: print('analysis_level0:', jobID, field, region, layer, metric)
-    shelvefn = paths.shelvedir + "/timeseries/" + jobID + "/" + jobID + "_" + field + ".shelve"
+    #shelvefn = paths.shelvedir + "/timeseries/" + jobID + "/" + jobID + "_" + field + ".shelve"
+    shelvedir = paths.shelvedir
+    shelvefn = shelvedir + "/timeseries/" + jobID + "/" + jobID + "_" + field + ".shelve"
 
     if debug: print('analysis_level0:', shelvefn, os.path.exists(shelvefn))
     if not os.path.exists(shelvefn):
@@ -138,11 +140,13 @@ def analysis_level0_insitu(
     layer='layerless',
     metric='metricless',
     debug=True,
+    paths=None,
 ):
     #####
     # Start and load shelve
     if debug:
         print('analysis_level0_insitu:', jobID, field, region, layer, metric)
+    shelvedir = paths.shelvedir
     shelvefn = shelvedir + "/timeseries/" + jobID + "/" + jobID + "_" + field + "_insitu.shelve"
 
     if debug:

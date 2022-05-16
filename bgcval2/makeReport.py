@@ -41,7 +41,6 @@ from .UKESMpython import folder, shouldIMakeFile, round_sig
 from .html5 import html5Tools, htmltables
 from .bgcvaltools.pftnames import getLongName
 from .timeseries.analysis_level0 import analysis_level0, analysis_level0_insitu
-
 #####
 # User defined set of paths pointing towards the datasets.
 #from .Paths.paths import paths_setter
@@ -50,6 +49,9 @@ from .timeseries.analysis_level0 import analysis_level0, analysis_level0_insitu
 
 #    # filter paths dict into an object that's usable below
 #    paths = paths_setter(paths_dict)
+from ._runtime_config import get_run_configuration
+from .Paths.paths import paths_setter
+paths = paths_setter(paths_dict)
 
 
 def copytree(src, dst, symlinks=False, ignore=None):
@@ -118,6 +120,8 @@ def html5Maker(
     clean=False,
     doZip=False,
     physicsOnly=False,
+    paths=None,
+    config_user=None,
 ):
 
     if clean:
@@ -305,7 +309,8 @@ def html5Maker(
                                                        field=field,
                                                        region=r,
                                                        layer=l,
-                                                       metric=m)
+                                                       metric=m,
+                                                       paths=paths)
                         if rdata == False: rdata = ''
                         else: rdata = round_sig(rdata, 4)
 
@@ -323,7 +328,8 @@ def html5Maker(
                                                            field=field,
                                                            region=r,
                                                            layer=l,
-                                                           metric=m)
+                                                           metric=m,
+                                                           paths=paths)
                     longname = getLongName(name, debug=1)
                     if False in [name, mdata, timestr]:
                         table_data.append([longname, '', datcol])
@@ -351,7 +357,8 @@ def html5Maker(
                                                    field=field,
                                                    region='regionless',
                                                    layer='layerless',
-                                                   metric='metricless')
+                                                   metric='metricless',
+                                                   paths=paths)
                     if rdata == False: rdata = ''
                     else: rdata = round_sig(rdata, 4)
 
@@ -367,6 +374,7 @@ def html5Maker(
                 name, mdata, timestr = analysis_level0(
                     jobID=jobID,
                     field=field,
+                    paths=paths,
                 )  #region='regionless', layer='layerless', metric='metricless')
                 longname = getLongName(name, debug=1)
                 if False in [name, mdata, timestr]:
@@ -490,6 +498,7 @@ def html5Maker(
             FileLists[href] = {}
             #####
             # Determine the list of files:
+            imagedir = paths.imagedir
             vfiles = glob(imagedir + '/' + jobID +
                           '/timeseries/*/percentiles*' + key + '*' +
                           'Global*10-90pc.png')
@@ -1705,6 +1714,15 @@ def comparehtml5Maker(
 
 
 def main():
+    """Run the html meat."""
+    from ._version import __version__
+    print(f'BGCVal2: {__version__}')
+    if "--help" in argv or len(argv) == 1:
+        print("Running with no arguments. Exiting.")
+        if "--help" in argv:
+            print("Read the documentation.")
+        sys.exit(0)
+
     try:
         jobID = argv[1]
     except:
@@ -1737,12 +1755,27 @@ def main():
 
         reportdir = arg
 
+    # get runtime configuration
+    config_user = None
+    if "bgcval2-config-user.yml" in argv[1:]:
+        config_user = "bgcval2-config-user.yml"
+        print(f"makeReport: Using user config file {config_user}")
+    if config_user:
+        paths_dict, config_user = get_run_configuration(config_user)
+    else:
+        paths_dict, config_user = get_run_configuration("defaults")
+
+    # filter paths dict into an object that's usable below
+    paths = paths_setter(paths_dict)
+
     html5Maker(
         jobID=jobID,
         reportdir=reportdir,
         year=year,
         clean=clean,
         physicsOnly=physicsOnly,
+        paths=paths,
+        config_user=config_user
     )
 
 

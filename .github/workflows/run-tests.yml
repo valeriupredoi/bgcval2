@@ -44,4 +44,6 @@ jobs:
           bgcval --help           
       - shell: bash -l {0}
         run: pytest -n 2
+      - shell: bash -l {0}
+        run: sphinx-build -Ea doc doc/build
 
