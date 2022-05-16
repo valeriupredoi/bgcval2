@@ -48,6 +48,7 @@ import numpy as np
 import os, sys, fnmatch
 from getpass import getuser
 from collections import defaultdict
+import yaml
 
 #####
 # Load specific local code:
@@ -62,12 +63,20 @@ except:
 from .bgcvaltools.mergeMonthlyFiles import mergeMonthlyFiles, meanDJF
 from .netcdf_manipulation.alwaysInclude import alwaysInclude
 from .makeReport import comparehtml5Maker
-from .Paths import paths
+#'from .Paths import paths
 
 from .comparison.shifttimes import shifttimes
 from .comparison.ensembles import build_ensemble
 from .config.configToDict import configToDict
 from .bgcvaltools.dataset import dataset
+#from ._runtime_config import _read_yaml
+from ._runtime_config import get_run_configuration
+
+
+
+#####
+# User defined set of paths pointing towards the datasets.
+from .Paths.paths import paths_setter
 
 
 def titleify(ls):
@@ -101,20 +110,31 @@ def timeseries_compare(colours,
                        physics=True,
                        bio=False,
                        debug=False,
-                       year0=False,
+                       year0=defaultdict(lambda: 0),
                        analysisname='',
-                       jobDescriptions={},
+                       jobDescriptions=defaultdict(lambda: ''),
                        lineThicknesses=defaultdict(lambda: 1),
                        linestyles=defaultdict(lambda: '-'),
-                       ensembles={}):
+                       ensembles={},#
+                       config_user=''):
     ### strategy here is a simple wrapper.
     # It's a little cheat-y, as I'm copying straight from analysis_timeseries.py
+
+
+    # get runtime configuration
+    if config_user:
+        paths_dict, config_user = get_run_configuration(config_user)
+    else:
+        paths_dict, config_user = get_run_configuration("defaults")
+
+    # filter paths dict into an object that's usable below
+    paths = paths_setter(paths_dict)
 
     jobs = sorted(colours.keys())
     for ensemble in list(ensembles.keys()):
         # ensembles names can not be the same as jobIDs
         jobs.remove(ensemble)
-
+    
     if analysisname == '':
         imageFolder = paths.imagedir + '/TimeseriesCompare/'
         if len(jobs) == 1: imageFolder += jobs[0]
@@ -4075,13 +4095,151 @@ def CompareTwoRuns(jobIDA,
 
 
 def main():
+# For now, there are no arguments needed. 
     if "--help" in argv or len(argv) == 1:
         print("Running with no arguments. Exiting.")
         if "--help" in argv:
             print("Read the documentation.")
         exit(0)
 
-    standards = configToDict('config/jobIDcolours.ini')
+    yml_fn = argv[1]
+    if not os.path.exists(yml_fn):
+         print("ERROR:\tInput yml file", yml_fn, "does not exist. Exiting.")
+         exit(0)
+
+    if len(argv)>2: 
+         config_user = argv[2]
+    else: 
+        config_user = ''
+
+    """
+    Sample input file:
+
+    analysis_name: hotsauce
+    keys:
+        level1
+    jobIDs : 
+       u-ab123: 
+        description: job number 1
+        colour: green
+        linestyle: -
+        linewidth: 1.2
+        year_diff: none
+       u-ab122: 
+        description: job 1 with extra hot sauce
+        colour: red
+        linestyle: -
+        linewidth: 1.2
+        year_diff: +75
+       u-ab121: 
+        description:  job 1 hold the hot sauce
+        colour: blue
+        linestyle: -
+        linewidth: 1.2
+        year_diff: -1850
+    """
+
+    with open(yml_fn, 'r') as file:
+        yml = yaml.safe_load(file)
+    #input_yml = _read_yaml(yml_fn)
+    name = yml.get('analysis_name', None)
+    keys = yml.get('keys', 'level1')
+    jobIDs= yml.get('jobIDs', None).keys()
+    if None in [name, keys, jobIDs]:
+        print('ERROR:\t problem with input yaml file,', fn, ':', )
+        print('name:', name)
+        print('keys:', keys)
+        print('jobIDs', jobIDs)
+        exit(0)
+
+    if isinstance(keys, str): keys = [keys, ]
+
+    physics = False
+    bio = False
+    debug = False
+
+    if 'physics' in keys:
+        physics = True
+    if 'bio'  in keys:
+        bio = True
+    if 'debug' in keys:
+        debug = True
+    if 'level1' in keys:
+        physics = True
+        bio = True
+
+    randomcolours = [
+                'red', 'blue', 'purple', 'green', 'gold', 'sienna', 'orange',
+                'black', 'navy', 'goldenrod', 'dodgerblue',
+            ]
+    colours = {}
+    for i, jobid in enumerate(sorted(yml['jobIDs'].keys())):
+        colours[jobid] = yml['jobIDs'][jobid].get('colour', randomcolours[i])
+
+    descriptions = {jobid:di.get('description', '') for jobid,di in yml['jobIDs'].items()}
+    linewidths = {jobid:di.get('linewidth', 1.0) for jobid,di in yml['jobIDs'].items()}
+    linestyles = {jobid:di.get('linestyle', '-') for jobid,di in yml['jobIDs'].items()}
+    time_dict = {jobid:di.get('year_diff', 0.) for jobid,di in yml['jobIDs'].items()}
+
+    for job in yml['jobIDs'].keys():
+        print('plotting', job,  yml['jobIDs'][job])
+    timeseries_compare(
+        colours,
+        analysisname=name,
+        physics=physics,
+        bio=bio,
+        debug=debug,
+        year0=time_dict, 
+        jobDescriptions=descriptions,
+        lineThicknesses=linewidths,
+        linestyles=linestyles,
+        config_user=config_user, 
+        )
+
+
+    exit(0)
+
+    if 1:
+        if suite == 'all':
+            phys = 1
+            bio = 1
+            debug = 0
+        if suite == 'physics':
+            phys = 1
+            bio = 0
+            debug = 0
+        if suite == 'bio':
+            phys = 0
+            bio = 1
+            debug = 0
+        if suite == 'debug':
+            phys = 0
+            bio = 0
+            debug = 1
+        try:
+            colours = {i: standards[i] for i in jobIDs}
+        except:
+            colours = {}
+            randomcolours = [
+                'red', 'blue', 'purple', 'green', 'gold', 'sienna', 'orange',
+                'black'
+            ]
+            for i, job in enumerate(jobIDs):
+                colours[job] = randomcolours[i]
+        name = '_'.join(jobIDs)
+        timeseries_compare(colours,
+                           physics=phys,
+                           bio=bio,
+                           year0=False,
+                           debug=debug,
+                           analysisname=name,
+                           jobDescriptions=jobDescriptions)
+        print("Successful command line comparison")
+
+    return 
+
+
+    #standards = configToDict('config/jobIDcolours.ini')
     thicknesses = defaultdict(lambda: 0.75)
     thicknesses['u-ar783'] = 2.2
     thicknesses['u-at793'] = 2.2
@@ -4095,8 +4253,8 @@ def main():
     hjthicknesses['u-at793'] = 1.
     hjthicknesses['u-at760'] = 1.
 
-    jobDescriptions = configToDict('config/jobIDdescriptions.ini')
-    live_jobs = configToDict('RemoteScripts/jobids_config.ini')
+    #jobDescriptions = configToDict('config/jobIDdescriptions.ini')
+    #live_jobs = configToDict('RemoteScripts/jobids_config.ini')
 
     try:
         args = argv[1:]
@@ -4158,23 +4316,31 @@ def main():
             customColours = {
                 'u-by230': 'black',  #standard UKESM1.1
                 'u-ck416': 'green',  #CN-fast standard radiation
-                # 'u-cg799' : 'red', #CN-fast rad=3h, two_fsd=1.7
+                'u-cg799' : 'red', #CN-fast rad=3h, two_fsd=1.7
                 # 'u-cg843' : 'blue', #CN-fast, rad=3h, two_fsd=1.65
             }
             cnthicknesses = defaultdict(lambda: 0.7)
             linestyles = defaultdict(lambda: '-')
+            time_dict = defaultdict(lambda: None)
+            time_dict['u-by230'] = 50.
+            time_dict['u-ck416'] = -50.
+
+
             timeseries_compare(
                 customColours,
                 physics=1,
                 bio=1,
                 debug=0,
-                year0='UKESM11_Fast_piControl_2',
-                jobDescriptions=jobDescriptions,
+                year0=time_dict, #'UKESM11_Fast_piControl_2',
+                #obDescriptions=defaultdict(lambda: {} ),
                 analysisname='UKESM11_Fast_piControl_2',
                 lineThicknesses=cnthicknesses,
                 linestyles=linestyles,
             )
 
+        """
+        Below here is the old system.
+        """
         return
         assert 0
 
