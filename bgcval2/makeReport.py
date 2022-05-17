@@ -51,7 +51,7 @@ from .timeseries.analysis_level0 import analysis_level0, analysis_level0_insitu
 #    paths = paths_setter(paths_dict)
 from ._runtime_config import get_run_configuration
 from .Paths.paths import paths_setter
-paths = paths_setter(paths_dict)
+#paths = paths_setter(paths_dict)
 
 
 def copytree(src, dst, symlinks=False, ignore=None):
@@ -1363,7 +1363,6 @@ def comparehtml5Maker(
             shutil.rmtree(reportdir)
         except:
             pass
-
     reportdir = folder(reportdir)
 
     ####
@@ -1714,7 +1713,7 @@ def comparehtml5Maker(
 
 
 def main():
-    """Run the html meat."""
+    """Run the html master."""
     from ._version import __version__
     print(f'BGCVal2: {__version__}')
     if "--help" in argv or len(argv) == 1:

@@ -2,6 +2,7 @@
 
 analysis_name: "Skeleton_test"
 keys: "physics"
+clean: True
 
 jobIDs: 
     u-by230: 
