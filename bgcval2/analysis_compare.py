@@ -3957,11 +3957,21 @@ def timeseries_compare(colours,
                         )
     try:
         AllImages = glob(imageFolder, recursive=True)
+        
     except:
+        print('glob failed')
         AllImages = []
         for root, dirnames, filenames in os.walk(imageFolder):
+            print('walking through', root, dirnames, filenames)
             for filename in fnmatch.filter(filenames, '*.png'):
+                print('walking through appending:', os.path.join(root, filename)) 
                 AllImages.append(os.path.join(root, filename))
+
+    print('imageFolder:', imageFolder)
+    print('AllImages', AllImages)
+    assert 0
+    if not len(AllImages):
+        assert 0
 
     if ensembles != {}:
         jobs = list(ensembles.keys())

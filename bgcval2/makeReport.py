@@ -90,6 +90,7 @@ def addImageToHtml(fn, imagesfold, reportdir, debug=True):
     # it's a directory:
     if os.path.isdir(fn) and not os.path.exists(newfn):
         os.mkdir(newfn)
+        assert 0
         return relfn
 
     if not os.path.exists(newfn):
@@ -149,8 +150,8 @@ def html5Maker(
 
     imagesfold = folder(reportdir + 'images/')
 
-    def newImageLocation(fn):
-        return imagesfold + os.path.basename(fn)
+#    def newImageLocation(fn):
+#        return imagesfold + os.path.basename(fn)
 
     #####
     #
@@ -1377,8 +1378,8 @@ def comparehtml5Maker(
 
     imagesfold = folder(reportdir + 'images/')
 
-    def newImageLocation(fn):
-        return imagesfold + os.path.basename(fn)
+#    def newImageLocation(fn):
+#        return imagesfold + os.path.basename(fn)
 
     descriptionText = 'Comparison of the jobs: ' + ', '.join(jobIDs)
 
@@ -1551,7 +1552,7 @@ def comparehtml5Maker(
                               Title,
                               Description='',
                               Files=relativeFiles)
-
+    count=0
     if len(categories['Other Plots']):
         otherFilenames = files[:]  #categories['Other Plots'][:]
         SectionTitle = 'All Plots'
@@ -1621,10 +1622,11 @@ def comparehtml5Maker(
 
             #####
             # Create plot headers for each file.
-            count = 0
+            #count = 0
             for fn in sorted(vfiles):
                 #####
                 # Copy image to image folder and return relative path.
+                print('adding', key, fn, 'to index')
                 relfn = addImageToHtml(fn, imagesfold, reportdir)
 
                 #####
@@ -1634,7 +1636,7 @@ def comparehtml5Maker(
                 FileLists[href][relfn] = title
                 FileOrder[href][count] = relfn
                 count += 1
-                print("Adding ", relfn, "to script")
+                print(count, "Adding ", title, relfn, "to script")
 
         if len(otherFilenames):
             href = 'OtherPlots-others'
@@ -1648,10 +1650,11 @@ def comparehtml5Maker(
 
             #####
             # Create plot headers for each file.
-            count = 0
+            #count = 0
             for fn in sorted(otherFilenames):
                 #####
                 # Copy image to image folder and return relative path.
+                print('other plots:', key, fn)
                 relfn = addImageToHtml(fn, imagesfold, reportdir)
 
                 #####
@@ -1661,7 +1664,7 @@ def comparehtml5Maker(
                 FileLists[href][relfn] = title
                 FileOrder[href][count] = relfn
                 count += 1
-                print("Adding ", relfn, "to script")
+                print(count, "Adding ", title, relfn, "to script")
 
         print(hrefs)
         print(SectionTitle)

@@ -1,7 +1,7 @@
 # Basic multi-model job comparison.
 
 analysis_name: "Skeleton_test"
-keys: "physics"
+keys: "level1"
 clean: True
 
 jobIDs: 
