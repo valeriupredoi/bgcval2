@@ -12,18 +12,21 @@ jobs:
         colour: red
         thickness: 0.7
         linestyle: '-'
-        shifttime: +25.
+        shifttime: 0.
+        suite: physics
     u-cn618: 
         description: 'GC5 N96 ORCA1 spin-up 2'
         colour: blue
         thickness: 0.7
         linestyle: '-'
         shifttime: 0.
+        suite: physics        
     u-cp416: 
         description: 'GC5 N96 ORCA1 spin-up 3'
         colour: purple
         thickness: 0.7
         linestyle: '-'
-        shifttime: -450.
+        shifttime: 0.
+        suite: physics        
 
 
