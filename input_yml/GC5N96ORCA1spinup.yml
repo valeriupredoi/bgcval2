@@ -1,0 +1,29 @@
+---
+# GC5 N96 ORCA1 spinup analysis
+name: GC5N96ORCA1spinup
+
+# Run the single job Analysis
+do_analysis_timeseries: False
+
+# Job ID's suites as named by Rose/Cylc
+jobs:
+    u-cm977: 
+        description: 'GC5 N96 ORCA1 spin-up 1'
+        colour: red
+        thickness: 0.7
+        linestyle: '-'
+        shifttime: +25.
+    u-cn618: 
+        description: 'GC5 N96 ORCA1 spin-up 2'
+        colour: blue
+        thickness: 0.7
+        linestyle: '-'
+        shifttime: 0.
+    u-cp416: 
+        description: 'GC5 N96 ORCA1 spin-up 3'
+        colour: purple
+        thickness: 0.7
+        linestyle: '-'
+        shifttime: -450.
+
+
