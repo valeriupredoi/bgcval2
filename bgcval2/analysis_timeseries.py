@@ -230,19 +230,18 @@ keymetricsfirstDict = {i: n for i, n in enumerate(keymetricsfirstKeys)}
 
 
 def listModelDataFiles(jobID, filekey, datafolder, annual):
-    print(
-        ("listing model data files:\njobID:\t", jobID, '\nfile key:\t',
-         filekey, '\ndata folder:\t', datafolder, '\nannual flag:\t', annual))
+    print("listing model data files:\njobID:\t", jobID, '\nfile key:\t',
+         filekey, '\ndata folder:\t', datafolder, '\nannual flag:\t', annual)
     if annual:
-        print(("listing model data files:",
-               datafolder + jobID + "/" + jobID + "o_1y_*_" + filekey + ".nc"))
+        print("listing model data files:",
+               datafolder + jobID + "/" + jobID + "o_1y_*_" + filekey + ".nc")
         datafolder = os.path.join(datafolder, jobID)
         model_files = sorted(
             glob(datafolder + "/" + jobID + "o_1y_*_" + filekey +
                  ".nc"))
     else:
-        print(("listing model data files:",
-               datafolder + jobID + "/" + jobID + "o_1m_*_" + filekey + ".nc"))
+        print("listing model data files:",
+               datafolder + jobID + "/" + jobID + "o_1m_*_" + filekey + ".nc")
         datafolder = os.path.join(datafolder, jobID)
         model_file = sorted(
             glob(datafolder + "/" + jobID + "o_1m_*_" + filekey +
