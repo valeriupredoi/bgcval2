@@ -675,6 +675,17 @@ def analysis_timeseries(
             ukesmkeys['u3d'] = 'vozocrtx'
             ukesmkeys['e3u'] = 'e3u'
             ukesmkeys['w3d'] = 'vovecrtz'
+        elif 'thetao_con' in nctmpkeys: # Added keys for UKESM2.
+            ukesmkeys['time'] = 'time_counter'
+            ukesmkeys['temp3d']     = 'thetao_con'
+            ukesmkeys['sst']        = 'tos_con'
+            ukesmkeys['sal3d']     = 'so_abs'
+            ukesmkeys['sss']        = 'sos_abs'
+            ukesmkeys['v3d']     = 'vo'
+            ukesmkeys['u3d']     = 'uo'
+            ukesmkeys['e3u']    = 'thkcello'
+            ukesmkeys['w3d']     = 'wo'
+            ukesmkeys['MLD'] = 'somxzint1'
         else:
             ukesmkeys['time'] = 'time_centered'
             ukesmkeys['temp3d'] = 'thetao'
