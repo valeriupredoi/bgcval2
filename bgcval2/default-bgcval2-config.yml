@@ -8,9 +8,9 @@ standard-paths:
     general:
       machinelocation: "JASMIN"
       root_dir: "/gws/nopw/j04/ukesm"
-      shelvedir: "shelves"
-      p2p_ppDir: "ukesm_postProcessed"
-      imagedir: "images"
+      shelvedir: "bgcval2/shelves"
+      p2p_ppDir: "bgcval2/ukesm_postProcessed"
+      imagedir: "bgcval2/images"
       ModelFolder_pref: "BGC_data"
       orcaGridfn: "/gws/nopw/j04/esmeval/bgc-val/mesh_mask_eORCA1_wrk.nc"
       ObsFolder: "/gws/nopw/j04/esmeval/example_data/bgc"

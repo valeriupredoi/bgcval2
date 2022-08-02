@@ -42,6 +42,8 @@ def paths_setter(paths_dict):
     paths.ModelFolder_pref = paths_dict["general"]["ModelFolder_pref"]
     paths.orcaGridfn = paths_dict["general"]["orcaGridfn"]
     paths.ObsFolder = paths_dict["general"]["ObsFolder"]
+    #paths.bgcval2data = paths_dict["general"]["bgcval2data"]
+
 
     # [data-files] paths; optional depending on site
     if "Dustdir" in paths_dict["data-files"]:
