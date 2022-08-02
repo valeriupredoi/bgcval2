@@ -1,0 +1,26 @@
+---
+# GC5 N96 ORCA1 spinup analysis
+name: Template job
+
+# Run the single Job Analysis (analysis_timeseries)
+do_analysis_timeseries: False
+  # if True, it calls `analysis_timeseries jobID suite` using details provided here.
+
+# Job ID's suites as named by Rose/Cylc
+jobs:
+    u-aa001: 
+        description: 'Job number 1'
+        colour: red
+        thickness: 1. 
+        linestyle: '-'
+        shifttime: 0.
+        suite: physics
+    u-aa002: 
+        description: 'Job number 2' 
+        colour: blue
+        thickness: 1.0
+        linestyle: ':'
+        shifttime: 0.
+        suite: physics        
+
+
