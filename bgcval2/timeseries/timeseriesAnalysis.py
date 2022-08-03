@@ -33,6 +33,7 @@ from shelve import open as shOpen
 from netCDF4 import num2date
 import os
 import shutil
+import glob
 
 #Specific local code:
 from .. import UKESMpython as ukp
@@ -95,11 +96,14 @@ class timeseriesAnalysis:
         self.clean = clean
         self.noNewFiles = noNewFiles
 
-        self.shelvefn = ukp.folder(self.workingDir) + '_'.join([
+
+        # workingdir set else to match       shelvedir = ukp.folder(paths.shelvedir + "/timeseries/" + jobID)
+
+        self.shelvefn = self.workingDir + '_'.join([
             self.jobID,
             self.dataType,
         ]) + '.shelve'
-        self.shelvefn_insitu = ukp.folder(self.workingDir) + '_'.join([
+        self.shelvefn_insitu = self.workingDir + '_'.join([
             self.jobID,
             self.dataType,
         ]) + '_insitu.shelve'
@@ -143,29 +147,38 @@ class timeseriesAnalysis:
         #    readFiles       = sh['readFiles']
         #    modeldataD      = sh['modeldata']
         #    print(readFiles)
+        readFiles = []
+        modeldataD = {}
+        for r in self.regions:
+            for l in self.layers:
+                for m in self.metrics:
+                    modeldataD[(r, l, m)] = {}
 
-        try:
-            if self.clean:
-                print(
-                    "timeseriesAnalysis:\tloadModel\tUser requested clean run. Wiping old data."
-                )
-                assert 0
-            sh = shOpen(self.shelvefn)
-            readFiles = sh['readFiles']
-            modeldataD = sh['modeldata']
-            sh.close()
-            print("timeseriesAnalysis:\tloadModel\tOpened shelve:",
-                  self.shelvefn, '\tread', len(readFiles))
-        except:
-            readFiles = []
-            modeldataD = {}
-            for r in self.regions:
-                for l in self.layers:
-                    for m in self.metrics:
-                        modeldataD[(r, l, m)] = {}
+        if self.clean:
+            print(
+                "timeseriesAnalysis:\tloadModel\tUser requested clean run. Wiping old data."
+            )
+        elif len(glob.glob(''.join([self.shelvefn, '*']))):
+            print("timeseriesAnalysis:\tloadModel\tOpening shelve:",
+                   self.shelvefn)
 
-            print("timeseriesAnalysis:\tloadModel\tCould not open shelve:",
+            # explicitly open in read only:
+            with shOpen(self.shelvefn, flag='r', writeback=False, protocol=5,) as sh:
+                print(sh.keys())
+#                if 'readFiles' in sh.keys() and 'modeldata' in sh.keys():
+                if sh.get('readFiles', False) and sh.get('modeldata', False):
+                     readFiles = sh['readFiles']
+                     modeldataD = sh['modeldata']
+
+            if not len(readFiles):
+                print("timeseriesAnalysis:\tloadModel\tOpened shelve - but it's empty:",
+                      self.shelvefn, '\tread', len(readFiles))
+
+        else:          
+            print("timeseriesAnalysis:\tloadModel\tCould not open model shelve:",
                   self.shelvefn, '\tread', len(readFiles))
+        #exit(0)
+        #assert 0 
         ###############
         # Check whether there has been a change in what was requested:
         for r in self.regions:
@@ -246,6 +259,7 @@ class timeseriesAnalysis:
         ###############
         # Load files, and calculate fields.
         openedFiles = 0
+        save_every = 10
         for fn in self.modelFiles:
             if fn in readFiles: continue
             print("timeseriesAnalysis:\tloadModel:\tloading new file:",
@@ -430,18 +444,18 @@ class timeseriesAnalysis:
             openedFiles += 1
 
             nc.close()
-            if openedFiles:
+            if openedFiles and openedFiles%save_every==0:
                 print("timeseriesAnalysis:\tloadModel\tSaving shelve:",
                       self.shelvefn, '\tread', len(readFiles))
-                sh = shOpen(self.shelvefn)
+                sh = shOpen(self.shelvefn, protocol=5)
                 sh['readFiles'] = readFiles
                 sh['modeldata'] = modeldataD
                 sh.close()
                 openedFiles = 0
         if openedFiles:
-            print("timeseriesAnalysis:\tloadModel\tSaving shelve:",
+            print("timeseriesAnalysis:\tloadModel\tSaving shelve - last time:",
                   self.shelvefn, '\tread', len(readFiles))
-            sh = shOpen(self.shelvefn)
+            sh = shOpen(self.shelvefn, protocol=5)
             sh['readFiles'] = readFiles
             sh['modeldata'] = modeldataD
             sh.close()
@@ -606,7 +620,7 @@ class timeseriesAnalysis:
             self.dataD = dataD
         except:
             dataD = {}
-            print("timeseriesAnalysis:\t loadData\tCould not open shelve:",
+            print("timeseriesAnalysis:\t loadData\tCould not open in situ shelve:",
                   self.shelvefn_insitu)
 
         ###############

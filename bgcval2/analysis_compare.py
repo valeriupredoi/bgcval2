@@ -67,19 +67,30 @@ except:
 from .bgcvaltools.mergeMonthlyFiles import mergeMonthlyFiles, meanDJF
 from .netcdf_manipulation.alwaysInclude import alwaysInclude
 from .makeReport import comparehtml5Maker
-from .Paths import paths
+#from .Paths import paths
 
 #from .comparison.shifttimes import shifttimes as shifttimes_legacy
 from .comparison.ensembles import build_ensemble
 from .config.configToDict import configToDict
 from .bgcvaltools.dataset import dataset
+from ._runtime_config import get_run_configuration
+
+#####
+# User defined set of paths pointing towards the datasets.
+from .Paths.paths import paths_setter
 
 
 def titleify(ls):
+    """
+    Turnms a list into a title string.
+    """
     return ' '.join([getLongName(i) for i in ls])
 
 
 def listModelDataFiles(jobID, filekey, datafolder, annual, year=''):
+    """
+
+    """
     if year == '':
         if annual:
             return sorted(
@@ -106,10 +117,12 @@ def apply_shifttimes(mdata, jobID, shifttimes):
     """
     Replaces .comparison.shifttimes loaded as shifttimes_legacy
     which takes the model data, the jobID and the year0
-    from .comparison.shifttimes import shifttimes as shifttimes_legacy
-    this version takes the mdata, and shifttime value - a number to add to the time axis.
-    """
 
+    This version takes the mdata, and shifttime value - a number to add to the time axis.
+    the value of the shift is provided in the yaml file.
+
+    Outputs two lists: dates & data.
+    """
     times, datas = [], []
     try:
         t0 = float(sorted(mdata.keys())[0])
@@ -134,7 +147,15 @@ def timeseries_compare(jobs,
                        jobDescriptions={},
                        lineThicknesses=defaultdict(lambda: 1),
                        linestyles=defaultdict(lambda: '-'),
-                       ensembles={}):
+                       ensembles={},
+                       config_user=None):
+    """
+    timeseries_compare:
+        Suite of tools to take pre-analyses time series model data
+        then compile into single plots, then publish it to an html 
+        document.
+
+    """
     ### strategy here is a simple wrapper.
     # It's a little cheat-y, as I'm copying straight from analysis_timeseries.py
     
@@ -145,13 +166,21 @@ def timeseries_compare(jobs,
         # ensembles names can not be the same as jobIDs
         jobs.remove(ensemble)
 
+    # get runtime configuration
+    if config_user:
+        paths_dict, config_user = get_run_configuration(config_user)
+    else:
+        paths_dict, config_user = get_run_configuration("defaults")
+
+    # filter paths dict into an object that's usable below
+    paths = paths_setter(paths_dict)
+
     if analysisname == '':
-        imageFolder = paths.imagedir + '/TimeseriesCompare/'
-        if len(jobs) == 1: imageFolder += jobs[0]
-        elif len(jobs) == 2: imageFolder += jobs[0] + '_and_' + jobs[1]
-        else: imageFolder += str(len(jobs)) + 'Runs_' + jobs[0]
+        print('ERROR: please provide an name for this analsys')
+        exit(0)
     else:
         imageFolder = paths.imagedir + '/TimeseriesCompare/' + analysisname
+
     if debug:
         imageFolder = imageFolder + '_debug'
         analysisname = analysisname + '_debug'
@@ -162,6 +191,7 @@ def timeseries_compare(jobs,
     analysisKeys = []
 
     if physics:
+        # what if these were loaded in advance from a separate file?
         analysisKeys.append('DrakePassageTransport')  # DrakePassageTransport
         analysisKeys.append('TotalIceArea')  # TotalIceArea
         analysisKeys.append('NorthernTotalIceArea')  # North TotalIceArea
@@ -248,11 +278,11 @@ def timeseries_compare(jobs,
         # Supercedes other flags.
         analysisKeys = []
         #		analysisKeys.append('ERSST')
-        analysisKeys.append('DrakePassageTransport')  # DrakePassageTransport
+        #analysisKeys.append('DrakePassageTransport')  # DrakePassageTransport
         #                analysisKeys.append('VolumeMeanOxygen')         # Volume weighted mean Oxygen
         analysisKeys.append('AMOC_26N')
         #                analysisKeys.append('NoCaspianAirSeaFluxCO2')   # work in progress
-        analysisKeys.append('VolumeMeanTemperature')  # Global Mean Temperature
+        #analysisKeys.append('VolumeMeanTemperature')  # Global Mean Temperature
         #		analysisKeys.append('CHD')
         #		analysisKeys.append('CHN')
         #		analysisKeys.append('DiaFrac')
@@ -295,7 +325,7 @@ def timeseries_compare(jobs,
         #                analysisKeys.append('TotalMIZfraction')
 
         #		analysisKeys.append('FreshwaterFlux')		# Fresh water flux
-        analysisKeys.append('GlobalMeanTemperature')
+        #analysisKeys.append('GlobalMeanTemperature')
 #                analysisKeys.append('GlobalMeanSalinity')
 
 #                analysisKeys.append('HeatFlux')
@@ -2847,7 +2877,7 @@ def timeseries_compare(jobs,
                 nc.close()
 
                 # load basin mask
-                nc = Dataset('data/basinlandmask_eORCA1.nc', 'r')
+                nc = Dataset('bgcval2/data/basinlandmask_eORCA1.nc', 'r')
                 alttmask[name] = nc.variables['tmaskatl'][
                     latslice, :]  # 2D Atlantic mask
                 nc.close()
@@ -4105,9 +4135,11 @@ def CompareTwoRuns(jobIDA,
 
 def load_comparison_yml(fn):
     """
-    Load the config yaml. 
+    Load the config yaml.
+    TAkes an file path string 
+    Returns:
+        Details dict.
     """
-
     with open(fn, 'r') as openfile:
         dictionary = yaml.safe_load(openfile)
 
@@ -4132,13 +4164,15 @@ def load_comparison_yml(fn):
 
     details['do_analysis_timeseries'] = dictionary.get('do_analysis_timeseries', False) 
     
+    details['master_suites'] = dictionary.get('master_suites', 'debug')
+    
     thicknesses = defaultdict(lambda: 0.75)
     linestyles = defaultdict(lambda: '-')
     colours = {}
     suites = defaultdict(lambda: 'kmf')
     descriptions = defaultdict(lambda: '')
     shifttimes = defaultdict(lambda: 0.) # number of years to shift time axis.
-    
+   
     for jobID, job_dict in details['jobs'].items():
         if job_dict.get('colour', False):
             colours[jobID] = job_dict['colour']
@@ -4159,7 +4193,7 @@ def load_comparison_yml(fn):
             shifttimes[jobID] = float(job_dict['shifttime'])
             
         if job_dict.get('suite', False):
-            suites[jobID] = float(job_dict['suite'])            
+            suites[jobID] = job_dict['suite']            
                  
     details['colours'] = colours
     details['descriptions'] = descriptions
@@ -4167,7 +4201,6 @@ def load_comparison_yml(fn):
     details['linestyles'] = linestyles            
     details['shifttimes'] = shifttimes            
     details['suites'] = suites
-       
     return details
     
 
@@ -4179,7 +4212,8 @@ def main():
         exit(0)
 
     details = load_comparison_yml(argv[1])
-  
+
+    config_user=None
     if "bgcval2-config-user.yml" in argv[1:]:
         config_user = "bgcval2-config-user.yml"
         print(f"analysis_timeseries: Using user config file {config_user}")
@@ -4187,13 +4221,16 @@ def main():
     jobs = details['jobs']
     analysis_name = details['name']    
     do_analysis_timeseries = details['do_analysis_timeseries']
-    
+    master_suites = details['master_suites']  
+    # Working on this right now. 
+ 
     colours = details['colours']
     thicknesses = details['thicknesses']
     linestyles = details['linestyles']
     descriptions = details['descriptions']
     shifttimes = details['shifttimes']
-    
+    suites = details['suites']   
+ 
     print('---------------------')
     print('timeseries_compare:',  analysis_name)
     print('job ids:', jobs.keys())
@@ -4202,31 +4239,61 @@ def main():
         print(jobID, 'colour:',colours[jobID])        
         print(jobID, 'line thickness & style:',thicknesses[jobID], linestyles[jobID])
         print(jobID, 'Shift time by', shifttimes[jobID])
+        print(jobID, 'suite:', suites[jobID])
 
+    # if do_mass_download:
+    # Not yet implemented.
 
     if do_analysis_timeseries:
         for jobID in jobs:
             analysis_timeseries(
                 jobID=jobID,
-                analysisSuite=details['suites'][jobID],
+                analysisSuite=suites[jobID],
                 config_user=config_user
             )   
-    
+
+    # Master suite leys:
+    if not len(master_suites):
+        master_suites=['physics', 'bio'] # Defaults
+
+    # make sure its a list:
+    if isinstance(master_suites, list) :
+        master_suites = [m.lower() for m in master_suites]
+    if isinstance(master_suites, str):
+        master_suites = master_suites.lower()
+        for split_char in [' ', ',', ':', ';']:
+            master_suites = master_suites.replace(split_char, ';')
+        master_suites = master_suites.split(';')
+
+    if 'physics' in master_suites:
+        key_physics = True
+    else:
+        key_physics = False
+
+    if 'bio' in master_suites:
+        key_bio = True
+    else:
+        key_bio = False
+
+    if 'debug' in master_suites:
+        key_debug = True
+    else:
+        key_debug = False
+ 
     timeseries_compare(
         jobs,
         colours = colours,
-        physics=1,
-        bio=1,
-        debug=0,
+        physics=key_physics,
+        bio=key_bio,
+        debug=key_debug,
         shifttimes=shifttimes,
         jobDescriptions=descriptions,
         analysisname=analysis_name,
         lineThicknesses=thicknesses,
         linestyles=linestyles,
+        config_user=config_user
     )
             
- 
-
     print("Finished... ")
 
 

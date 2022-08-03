@@ -3,7 +3,7 @@
 name: GC5N96ORCA1spinup
 
 # Run the single job Analysis
-do_analysis_timeseries: False
+do_analysis_timeseries: True 
 
 # Job ID's suites as named by Rose/Cylc
 jobs:
