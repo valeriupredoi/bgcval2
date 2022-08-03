@@ -2,7 +2,7 @@
 # GC5 N96 ORCA1 spinup analysis
 name: GC5N96ORCA1spinup
 
-# Run the single job Analysis
+# Run the single job analysis
 do_analysis_timeseries: True 
 
 # Job ID's suites as named by Rose/Cylc
