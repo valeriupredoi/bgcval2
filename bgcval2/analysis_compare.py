@@ -3993,13 +3993,18 @@ def timeseries_compare(jobs,
                             thicknesses=lineThicknesses,
                             linestyles=linestyles,
                         )
-    try:
+    #
+    method_images = 'oswalk'
+    AllImages = []
+    if method_images == 'glob':
         AllImages = glob(imageFolder, recursive=True)
-    except:
-        AllImages = []
+        print('AllImages:','glob', AllImages)
+    if method_images == 'oswalk':
         for root, dirnames, filenames in os.walk(imageFolder):
             for filename in fnmatch.filter(filenames, '*.png'):
                 AllImages.append(os.path.join(root, filename))
+                print('AllImages:','fors', root, dirnames, filenames, filename)
+ 
 
     if ensembles != {}:
         jobs = list(ensembles.keys())
