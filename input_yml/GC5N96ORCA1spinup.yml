@@ -4,6 +4,11 @@ name: GC5N96ORCA1spinup
 
 # Run the single job analysis
 do_analysis_timeseries: True 
+# Download from mass:
+do_mass_download: False
+
+# master analysis suite
+master_suites: physics
 
 # Job ID's suites as named by Rose/Cylc
 jobs:
@@ -28,5 +33,13 @@ jobs:
         linestyle: '-'
         shifttime: 0.
         suite: physics        
+    u-cp647:
+        description: 'GC5 N96 ORCA1 spin-up 4: with updated parameters for SI3 and NEMO'
+        colour: green
+        thickness: 0.7
+        linestyle: '-'
+        shifttime: 0.
+        suite: physics
+
 
 

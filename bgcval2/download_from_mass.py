@@ -28,14 +28,19 @@
 .. moduleauthor:: Lee de Mora <ledm@pml.ac.uk>
 
 """
-
+#####
+# Load Standard Python modules:
 from sys import argv, stdout
 import subprocess
 from socket import gethostname
 import os
 from glob import glob
 from re import findall
-from ..Paths import paths as paths
+
+#####
+# Load specific local code:
+from .Paths import paths
+
 
 """
 This module includes a series of tools to download the UKESM model run data from MASS.
@@ -111,7 +116,7 @@ def rebaseSymlinks(fn, dryrun=True, debug=False):
     #       print "rebaseSymlinks:\tfile does not exist.",fn
     #       return
     if not os.path.islink(fn):
-        if debug: print("rebaseSymlinks:\tfile is not a symlink.", fn)
+        if debug: print("download_from_mass:\trebaseSymlinks:\tfile is not a symlink.", fn)
         return
 
 #####
@@ -121,7 +126,7 @@ def rebaseSymlinks(fn, dryrun=True, debug=False):
 
     if realpath == linkpath: return
 
-    print("rebaseSymlinks:\tdeleting and re-linking ", fn, '-->', realpath)
+    print("download_from_mass:\trebaseSymlinks:\tdeleting and re-linking ", fn, '-->', realpath)
     if dryrun: return
     os.remove(fn)
     os.symlink(realpath, fn)
@@ -154,7 +159,7 @@ def findLastFinishedYear(jobID, dividby=1, numberfiles=6):
 
     for fn in files:
         yr = getYearFromFile(fn)
-        print("getYearFromFile:", fn, yr)
+        print("download_from_mass:\tgetYearFromFile:", fn, yr)
         try:
             fnDict[yr] += 1
         except:
@@ -163,14 +168,14 @@ def findLastFinishedYear(jobID, dividby=1, numberfiles=6):
     years = sorted(fnDict.keys())
     years.reverse()
 
-    print(years, fnDict)
+    print("download_from_mass:\t",years, fnDict)
 
     if len(years) == 0:
-        print("findLastFinishedYear:\tNo files found.\t")
+        print("download_from_mass:\tfindLastFinishedYear:\tNo files found.\t")
         return False
 
     if len(years) < dividby:
-        print("findLastFinishedYear:\tLess than", dividby,
+        print("download_from_mass:\tfindLastFinishedYear:\tLess than", dividby,
               "years of model run, returning first year:", years[-1])
         return years[0]
 
@@ -368,7 +373,7 @@ def medusaMonthlyexport(jobID):
                   dryrun=False)
 
 
-def downloadMass(jobID, doMoo=True):
+def download_from_mass(jobID, doMoo=True):
     """
 	:param jobID: The job ID
 	
@@ -421,9 +426,9 @@ def downloadMass(jobID, doMoo=True):
     doLs = True
     doDL = True
 
-    if not doMoo: return
+    #if not doMoo: return
     if doLs:
-        print("Looking at the following files:")
+        print("download_from_mass:\tLooking at the following files:")
         ######
         # print files
 
@@ -434,11 +439,14 @@ def downloadMass(jobID, doMoo=True):
         #print "output",output
 
         bashCommand = "moo ls moose:/crum/" + jobID + "/ony.nc.file/*.nc"
-        print("running the command:", bashCommand)
-        stdout.flush()
-
-        process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-        output = process.communicate()[0]
+        if not doMoo:
+            print("download_from_mass:\tthe command is (dry-run): \n", bashCommand)
+            output = ''
+        else:
+            print("download_from_mass:\trunning the command:", bashCommand)
+            stdout.flush()
+            process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+            output = process.communicate()[0]
 
         if len(output.split('\n')) > 6000:
             #bashCommand = ''
@@ -450,26 +458,31 @@ def downloadMass(jobID, doMoo=True):
 
                 bashCommand = "moo get --fill-gaps moose:/crum/" + jobID + "/ony.nc.file/*_1y_??" + mnStr(
                     i) + "*.nc " + outputFold
-                print("running the command:", bashCommand)
+                print("download_from_mass:\trunning the command:", bashCommand)
                 stdout.flush()
                 try:
                     process1[i] = subprocess.Popen(bashCommand.split(),
                                                    stdout=subprocess.PIPE)
                     process1[i].wait()
                     output1[i] = process.communicate()[0]
-                    print(i, output1[i])
+                    print("download_from_mass:\t",i, output1[i])
                 except:
                     failed += 1
                     print("Failed", i, '\t', bashCommand)
             if failed > 10:
                 assert 0
         else:
-            print("Downloading at the following files:")
+            print("download_from_mass:\tDownloading at the following files:")
             bashCommand = "moo get --fill-gaps moose:/crum/" + jobID + "/ony.nc.file/*.nc " + outputFold
-            print("running the command:", bashCommand)
-            process = subprocess.Popen(bashCommand.split(),
-                                       stdout=subprocess.PIPE)
-            output = process.communicate()[0]
+            if not doMoo:
+                print("download_from_mass:\tthe command is (dry-run): \n", bashCommand)
+                return
+
+            else:
+                print("download_from_mass:\trunning the command:", bashCommand)
+                process = subprocess.Popen(bashCommand.split(),
+                                           stdout=subprocess.PIPE)
+                output = process.communicate()[0]
 
     fixFilePaths(outputFold, jobID)
     deleteBadLinksAndZeroSize(outputFold, jobID)
@@ -588,8 +601,7 @@ def deleteBadLinksAndZeroSize(outputFold, jobID):
     output2 = process2.communicate()[0]
 
 
-if __name__ == "__main__":
-
+def main():
     try:
         jobID = argv[1]
     except:
@@ -602,43 +614,24 @@ if __name__ == "__main__":
 
     #####
     # All yearly files
-    if keys == []:
-        downloadMass(jobID)
 
-    elif 'noMoo' in keys:
-        downloadMass(jobID, doMoo=False)
+    if keys == []:
+        download_from_mass(jobID)
+        return
+    if 'noMoo' in keys or 'dryrun' in keys or '--dry-run' in keys:
+        download_from_mass(jobID, doMoo=False)
+        return  
     #####
     # Monthly Ice files
-    elif keys in [
-        [
-            'ice',
-        ],
-        [
-            'soicecov',
-        ],
-    ]:
+    if 'ice' in keys or 'soicecov' in keys:
         nemoMonthlyIce(jobID)
     #####
     # Monthly MLD
-    elif keys in [
-        [
-            'mld',
-        ],
-        [
-            'MLD',
-        ],
-    ]:
+    if 'mld' in keys  or 'MLD' in keys:
         nemoMonthlyMLD(jobID, starttime=2570, stoptime=2610)
 #####
 # Monthly chl
-    elif keys in [
-        [
-            'chl',
-        ],
-        [
-            'CHL',
-        ],
-    ]:
+    if 'chl' in keys:
         monthlyChl(jobID,
                    months=[
                        '01',
@@ -655,16 +648,13 @@ if __name__ == "__main__":
                        '12',
                    ])
 
-    elif keys in [
-        [
-            'EXPORT',
-        ],
-        [
-            'export',
-        ],
-    ]:
+    if 'export' in keys:
         medusaMonthlyexport(jobID)
+
     #####
     # Other specific monthly files.
-    else:
-        downloadField(jobID, keys, timeslice='m', dryrun=0)
+#    else:
+#        downloadField(jobID, keys, timeslice='m', dryrun=0)
+
+if __name__ == "__main__":
+    main()
