@@ -4169,7 +4169,7 @@ def load_comparison_yml(fn):
 
     details['do_analysis_timeseries'] = dictionary.get('do_analysis_timeseries', False) 
     
-    details['master_suites'] = dictionary.get('master_suites', 'debug')
+    details['master_suites'] = dictionary.get('master_suites', [])
     
     thicknesses = defaultdict(lambda: 0.75)
     linestyles = defaultdict(lambda: '-')
@@ -4284,7 +4284,7 @@ def main():
         key_debug = True
     else:
         key_debug = False
- 
+
     timeseries_compare(
         jobs,
         colours = colours,
