@@ -53,7 +53,7 @@ root_dir = os.path.join("/home", os.environ.get("USER"))
 #####
 # Post processed Data location
 #shelvedir 	= folder("/group_workspaces/root_dir/ukesm/BGC_data/"+getuser()+"/shelves/")
-shelvedir = folder(root_dir + "/bgcval2_data/" + getuser() + "/shelves/")
+shelvedir = folder([root_dir, "bgcval2_data", getuser(), "shelves"])
 
 #####
 # Post processed p2p Data location

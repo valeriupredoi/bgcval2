@@ -131,7 +131,7 @@ def apply_shifttimes(mdata, jobID, shifttimes):
         
     for t in sorted(mdata.keys()):
         t1 = t + float(shifttimes[jobID])
-        times.append(float(t1))
+        times.append(t1)
         datas.append(mdata[t])        
     return times, datas       
    
@@ -177,7 +177,7 @@ def timeseries_compare(jobs,
 
     if analysisname == '':
         print('ERROR: please provide an name for this analsys')
-        exit(0)
+        sys.exit(0)
     else:
         imageFolder = paths.imagedir + '/TimeseriesCompare/' + analysisname
 
@@ -4253,7 +4253,7 @@ def main():
             )   
 
     # Master suite leys:
-    if not len(master_suites):
+    if not master_suites:
         master_suites=['physics', 'bio'] # Defaults
 
     # make sure its a list:
@@ -4261,7 +4261,7 @@ def main():
         master_suites = [m.lower() for m in master_suites]
     if isinstance(master_suites, str):
         master_suites = master_suites.lower()
-        for split_char in [' ', ',', ':', ';']:
+        for split_char in [' ', ',', ':']:
             master_suites = master_suites.replace(split_char, ';')
         master_suites = master_suites.split(';')
 
