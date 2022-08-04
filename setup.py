@@ -26,6 +26,7 @@ REQUIREMENTS = {
     'install': [
         'basemap',
         'cartopy',
+        'h5py',
         'matplotlib',
         'netcdf4',
         'numpy',
