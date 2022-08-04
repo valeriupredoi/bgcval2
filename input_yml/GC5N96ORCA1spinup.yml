@@ -3,7 +3,7 @@
 name: GC5N96ORCA1spinup
 
 # Run the single job analysis
-do_analysis_timeseries: True 
+do_analysis_timeseries: False
 # Download from mass:
 do_mass_download: False
 
