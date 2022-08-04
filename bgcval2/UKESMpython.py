@@ -97,7 +97,7 @@ def rebaseSymlinks(fn, dryrun=True):
     #	print "rebaseSymlinks:\tfile does not exist.",fn
     #	return
     if not os.path.islink(fn):
-        print(("rebaseSymlinks:\tfile is not a symlink.", fn))
+        print("rebaseSymlinks:\tfile is not a symlink.", fn)
         return
     #####
     # Real path and first target:

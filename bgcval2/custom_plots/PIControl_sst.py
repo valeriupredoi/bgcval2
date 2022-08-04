@@ -311,7 +311,7 @@ def fig2(field='SST', window_len=10):
     #grid_color='r', grid_alpha=0.5)
 
     fn = field + '_inset_fig_' + str(window_len) + '.png'
-    print(("Saving:", fn))
+    print("Saving:", fn)
     pyplot.savefig(fn, dpi=300)
     pyplot.close()
 
@@ -441,7 +441,7 @@ def fig5(field='SST', window_len=10):
         left=True)  #direction='out', length=6, width=2, colors='r',
 
     fn = field + '_inset_fig5_' + str(window_len) + '.png'
-    print(("Saving:", fn))
+    print("Saving:", fn)
     pyplot.savefig(fn, dpi=300)
     pyplot.close()
 
