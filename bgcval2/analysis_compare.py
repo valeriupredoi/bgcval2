@@ -126,14 +126,13 @@ def apply_shifttimes(mdata, jobID, shifttimes):
     Outputs two lists: dates & data.
     """
     times, datas = [], []
-    try:
-        t0 = float(sorted(mdata.keys())[0])
-    except:
-        return times, datas
-        
+    if not len(mdata.keys()):
+        return [], []
+
+    t0 = float(sorted(mdata.keys())[0])
     for t in sorted(mdata.keys()):
         t1 = t + float(shifttimes[jobID])
-        times.append(float(t1))
+        times.append(t1)
         datas.append(mdata[t])        
     return times, datas       
    
@@ -169,17 +168,17 @@ def timeseries_compare(jobs,
         jobs.remove(ensemble)
 
     # get runtime configuration
-    if config_user:
-        paths_dict, config_user = get_run_configuration(config_user)
-    else:
+    if not config_user:
         paths_dict, config_user = get_run_configuration("defaults")
+    else:
+        paths_dict, config_user = get_run_configuration(config_user)
 
     # filter paths dict into an object that's usable below
     paths = paths_setter(paths_dict)
 
     if analysisname == '':
         print('ERROR: please provide an name for this analsys')
-        exit(0)
+        sys.exit(0)
     else:
         imageFolder = paths.imagedir + '/TimeseriesCompare/' + analysisname
 
@@ -4001,7 +4000,7 @@ def timeseries_compare(jobs,
     if method_images == 'glob':
         AllImages = glob(imageFolder, recursive=True)
         print('AllImages:','glob', AllImages)
-    if method_images == 'oswalk':
+    elif method_images == 'oswalk':
         for root, dirnames, filenames in os.walk(imageFolder):
             for filename in fnmatch.filter(filenames, '*.png'):
                 AllImages.append(os.path.join(root, filename))
@@ -4140,14 +4139,14 @@ def CompareTwoRuns(jobIDA,
                 scatter=False)
 
 
-def load_comparison_yml(fn):
+def load_comparison_yml(master_compare_yml_fn):
     """
     Load the config yaml.
     TAkes an file path string 
     Returns:
         Details dict.
     """
-    with open(fn, 'r') as openfile:
+    with open(master_compare_yml_fn, 'r') as openfile:
         dictionary = yaml.safe_load(openfile)
 
     details = {}    
@@ -4174,34 +4173,29 @@ def load_comparison_yml(fn):
     
     details['master_suites'] = dictionary.get('master_suites', [])
     
-    thicknesses = defaultdict(lambda: 0.75)
-    linestyles = defaultdict(lambda: '-')
+    default_thickness = 0.75
+    default_linestyle = '-'
+    default_suite = 'kmf'
+  
+    thicknesses = {}
+    linestyles = {}
     colours = {}
-    suites = defaultdict(lambda: 'kmf')
-    descriptions = defaultdict(lambda: '')
-    shifttimes = defaultdict(lambda: 0.) # number of years to shift time axis.
+    suites = {}
+    descriptions = {}
+    shifttimes = {} # number of years to shift time axis.
    
     for jobID, job_dict in details['jobs'].items():
         if job_dict.get('colour', False):
             colours[jobID] = job_dict['colour']
         else:
             colours[jobID] = ''.join(['#', "%06x" % random.randint(0, 0xFFFFFF)])        
-            print('WARNING: No colour provided, setting to random hex colour', colours[jobID])
+            print('WARNING: No colour provided, setting to random hex colour:', colours[jobID])
             
-        if job_dict.get('description', False):
-            descriptions[jobID] = job_dict['description']
-            
-        if job_dict.get('thickness', False):
-            thicknesses[jobID] = job_dict['thickness']
-
-        if job_dict.get('linestyle', False):
-            linestyles[jobID] = job_dict['linestyle'] 
-
-        if job_dict.get('shifttime', False):
-            shifttimes[jobID] = float(job_dict['shifttime'])
-            
-        if job_dict.get('suite', False):
-            suites[jobID] = job_dict['suite']            
+        descriptions[jobID] = job_dict.get('description', '')
+        thicknesses[jobID] = job_dict.get('thickness', default_thickness)
+        linestyles[jobID] = job_dict.get('linestyle', default_linestyle)
+        shifttimes[jobID] = float(job_dict.get('shifttime', 0.))
+        suites[jobID] = job_dict.get('suite', default_suite)
                  
     details['colours'] = colours
     details['descriptions'] = descriptions
@@ -4219,19 +4213,18 @@ def main():
             print("Read the documentation.")
         exit(0)
 
-    details = load_comparison_yml(argv[1])
-
     config_user=None
     if "bgcval2-config-user.yml" in argv[1:]:
         config_user = "bgcval2-config-user.yml"
         print(f"analysis_timeseries: Using user config file {config_user}")
+
+    details = load_comparison_yml(argv[1])
   
     jobs = details['jobs']
     analysis_name = details['name']    
     do_analysis_timeseries = details['do_analysis_timeseries']
     do_mass_download = details['do_mass_download']
     master_suites = details['master_suites']  
-    # Working on this right now. 
  
     colours = details['colours']
     thicknesses = details['thicknesses']
@@ -4265,7 +4258,7 @@ def main():
             )   
 
     # Master suite leys:
-    if not len(master_suites):
+    if not master_suites:
         master_suites=['physics', 'bio'] # Defaults
 
     # make sure its a list:
@@ -4273,7 +4266,7 @@ def main():
         master_suites = [m.lower() for m in master_suites]
     if isinstance(master_suites, str):
         master_suites = master_suites.lower()
-        for split_char in [' ', ',', ':', ';']:
+        for split_char in [' ', ',', ':']:
             master_suites = master_suites.replace(split_char, ';')
         master_suites = master_suites.split(';')
 

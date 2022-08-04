@@ -100,7 +100,8 @@ def addImageToHtml(fn, imagesfold, reportdir, debug=True):
             if debug: print("addImageToHtml:\tremoving old file", fn)
             os.remove(newfn)
             shutil.copy2(fn, newfn)
-            if debug: print("addImageToHtml:\t copy2", fn, newfn)
+            if debug: 
+                print("addImageToHtml:\t copy2", fn, newfn)
     return relfn
 
 
