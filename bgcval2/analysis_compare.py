@@ -4266,7 +4266,7 @@ def main():
         master_suites = [m.lower() for m in master_suites]
     if isinstance(master_suites, str):
         master_suites = master_suites.lower()
-        for split_char in [' ', ',', ':', ';']:
+        for split_char in [' ', ',', ':']:
             master_suites = master_suites.replace(split_char, ';')
         master_suites = master_suites.split(';')
 
