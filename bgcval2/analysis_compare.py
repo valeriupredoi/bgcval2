@@ -177,7 +177,7 @@ def timeseries_compare(jobs,
 
     if analysisname == '':
         print('ERROR: please provide an name for this analsys')
-        exit(0)
+        sys.exit(0)
     else:
         imageFolder = paths.imagedir + '/TimeseriesCompare/' + analysisname
 
