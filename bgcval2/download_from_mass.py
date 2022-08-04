@@ -623,7 +623,7 @@ def main():
     #####
     # All yearly files
 
-    if keys == []:
+    if not keys:
         download_from_mass(jobID, doMoo=True)
         return
     if 'noMoo' in keys or 'dryrun' in keys or '--dry-run' in keys:
