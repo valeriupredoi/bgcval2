@@ -199,8 +199,8 @@ setup(
             'analysis_p2p = bgcval2.analysis_p2p:run',
             'analysis_timeseries = bgcval2.analysis_timeseries:main',
             'bgcval = bgcval2.bgcval:run',
-            'makeReport = bgcval2.makeReport:main',
             'download_from_mass = bgcval2.download_from_mass:main',   
+            'bgcval2_make_report = bgcval2.bgcval2_make_report:main',
         ],
     },
     cmdclass={

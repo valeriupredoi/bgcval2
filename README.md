@@ -56,7 +56,7 @@ analysis_p2p u-bc179 level2 2010
 Once these have completed, a summary HTML page can be generated with the command:
 
 ```
-makeReport u-bc179 2010
+bgcval2_make_report u-bc179 2010
 ```
 This produces an html5 mobile-friendly website which can be opened using your
 browser of choice.
@@ -69,7 +69,7 @@ Executable name | What it does | Command
 `analysis_timeseries` | runs timeseries analysis for single model run. | analysis_timeseries jobID key
 `analysis_p2p` | runs point to point analysis of model against observational dataset. | analysis_p2p jobID YEAR
 `bgcval` | runs time series and point to point. | bgcval jobID
-`makeReport` | makes the single model HTML report. | makeReport jobID
+`bgcval2_make_report` | makes the single model HTML report. | bgcval2_make_report jobID
 `analysis_compare` | runs comparison of multiple single jobs  | analysis_compare
 
 
@@ -124,7 +124,7 @@ Single Model report
 Once an analysis has run, either time series or point to point, a report
 can be generated from this output, using the command:
 ```
-makeReport jobID year
+bgcval2_make_report jobID year
 ```
 This  gnerated an HTML5 mobile-friendlyt report, summarising the output of a
 single model run.

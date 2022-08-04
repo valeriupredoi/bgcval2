@@ -26,6 +26,7 @@
    :synopsis: A list of paths to data files.
 .. moduleauthor:: Lee de Mora <ledm@pml.ac.uk>
 """
+import os
 
 class paths():
     """Empty class to hold paths."""
@@ -33,6 +34,9 @@ class paths():
 
 def paths_setter(paths_dict):
     """Grab all paths and return them."""
+
+    paths_dir = os.path.dirname(os.path.realpath(__file__))
+    paths.bgcval2_repo = os.path.dirname(os.path.dirname(paths_dir))
     # [general] paths; mandatory everywhere
     paths.machinelocation = paths_dict["general"]["machinelocation"]
     paths.root_dir = paths_dict["general"]["root_dir"]

@@ -68,7 +68,7 @@ except:
     from .pftnames import getLongName
 from .bgcvaltools.mergeMonthlyFiles import mergeMonthlyFiles, meanDJF
 from .netcdf_manipulation.alwaysInclude import alwaysInclude
-from .makeReport import comparehtml5Maker
+from .bgcval2_make_report import comparehtml5Maker
 #from .Paths import paths
 
 #from .comparison.shifttimes import shifttimes as shifttimes_legacy
@@ -175,7 +175,6 @@ def timeseries_compare(jobs,
 
     # filter paths dict into an object that's usable below
     paths = paths_setter(paths_dict)
-
     if analysisname == '':
         print('ERROR: please provide an name for this analsys')
         sys.exit(0)
@@ -2878,7 +2877,7 @@ def timeseries_compare(jobs,
                 nc.close()
 
                 # load basin mask
-                nc = Dataset('bgcval2/data/basinlandmask_eORCA1.nc', 'r')
+                nc = Dataset(os.path.join(paths.bgcval2_repo,'bgcval2/data/basinlandmask_eORCA1.nc'), 'r')
                 alttmask[name] = nc.variables['tmaskatl'][
                     latslice, :]  # 2D Atlantic mask
                 nc.close()
@@ -4017,6 +4016,7 @@ def timeseries_compare(jobs,
         doZip=False,
         jobDescriptions=jobDescriptions,
         jobColours=colours,
+        paths=paths,
     )
 
 

@@ -33,6 +33,14 @@ import os
 from ..bgcvaltools.pftnames import getLongName
 
 
+
+def get_this_file(html5_file):
+    """
+    gets the correct path to a specific file in html5.
+    """
+    return os.path.join(os.path.dirname(__file__), html5_file)
+
+
 def AddtoFile(filepath, linenumber, text):
     """	Adds "text" at line "linenumber" in the file "filepath"
 	"""
@@ -163,7 +171,7 @@ def AddSection(filepath, href, Title, Description='', Files=[]):
 
     #####
     # Copy the template and add the images.
-    f = open("bgcval2/html5/section-template.html", "r")
+    f = open(get_this_file("section-template.html"), "r")
     contents = f.readlines()
     f.close()
     if type(Files) == type([
