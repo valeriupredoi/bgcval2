@@ -21,7 +21,7 @@
 # Email:
 # ledm@pml.ac.uk
 """
-.. module:: makeReport
+.. module:: bgcval2_make_report
    :platform: Unix
    :synopsis: A script to produce an html5 document summarising a jobs performance.
 .. moduleauthor:: Lee de Mora <ledm@pml.ac.uk>
@@ -1766,7 +1766,7 @@ def main():
     config_user = None
     if "bgcval2-config-user.yml" in argv[1:]:
         config_user = "bgcval2-config-user.yml"
-        print(f"makeReport: Using user config file {config_user}")
+        print(f"bgcval2_make_report: Using user config file {config_user}")
     if config_user:
         paths_dict, config_user = get_run_configuration(config_user)
     else:

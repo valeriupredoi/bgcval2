@@ -66,7 +66,7 @@ except:
     from .pftnames import getLongName
 from .bgcvaltools.mergeMonthlyFiles import mergeMonthlyFiles, meanDJF
 from .netcdf_manipulation.alwaysInclude import alwaysInclude
-from .makeReport import comparehtml5Maker
+from .bgcval2_make_report import comparehtml5Maker
 #from .Paths import paths
 
 #from .comparison.shifttimes import shifttimes as shifttimes_legacy
