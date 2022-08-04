@@ -143,7 +143,7 @@ The comparison reports are generated from a user defined yaml recipe.
 
 In this yml file, the key structure is:
 ```
-name: <Analysis name>
+name: <Analysis name string>
 do_analysis_timeseries: <bool>
 jobs:
    <jobID1>:
@@ -151,10 +151,11 @@ jobs:
    <jobID2>:
       description: <descrption of the second job>      
 ```
-Where the `name` is the name of script and the ultimately the path of the
-comparison report.
+Where the `name` is a short unique string describing the analysis script
+and the ultimately the name given here will become part of the path
+of the final output comparison report.
 
-The `do_analysis_timeseries` bool lets analysis_compare send jobs to 
+The `do_analysis_timeseries` bool lets `analysis_compare` send jobs to 
 `analysis_timeseries`, allowing the user to run the entire suite in one 
 command, instead of individually running the `analysis_timeseries` then
 the `analysis_compare` part afterwards.
@@ -170,12 +171,6 @@ The optional arguments for each job are:
     
 A sample yaml exists in `input_yml/comparison_analysis_template.yml`,
 which can be adapted to additional analysis. 
-
-
-
-
-
-
 
 
 Documentation
