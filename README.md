@@ -180,7 +180,7 @@ Storage System, MASS.
 The bgcval2 tool `download_data_from mass` sets up the command and 
 outputs a script which you can run on Jasmin's mass-cli1 machine. 
 
-Note that the only place on jasmin you can download data  
+Note that the only place on CEDA-JASMIN you can download data  
 is the dedicated virtual machine, mass-cli1.jasmin.ac.uk.
 
 The recommended process is to generate the download script on an interactive node,
