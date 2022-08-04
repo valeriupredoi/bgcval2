@@ -1721,7 +1721,7 @@ def comparehtml5Maker(
 
 
 def main():
-    """Run the html meat."""
+    """Run the html maker for a single job ID."""
     from ._version import __version__
     print(f'BGCVal2: {__version__}')
     if "--help" in argv or len(argv) == 1:
