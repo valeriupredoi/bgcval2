@@ -36,7 +36,7 @@ from ..bgcvaltools.pftnames import getLongName
 
 def get_this_file(html5_file):
     """
-    gets the correct to a specific file in html5.
+    gets the correct path to a specific file in html5.
     """
     return os.path.join(os.path.dirname(__file__), html5_file)
 
