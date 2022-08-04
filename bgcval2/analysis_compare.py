@@ -173,7 +173,6 @@ def timeseries_compare(jobs,
 
     # filter paths dict into an object that's usable below
     paths = paths_setter(paths_dict)
- 
     if analysisname == '':
         print('ERROR: please provide an name for this analsys')
         sys.exit(0)
