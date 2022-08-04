@@ -42,6 +42,7 @@ class dataset:
         self.netcdfPath = filename
         self.filename = filename
         try:
+<<<<<<< HEAD
             self.dataset = netCDF4.Dataset(filename, 'r', format='NETCDF4')
         except OSError as oserr:
             print("dataset:\tUnable to open %s - below more info", filename)
@@ -82,7 +83,7 @@ class dataset:
         except:
             self.ncattrs = ''
 
-        if not Quiet: print((self.__unicode__()))
+        if not Quiet: print(self.__unicode__())
 
     def close(self):
         try:
