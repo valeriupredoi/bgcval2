@@ -124,11 +124,10 @@ def apply_shifttimes(mdata, jobID, shifttimes):
     Outputs two lists: dates & data.
     """
     times, datas = [], []
-    try:
-        t0 = float(sorted(mdata.keys())[0])
-    except:
-        return times, datas
-        
+    if not len(mdata.keys():
+        return [], []
+
+    t0 = float(sorted(mdata.keys())[0])
     for t in sorted(mdata.keys()):
         t1 = t + float(shifttimes[jobID])
         times.append(t1)
