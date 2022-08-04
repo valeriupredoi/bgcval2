@@ -102,8 +102,8 @@ def listModelDataFiles(jobID, filekey, datafolder, annual, year=''):
                      ".nc"))
     else:
         if annual:
-            print((datafolder + jobID + "/" + jobID + "o_1y_*" + year +
-                   "????_" + filekey + ".nc"))
+            print(datafolder + jobID + "/" + jobID + "o_1y_*" + year +
+                   "????_" + filekey + ".nc")
             return sorted(
                 glob(datafolder + jobID + "/" + jobID + "o_1y_*" + year +
                      "????_" + filekey + ".nc"))
