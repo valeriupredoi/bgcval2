@@ -5,7 +5,7 @@ on:
   push:
     branches:
       - main
-      - load_with_exception
+      - load_with_exception  # do run ffs
   schedule:
     - cron: '0 0 * * *'  # nightly
 
