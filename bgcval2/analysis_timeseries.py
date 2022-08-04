@@ -3465,7 +3465,7 @@ def analysis_timeseries(
         av[name]['model'] = 'NEMO'
 
         av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = './data/eORCA1_gridU_mesh.nc'
+        av[name]['gridFile'] = os.path.join(paths.bgcval2_repo, 'bgcval2/data/eORCA1_gridU_mesh.nc')
         av[name]['Dimensions'] = 3
 
     if 'MeridionalCurrent' in analysisKeys:
@@ -3504,7 +3504,7 @@ def analysis_timeseries(
         av[name]['model'] = 'NEMO'
 
         av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = './data/eORCA1_gridV_mesh.nc'
+        av[name]['gridFile'] = os.path.join(paths.bgcval2_repo, 'bgcval2/data/eORCA1_gridV_mesh.nc')
         av[name]['Dimensions'] = 3
 
     if 'VerticalCurrent' in analysisKeys:
@@ -3549,7 +3549,7 @@ def analysis_timeseries(
         av[name]['model'] = 'NEMO'
 
         av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = './data/eORCA1_gridW_mesh.nc'
+        av[name]['gridFile'] = os.path.join(paths.bgcval2_repo, 'bgcval2/data/eORCA1_gridW_mesh.nc')
         av[name]['Dimensions'] = 3
 
     if 'WindStress' in analysisKeys:
@@ -3598,7 +3598,7 @@ def analysis_timeseries(
         av[name]['model'] = 'NEMO'
 
         av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = './data/eORCA1_gridU_mesh.nc'
+        av[name]['gridFile'] = os.path.join(paths.bgcval2_repo, 'bgcval2./data/eORCA1_gridU_mesh.nc')
         av[name]['Dimensions'] = 2
 
     #####
@@ -4373,9 +4373,7 @@ def analysis_timeseries(
             nc.close()
 
             # load basin mask
-            basedir = os.path.dirname(__file__)
-            nc = dataset(os.path.join(basedir,
-                                      'data/basinlandmask_eORCA1.nc'), 'r')
+            nc = dataset(os.path.join(paths.bgcval2_repo, 'bgcval2/data/basinlandmask_eORCA1.nc'), 'r')
             alttmask[name] = nc.variables['tmaskatl'][
                 latslice, :]  # 2D Atlantic mask
             if name == [
