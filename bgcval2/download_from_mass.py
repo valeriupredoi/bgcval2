@@ -423,66 +423,74 @@ def download_from_mass(jobID, doMoo=True):
     fixFilePaths(outputFold, jobID)
     deleteBadLinksAndZeroSize(outputFold, jobID)
 
-    doLs = True
-    doDL = True
+    download_script_path = ''.join([folder('mass_scripts/'), jobID,'.sh'])
 
+    header_lines = ['# Run this script on mass-cli1.jasmin.ac.uk\n',]
+    header_lines.append('# from login1.jasmin.ac.uk, ssh to the mass machine:\n#     ssh -X  mass-cli\n')
+    header_lines.append(''.join(['# run script with:\n# source ', os.path.abspath(download_script_path),'\n']))
+    header_lines.append('# moo passwd -r # if mass password is expired\n')
+    download_script_txt = ''.join(header_lines)
+ 
     #if not doMoo: return
-    if doLs:
-        print("download_from_mass:\tLooking at the following files:")
-        ######
-        # print files
+    print("download_from_mass:\tLooking at the following files:")
+    ######
+    # print files
+    #bashCommand = "moo passwd -r"
+    #print "running the command:",bashCommand
+    #process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+    #output = process.communicate()[0]
+    #print "output",output
 
-        #bashCommand = "moo passwd -r"
-        #print "running the command:",bashCommand
-        #process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-        #output = process.communicate()[0]
-        #print "output",output
+    bashCommand = "moo ls moose:/crum/" + jobID + "/ony.nc.file/*.nc"
+    download_script_txt = ''.join([download_script_txt, bashCommand, '\n'])
 
-        bashCommand = "moo ls moose:/crum/" + jobID + "/ony.nc.file/*.nc"
+    if not doMoo:
+        print("download_from_mass:\tthe command is (dry-run): \n", bashCommand)
+        output = ''
+    else:
+        print("download_from_mass:\trunning the command:", bashCommand)
+        stdout.flush()
+        process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+        output = process.communicate()[0]
+
+    if len(output.split('\n')) > 6000:
+        failed = 0
+        process1 = {}
+        output1 = {}
+        for i in range(100):
+            bashCommand = "moo get --fill-gaps moose:/crum/" + jobID + "/ony.nc.file/*_1y_??" + mnStr(
+                i) + "*.nc " + outputFold
+            print("download_from_mass:\trunning the command:", bashCommand)
+            download_script_txt = ''.join([download_script_txt, bashCommand, '\n'])
+
+            stdout.flush()
+            try:
+                process1[i] = subprocess.Popen(bashCommand.split(),
+                                               stdout=subprocess.PIPE)
+                process1[i].wait()
+                output1[i] = process.communicate()[0]
+                print("download_from_mass:\t",i, output1[i])
+            except:
+                failed += 1
+                print("Failed", i, '\t', bashCommand)
+        if failed > 10:
+            assert 0
+    else:
+        print("download_from_mass:\tDownloading at the following files:")
+        bashCommand = "moo get --fill-gaps moose:/crum/" + jobID + "/ony.nc.file/*.nc " + outputFold
+        download_script_txt = ''.join([download_script_txt, bashCommand, '\n'])
         if not doMoo:
             print("download_from_mass:\tthe command is (dry-run): \n", bashCommand)
-            output = ''
         else:
             print("download_from_mass:\trunning the command:", bashCommand)
-            stdout.flush()
-            process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+            process = subprocess.Popen(bashCommand.split(),
+                                       stdout=subprocess.PIPE)
             output = process.communicate()[0]
 
-        if len(output.split('\n')) > 6000:
-            #bashCommand = ''
-            failed = 0
-            process1 = {}
-            output1 = {}
-            #for i in reversed(range(100)):
-            for i in range(100):
-
-                bashCommand = "moo get --fill-gaps moose:/crum/" + jobID + "/ony.nc.file/*_1y_??" + mnStr(
-                    i) + "*.nc " + outputFold
-                print("download_from_mass:\trunning the command:", bashCommand)
-                stdout.flush()
-                try:
-                    process1[i] = subprocess.Popen(bashCommand.split(),
-                                                   stdout=subprocess.PIPE)
-                    process1[i].wait()
-                    output1[i] = process.communicate()[0]
-                    print("download_from_mass:\t",i, output1[i])
-                except:
-                    failed += 1
-                    print("Failed", i, '\t', bashCommand)
-            if failed > 10:
-                assert 0
-        else:
-            print("download_from_mass:\tDownloading at the following files:")
-            bashCommand = "moo get --fill-gaps moose:/crum/" + jobID + "/ony.nc.file/*.nc " + outputFold
-            if not doMoo:
-                print("download_from_mass:\tthe command is (dry-run): \n", bashCommand)
-                return
-
-            else:
-                print("download_from_mass:\trunning the command:", bashCommand)
-                process = subprocess.Popen(bashCommand.split(),
-                                           stdout=subprocess.PIPE)
-                output = process.communicate()[0]
+    print('writing file:',download_script_path, '\nfile contents:\n', download_script_txt)
+    outfile = open(download_script_path, 'w')
+    outfile.write(download_script_txt)
+    outfile.close()
 
     fixFilePaths(outputFold, jobID)
     deleteBadLinksAndZeroSize(outputFold, jobID)
@@ -616,7 +624,7 @@ def main():
     # All yearly files
 
     if keys == []:
-        download_from_mass(jobID)
+        download_from_mass(jobID, doMoo=True)
         return
     if 'noMoo' in keys or 'dryrun' in keys or '--dry-run' in keys:
         download_from_mass(jobID, doMoo=False)
