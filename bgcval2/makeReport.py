@@ -71,9 +71,22 @@ def addImageToHtml(fn, imagesfold, reportdir, debug=True):
     newfn = imagesfold + os.path.basename(fn)
     relfn = newfn.replace(reportdir, './')
 
+    if debug:
+        print("addImageToHtml:\tfn:", fn, 
+            "\n\timagesfold:", imagesfold, 
+            "\n\treportdir:", reportdir,
+            "\n\tnewfn:", newfn,
+            "\n\trelfn:", relfn)
+
+    
     if not os.path.exists(newfn):
-        if debug: print("cp", fn, newfn)
-        shutil.copy2(fn, newfn)
+        if debug: print("addImageToHtml:\tcopytree", fn, newfn)
+        basedir = folder(os.path.dirname(newfn))
+        #copytree(fn, newfn)
+        if os.path.isdir(fn):
+            shutil.copytree(fn, newfn, symlinks, ignore)
+        else:
+            shutil.copy2(fn, newfn)
     else:
         ####
         # Check if the newer file is the same one from images.
@@ -84,10 +97,11 @@ def addImageToHtml(fn, imagesfold, reportdir, debug=True):
                 fn,
                 newfn,
         ):
-            if debug: print("removing old file", fn)
+            if debug: print("addImageToHtml:\tremoving old file", fn)
             os.remove(newfn)
             shutil.copy2(fn, newfn)
-            if debug: print("cp", fn, newfn)
+            if debug: 
+                print("addImageToHtml:\t copy2", fn, newfn)
     return relfn
 
 
@@ -118,7 +132,7 @@ def html5Maker(
     # Copy all necceasiry objects and templates to the report location:
     print("Copying html and js assets to", reportdir)
     basedir = os.path.dirname(__file__)
-    copytree(os.path.join(basedir, 'html5/html5Assets'), reportdir)
+    copytree(os.path.join(basedir, 'bgcval2/html5/html5Assets'), reportdir)
     indexhtmlfn = reportdir + "index.html"
     try:
         os.rename(reportdir + 'index-template.html', indexhtmlfn)
@@ -513,6 +527,7 @@ def html5Maker(
             for fn in vfiles:
                 #####
                 # Copy image to image folder and return relative path.
+                print('create plot headers:', fn)
                 relfn = addImageToHtml(fn, imagesfold, reportdir)
 
                 ####
@@ -647,6 +662,7 @@ def html5Maker(
                 #if fn.lower().find('surface')<0 or fn.lower().find('layerless')<0:continue
                 #####
                 # Copy image to image folder and return relative path.
+                print('adding Level1 regional plot:', jobID, fn)
                 relfn = addImageToHtml(fn, imagesfold, reportdir)
 
                 #####
@@ -760,6 +776,8 @@ def html5Maker(
 
                     #####
                     # Copy image to image folder and return relative path.
+                    print('adding Level1 Profile plot:', jobID, fn)
+
                     relfn = addImageToHtml(fn, imagesfold, reportdir)
 
                     #####
@@ -899,6 +917,7 @@ def html5Maker(
 
                 #####
                 # Copy image to image folder and return relative path.
+                print('adding Level2  plot:', jobID, fn)
                 relfn = addImageToHtml(fn, imagesfold, reportdir)
 
                 #####
@@ -1012,6 +1031,7 @@ def html5Maker(
 
                 #####
                 # Copy image to image folder and return relative path.
+                print('adding Level2 Feilds plot:', jobID, fn)
                 relfn = addImageToHtml(fn, imagesfold, reportdir)
 
                 #####
@@ -1099,6 +1119,7 @@ def html5Maker(
             for fn in vfiles:
                 #####
                 # Copy image to image folder and return relative path.
+                print('adding Level3 plot:', jobID, fn)
                 relfn = addImageToHtml(fn, imagesfold, reportdir)
 
                 #####
@@ -1191,6 +1212,7 @@ def html5Maker(
                 #if fn.lower().find('surface')<0 or fn.lower().find('layerless')<0:continue
                 #####
                 # Copy image to image folder and return relative path.
+                print('adding Level3 regional plot:', fn)
                 relfn = addImageToHtml(fn, imagesfold, reportdir)
 
                 #####
@@ -1266,6 +1288,7 @@ def html5Maker(
 
                     #####
                     # Copy image to image folder and return relative path.
+                    print('adding Level3 Hovmoeller:',  fn)
                     relfn = addImageToHtml(fn, imagesfold, reportdir)
 
                     #####
@@ -1289,7 +1312,9 @@ def html5Maker(
 
     if regionMap:
         vfiles = []
-        vfiles.extend(glob('html5/html5Assets/images/*Legend*.png'))
+        vfiles.extend(glob('bgcval2/html5/html5Assets/images/*Legend*.png'))
+        print('adding Legend')
+
         relfns = [addImageToHtml(fn, imagesfold, reportdir) for fn in vfiles]
         print(relfns)
         href = 'regionMap_default'
@@ -1347,7 +1372,7 @@ def comparehtml5Maker(
     ####
     # Copy all necceasiry objects and templates to the report location:
     print("Copying html and js assets to", reportdir)
-    copytree('html5/html5Assets', reportdir)
+    copytree('bgcval2/html5/html5Assets', reportdir)
     indexhtmlfn = reportdir + "index.html"
     try:
         os.rename(reportdir + 'index-compare-template.html', indexhtmlfn)
@@ -1517,6 +1542,7 @@ def comparehtml5Maker(
 
         #####
         # Copy image to image folder and return relative path.
+        print('adding compare plots')
         relativeFiles = [
             addImageToHtml(catfn, imagesfold, reportdir) for catfn in catfiles
         ]
@@ -1604,6 +1630,7 @@ def comparehtml5Maker(
             for fn in sorted(vfiles):
                 #####
                 # Copy image to image folder and return relative path.
+                print('Adding ', key, 'compare plots:', fn)
                 relfn = addImageToHtml(fn, imagesfold, reportdir)
 
                 #####
@@ -1631,6 +1658,7 @@ def comparehtml5Maker(
             for fn in sorted(otherFilenames):
                 #####
                 # Copy image to image folder and return relative path.
+                print('Adding ', key, 'compare plots:', fn)
                 relfn = addImageToHtml(fn, imagesfold, reportdir)
 
                 #####
@@ -1663,7 +1691,8 @@ def comparehtml5Maker(
     legend = True
     if legend:
         vfiles = []
-        vfiles.extend(glob('html5/html5Assets/images/*Legend*.png'))
+        vfiles.extend(glob('bgcval2/html5/html5Assets/images/*Legend*.png'))
+        print('Adding compare plots legend')
         relfns = [addImageToHtml(fn, imagesfold, reportdir) for fn in vfiles]
         print(relfns)
         href = 'regionMap_default'

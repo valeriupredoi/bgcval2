@@ -137,7 +137,7 @@ if True:
     #	physKeys.append('MeridionalCurrent')        	# Meridional Veloctity
     #	physKeys.append('VerticalCurrent')          	# Vertical Veloctity
 
-    physKeys.append('FreshwaterFlux')  # Freshwater flux
+    #physKeys.append('FreshwaterFlux')  # Freshwater flux
     physKeys.append('sowaflup')  # Net Upward Water Flux
     #	physKeys.append('soicecov')			# Ice fraction
 
@@ -230,19 +230,18 @@ keymetricsfirstDict = {i: n for i, n in enumerate(keymetricsfirstKeys)}
 
 
 def listModelDataFiles(jobID, filekey, datafolder, annual):
-    print(
-        ("listing model data files:\njobID:\t", jobID, '\nfile key:\t',
-         filekey, '\ndata folder:\t', datafolder, '\nannual flag:\t', annual))
+    print("listing model data files:\njobID:\t", jobID, '\nfile key:\t',
+         filekey, '\ndata folder:\t', datafolder, '\nannual flag:\t', annual)
     if annual:
-        print(("listing model data files:",
-               datafolder + jobID + "/" + jobID + "o_1y_*_" + filekey + ".nc"))
+        print("listing model data files:",
+               datafolder + jobID + "/" + jobID + "o_1y_*_" + filekey + ".nc")
         datafolder = os.path.join(datafolder, jobID)
         model_files = sorted(
             glob(datafolder + "/" + jobID + "o_1y_*_" + filekey +
                  ".nc"))
     else:
-        print(("listing model data files:",
-               datafolder + jobID + "/" + jobID + "o_1m_*_" + filekey + ".nc"))
+        print("listing model data files:",
+               datafolder + jobID + "/" + jobID + "o_1m_*_" + filekey + ".nc")
         datafolder = os.path.join(datafolder, jobID)
         model_file = sorted(
             glob(datafolder + "/" + jobID + "o_1m_*_" + filekey +
@@ -253,11 +252,11 @@ def listModelDataFiles(jobID, filekey, datafolder, annual):
 
 def analysis_timeseries(
     jobID="u-ab671",
+    analysisSuite='all',
+    regions='all',
     clean=0,
     annual=True,
     strictFileCheck=True,
-    analysisSuite='all',
-    regions='all',
     config_user=None
 ):
     """
@@ -283,6 +282,15 @@ def analysis_timeseries(
 	:param regions:
 
 	"""
+
+    print('-----------------------')
+    print('Starting analysis_timeseries')
+    print('jobID:', jobID)
+    print('analysisSuite:',analysisSuite)
+    print('regions:', regions)
+    print('clean:',  clean, 'annual:',annual, 'strictFileCheck:', strictFileCheck)
+    print('config_user:', config_user)   
+
     # get runtime configuration
     if config_user:
         paths_dict, config_user = get_run_configuration(config_user)
@@ -357,6 +365,8 @@ def analysis_timeseries(
         if analysisSuite.lower() in [
                 'debug',
         ]:
+            analysisKeys.append('AMOC_26N')                # AMOC 26N
+
             #analysisKeys.append('AirSeaFlux')		# work in progress
             #analysisKeys.append('TotalAirSeaFluxCO2')	# work in progress
             #analysisKeys.append('NoCaspianAirSeaFluxCO2')	# work in progress
@@ -365,20 +375,20 @@ def analysis_timeseries(
             #analysisKeys.append('OMZMeanDepth')		# work in progress
             #analysisKeys.append('OMZThickness')            # Oxygen Minimum Zone Thickness
             #analysisKeys.append('TotalOMZVolume')		# work in progress
-            analysisKeys.append('O2')  # WOA Oxygen
+            #analysisKeys.append('O2')  # WOA Oxygen
             #analysisKeys.append('AOU')                      # Apparent Oxygen Usage
             #analysisKeys.append('WindStress')               # Wind Stress
             #analysisKeys.append('Dust')                    # Dust
             #analysisKeys.append('TotalDust')               # Total Dust
             #analysisKeys.append('TotalDust_nomask')
-            analysisKeys.append('DIC')  # work in progress
+            #analysisKeys.append('DIC')  # work in progress
             #analysisKeys.append('DrakePassageTransport')	# DrakePassageTransport
             #analysisKeys.append('TotalIceArea')		# work in progress
             #analysisKeys.append('CHN')
             #analysisKeys.append('CHD')
             #analysisKeys.append('CHL')
             #analysisKeys.append('pH')
-            analysisKeys.append('Alk')  # Glodap Alkalinity
+            #analysisKeys.append('Alk')  # Glodap Alkalinity
 
             #if jobID in ['u-am004','u-am005']:
             #        analysisKeys.append('DMS_ANDR')                 # DMS Anderson
@@ -388,9 +398,9 @@ def analysis_timeseries(
             #analysisKeys.append('Iron')			# work in progress
             #analysisKeys.append('DTC')                 # work in progress
 
-            analysisKeys.append('Iron')  # work in progress
-            analysisKeys.append('N')  # WOA Nitrate
-            analysisKeys.append('Si')  # WOA Nitrate
+            #analysisKeys.append('Iron')  # work in progress
+            #analysisKeys.append('N')  # WOA Nitrate
+            #analysisKeys.append('Si')  # WOA Nitrate
             #analysisKeys.append('IntPP_OSU')               # OSU Integrated primpary production
             #analysisKeys.append('Chl_CCI')
         #analysisKeys.append('CHL_MAM')
@@ -463,17 +473,17 @@ def analysis_timeseries(
 
 #####
 # Physics switches:
-    if jobID in [
-            'u-aj588',
-            'u-ak900',
-            'u-ar538',
-            'u-an869',
-            'u-ar977',
-    ]:
-        try:
-            analysisKeys.remove('FreshwaterFlux')
-        except:
-            pass
+#    if jobID in [
+#            'u-aj588',
+#            'u-ak900',
+#            'u-ar538',
+#            'u-an869',
+#            'u-ar977',
+#    ]:
+#        try:
+#            analysisKeys.remove('FreshwaterFlux')
+#        except:
+#            pass
 
     #####
     # Some lists of region.
@@ -569,9 +579,14 @@ def analysis_timeseries(
     # Feel free to add other macihines onto this list, if need be.
     machinelocation = ''
 
+
+    shelvedir = ukp.folder(paths.shelvedir + "/timeseries/" + jobID)
+
     #####
     # PML
-    if gethostname().find('pmpc') > -1:
+    hostname = gethostname()
+
+    if hostname.find('pmpc') > -1:
         print(("analysis-timeseries.py:\tBeing run at PML on ", gethostname()))
 
         imagedir = ukp.folder(paths.imagedir + '/' + jobID + '/timeseries')
@@ -580,10 +595,9 @@ def analysis_timeseries(
         else: WOAFolder = paths.WOAFolder
 
         #shelvedir 	= ukp.folder(paths.shelvedir+'/'+jobID+'/timeseries/'+jobID)
-        shelvedir = ukp.folder(paths.shelvedir + "/timeseries/" + jobID)
+        #shelvedir = ukp.folder(paths.shelvedir + "/timeseries/" + jobID)
     #####
     # JASMIN
-    hostname = gethostname()
     if hostname.find('ceda.ac.uk') > -1 or hostname.find(
             'jasmin') > -1 or hostname.find('jc.rl.ac.uk') > -1:
         print(("analysis-timeseries.py:\tBeing run at CEDA on ", hostname))
@@ -591,12 +605,12 @@ def analysis_timeseries(
 
         #try:	shelvedir 	= ukp.folder("/group_workspaces/jasmin2/ukesm/BGC_data/"+getuser()+"/shelves/timeseries/"+jobID)
         #except: shelvedir       =            "/group_workspaces/jasmin2/ukesm/BGC_data/"+getuser()+"/shelves/timeseries/"+jobID
-        try:
-            shelvedir = ukp.folder("/gws/nopw/j04/ukesm/BGC_data/" +
-                                   getuser() + "/shelves/timeseries/" + jobID)
-        except:
-            shelvedir = "/gws/nopw/j04/ukesm/BGC_data/" + getuser(
-            ) + "/shelves/timeseries/" + jobID
+        #try:
+        #    shelvedir = ukp.folder("/gws/nopw/j04/ukesm/BGC_data/" +
+        #                           getuser() + "/shelves/timeseries/" + jobID)
+        #except:
+        #    shelvedir = "/gws/nopw/j04/ukesm/BGC_data/" + getuser(
+        #    ) + "/shelves/timeseries/" + jobID
 
         if annual: WOAFolder = paths.WOAFolder_annual
         else: WOAFolder = paths.WOAFolder
@@ -606,7 +620,7 @@ def analysis_timeseries(
         except:
             imagedir = paths.imagedir + '/' + jobID + '/timeseries'
 
-    if gethostname().find('monsoon') > -1:
+    if hostname.find('monsoon') > -1:
         print("Please set up paths.py")
         assert 0
 
@@ -675,6 +689,18 @@ def analysis_timeseries(
             ukesmkeys['u3d'] = 'vozocrtx'
             ukesmkeys['e3u'] = 'e3u'
             ukesmkeys['w3d'] = 'vovecrtz'
+            ukesmkeys['MLD'] = 'ssomxl010'
+        elif 'thetao_con' in nctmpkeys: # Added keys for UKESM2.
+            ukesmkeys['time'] = 'time_counter'
+            ukesmkeys['temp3d'] = 'thetao_con'
+            ukesmkeys['sst'] = 'tos_con'
+            ukesmkeys['sal3d'] = 'so_abs'
+            ukesmkeys['sss'] = 'sos_abs'
+            ukesmkeys['v3d'] = 'vo'
+            ukesmkeys['u3d'] = 'uo'
+            ukesmkeys['e3u'] = 'thkcello'
+            ukesmkeys['w3d'] = 'wo'
+            ukesmkeys['MLD'] = 'somxzint1'
         else:
             ukesmkeys['time'] = 'time_centered'
             ukesmkeys['temp3d'] = 'thetao'
@@ -685,6 +711,8 @@ def analysis_timeseries(
             ukesmkeys['u3d'] = 'uo'
             ukesmkeys['e3u'] = 'thkcello'
             ukesmkeys['w3d'] = 'wo'
+            ukesmkeys['MLD'] = 'ssomxl010'
+
 #	else:
 #                        ukesmkeys['time']       = 'time_centered'
 #                        ukesmkeys['temp3d']     = 'thetao'
@@ -3803,9 +3831,7 @@ def analysis_timeseries(
 
         av[name]['modeldetails'] = {
             'name': 'mld',
-            'vars': [
-                'somxl010',
-            ],
+            'vars': [ ukesmkeys['MLD'],],
             'convert': applySurfaceMask,
             'units': 'm'
         }

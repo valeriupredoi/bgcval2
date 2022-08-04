@@ -163,7 +163,7 @@ def AddSection(filepath, href, Title, Description='', Files=[]):
 
     #####
     # Copy the template and add the images.
-    f = open("html5/section-template.html", "r")
+    f = open("bgcval2/html5/section-template.html", "r")
     contents = f.readlines()
     f.close()
     if type(Files) == type([

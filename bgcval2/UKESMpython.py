@@ -77,7 +77,7 @@ def folder(name):
         name = name + '/'
     if exists(name) is False:
         makedirs(name)
-        print(('makedirs ', name))
+        print('makedirs ', name)
     return name
 
 

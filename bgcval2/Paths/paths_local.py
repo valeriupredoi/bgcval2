@@ -53,21 +53,21 @@ root_dir = os.path.join("/home", os.environ.get("USER"))
 #####
 # Post processed Data location
 #shelvedir 	= folder("/group_workspaces/root_dir/ukesm/BGC_data/"+getuser()+"/shelves/")
-shelvedir = folder(root_dir + "/BGC_data/" + getuser() + "/shelves/")
+shelvedir = folder([root_dir, "bgcval2_data", getuser(), "shelves"])
 
 #####
 # Post processed p2p Data location
 #p2p_ppDir = folder("/group_workspaces/root_dir/ukesm/BGC_data/ukesm_postProcessed/")
-p2p_ppDir = folder(root_dir + "/BGC_data/ukesm_postProcessed/")
+p2p_ppDir = folder(root_dir + "/bgcval2_data/ukesm_postProcessed/")
 
 ######
 # Output location for plots.
-imagedir = folder(root_dir + '/BGC_data/' + getuser() + "/images/")
+imagedir = folder(root_dir + '/bgcval2_data/' + getuser() + "/images/")
 
 #####
 # Location of model files.
 #esmvalFolder 	= "/group_workspaces/root_dir/ukesm/BGC_data/"
-ModelFolder_pref = folder(root_dir + "/BGC_data/")
+ModelFolder_pref = folder(root_dir + "/bgcval2_data/")
 
 #####
 # eORCA1 grid

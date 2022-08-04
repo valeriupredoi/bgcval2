@@ -116,8 +116,8 @@ def percentilesPlot(
         maxy = np.ma.max(modeldataDict['80pc'])
 
     if miny in [np.ma.masked, np.nan, np.inf]:
-        print(("percentilesPlot:\tIt is not possible to make this plot,(",
-              title, "), as the min values are no plottable:", miny))
+        print("percentilesPlot:\tIt is not possible to make this plot,(",
+              title, "), as the min values are no plottable:", miny)
         return
 
     #####
@@ -389,12 +389,12 @@ def percentilesPlot(
     #axm.set_yticklabels(ytickLabels,fontsize=10)
     #axm.yaxis.tick_right()
 
-    print(("timeseriesPlots:\tpercentilesPlot:\tSaving:", filename))
+    print("timeseriesPlots:\tpercentilesPlot:\tSaving:", filename)
     try:
         pyplot.savefig(filename)
     except:
-        print(("WARNING: THIS PLOT FAILED:", filename,
-              '(probably beaucse of all masks/ infs./nans)'))
+        print("WARNING: THIS PLOT FAILED:", filename,
+              '(probably beaucse of all masks/ infs./nans)')
     pyplot.close()
 
 
@@ -415,12 +415,12 @@ def trafficlightsPlot(
     #####
     # This is exclusively used for sums now.
     if len(times) == 0 or len(arr) == 0:
-        print(("trafficlightsPlot:\tWARNING:\tdata or time arrays are empty.",
-              len(times), len(arr), title))
+        print("trafficlightsPlot:\tWARNING:\tdata or time arrays are empty.",
+              len(times), len(arr), title)
         return
     if np.ma.is_masked(arr):
-        print(("trafficlightsPlot:\tWARNING:\tdata arrays is masked",
-              len(times), len(arr), title))
+        print("trafficlightsPlot:\tWARNING:\tdata arrays is masked",
+              len(times), len(arr), title)
         return
 
     xlims = [times[0], times[-1]]
@@ -516,7 +516,7 @@ def trafficlightsPlot(
     legend.draw_frame(False)
     legend.get_frame().set_alpha(0.)
 
-    print(("timeseriesPlots:\ttrafficlightsPlot:\tSaving:", filename))
+    print("timeseriesPlots:\ttrafficlightsPlot:\tSaving:", filename)
     pyplot.savefig(filename)
     pyplot.close()
 
@@ -533,12 +533,12 @@ def simpletimeseries(
     # This is exclusively used for sums now.
     #title = ' '.join([getLongName(t) for t in title])
     if len(times) == 0 or len(arr) == 0:
-        print(("simpletimeseries:\tWARNING:\tdata or time arrays are empty.",
-              len(times), len(arr), title))
+        print("simpletimeseries:\tWARNING:\tdata or time arrays are empty.",
+              len(times), len(arr), title)
         return
     if np.ma.is_masked(arr):
-        print(("simpletimeseries:\tWARNING:\tdata arrays is masked", len(times),
-              len(arr), title))
+        print("simpletimeseries:\tWARNING:\tdata arrays is masked", len(times),
+              len(arr), title)
         return
 
     xlims = [times[0], times[-1]]
@@ -576,7 +576,7 @@ def simpletimeseries(
     legend.draw_frame(False)
     legend.get_frame().set_alpha(0.)
 
-    print(("timeseriesPlots:\tsimpletimeseries:\tSaving:", filename))
+    print("timeseriesPlots:\tsimpletimeseries:\tSaving:", filename)
     pyplot.savefig(filename)
     pyplot.close()
 
@@ -672,8 +672,8 @@ def movingaverage2(x, window_len=11, window='flat', extrapolate='axially'):
         y = np.convolve(w / w.sum(), s, mode='same')
     returning = y[window_len - 1:-window_len + 1]
     if len(x) != len(returning):
-        print(("output array is not the same size as input:\tin:", len(x),
-              '\tout:', len(returning)))
+        print("output array is not the same size as input:\tin:", len(x),
+              '\tout:', len(returning))
         assert 0
     counts = np.arange(len(x))
     return np.ma.masked_where(
@@ -756,8 +756,8 @@ def multitimeseries(
     for i, jobID in enumerate(sorted(timesD.keys())):
         if len(arrD[jobID]): emptydat = False
     if emptydat:
-        print(("No data for this figure:", plotStyle, list(timesD.keys()),
-              title, filename))
+        print("No data for this figure:", plotStyle, list(timesD.keys()),
+              title, filename)
         return
 
     fig = pyplot.figure()
@@ -790,9 +790,9 @@ def multitimeseries(
         arr = arrD[jobID]
         #print 'multitimeseries: ', len(times), len(arr)
         try:
-            print(("multitimeseries:", jobID, dataname, min(times), max(times)))
+            print("multitimeseries:", jobID, dataname, min(times), max(times))
         except:
-            print(("multitimeseries:", jobID, dataname, 'no data'))
+            print("multitimeseries:", jobID, dataname, 'no data')
 
         if plotStyle == 'Separate':
             if len(list(timesD.keys())) <= 4:
@@ -804,19 +804,19 @@ def multitimeseries(
             elif len(list(timesD.keys())) <= 12:
                 axs.append(fig.add_subplot(3, 4, i + 1))
             else:
-                print(("Something is wrong here", i, plotStyle,
-                      len(list(timesD.keys())), jobID))
-            print(("Separate plots", i, jobID, len(list(timesD.keys())),
-                  len(axs)))
+                print("Something is wrong here", i, plotStyle,
+                      len(list(timesD.keys())), jobID)
+            print("Separate plots", i, jobID, len(list(timesD.keys())),
+                  len(axs))
             axs[i].set_title(jobID)
 
         if len(times) == 0 or len(arr) == 0:
-            print(("multitimeseries:\tWARNING:\tdata or time arrays are empty.",
-                  len(times), len(arr), title, (i, jobID)))
+            print("multitimeseries:\tWARNING:\tdata or time arrays are empty.",
+                  len(times), len(arr), title, (i, jobID))
             continue
         if np.ma.is_masked(arr):
-            print(("multitimeseries:\tWARNING:\tdata arrays is masked",
-                  len(times), len(arr), title, (i, jobID)))
+            print("multitimeseries:\tWARNING:\tdata arrays is masked",
+                  len(times), len(arr), title, (i, jobID))
             continue
 
         if times[0] < xlims[0]: xlims[0] = times[0]
@@ -1055,7 +1055,7 @@ def multitimeseries(
             ax.set_ylim(ylims)
         pyplot.suptitle(title)
 
-    print(("multitimeseries:\tsimpletimeseries:\tSaving:", filename))
+    print("multitimeseries:\tsimpletimeseries:\tSaving:", filename)
     pyplot.savefig(filename)
     pyplot.close()
 
@@ -1113,8 +1113,8 @@ def makemapplot(
         print("makemapplot: \tMasking")
         data = np.ma.masked_less_equal(ma.array(data), 0.)
 
-    print((data.min(), lats.min(), lons.min(), data.shape, lats.shape,
-          lons.shape))
+    print('makemapplot', data.min(), lats.min(), lons.min(), data.shape, lats.shape,
+          lons.shape)
 
     if data.ndim == 1:
         if doLog:
@@ -1212,7 +1212,7 @@ def mapPlotSingle(
         doLog=doLog,
     )
     ax1.set_extent([-180., 180., -90., 90.])
-    print(("mapPlotSingle.py:\tSaving:", filename))
+    print("mapPlotSingle.py:\tSaving:", filename)
     pyplot.savefig(filename, dpi=dpi)
     pyplot.close()
 
@@ -1314,7 +1314,7 @@ def mapPlotPair(
         if False in [fig, ax2]: assert False
         ax2.set_extent([-180., 180., -90., 90.])
 
-        print(("mapPlotPair: \tSaving:", filename))
+        print("mapPlotPair: \tSaving:", filename)
         pyplot.savefig(filename, dpi=dpi)
         pyplot.close()
     except:
@@ -1349,11 +1349,11 @@ def hovmoellerAxis(fig,
         if yaxis.mean() < 0: yaxis = np.clip(yaxis, -10000., -0.1)
 
     if debug:
-        print(("hovmoellerAxis:\txaxis:", title, xaxis, "\tyaxis:", yaxis,
-              "\tdata:", data))
+        print("hovmoellerAxis:\txaxis:", title, xaxis, "\tyaxis:", yaxis,
+              "\tdata:", data)
     if debug:
-        print(("hovmoellerAxis:\txaxis:", title, xaxis.shape, "\tyaxis:",
-              yaxis.shape, "\tdata:", data.shape))
+        print("hovmoellerAxis:\txaxis:", title, xaxis.shape, "\tyaxis:",
+              yaxis.shape, "\tdata:", data.shape)
 
     if vmin == vmax == '': p = pyplot.pcolormesh(xaxis, yaxis, data, cmap=cmap)
     else:
@@ -1429,10 +1429,10 @@ def hovmoellerPlot(modeldata,
     md = np.ma.masked_where(np.ma.masked_invalid(md).mask + md.mask, md)
     times = taxisfromCC(np.array(times_cc))
     yaxis = zaxisfromCC(yaxis_cc)
-    print(("hovmoellerPlot model:", title, md.shape, md.mean(), times.shape,
-          yaxis.shape))  #, times, yaxis
+    print("hovmoellerPlot model:", title, md.shape, md.mean(), times.shape,
+          yaxis.shape)  #, times, yaxis
     if len(md.shape) == 1 or 1 in md.shape:
-        print(("Not enough model data dimensions:", md.shape))
+        print("Not enough model data dimensions:", md.shape)
         return
 
     #####
@@ -1448,11 +1448,11 @@ def hovmoellerPlot(modeldata,
         dd.append(dataslice[l])
     if len(dd):
         dd = np.ma.array(dd)  #.squeeze()
-        print(("hovmoellerPlot data: (pre-mask)", title, '\t', dd.shape,
-              dd.min(), dd.mean(), dd.max()))
+        print("hovmoellerPlot data: (pre-mask)", title, '\t', dd.shape,
+              dd.min(), dd.mean(), dd.max())
         dd = np.ma.masked_where(np.ma.masked_invalid(dd).mask + dd.mask, dd)
-        print(("hovmoellerPlot data: (post-mask)", title, '\t', dd.shape,
-              dd.min(), dd.mean(), dd.max()))
+        print("hovmoellerPlot data: (post-mask)", title, '\t', dd.shape,
+              dd.min(), dd.mean(), dd.max())
         dyaxis_cc = np.array(dyaxis_cc)
     else:
         dd = np.ma.array([
@@ -1468,7 +1468,7 @@ def hovmoellerPlot(modeldata,
         if dd.shape[-1] == 1:
             dd = dd[:, :, 0]
         if len(dd.shape) > 2 and dd.shape[-1] != 1:
-            print(("Something very strange is happenning with this array:", dd))
+            print("Something very strange is happenning with this array:", dd)
             assert False
 
     dxaxis = np.array([
@@ -1476,8 +1476,8 @@ def hovmoellerPlot(modeldata,
         1,
     ])
     dyaxis = zaxisfromCC(dyaxis_cc)
-    print(("hovmoellerPlot: - data:", title, dd.shape, dd.mean(), dxaxis.shape,
-          dyaxis.shape))
+    print("hovmoellerPlot: - data:", title, dd.shape, dd.mean(), dxaxis.shape,
+          dyaxis.shape)
 
     if len(dd.squeeze().compressed()) == 0 and diff:
         print(
@@ -1617,7 +1617,7 @@ def hovmoellerPlot(modeldata,
     pyplot.xlabel('Year')
 
     pyplot.tight_layout()
-    print(("hovmoellerPlot.py: \tSaving:", filename))
+    print("hovmoellerPlot.py: \tSaving:", filename)
     pyplot.savefig(filename, dpi=dpi)
     pyplot.close()
 
@@ -1656,7 +1656,7 @@ def profilePlot(
     #yaxis = zaxisfromCC(yaxis_cc)
     #print "profilePlot model:", title, md.shape,md.mean(),times.shape,yaxis.shape #, times, yaxis
     if len(md.shape) == 1 or 1 in md.shape:
-        print(("Not enough model data dimensions:", md.shape))
+        print("Not enough model data dimensions:", md.shape)
         return
 
     #####
@@ -1673,11 +1673,11 @@ def profilePlot(
 
     if len(dd):
         dd = np.ma.array(dd)  #.squeeze()
-        print(("profilePlot data: (pre-mask)", title, '\t', dd.shape, dd.min(),
-              dd.mean(), dd.max()))
+        print("profilePlot data: (pre-mask)", title, '\t', dd.shape, dd.min(),
+              dd.mean(), dd.max())
         dd = np.ma.masked_where(np.ma.masked_invalid(dd).mask + dd.mask, dd)
-        print(("profilePlot data: (post-mask)", title, '\t', dd.shape, dd.min(),
-              dd.mean(), dd.max()))
+        print("profilePlot data: (post-mask)", title, '\t', dd.shape, dd.min(),
+              dd.mean(), dd.max())
         dyaxis_cc = np.abs(np.array(dyaxis_cc)) * -1.
     else:
         dd = np.ma.array([
@@ -1747,8 +1747,8 @@ def profilePlot(
     # Add model data
     plotDetails = {}
     for i in sorted(profileTimes.keys()):
-        print(('profilePlot', i, profileTimes[i], md[:, i].shape,
-              yaxis_cc.shape))
+        print('profilePlot', i, profileTimes[i], md[:, i].shape,
+              yaxis_cc.shape)
         lw = 1
         if i == lastyr: lw = 2
         color = defcmap((float(profileTimes[i]) - times_cc[0]) /
@@ -1769,7 +1769,7 @@ def profilePlot(
     pyplot.xlabel(xaxislabel)
     pyplot.ylabel('Depth')
     pyplot.title(title)
-    print(('x', rbmi, '->', rbma, 'z:', zmi, '->', zma))
+    print('x', rbmi, '->', rbma, 'z:', zmi, '->', zma)
 
     #ax1.set_yscale('log')	# Doesn't like negative values
 
@@ -1829,6 +1829,6 @@ def profilePlot(
     #legend.get_frame().set_alpha(0.)
 
     #pyplot.tight_layout()
-    print(("profilePlot.py: \tSaving:", filename))
+    print("profilePlot.py: \tSaving:", filename)
     pyplot.savefig(filename, dpi=dpi)
     pyplot.close()

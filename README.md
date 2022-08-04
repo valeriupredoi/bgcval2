@@ -134,8 +134,44 @@ Multi-model comaprison report
 -----------------------------
 
 Once several models have been analysed using the time series analysis,
-their time development can be compared using the analysis_compare command.
-This is currently hardwired, but work in on-going.
+their time development can be compared using the analysis_compare command:
+```
+analysis_compare recipe.yml
+```
+
+The comparison reports are generated from a user defined yaml recipe.
+
+In this yml file, the key structure is:
+```
+name: <Analysis name string>
+do_analysis_timeseries: <bool>
+jobs:
+   <jobID1>:
+      description: <descrption of the first job>
+   <jobID2>:
+      description: <descrption of the second job>      
+```
+Where the `name` is a short unique string describing the analysis script
+and the ultimately the name given here will become part of the path
+of the final output comparison report.
+
+The `do_analysis_timeseries` bool lets `analysis_compare` send jobs to 
+`analysis_timeseries`, allowing the user to run the entire suite in one 
+command, instead of individually running the `analysis_timeseries` then
+the `analysis_compare` part afterwards.
+
+The `jobs` is a dict of job IDs, that describe how each job will appear in the 
+final report. 
+
+The optional arguments for each job are:
+    - colour: a colour hex, or html recognised string (default is a randomly generated hex colour.)
+    - thickness: line thickness for matplotlib (default (`0.7`)
+    - linestyle: line style for matplotlib (default: `'-'`)
+    - suite: suite to send to `analysis_timeseries` if `do_analysis_timeseries` is true.
+    
+A sample yaml exists in `input_yml/comparison_analysis_template.yml`,
+which can be adapted to additional analysis. 
+
 
 Documentation
 =============
