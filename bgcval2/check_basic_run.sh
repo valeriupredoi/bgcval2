@@ -6,5 +6,5 @@ python analysis_level3_sameYear.py
 python analysis_p2p.py
 python analysis_timeseries.py
 python conf.py
-python makeReport.py
+python bgcval2_make_report.py
 python theWholePackage.py

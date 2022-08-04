@@ -41,6 +41,7 @@ jobs:
           analysis_level3_sameYear --help
           analysis_p2p --help
           analysis_timeseries --help
+          bgcval2_make_report --help
           bgcval --help           
       - shell: bash -l {0}
         run: pytest -n 2
