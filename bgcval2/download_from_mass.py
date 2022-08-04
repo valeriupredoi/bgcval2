@@ -321,29 +321,29 @@ def downloadField(jobID,
 
 ######
 # Some spefici wrappers for the downloadField
-def nemoMonthlyIce(jobID):
+def nemoMonthlyIce(jobID, dryrun=False):
     downloadField(jobID, [
         'soicecov',
     ],
                   extension='grid[-_]T',
                   timeslice='m',
                   name='monthlyIce',
-                  dryrun=False)
+                  dryrun=dryrun)
 
 
-def nemoMonthlyMLD(jobID, starttime=0, stoptime=1E20):
+def nemoMonthlyMLD(jobID, starttime=0, stoptime=1E20, dryrun=False):
     downloadField(jobID, [
         'somxl010',
     ],
                   extension='grid[-_]T',
                   timeslice='m',
                   name='monthlyMLD',
-                  dryrun=False,
+                  dryrun=dryrun,
                   starttime=starttime,
                   stoptime=stoptime)
 
 
-def monthlyChl(jobID, months=['01', '02', '06', '07', '08', '12']):
+def monthlyChl(jobID, months=['01', '02', '06', '07', '08', '12'], dryrun=False):
     for month in months:  #['01','02','06','07','08','12']: # They want JJA and DJF
         ts = '????' + month + '01-??????01'
         downloadField(jobID, ['CHD', 'CHN'],
@@ -351,10 +351,10 @@ def monthlyChl(jobID, months=['01', '02', '06', '07', '08', '12']):
                       timeslice='m',
                       timerange=ts,
                       name='monthlyCHL',
-                      dryrun=False)
+                      dryrun=dryrun)
 
 
-def medusaMonthlyexport(jobID):
+def medusaMonthlyexport(jobID, dryrun=False):
     downloadField(jobID, [
         'SDT__100',
         'FDT__100',
@@ -370,7 +370,7 @@ def medusaMonthlyexport(jobID):
                   extension='diad[-_]T',
                   timeslice='m',
                   name='monthlyExport',
-                  dryrun=False)
+                  dryrun=dryrun)
 
 
 def download_from_mass(jobID, doMoo=True):
@@ -604,33 +604,39 @@ def main():
         jobID = argv[1]
     except:
         print("Please provide a jobID")
-        jobID = ''
+        sys.exit(0)
     try:
         keys = argv[2:]
     except:
         keys = []
 
     #####
-    # All yearly files
+    # Default behaviour is to download annual files
+    if 'noMoo' in keys or 'dryrun' in keys or '--dry-run' in keys:
+       doMoo=False
+       dryrun = True
+       for k in ['noMoo', 'dryrun', '--dry-run']:
+           if k in keys:
+               keys.remove(k) 
+    else:
+       doMoo=True
+       dryrun=False
 
     if not keys:
-        download_from_mass(jobID, doMoo=True)
+        download_from_mass(jobID, doMoo=doMoo)
         return
 
-    if 'noMoo' in keys or 'dryrun' in keys or '--dry-run' in keys:
-        download_from_mass(jobID, doMoo=False)
-        return  
     #####
     # Monthly Ice files
     if 'ice' in keys or 'soicecov' in keys:
-        nemoMonthlyIce(jobID)
+        nemoMonthlyIce(jobID, dryrun=dryrun)
     #####
     # Monthly MLD
-    if 'mld' in keys  or 'MLD' in keys:
-        nemoMonthlyMLD(jobID, starttime=2570, stoptime=2610)
-#####
-# Monthly chl
-    if 'chl' in keys:
+    elif 'mld' in keys  or 'MLD' in keys:
+        nemoMonthlyMLD(jobID, starttime=0, stoptime=5000,dryrun=dryrun)
+    #####
+    # Monthly chl
+    elif 'chl' in keys:
         monthlyChl(jobID,
                    months=[
                        '01',
@@ -647,13 +653,13 @@ def main():
                        '12',
                    ])
 
-    if 'export' in keys:
-        medusaMonthlyexport(jobID)
+    elif 'export' in keys:
+        medusaMonthlyexport(jobID, dryrun=dryrun)
 
     #####
     # Other specific monthly files.
-#    else:
-#        downloadField(jobID, keys, timeslice='m', dryrun=0)
+    else:
+        downloadField(jobID, keys, timeslice='m', dryrun=dryrun)
 
 if __name__ == "__main__":
     main()
