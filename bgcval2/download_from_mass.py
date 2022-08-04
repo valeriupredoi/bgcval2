@@ -598,6 +598,11 @@ def deleteBadLinksAndZeroSize(outputFold, jobID):
     process2 = subprocess.Popen(bashCommand2.split(), stdout=subprocess.PIPE)
     output2 = process2.communicate()[0]
 
+def pop_keys(keys, remove_keys):
+   for k in remove_keys:
+       keys.remove(k)
+   return keys
+
 
 def main():
     try:
@@ -615,28 +620,29 @@ def main():
     if 'noMoo' in keys or 'dryrun' in keys or '--dry-run' in keys:
        doMoo=False
        dryrun = True
-       for k in ['noMoo', 'dryrun', '--dry-run']:
-           if k in keys:
-               keys.remove(k) 
+       keys = pop_keys(keys, ['noMoo', 'dryrun', '--dry-run'])
     else:
        doMoo=True
        dryrun=False
 
     if not keys:
         download_from_mass(jobID, doMoo=doMoo)
-        return
 
     #####
     # Monthly Ice files
     if 'ice' in keys or 'soicecov' in keys:
         nemoMonthlyIce(jobID, dryrun=dryrun)
+        keys = pop_keys(keys, ['ice', 'soicecov'])
+
     #####
     # Monthly MLD
-    elif 'mld' in keys  or 'MLD' in keys:
+    if 'mld' in keys  or 'MLD' in keys:
         nemoMonthlyMLD(jobID, starttime=0, stoptime=5000,dryrun=dryrun)
+        keys = pop_keys(keys, ['mld', 'MLD'])
+
     #####
     # Monthly chl
-    elif 'chl' in keys:
+    if 'chl' in keys:
         monthlyChl(jobID,
                    months=[
                        '01',
@@ -652,13 +658,15 @@ def main():
                        '11',
                        '12',
                    ])
+        keys = pop_keys(keys, ['chl', 'CHL'])
 
-    elif 'export' in keys:
+    if 'export' in keys:
         medusaMonthlyexport(jobID, dryrun=dryrun)
+        keys = pop_keys(keys, ['export',])
 
     #####
     # Other specific monthly files.
-    else:
+    if keys:
         downloadField(jobID, keys, timeslice='m', dryrun=dryrun)
 
 if __name__ == "__main__":
