@@ -176,7 +176,7 @@ Download data from MASS
 -----------------------
 
 It's straightforward to download data from the Met Office
-Storate Systemm, MASS.
+Storage System, MASS.
 The bgcval2 tool `download_data_from mass` sets up the command and 
 outputs a script which you can run on Jasmin's mass-cli1 machine. 
 
