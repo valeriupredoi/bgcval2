@@ -613,7 +613,7 @@ def main():
     #####
     # All yearly files
 
-    if keys == []:
+    if not keys:
         download_from_mass(jobID, doMoo=True)
         return
 
