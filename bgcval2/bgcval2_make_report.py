@@ -132,7 +132,7 @@ def html5Maker(
     # Copy all necceasiry objects and templates to the report location:
     print("Copying html and js assets to", reportdir)
     basedir = os.path.dirname(__file__)
-    copytree(os.path.join(basedir, 'bgcval2/html5/html5Assets'), reportdir)
+    copytree(os.path.join(basedir, os.path.join(paths.bgcval2_repo,'bgcval2/html5/html5Assets')), reportdir)
     indexhtmlfn = reportdir + "index.html"
     try:
         os.rename(reportdir + 'index-template.html', indexhtmlfn)
@@ -1312,7 +1312,7 @@ def html5Maker(
 
     if regionMap:
         vfiles = []
-        vfiles.extend(glob('bgcval2/html5/html5Assets/images/*Legend*.png'))
+        vfiles.extend(glob(os.path.join(paths.bgcval2_repo,'bgcval2/html5/html5Assets/images/*Legend*.png')))
         print('adding Legend')
 
         relfns = [addImageToHtml(fn, imagesfold, reportdir) for fn in vfiles]
@@ -1349,13 +1349,14 @@ def html5Maker(
 
 
 def comparehtml5Maker(
-    jobIDs=['u-ab749', 'u-ad371'],
+    jobIDs=[],
     reportdir='reports/tmp',
     files=[],
     clean=False,
     doZip=False,
     jobDescriptions={},
     jobColours={},
+    paths = {}
 ):
 
     if clean:
@@ -1372,7 +1373,9 @@ def comparehtml5Maker(
     ####
     # Copy all necceasiry objects and templates to the report location:
     print("Copying html and js assets to", reportdir)
-    copytree('bgcval2/html5/html5Assets', reportdir)
+    #html5Assets_dir = 
+
+    copytree(os.path.join(paths.bgcval2_repo,'bgcval2/html5/html5Assets'), reportdir)
     indexhtmlfn = reportdir + "index.html"
     try:
         os.rename(reportdir + 'index-compare-template.html', indexhtmlfn)
@@ -1691,7 +1694,7 @@ def comparehtml5Maker(
     legend = True
     if legend:
         vfiles = []
-        vfiles.extend(glob('bgcval2/html5/html5Assets/images/*Legend*.png'))
+        vfiles.extend(glob(os.path.join(paths.bgcval2_repo,'bgcval2/html5/html5Assets/images/*Legend*.png')))
         print('Adding compare plots legend')
         relfns = [addImageToHtml(fn, imagesfold, reportdir) for fn in vfiles]
         print(relfns)
