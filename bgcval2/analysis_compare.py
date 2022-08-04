@@ -131,7 +131,7 @@ def apply_shifttimes(mdata, jobID, shifttimes):
         
     for t in sorted(mdata.keys()):
         t1 = t + float(shifttimes[jobID])
-        times.append(float(t1))
+        times.append(t1)
         datas.append(mdata[t])        
     return times, datas       
    
