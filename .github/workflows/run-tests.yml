@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - load_with_exception
   schedule:
     - cron: '0 0 * * *'  # nightly
 
