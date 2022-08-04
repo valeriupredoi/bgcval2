@@ -24,6 +24,7 @@
 
 import numpy as np
 import netCDF4
+import h5py
 from sys import argv
 
 #####
@@ -41,9 +42,13 @@ class dataset:
         self.netcdfPath = filename
         self.filename = filename
         try:
-            self.dataset = netCDF4.Dataset(filename, 'r')
-        except:
-            print(("dataset:\tUnable to open", filename))
+            self.dataset = netCDF4.Dataset(filename, 'r', format='NETCDF4')
+        except OSError as oserr:
+            print("dataset:\tUnable to open %s - below more info", filename)
+            if oserr.errno == -101:
+                # https://stackoverflow.com/questions/49317927/errno-101-netcdf-hdf-error-when-opening-netcdf-file
+                print("Your filesystem may not support HDF5 locking")
+                print("Try setting HDF5_USE_FILE_LOCKING=FALSE")
             self.dataset = netCDF4.Dataset(
                 filename, 'r'
             )  # This is a ham fisted way to print the file name being loaded and the error message.
