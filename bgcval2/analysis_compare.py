@@ -4171,34 +4171,29 @@ def load_comparison_yml(fn):
     
     details['master_suites'] = dictionary.get('master_suites', [])
     
-    thicknesses = defaultdict(lambda: 0.75)
-    linestyles = defaultdict(lambda: '-')
+    default_thickness = 0.75
+    default_linestyle = '-'
+    default_suite = 'kmf'
+  
+    thicknesses = {}
+    linestyles = {}
     colours = {}
-    suites = defaultdict(lambda: 'kmf')
-    descriptions = defaultdict(lambda: '')
-    shifttimes = defaultdict(lambda: 0.) # number of years to shift time axis.
+    suites = {}
+    descriptions = {}
+    shifttimes = {} # number of years to shift time axis.
    
     for jobID, job_dict in details['jobs'].items():
         if job_dict.get('colour', False):
             colours[jobID] = job_dict['colour']
         else:
             colours[jobID] = ''.join(['#', "%06x" % random.randint(0, 0xFFFFFF)])        
-            print('WARNING: No colour provided, setting to random hex colour', colours[jobID])
+            print('WARNING: No colour provided, setting to random hex colour:', colours[jobID])
             
-        if job_dict.get('description', False):
-            descriptions[jobID] = job_dict['description']
-            
-        if job_dict.get('thickness', False):
-            thicknesses[jobID] = job_dict['thickness']
-
-        if job_dict.get('linestyle', False):
-            linestyles[jobID] = job_dict['linestyle'] 
-
-        if job_dict.get('shifttime', False):
-            shifttimes[jobID] = float(job_dict['shifttime'])
-            
-        if job_dict.get('suite', False):
-            suites[jobID] = job_dict['suite']            
+        descriptions[jobID] = job_dict.get('description', '')
+        thicknesses[jobID] = job_dict.get('thickness', default_thickness)
+        linestyles[jobID] = job_dict.get('linestyle', default_linestyle)
+        shifttimes[jobID] = float(job_dict.get('shifttime', 0.))
+        suites[jobID] = job_dict.get(suite, default_suite)
                  
     details['colours'] = colours
     details['descriptions'] = descriptions
