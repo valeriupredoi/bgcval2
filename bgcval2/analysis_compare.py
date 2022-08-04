@@ -4258,7 +4258,7 @@ def main():
             )   
 
     # Master suite leys:
-    if not len(master_suites):
+    if not master_suites:
         master_suites=['physics', 'bio'] # Defaults
 
     # make sure its a list:
