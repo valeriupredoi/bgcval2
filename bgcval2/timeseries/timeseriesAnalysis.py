@@ -158,7 +158,7 @@ class timeseriesAnalysis:
             print(
                 "timeseriesAnalysis:\tloadModel\tUser requested clean run. Wiping old data."
             )
-        elif len(glob.glob(''.join([self.shelvefn, '*']))):
+        elif glob.glob(''.join([self.shelvefn, '*'])):
             print("timeseriesAnalysis:\tloadModel\tOpening shelve:",
                    self.shelvefn)
 
