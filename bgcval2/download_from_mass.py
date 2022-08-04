@@ -423,24 +423,15 @@ def download_from_mass(jobID, doMoo=True):
     fixFilePaths(outputFold, jobID)
     deleteBadLinksAndZeroSize(outputFold, jobID)
 
+    # Set up a file to save command to a new file.
     download_script_path = ''.join([folder('mass_scripts/'), jobID,'.sh'])
-
     header_lines = ['# Run this script on mass-cli1.jasmin.ac.uk\n',]
     header_lines.append('# from login1.jasmin.ac.uk, ssh to the mass machine:\n#     ssh -X  mass-cli\n')
     header_lines.append(''.join(['# run script with:\n# source ', os.path.abspath(download_script_path),'\n']))
     header_lines.append('# moo passwd -r # if mass password is expired\n')
     download_script_txt = ''.join(header_lines)
- 
-    #if not doMoo: return
-    print("download_from_mass:\tLooking at the following files:")
-    ######
-    # print files
-    #bashCommand = "moo passwd -r"
-    #print "running the command:",bashCommand
-    #process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-    #output = process.communicate()[0]
-    #print "output",output
 
+    # moo ls: 
     bashCommand = "moo ls moose:/crum/" + jobID + "/ony.nc.file/*.nc"
     download_script_txt = ''.join([download_script_txt, bashCommand, '\n'])
 
@@ -453,6 +444,7 @@ def download_from_mass(jobID, doMoo=True):
         process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
         output = process.communicate()[0]
 
+    # moo get:
     if len(output.split('\n')) > 6000:
         failed = 0
         process1 = {}
@@ -472,9 +464,7 @@ def download_from_mass(jobID, doMoo=True):
                 print("download_from_mass:\t",i, output1[i])
             except:
                 failed += 1
-                print("Failed", i, '\t', bashCommand)
-        if failed > 10:
-            assert 0
+                print("Failed", i, 'total fails:',failed, '\t', bashCommand)
     else:
         print("download_from_mass:\tDownloading at the following files:")
         bashCommand = "moo get --fill-gaps moose:/crum/" + jobID + "/ony.nc.file/*.nc " + outputFold
@@ -626,6 +616,7 @@ def main():
     if keys == []:
         download_from_mass(jobID, doMoo=True)
         return
+
     if 'noMoo' in keys or 'dryrun' in keys or '--dry-run' in keys:
         download_from_mass(jobID, doMoo=False)
         return  
