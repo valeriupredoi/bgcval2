@@ -587,7 +587,7 @@ def analysis_timeseries(
     hostname = gethostname()
 
     if hostname.find('pmpc') > -1:
-        print(("analysis-timeseries.py:\tBeing run at PML on ", gethostname()))
+        print("analysis-timeseries.py:\tBeing run at PML on ", gethostname())
 
         imagedir = ukp.folder(paths.imagedir + '/' + jobID + '/timeseries')
 
@@ -600,7 +600,7 @@ def analysis_timeseries(
     # JASMIN
     if hostname.find('ceda.ac.uk') > -1 or hostname.find(
             'jasmin') > -1 or hostname.find('jc.rl.ac.uk') > -1:
-        print(("analysis-timeseries.py:\tBeing run at CEDA on ", hostname))
+        print("analysis-timeseries.py:\tBeing run at CEDA on ", hostname)
         #machinelocation = 'JASMIN'
 
         #try:	shelvedir 	= ukp.folder("/group_workspaces/jasmin2/ukesm/BGC_data/"+getuser()+"/shelves/timeseries/"+jobID)
@@ -652,9 +652,9 @@ def analysis_timeseries(
 #####
 # Unable to find location of files/data.
     if not paths.machinelocation:
-        print((
+        print(
             "analysis-timeseries.py:\tFATAL:\tWas unable to determine location of host: ",
-            gethostname()))
+            gethostname())
         print("Please set up paths.py, based on Paths/paths_template.py")
         #FIXME this is just for local testing by V
         if gethostname() == "valeriu-PORTEGE-Z30-C":
@@ -1034,7 +1034,7 @@ def analysis_timeseries(
         if annual:
             av[name][
                 'dataFile'] = paths.CCIDir + "ESACCI-OC-L3S-OC_PRODUCTS-CLIMATOLOGY-16Y_MONTHLY_1degree_GEO_PML_OC4v6_QAA-annual-fv2.0.nc"
-            print((paths.ModelFolder_pref + "/" + jobID + "o_1y_*_ptrc_T.nc"))
+            print(paths.ModelFolder_pref + "/" + jobID + "o_1y_*_ptrc_T.nc")
         else:
             av[name][
                 'dataFile'] = paths.CCIDir + 'ESACCI-OC-L3S-OC_PRODUCTS-CLIMATOLOGY-16Y_MONTHLY_1degree_GEO_PML_OC4v6_QAA-all-fv2.0.nc'
@@ -1560,8 +1560,8 @@ def analysis_timeseries(
                     pdepths[:, y, x] = wdepths
             wmeanDepth = np.ma.masked_where((o2 > omzthreshold) + o2.mask,
                                             pdepths).mean(0).data
-            print(("woaMeanOMZdepth", wmeanDepth.min(), wmeanDepth.mean(),
-                   wmeanDepth.max()))
+            print("woaMeanOMZdepth", wmeanDepth.min(), wmeanDepth.mean(),
+                   wmeanDepth.max())
             #assert 0
 
             if wmeanDepth.max() in [0., 0]: return np.array([
@@ -1867,9 +1867,9 @@ def analysis_timeseries(
 
             newpath = ncpath.replace('ptrc_T', 'grid_T')
 
-            print(("modelAOU:", ncpath, newpath))
+            print("modelAOU:", ncpath, newpath)
             nc2 = dataset(newpath, 'r')
-            print(("Loaded", newpath))
+            print("Loaded", newpath)
             temp = nc2.variables[ukesmkeys['temp3d']][:]
             sal = nc2.variables[ukesmkeys['sal3d']][:]
             return AOU(temp, sal, o2)
@@ -3225,7 +3225,7 @@ def analysis_timeseries(
                 (icetmask[0] == 0) + (icecov > 0.15) + sst.mask, sst)
             area = np.ma.masked_where(sst.mask, area_full)
             val = (sst * area).sum() / (area.sum())
-            print(("calcIcelessMeanSST", sst.shape, area.shape, val))
+            print("calcIcelessMeanSST", sst.shape, area.shape, val)
             return val
 
         av[name]['modeldetails'] = {
@@ -3273,9 +3273,9 @@ def analysis_timeseries(
                 #print "meanLandMask:",ssttmask.shape,nc.variables[keys[0]][0,0].shape
                 temperature = np.ma.masked_where(
                     ssttmask == 0, nc.variables[keys[0]][0, 0].squeeze())
-                print(("meanLandMask:", nc.variables['time_counter'][:],
+                print("meanLandMask:", nc.variables['time_counter'][:],
                        temperature.mean(),
-                       (temperature * area).sum() / (area.sum())))
+                       (temperature * area).sum() / (area.sum()))
                 return (temperature * area).sum() / (area.sum())
 
             if annual:
@@ -3570,7 +3570,7 @@ def analysis_timeseries(
             newpath = ncpath.replace('grid_U', 'grid_V')
 
             nc2 = dataset(newpath, 'r')
-            print(("Loaded", newpath))
+            print("Loaded", newpath)
             tauy = applySurfaceMask(nc2, [
                 'sometauy',
             ])
@@ -3630,8 +3630,8 @@ def analysis_timeseries(
                                            paths.ModelFolder_pref, annual)
             nc = dataset(nas_files[0], 'r')
             if name not in list(nc.variables.keys()):
-                print(("analysis_timeseries.py:\tWARNING: ", name,
-                       "is not in the model file."))
+                print("analysis_timeseries.py:\tWARNING: ", name,
+                       "is not in the model file.")
                 continue
             av[name]['modelFiles'] = nas_files
             av[name]['dataFile'] = ''
@@ -3694,8 +3694,8 @@ def analysis_timeseries(
                                            paths.ModelFolder_pref, annual)
             nc = dataset(nas_files[0], 'r')
             if cutname not in list(nc.variables.keys()):
-                print(("analysis_timeseries.py:\tWARNING: ", cutname,
-                       "is not in the model file."))
+                print("analysis_timeseries.py:\tWARNING: ", cutname,
+                       "is not in the model file.")
                 continue
             av[name]['modelFiles'] = nas_files
             av[name]['dataFile'] = ''
@@ -4807,31 +4807,31 @@ def analysis_timeseries(
         print(
             "------------------------------------------------------------------"
         )
-        print((
+        print(
             "analysis-Timeseries.py:\tBeginning to call timeseriesAnalysis for ",
-            name))
+            name)
 
         if len(av[name]['modelFiles']) == 0:
-            print((
+            print(
                 "analysis-Timeseries.py:\tWARNING:\tmodel files are not found:",
-                name, av[name]['modelFiles']))
+                name, av[name]['modelFiles'])
             if strictFileCheck: assert 0
 
         modelfilesexists = [os.path.exists(f) for f in av[name]['modelFiles']]
         if False in modelfilesexists:
-            print((
+            print(
                 "analysis-Timeseries.py:\tWARNING:\tnot model files do not all exist:",
-                av[name]['modelFiles']))
+                av[name]['modelFiles'])
             for f in av[name]['modelFiles']:
                 if os.path.exists(f): continue
-                print((f, 'does not exist'))
+                print(f, 'does not exist')
             if strictFileCheck: assert 0
 
         if av[name]['dataFile'] != '':
             if not os.path.exists(av[name]['dataFile']):
-                print((
+                print(
                     "analysis-Timeseries.py:\tWARNING:\tdata file is not found:",
-                    av[name]['dataFile']))
+                    av[name]['dataFile'])
                 if strictFileCheck: assert 0
 
         tsa = timeseriesAnalysis(
