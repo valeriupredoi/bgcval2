@@ -154,7 +154,7 @@ def theWholePackage(jobID, year=False, suite='level1'):
         # Running key metrics first.
         if suite == 'level1':
             remaining = sorted(keymetricsfirstDict.keys())[:]
-            print((jobID, suite, remaining))
+            print('Running key metrics first:', jobID, suite, remaining)
             #assert 0
             p = Pool(cores)
             p.map(timeseriesParrallelKMF, remaining)

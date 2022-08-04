@@ -43,7 +43,7 @@ class dataset:
         try:
             self.dataset = netCDF4.Dataset(filename, 'r')
         except:
-            print(("dataset:\tUnable to open", filename))
+            print("dataset:\tUnable to open", filename)
             self.dataset = netCDF4.Dataset(
                 filename, 'r'
             )  # This is a ham fisted way to print the file name being loaded and the error message.
@@ -77,7 +77,7 @@ class dataset:
         except:
             self.ncattrs = ''
 
-        if not Quiet: print((self.__unicode__()))
+        if not Quiet: print(self.__unicode__())
 
     def close(self):
         try:
