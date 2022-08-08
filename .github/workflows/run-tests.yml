@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - fix_main_error
   schedule:
     - cron: '0 0 * * *'  # nightly
 
