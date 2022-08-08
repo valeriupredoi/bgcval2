@@ -30,10 +30,10 @@
 
 #####
 # Load Standard Python modules:
+import argparse
 import sys
 
 from glob import glob
-from sys import argv
 import os
 import shutil
 
@@ -1725,21 +1725,65 @@ def comparehtml5Maker(
     print("-------------\nSuccess\ntest with:\nfirefox", indexhtmlfn)
 
 
+def get_args():
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('-c',
+                        '--config-file',
+                        default=os.path.join(os.getcwd(),
+                                             'config-user.yml'),
+                        help='User configuration file',
+                        required=False)
+    parser.add_argument('-i',
+                        '--job-id',
+                        default=None,
+                        help='Job ID',
+                        required=True)
+    parser.add_argument('-y',
+                        '--year',
+                        default=None,
+                        help='Year',
+                        required=False)
+    parser.add_argument('-a',
+                        '--clean',
+                        action='store_true',
+                        help='Clean or not',
+                        required=False)
+    parser.add_argument('-p',
+                        '--physics',
+                        action='store_true',
+                        help='Physics or not',
+                        required=False)
+    parser.add_argument('-r',
+                        '--report',
+                        default=None,
+                        help='Report repo',
+                        required=False)
+
+    args = parser.parse_args()
+
+    return args
+
+
 def main():
     """Run the html maker for a single job ID."""
     from ._version import __version__
     print(f'BGCVal2: {__version__}')
-    if "--help" in argv or len(argv) == 1:
-        print("Running with no arguments. Exiting.")
-        if "--help" in argv:
-            print("Read the documentation.")
-        sys.exit(0)
 
-    try:
-        jobID = argv[1]
-    except:
-        print("Please provide a jobID next time")
-        exit()
+    args = get_args()
+    jobID = args.job_id 
+
+    if args.config_file:
+        config_user = os.path.join(os.getcwd(), args.config_file)
+        print(f"analysis_timeseries: Using user config file {config_user}")
+    else:
+        config_user = os.path.join(os.getcwd(), "bgcval2-config-user.yml")
+        print(f"analysis_timeseries: Using user default file {config_user}")
+    if not os.path.isfile(config_user):
+        print(f"analysis_timeseries: Could not find configuration file {config_user}")
+        config_user = None
 
     #defaults:
     clean = False
@@ -1747,31 +1791,21 @@ def main():
     year = '*'
     reportdir = folder('reports/' + jobID)
 
-    for i, arg in enumerate(argv):
-        if i <= 1: continue
-
+    if args.year:
         try:
-            y = int(arg)
-            year = y
-            continue
-        except:
-            pass
+            year = int(args.year)
+        except ValueError:
+            print("analysis_timeseries: Invalid input for year - must be an integer, got {args.year}")
+    if args.clean:
+        clean = True
+        print("analysis_timeseries: Running with Clean option!")
+    if args.physics:
+        physicsOnly = True
+        print("analysis_timeseries: Running with Physics option!")
+    if args.report:
+        reportdir = os.path.abspath(args.report)
 
-        if arg == 'clean':
-            clean = True
-            continue
-
-        if arg == 'physics':
-            physicsOnly = True
-            continue
-
-        reportdir = arg
-
-    # get runtime configuration
-    config_user = None
-    if "bgcval2-config-user.yml" in argv[1:]:
-        config_user = "bgcval2-config-user.yml"
-        print(f"bgcval2_make_report: Using user config file {config_user}")
+    # get runtime configuration; not implemented yet
     if config_user:
         paths_dict, config_user = get_run_configuration(config_user)
     else:
