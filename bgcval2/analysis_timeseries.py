@@ -31,6 +31,7 @@
 .. moduleauthor:: Lee de Mora <ledm@pml.ac.uk>
 
 """
+import argparse
 import matplotlib as mpl
 
 mpl.use('Agg')
