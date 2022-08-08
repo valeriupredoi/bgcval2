@@ -30,7 +30,9 @@
 """
 #####
 # Load Standard Python modules:
-from sys import argv, stdout
+import argparse
+
+from sys import stdout
 import subprocess
 from socket import gethostname
 import os
@@ -598,29 +600,54 @@ def deleteBadLinksAndZeroSize(outputFold, jobID):
     process2 = subprocess.Popen(bashCommand2.split(), stdout=subprocess.PIPE)
     output2 = process2.communicate()[0]
 
+
 def pop_keys(keys, remove_keys):
    for k in remove_keys:
-       keys.remove(k)
+       if k in keys:
+           keys.remove(k)
+
    return keys
 
 
+def get_args():
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('-i',
+                        '--job-id',
+                        default=None,
+                        help='Job ID',
+                        required=True)
+    parser.add_argument('-k',
+                        '--keys',
+                        default=None,
+                        nargs='+', type=str,
+                        help='Runtime keys',
+                        required=False)
+    args = parser.parse_args()
+
+    return args
+
+
 def main():
-    try:
-        jobID = argv[1]
-    except:
-        print("Please provide a jobID")
-        sys.exit(0)
-    try:
-        keys = argv[2:]
-    except:
+    """Run the main routine."""
+    args = get_args()
+    jobID = args.job_id
+    keys = args.keys
+    if keys is None:
         keys = []
+    if keys:
+        keys = [str(k) for k in keys]
+    print(f"Running with job_id {jobID} and keys {keys}")
 
     #####
     # Default behaviour is to download annual files
     if 'noMoo' in keys or 'dryrun' in keys or '--dry-run' in keys:
        doMoo=False
        dryrun = True
-       keys = pop_keys(keys, ['noMoo', 'dryrun', '--dry-run'])
+       if keys:
+           keys = pop_keys(keys, ['noMoo', 'dryrun', '--dry-run'])
     else:
        doMoo=True
        dryrun=False
