@@ -118,7 +118,7 @@ The executable top level structure of this module includes the scripts:
 	:makeReport.py: This script creates an html report.
 	:analysis_timeseries.py: This script runs the time series analysis.
 	:analysis_p2p.py: This script runs the point to point analysis.
-	:downloadFromMass.py: This script is used to download UKESM files from mass.
+	:download_from_mass.py: This script is used to download UKESM files from mass.
 	
 These files are set up to run the validation is run for the UK Earth System Model in the eORCA1 grid.
 They can be used as templates for running other models. 
