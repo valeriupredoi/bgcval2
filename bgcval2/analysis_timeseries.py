@@ -38,7 +38,7 @@ mpl.use('Agg')
 
 #####
 # Load Standard Python modules:
-from sys import argv, exit
+from sys import exit
 from os.path import exists
 from calendar import month_name
 from socket import gethostname
@@ -4990,7 +4990,6 @@ def main():
     else:
         suite = 'level1'
 
-    config_user = None
     if args.config_file:
         config_user = os.path.join(os.getcwd(), args.config_file)
         print(f"analysis_timeseries: Using user config file {config_user}")
@@ -4998,8 +4997,9 @@ def main():
         config_user = os.path.join(os.getcwd(), "bgcval2-config-user.yml")
         print(f"analysis_timeseries: Using user default file {config_user}")
     if not os.path.isfile(config_user):
-        print(f"analysis_timeseries: Could not find configuration file {config_user}")
-        sys.exit(1)
+        print(f"analysis_timeseries: Could not find configuration file {config_user}."
+              "Will proceed with defaults.")
+        config_user = None
 
     analysis_timeseries(
         jobID=jobID,
