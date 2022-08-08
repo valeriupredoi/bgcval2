@@ -4221,8 +4221,15 @@ def get_args():
     parser.add_argument('-c',
                         '--config-file',
                         default=os.path.join(os.getcwd(),
-                                             'bgcval2-config-user.yml'),
-                        help='User configuration file')
+                                             'config-user.yml'),
+                        help='User configuration file',
+                        required=False)
+    parser.add_argument('-b',
+                        '--comparison-config',
+                        default=os.path.join(os.getcwd(),
+                                             'bgcval2-comparison-config.yml'),
+                        help='Comparison configuration file',
+                        required=True)
 
     args = parser.parse_args()
 
@@ -4233,7 +4240,16 @@ def main():
     """Run the main routine."""
     args = get_args()
 
-    config_user=None
+    if args.comparison_config:
+        comp_config = os.path.join(os.getcwd(), args.comparison_config)
+        print(f"analysis_timeseries: Comparison config file {comp_config}")
+    else:
+        comp_config = os.path.join(os.getcwd(), "comparison.yml")
+        print(f"analysis_timeseries: Using user default file {comp_config}")
+    if not os.path.isfile(comp_config):
+        print(f"analysis_timeseries: Could not find comparison config file {comp_config}")
+        sys.exit(1)
+
     if args.config_file:
         config_user = os.path.join(os.getcwd(), args.config_file)
         print(f"analysis_timeseries: Using user config file {config_user}")
@@ -4242,7 +4258,7 @@ def main():
         print(f"analysis_timeseries: Using user default file {config_user}")
     if not os.path.isfile(config_user):
         print(f"analysis_timeseries: Could not find configuration file {config_user}")
-        sys.exit(1)
+        config_user = None
 
     details = load_comparison_yml(config_user)
   
