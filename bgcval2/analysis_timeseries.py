@@ -4927,44 +4927,78 @@ def singleTimeSeries(
 #		print "Error: %s" % sys.exc_info()[0]
 
 
+def get_args():
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('-c',
+                        '--config-file',
+                        default=os.path.join(os.getcwd(),
+                                             'bgcval2-config-user.yml'),
+                        help='User configuration file')
+    parser.add_argument('-i',
+                        '--job-id',
+                        default=None,
+                        help='Job ID',
+                        required=True)
+    parser.add_argument('-k',
+                        '--keys',
+                        default=None,
+                        nargs='+', type=str,
+                        help='Runtime keys',
+                        required=False)
+
+    args = parser.parse_args()
+
+    return args
+
+
 def main():
     from ._version import __version__
     print(f'BGCVal2: {__version__}')
-    if "--help" in argv or len(argv) == 1:
-        print("Running with no arguments. Exiting.")
-        if "--help" in argv:
-            print("Read the documentation.")
-        sys.exit(0)
-    try:
-        jobID = argv[1]
-    except:
-        jobID = "u-ab749"
+    args = get_args()
+    jobID = args.job_id
+    keys = args.keys
+    if keys is None:
+        keys = []
+    if keys:
+        keys = [str(k) for k in keys]
+    # FIXME this was an exception previously, what do with it?
+    jobID = "u-ab749"
 
-    if 'debug' in argv[1:]:
+    if 'debug' in keys:
         suite = 'debug'
         #elif 'all' in argv[1:]:	suite = 'all'
-    elif 'spinup' in argv[1:]:
+    elif 'spinup' in keys:
         suite = 'spinup'
-    elif 'salinity' in argv[1:]:
+    elif 'salinity' in keys:
         suite = 'salinity'
-    elif 'level1' in argv[1:]:
+    elif 'level1' in keys:
         suite = 'level1'
-    elif 'fast' in argv[1:]:
+    elif 'fast' in keys:
         suite = 'fast'
-    elif 'level3' in argv[1:]:
+    elif 'level3' in keys:
         suite = 'level3'
-    elif 'physics' in argv[1:]:
+    elif 'physics' in keys:
         suite = 'physics'
-    elif 'bgc' in argv[1:]:
+    elif 'bgc' in keys:
         suite = 'bgc'
-    elif 'kmf' in argv[1:] or 'keymetricsfirst' in argv[1:]:
+    elif 'kmf' in keys or 'keymetricsfirst' in keys:
         suite = 'keymetricsfirst'
     else:
         suite = 'level1'
+
     config_user = None
-    if "bgcval2-config-user.yml" in argv[1:]:
-        config_user = "bgcval2-config-user.yml"
+    if args.config_file:
+        config_user = os.path.join(os.getcwd(), args.config_file)
         print(f"analysis_timeseries: Using user config file {config_user}")
+    else:
+        config_user = os.path.join(os.getcwd(), "bgcval2-config-user.yml")
+        print(f"analysis_timeseries: Using user default file {config_user}")
+    if not os.path.isfile(config_user):
+        print(f"analysis_timeseries: Could not find configuration file {config_user}")
+        sys.exit(1)
 
     analysis_timeseries(
         jobID=jobID,
