@@ -4218,11 +4218,20 @@ def get_args():
     parser = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
+
+
+    parser.add_argument('INPUT_FILE', '*',
+                        required=True,
+                        help='Comparison Analysis Configuration file')
+
     parser.add_argument('-c',
                         '--config-file',
+                        required=False, 
                         default=os.path.join(os.getcwd(),
                                              'bgcval2-config-user.yml'),
-                        help='User configuration file')
+                        help='User configuration file (paths)')
+
+
 
     args = parser.parse_args()
 
@@ -4232,7 +4241,7 @@ def get_args():
 def main():
     """Run the main routine."""
     args = get_args()
-
+    
     config_user=None
     if args.config_file:
         config_user = os.path.join(os.getcwd(), args.config_file)
@@ -4243,6 +4252,9 @@ def main():
     if not os.path.isfile(config_user):
         print(f"analysis_timeseries: Could not find configuration file {config_user}")
         sys.exit(1)
+
+
+    # Below here is analysis
 
     details = load_comparison_yml(config_user)
   
