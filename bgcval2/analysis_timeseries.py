@@ -318,7 +318,7 @@ def analysis_timeseries(
         analysisKeys = []
 
         if analysisSuite.lower() in [
-                'keymetricsfirst',
+                'keymetricsfirst', 'kmf',
         ]:
             analysisKeys.extend(keymetricsfirstKeys)
 
@@ -4961,13 +4961,24 @@ def main():
     args = get_args()
     jobID = args.job_id
     keys = args.keys
-    if keys is None:
-        keys = []
-    if keys:
-        keys = [str(k) for k in keys]
-    # FIXME this was an exception previously, what do with it?
-    jobID = "u-ab749"
 
+    accepted_keys = ['kmf', 'physics','bgc', 'debug', 'spinup', 'salinity', 'level1', 'level3', ]
+    good_keys = True
+    for key in keys:
+        if key not in accepted_keys:
+            print('Key Argument [',key,'] nor recognised. Accepted keys are:', accepted_keys)
+            good_keys= False
+    if good_keys: 
+        sys.exit(0)
+
+    #f keys is None:
+    #   keys = []
+    #f keys:
+    #   keys = [str(k) for k in keys]
+    # FIXME this was an exception previously, what do with it?
+    #jobID = "u-ab749"
+    
+    """
     if 'debug' in keys:
         suite = 'debug'
         #elif 'all' in argv[1:]:	suite = 'all'
@@ -4989,7 +5000,7 @@ def main():
         suite = 'keymetricsfirst'
     else:
         suite = 'level1'
-
+    """ 
     if args.config_file:
         config_user = os.path.join(os.getcwd(), args.config_file)
         print(f"analysis_timeseries: Using user config file {config_user}")
@@ -5001,11 +5012,12 @@ def main():
               "Will proceed with defaults.")
         config_user = None
 
-    analysis_timeseries(
-        jobID=jobID,
-        analysisSuite=suite,
-        config_user=config_user
-    )  #clean=1)
+    for suite in keys:
+        analysis_timeseries(
+            jobID=jobID,
+            analysisSuite=suite,
+            config_user=config_user
+        )  #clean=1)
     #if suite == 'all':
     #analysis_timeseries(jobID =jobID,analysisSuite='FullDepth', z_component = 'FullDepth',)#clean=1)
 
