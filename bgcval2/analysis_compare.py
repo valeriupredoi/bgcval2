@@ -59,6 +59,8 @@ from .timeseries import timeseriesAnalysis
 from .timeseries import profileAnalysis
 from .timeseries import timeseriesPlots as tsp
 from bgcval2.analysis_timeseries import analysis_timeseries
+from bgcval2.download_from_mass import download_from_mass
+
 
 try:
     from .bgcvaltools.pftnames import getLongName
@@ -4167,6 +4169,7 @@ def load_comparison_yml(master_compare_yml_fn):
         exit(0)       
 
     details['do_analysis_timeseries'] = dictionary.get('do_analysis_timeseries', False) 
+    details['do_mass_download'] = dictionary.get('do_mass_download', False)
     
     details['master_suites'] = dictionary.get('master_suites', [])
     
@@ -4220,6 +4223,7 @@ def main():
     jobs = details['jobs']
     analysis_name = details['name']    
     do_analysis_timeseries = details['do_analysis_timeseries']
+    do_mass_download = details['do_mass_download']
     master_suites = details['master_suites']  
  
     colours = details['colours']
@@ -4239,9 +4243,12 @@ def main():
         print(jobID, 'Shift time by', shifttimes[jobID])
         print(jobID, 'suite:', suites[jobID])
 
-    # if do_mass_download:
-    # Not yet implemented.
-
+    for jobID in jobs:
+        # even if you don't want to download, it's good to run this
+        # as it clears up the path and ensures recently downloed data is 
+        # correctly symlinked.
+        download_from_mass(jobID, doMoo=do_mass_download)
+    
     if do_analysis_timeseries:
         for jobID in jobs:
             analysis_timeseries(
