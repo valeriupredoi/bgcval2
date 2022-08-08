@@ -4151,12 +4151,12 @@ def load_comparison_yml(master_compare_yml_fn):
     with open(master_compare_yml_fn, 'r') as openfile:
         dictionary = yaml.safe_load(openfile)
 
-    if not dictionary:
+    if not dictionary or not isinstance(dictionary, dict):
         print(f"Configuration file {master_compare_yml_fn} "
               "is either empty or corrupt, please check its contents")
         sys.exit(1)
 
-    details = {}    
+    details = {}
     details['name'] = dictionary.get('name', False)
     details['jobs'] = dictionary.get('jobs', False) 
 
@@ -4260,7 +4260,7 @@ def main():
         print(f"analysis_timeseries: Could not find configuration file {config_user}")
         config_user = None
 
-    details = load_comparison_yml(config_user)
+    details = load_comparison_yml(comp_config)
   
     jobs = details['jobs']
     analysis_name = details['name']    
