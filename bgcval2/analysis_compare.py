@@ -4226,10 +4226,10 @@ def get_args():
                         required=False)
     parser.add_argument('-b',
                         '--comparison-config',
-                        default=os.path.join(os.getcwd(),
-                                             'bgcval2-comparison-config.yml'),
-                        help='Comparison configuration file',
-                        required=True)
+                        default=os.path.join(os.path.dirname(
+                                                 os.path.dirname(os.path.abspath(__file__))),
+                                             'input_yml/comparison_analysis_template.yml'),
+                        help='Comparison configuration file')
 
     args = parser.parse_args()
 
