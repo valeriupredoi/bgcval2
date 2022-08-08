@@ -26,7 +26,7 @@
 """
 .. module:: analysis_compare
    :platform: Unix
-   :synopsis: A script to produce an intercomparison of multiple runs the time series analyses.
+   :synopsis: A tool that generates an intercomparison of multiple UKESM jobs time series analyses.
 .. moduleauthor:: Lee de Mora <ledm@pml.ac.uk>
 .. moduleauthor:: Valeriu Predoi <valeriu.predoi@ncas.ac.uk>
 
@@ -4219,18 +4219,16 @@ def get_args():
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
 
-
     parser.add_argument('-b',
                         '--comparison-config',
-                        help='Comparison Analysis configuration file',
+                        help='Comparison Analysis configuration file, for examples see bgcval2 input_yml directory.',
                         required=True,)
-
 
     parser.add_argument('-c',
                         '--config-file',
                         default=os.path.join(os.getcwd(),
                                              'config-user.yml'),
-                        help='User configuration file',
+                        help='User configuration file (for paths)',
                         required=False)
 
     args = parser.parse_args()
@@ -4251,6 +4249,7 @@ def main():
         comp_config = os.path.join(os.getcwd(), "comparison.yml")
         # This should never happen as this argument is required.  
         print(f"analysis_timeseries: Using user default file {comp_config}")
+
     if not os.path.isfile(comp_config):
         print(f"analysis_timeseries: Could not find comparison config file {comp_config}")
         sys.exit(1)
