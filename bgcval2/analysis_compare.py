@@ -28,9 +28,11 @@
    :platform: Unix
    :synopsis: A script to produce an intercomparison of multiple runs the time series analyses.
 .. moduleauthor:: Lee de Mora <ledm@pml.ac.uk>
+.. moduleauthor:: Valeriu Predoi <valeriu.predoi@ncas.ac.uk>
 
 """
 
+import argparse
 import matplotlib
 # Force matplotlib to not use any Xwindows backend.
 matplotlib.use('Agg')
@@ -4149,6 +4151,11 @@ def load_comparison_yml(master_compare_yml_fn):
     with open(master_compare_yml_fn, 'r') as openfile:
         dictionary = yaml.safe_load(openfile)
 
+    if not dictionary:
+        print(f"Configuration file {master_compare_yml_fn} "
+              "is either empty or corrupt, please check its contents")
+        sys.exit(1)
+
     details = {}    
     details['name'] = dictionary.get('name', False)
     details['jobs'] = dictionary.get('jobs', False) 
@@ -4204,21 +4211,40 @@ def load_comparison_yml(master_compare_yml_fn):
     details['shifttimes'] = shifttimes            
     details['suites'] = suites
     return details
-    
+
+
+def get_args():
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('-c',
+                        '--config-file',
+                        default=os.path.join(os.getcwd(),
+                                             'bgcval2-config-user.yml'),
+                        help='User configuration file')
+
+    args = parser.parse_args()
+
+    return args
+
 
 def main():
-    if "--help" in argv or len(argv) == 1:
-        print("Running with no arguments. Exiting.")
-        if "--help" in argv:
-            print("Read the documentation.")
-        exit(0)
+    """Run the main routine."""
+    args = get_args()
 
     config_user=None
-    if "bgcval2-config-user.yml" in argv[1:]:
-        config_user = "bgcval2-config-user.yml"
+    if args.config_file:
+        config_user = os.path.join(os.getcwd(), args.config_file)
         print(f"analysis_timeseries: Using user config file {config_user}")
+    else:
+        config_user = os.path.join(os.getcwd(), "bgcval2-config-user.yml")
+        print(f"analysis_timeseries: Using user default file {config_user}")
+    if not os.path.isfile(config_user):
+        print(f"analysis_timeseries: Could not find configuration file {config_user}")
+        sys.exit(1)
 
-    details = load_comparison_yml(argv[1])
+    details = load_comparison_yml(config_user)
   
     jobs = details['jobs']
     analysis_name = details['name']    
