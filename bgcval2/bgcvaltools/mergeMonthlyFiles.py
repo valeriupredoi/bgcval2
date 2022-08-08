@@ -118,7 +118,7 @@ def mergeMonthlyFiles(files,
                       expectedNumberOfFiles=12):
     #####
     # This assuemd that the files have already been split up using the moo filter tool
-    # done in the the bgcvalTools/downloadFromMass.py
+    # done in the the download_from_mass.py
 
     filesOut = []
     years = {}
@@ -164,7 +164,7 @@ def meanDJF(
 ):
     #####
     # This assuemd that the files have already been split up using the moo filter tool
-    # done in the the bgcvalTools/downloadFromMass.py
+    # done in download_from_mass.py
     filesOut = []
     years = {}
 

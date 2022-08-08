@@ -22,7 +22,7 @@
 # Email:
 # ledm@pml.ac.uk
 """
-.. module:: downloadFromMass
+.. module:: download_from_mass
    :platform: Unix
    :synopsis: A set of tools to download the UKESM model run data from MASS.
 .. moduleauthor:: Lee de Mora <ledm@pml.ac.uk>
@@ -47,7 +47,7 @@ This module includes a series of tools to download the UKESM model run data from
 
 When run as a script, the command is::
 
-	./downloadFromMass.py jobID
+	./download_from_mass.py jobID
 
 This tool will only work on machines that have mass enabled.
  
@@ -490,7 +490,7 @@ def fixFilePaths(outputFold, jobID, debug=False):
     #####
     # The coupled model looses the first two characters of the name in the netcdf file.
     fns = glob(outputFold + "/*" + jobID[2:] + "*.nc")
-    print("downloadFromMass:\tfixFilePaths:\tLooking for",
+    print("download_from_mass:\tfixFilePaths:\tLooking for",
           outputFold + "/" + jobID[2:] + "*.nc")
     fns.extend(
         glob(outputFold +
@@ -502,25 +502,25 @@ def fixFilePaths(outputFold, jobID, debug=False):
 
         if os.path.exists(correctfn):
             if debug:
-                print("downloadFromMass:\tfixFilePaths:\tcorrect path exists.",
+                print("download_from_mass:\tfixFilePaths:\tcorrect path exists.",
                       correctfn)
             continue
         if correctfn == fn: continue
-        print("downloadFromMass:\tfixFilePaths:\tFixing file prefix", fn,
+        print("download_from_mass:\tfixFilePaths:\tFixing file prefix", fn,
               '-->', correctfn)
         try:
             os.symlink(fn, correctfn)
         except:
             print("Unable to make link:", correctfn)
             continue
-#	        print "downloadFromMass:\tfixFilePaths:\t", correctfn
+#	        print "download_from_mass:\tfixFilePaths:\t", correctfn
 
 #####
 # Some runs have nemo/medusa as a preface to the file name.
     for pref in ['nemo_', 'medusa_']:
         #nemo_u-ai886o_1y_26291201-26301201_grid-V.nc
         fns = glob(outputFold + "/" + pref + jobID + "*.nc")
-        print("downloadFromMass:\tfixFilePaths:\tLooking for new prefix:",
+        print("download_from_mass:\tfixFilePaths:\tLooking for new prefix:",
               pref, outputFold + "/" + pref + jobID + "*.nc")
         for fn in sorted(fns):
             #####
@@ -529,14 +529,14 @@ def fixFilePaths(outputFold, jobID, debug=False):
             if os.path.exists(correctfn):
                 if debug:
                     print(
-                        "downloadFromMass:\tfixFilePaths:\tcorrect path exists.",
+                        "download_from_mass:\tfixFilePaths:\tcorrect path exists.",
                         correctfn)
                 continue
-            print("downloadFromMass:\tfixFilePaths:\tFixing file prefix",
+            print("download_from_mass:\tfixFilePaths:\tFixing file prefix",
                   pref,
                   end=' ')
             os.symlink(fn, correctfn)
-            print("downloadFromMass:\tfixFilePaths:\t", correctfn)
+            print("download_from_mass:\tfixFilePaths:\t", correctfn)
 
 #####
 # Some runs have nemo/medusa as a preface to the file name.
@@ -552,7 +552,7 @@ def fixFilePaths(outputFold, jobID, debug=False):
     for badsuff, suff in list(suffDict.items()):
         #nemo_u-ai886o_1y_26291201-26301201_grid-V.nc
         fns = glob(outputFold + "/" + jobID + "*" + badsuff + ".nc")
-        print("downloadFromMass:\tfixFilePaths:\tLooking for new suff:",
+        print("download_from_mass:\tfixFilePaths:\tLooking for new suff:",
               badsuff, outputFold + "/" + jobID + "*" + badsuff + ".nc")
         for fn in sorted(fns):
             #####
@@ -561,10 +561,10 @@ def fixFilePaths(outputFold, jobID, debug=False):
             if os.path.exists(correctfn):
                 if debug:
                     print(
-                        "downloadFromMass:\tfixFilePaths:\tcorrect path exists.",
+                        "download_from_mass:\tfixFilePaths:\tcorrect path exists.",
                         correctfn)
                 continue
-            print("downloadFromMass:\tfixFilePaths:\tFixing file suffix",
+            print("download_from_mass:\tfixFilePaths:\tFixing file suffix",
                   badsuff,
                   '->',
                   suff,
@@ -575,7 +575,7 @@ def fixFilePaths(outputFold, jobID, debug=False):
                 os.symlink(fn, correctfn)
             except:
                 continue
-            print("downloadFromMass:\tfixFilePaths:\t", correctfn)
+            print("download_from_mass:\tfixFilePaths:\t", correctfn)
 
     #####
     # This code looks at symoblic links and points them at their ultimate source, removing the long link chains.

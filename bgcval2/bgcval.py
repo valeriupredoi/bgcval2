@@ -38,7 +38,7 @@ import sys
 from sys import argv, exit
 from multiprocessing import Pool
 
-from .bgcvaltools.downloadFromMass import downloadMass, findLastFinishedYear
+from .download_from_mass import findLastFinishedYear
 from .analysis_timeseries import analysis_timeseries, singleTimeSeries, singleTimeSeriesProfile
 from .analysis_timeseries import level1KeysDict, physKeysDict, bgcKeysDict, keymetricsfirstDict
 from .analysis_p2p import analysis_p2p, p2pDict_level2, p2pDict_physics, single_p2p
