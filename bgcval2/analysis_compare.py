@@ -39,15 +39,15 @@ matplotlib.use('Agg')
 
 #####
 # Load Standard Python modules:
-from sys import argv, exit
-from os.path import exists
 from calendar import month_name
 from socket import gethostname
 from netCDF4 import Dataset
 from glob import glob
 from scipy.interpolate import interp1d
 import numpy as np
-import os, sys, fnmatch
+import os
+import sys
+import fnmatch
 from getpass import getuser
 from collections import defaultdict
 import yaml
@@ -4151,19 +4151,19 @@ def load_comparison_yml(master_compare_yml_fn):
     with open(master_compare_yml_fn, 'r') as openfile:
         dictionary = yaml.safe_load(openfile)
 
-    if not dictionary:
+    if not dictionary or not isinstance(dictionary, dict):
         print(f"Configuration file {master_compare_yml_fn} "
               "is either empty or corrupt, please check its contents")
         sys.exit(1)
 
-    details = {}    
+    details = {}
     details['name'] = dictionary.get('name', False)
     details['jobs'] = dictionary.get('jobs', False) 
 
     if not details['name']:
         print('Please provide a name for your analysis. In your yaml, this is:')
         print('name: MyAnalysisName')
-        exit(0)
+        sys.exit(0)
     if not details['jobs']:
         print('Please provide at least one JobID for your analysis. In your yaml, this is:')
         print('jobs: ')
@@ -4173,7 +4173,7 @@ def load_comparison_yml(master_compare_yml_fn):
         print('        thickness: 0.7')
         print("        linestyle: '-'")
         print('        shifttime: 0.')
-        exit(0)       
+        sys.exit(0)       
 
     details['do_analysis_timeseries'] = dictionary.get('do_analysis_timeseries', False) 
     details['do_mass_download'] = dictionary.get('do_mass_download', False)
@@ -4220,18 +4220,18 @@ def get_args():
         formatter_class=argparse.RawDescriptionHelpFormatter)
 
 
-    parser.add_argument('INPUT_FILE', '*',
-                        required=True,
-                        help='Comparison Analysis Configuration file')
+    parser.add_argument('-b',
+                        '--comparison-config',
+                        help='Comparison Analysis configuration file',
+                        required=True,)
+
 
     parser.add_argument('-c',
                         '--config-file',
-                        required=False, 
                         default=os.path.join(os.getcwd(),
-                                             'bgcval2-config-user.yml'),
-                        help='User configuration file (paths)')
-
-
+                                             'config-user.yml'),
+                        help='User configuration file',
+                        required=False)
 
     args = parser.parse_args()
 
@@ -4243,20 +4243,21 @@ def main():
     args = get_args()
     
     config_user=None
-    if args.config_file:
-        config_user = os.path.join(os.getcwd(), args.config_file)
-        print(f"analysis_timeseries: Using user config file {config_user}")
+
+    if args.comparison_config:
+        comp_config = os.path.join(os.getcwd(), args.comparison_config)
+        print(f"analysis_timeseries: Comparison config file {comp_config}")
     else:
-        config_user = os.path.join(os.getcwd(), "bgcval2-config-user.yml")
-        print(f"analysis_timeseries: Using user default file {config_user}")
-    if not os.path.isfile(config_user):
-        print(f"analysis_timeseries: Could not find configuration file {config_user}")
+        comp_config = os.path.join(os.getcwd(), "comparison.yml")
+        # This should never happen as this argument is required.  
+        print(f"analysis_timeseries: Using user default file {comp_config}")
+    if not os.path.isfile(comp_config):
+        print(f"analysis_timeseries: Could not find comparison config file {comp_config}")
         sys.exit(1)
 
-
     # Below here is analysis
-
     details = load_comparison_yml(config_user)
+    details = load_comparison_yml(comp_config)
   
     jobs = details['jobs']
     analysis_name = details['name']    
