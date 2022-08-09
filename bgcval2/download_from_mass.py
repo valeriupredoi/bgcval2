@@ -52,7 +52,7 @@ When run as a script, the command is::
 	./download_from_mass.py jobID
 
 This tool will only work on machines that have mass enabled.
- 
+
 """
 
 
@@ -75,7 +75,7 @@ def folder(name):
 
 
 def mnStr(month):
-    """ 
+    """
         :param month: An int between 1 and 100.
         Returns a 2 digit number string with a leading zero, if needed.
         """
@@ -84,7 +84,7 @@ def mnStr(month):
 
 
 def getYearFromFile(fn):
-    """ 
+    """
 	Takes a file anem, and looks for 8 consequetive numbers, then removes those that are months, and returns the year.
 	"""
     a = findall(r'\d\d\d\d\d\d\d\d', fn)
@@ -102,14 +102,14 @@ def getYearFromFile(fn):
 
 
 def rebaseSymlinks(fn, dryrun=True, debug=False):
-    """ 
+    """
 	:param fn: A full path to a filename. It should be a symbolic link.
 	:param dryrun: A boolean switch to do a trial run of this function.
 
-	This function reduces a chain of symbolic links down to one. It takes a full path, 
+	This function reduces a chain of symbolic links down to one. It takes a full path,
 	checks whether it is a sym link, then checks whether the real path is the  target of the link.
 	If not, it replaces the target with the real path.
-	
+
 	"""
 
     #####
@@ -142,7 +142,7 @@ def findLastFinishedYear(jobID, dividby=1, numberfiles=6):
 
 	This tool find the best year to have a close look at the model, by searching through the files
 	and guessing which years are finished.
-	
+
 	"""
     if jobID == '': return
 
@@ -212,12 +212,12 @@ def downloadField(jobID,
 	:param dryrun: does not download files, just prints.
 	:param extension: Nemo style file extension
 	:param name: Name of the analysis group, used for the folder.
-	
+
 	This tool takes the jobID, the field name, and using the known structure of universally similar MASS and the local filesystem structure
 	from paths.py, downloads the monthly jobID data for the field requested to the local file structure.
-	
+
 	This tool will only work on machines that have mass enabled.
-	
+
 	"""
 
     if jobID == '': return
@@ -378,12 +378,12 @@ def medusaMonthlyexport(jobID, dryrun=False):
 def download_from_mass(jobID, doMoo=True):
     """
 	:param jobID: The job ID
-	
+
 	This tool takes the jobID, and using the known structure of universally similar MASS and the local filesystem structure
 	from paths.py, downloads the jobID data to the local file structure.
-	
+
 	This tool will only work on machines that have mass enabled.
-	
+
 	"""
     if jobID == '': return
 
@@ -433,7 +433,7 @@ def download_from_mass(jobID, doMoo=True):
     header_lines.append('# moo passwd -r # if mass password is expired\n')
     download_script_txt = ''.join(header_lines)
 
-    # moo ls: 
+    # moo ls:
     bashCommand = "moo ls moose:/crum/" + jobID + "/ony.nc.file/*.nc"
     download_script_txt = ''.join([download_script_txt, bashCommand, '\n'])
 
@@ -609,49 +609,12 @@ def pop_keys(keys, remove_keys):
    return keys
 
 
-def get_args():
-    """Parse command line arguments."""
-    parser = argparse.ArgumentParser(
-        description=__doc__,
-        formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('-i',
-                        '--job-id',
-                        default=None,
-                        help='Job ID',
-                        required=True)
-    parser.add_argument('-k',
-                        '--keys',
-                        default=None,
-                        nargs='+', type=str,
-                        help='Runtime keys',
-                        required=False)
-    args = parser.parse_args()
-
-    return args
-
-
-def main():
-    """Run the main routine."""
-    args = get_args()
-    jobID = args.job_id
-    keys = args.keys
-    if keys is None:
-        keys = []
-    if keys:
-        keys = [str(k) for k in keys]
-    print(f"Running with job_id {jobID} and keys {keys}")
-
+def perform_download(jobID, keys, doMoo):
+    """
+    Single model download.
+    """
     #####
     # Default behaviour is to download annual files
-    if 'noMoo' in keys or 'dryrun' in keys or '--dry-run' in keys:
-       doMoo=False
-       dryrun = True
-       if keys:
-           keys = pop_keys(keys, ['noMoo', 'dryrun', '--dry-run'])
-    else:
-       doMoo=True
-       dryrun=False
-
     if not keys:
         download_from_mass(jobID, doMoo=doMoo)
 
@@ -695,6 +658,56 @@ def main():
     # Other specific monthly files.
     if keys:
         downloadField(jobID, keys, timeslice='m', dryrun=dryrun)
+
+
+def get_args():
+    """Parse command line arguments."""
+
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('-i',
+                        '--job-id',
+                        nargs='+', type=str,
+                        help='Job ID to download (one or more)',
+                        required=True)
+    parser.add_argument('-k',
+                        '--keys',
+                        default=[],
+                        nargs='+', type=str,
+                        help='Runtime keys',
+                        required=False)
+    parser.add_argument('-d',
+                        '--dry-run',
+                        default=False,
+                        type=bool,
+                        help='Dry run - do not download any files.',
+                        required=False)
+
+    args = parser.parse_args()
+
+    return args
+
+
+def main():
+    """Run the main routine."""
+    args = get_args()
+
+    jobIDs = args.job_id
+    keys = args.keys
+    dryrun = args.dry_run
+    doMoo = not dryrun
+
+    if keys in [None, '', [],]:
+        keys = []
+    if keys:
+        keys = [str(k) for k in keys]
+
+    print(f"Running with job_ids: {jobID} and keys {keys}")
+
+    for jobID in jobIDs:
+        perform_download(jobID, keys, doMoo)
+
 
 if __name__ == "__main__":
     main()
