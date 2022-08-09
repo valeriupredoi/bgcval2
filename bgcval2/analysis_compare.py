@@ -4219,15 +4219,14 @@ def get_args():
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
 
-    parser.add_argument('-b',
-                        '--comparison-config',
+    parser.add_argument('compare_yml',
                         help='Comparison Analysis configuration file, for examples see bgcval2 input_yml directory.',
-                        required=True,)
+                        )  
 
     parser.add_argument('-c',
                         '--config-file',
-                        default=os.path.join(os.getcwd(),
-                                             'config-user.yml'),
+                        default=os.path.join(paths.bgcval2_repo, 
+                                             'bgcval2/default-bgcval2-config.yml'),
                         help='User configuration file (for paths)',
                         required=False)
 
@@ -4240,10 +4239,10 @@ def main():
     """Run the main routine."""
     args = get_args()
     
-    config_user=None
+    config_user=args.config_file
 
-    if args.comparison_config:
-        comp_config = os.path.join(os.getcwd(), args.comparison_config)
+    if args.compare_yml:
+        comp_config = os.path.join(os.getcwd(), args.compare_yml)
         print(f"analysis_timeseries: Comparison config file {comp_config}")
     else:
         comp_config = os.path.join(os.getcwd(), "comparison.yml")
@@ -4254,8 +4253,11 @@ def main():
         print(f"analysis_timeseries: Could not find comparison config file {comp_config}")
         sys.exit(1)
 
+    print(config_user, comp_config)
+    assert 0   
+ 
+
     # Below here is analysis
-    details = load_comparison_yml(config_user)
     details = load_comparison_yml(comp_config)
   
     jobs = details['jobs']
