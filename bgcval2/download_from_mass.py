@@ -85,7 +85,7 @@ def mnStr(month):
 
 def getYearFromFile(fn):
     """
-	Takes a file anem, and looks for 8 consequetive numbers, then removes those that are months, and returns the year.
+	Takes a file name, and looks for 8 consecutive numbers, then removes those that are months, and returns the year.
 	"""
     a = findall(r'\d\d\d\d\d\d\d\d', fn)
     a.reverse()  # prefer second year.
