@@ -218,7 +218,7 @@ def downloadField(jobID,
 	This tool takes the jobID, the field name, and using the known structure of universally similar MASS and the local filesystem structure
 	from paths.py, downloads the monthly jobID data for the field requested to the local file structure.
 
-	This tool will only work on machines that have mass enabled.
+	This tool will only work on machines that have connection to MASS enabled.
 
 	"""
 
