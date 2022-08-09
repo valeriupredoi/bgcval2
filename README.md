@@ -67,7 +67,7 @@ Running the tool to compare multiple jobs
 =========================================
 
 The time developmenmt of several models can be compared 
-and sumarised in a single comparison report html. 
+and summarized in a single comparison report html. 
 This report can be generated with a single command, based on a simple yml file input:
 
 ```
@@ -139,7 +139,7 @@ These values are:
 
 
 A sample yaml exists in `input_yml/comparison_analysis_template.yml`,
-which can be adapted to additional analysis.
+which can be adapted to additional analyses.
 
 
 
@@ -153,7 +153,7 @@ download_from_mass -j jobID
 ```
 where `jobID` is one or more jobIDs.
 
-This script will only work on jasmin's `mass-cli1` machine,
+This script will only work on JASMIN's `mass-cli1` machine,
 which is set up to interact with the Met Office Storate System MASS.
 
 The optional flag `--dry-run` skips the download part of the script,
@@ -214,7 +214,7 @@ against historical observations.
 
 The command to run it is `analysis_timeseries --jobID jobID --keys key`, 
 where jobID is one or more mass jobIDs, such a `u-ab123`.
-The key is one or more pre-defined key, which generates a
+The key is one or more pre-defined keys, which generates a
 list of variables.
 
 Key | What it is | Description
