@@ -4180,8 +4180,8 @@ def load_comparison_yml(master_compare_yml_fn):
 
     details['master_suites'] = dictionary.get('master_suites', [])
 
-    default_thickness = 0.75
-    default_linestyle = '-'
+    default_thickness = 0.7
+    default_linestyle = 'solid'
     default_suite = 'kmf'
 
     thicknesses = {}

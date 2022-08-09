@@ -44,22 +44,11 @@ conda activate bgcval2
 pip install -e .[develop]
 ```
 
-Running the tool
-================
-
-The tool has a number of executables one can invoke individually, e.g.:
-
+Test that the tool has been installed correctly with:
 ```
-analysis_timeseries u-bc179 level1
-analysis_p2p u-bc179 level2 2010
+analysis_compare -h
 ```
-Once these have completed, a summary HTML page can be generated with the command:
-
-```
-bgcval2_make_report u-bc179 2010
-```
-This produces an html5 mobile-friendly website which can be opened using your
-browser of choice.
+which should print the module information and instructions on how to run the tool. 
 
 
 ### Available executables
@@ -73,6 +62,115 @@ Executable name | What it does | Command
 `analysis_compare` | runs comparison of multiple single jobs  | analysis_compare
 
 
+
+Running the tool to compare multiple jobs
+=========================================
+
+The time developmenmt of several models can be compared 
+and sumarised in a single comparison report html. 
+This report can be generated with a single command, based on a simple yml file input:
+
+```
+analysis_compare --compare_yml comparison_recipe.yml
+```
+
+Example input yaml files exist in the `input_yml` directory.
+However, there are a few key values:
+
+
+In this yml file, the structure is:
+```
+---
+name: <Analysis name string>
+do_analysis_timeseries: <bool>
+do_mass_download: <bool>
+master_suites: <str>
+
+jobs:
+   <jobID1>:
+      description: <descrption of the first job>
+      colour: red
+      thickness: 0.7
+      linestyle: '-'
+      shifttime: 0.
+      suite: physics
+   <jobID2>:
+      description: <descrption of the second job>
+      ...
+```
+
+These values are:
+ - `name`: 
+   - The name of the analysis.
+   - This will be the path of output report.
+ - `do_analysis_timeseries`: 
+   -  A Boolean value to run or skip the single model timeseries. 
+   -  Set to False if the single model analysis has already completed.
+ - `do_mass_download`: 
+   - A boolean value to run the mass download. 
+   - This is not currently possible as we can only download mass file from mass-cli1 on jasmin.
+   - See below for details on how to download jobs data.
+ - `master_suites`:
+   - A list of the type of analysis report to produce. 
+   - Options are: `physics`, `bio`, `debug`.
+   - Default is `['physics', 'bio',]`.
+ - `jobs`:
+   - A list of jobIDs, and some options on how they will appear in the final report. 
+   - The options are:
+     - `description`:
+       - A description of job, which helps people differentiate the jobs in the final report.
+     - `colour`: 
+       - The colour of this jobs line in the report plots.
+       - Default colour is a randomly generated hex colour.
+     - `thickness`:
+       - The thickness of this jobs line in the report plots.
+       - default is 0.7
+     - `linestyle`:
+       - The linestyle of this jobs line in the report plots.
+       - Accepts typical matplotlib line styles: `'solid', 'dashed', 'dotted', 'dashdot', '-'. ';', ', etc`
+       - default is `-'`
+     - `shiftime`:
+       - A number in whole years by which the jobs line is shifted.
+       - this is useful if jobs start from different initial years in spin up, for instance.
+       - Default is `0.` ( no time shift ).
+     - `suite`:
+       - An analysis suite to run the analysis_timeseries.
+       - See `analysis_timeseries` for more details.
+
+
+A sample yaml exists in `input_yml/comparison_analysis_template.yml`,
+which can be adapted to additional analysis.
+
+
+
+
+Running the tool for a single job
+=================================
+
+The multi-job analysis described above can only do timeseries analysis.
+To run an in-depth analysis of a single job, the following command can be run:
+
+```
+bgcval2 -j jobID
+```
+
+This will run a time series analysis, a point to point analysis, and 
+publish the reports into a single job html5 report.
+
+
+Alternatively, these tasks can be invoked individually, e.g.:
+
+```
+analysis_timeseries --jobID u-bc179 --keys kmf level1
+analysis_p2p u-bc179 level2 2010
+bgcval2_make_report u-bc179 2010
+
+```
+This produces an html5 mobile-friendly website which can be opened using your
+browser of choice.
+
+
+
 Time series analysis
 --------------------
 
@@ -80,8 +178,9 @@ This is an analysis that investigates the time development of specific marine
 physics and Biogeochemistry fields in the given model, and then compares them
 against historical observations.
 
-The command to run it is `analysis_timeseries jobID key`, where jobID is a mass
-job id, such a `u-ab123`, and the key is a pre-defined key, which generates a
+The command to run it is `analysis_timeseries --jobID jobID --keys key`, 
+where jobID is one or more mass jobIDs, such a `u-ab123`.
+The key is one or more pre-defined key, which generates a
 list of variables.
 
 Key | What it is | Description

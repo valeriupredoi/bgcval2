@@ -1,29 +1,29 @@
 ---
-# GC5 N96 ORCA1 spinup analysis
 name: Template job
 
 # Run the single Job Analysis (analysis_timeseries)
 do_analysis_timeseries: False
   # if True, it calls `analysis_timeseries jobID suite` using details provided here.
 
-do_mass_download: True
+do_mass_download: False
   # if True, it calls bgcval2/download_from_mass.py and attempts to download the jobs data.   
 
 # Job ID's suites as named by Rose/Cylc
 jobs:
-    u-aa001: 
+    u-aa001: # Not a real jobID! 
         description: 'Job number 1'
         colour: red
         thickness: 1. 
         linestyle: '-'
         shifttime: 0.
-        suite: physics
-    u-aa002: 
+        suite: kmf level1 
+
+    u-aa002: # Not a real Job ID
         description: 'Job number 2' 
         colour: blue
         thickness: 1.0
         linestyle: ':'
         shifttime: 0.
-        suite: physics        
+        suite: kmf level1
 
 
