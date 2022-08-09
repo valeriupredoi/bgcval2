@@ -16,3 +16,4 @@ bgcval2/__pycache__
 .coverage
 test-reports
 doc/__pycache__
+_sidebar.rst.inc
