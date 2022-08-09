@@ -4245,7 +4245,7 @@ def load_yml_and_run(compare_yml, config_user):
         print(jobID, 'suite:', suites[jobID])
 
     for jobID in jobs:
-        # even if you don't want to download, it's good to run this
+        # even if you don't want to download, we run this 
         # as it clears up the path and ensures recently downloed data is
         # correctly symlinked.
         download_from_mass(jobID, doMoo=do_mass_download)
@@ -4317,8 +4317,8 @@ def get_args():
 
     parser.add_argument('-c',
                         '--config-file',
-                        default=os.path.join(paths.bgcval2_repo,
-                                             'bgcval2/default-bgcval2-config.yml'),
+                        default=os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                             'default-bgcval2-config.yml'),
                         help='User configuration file (for paths).',
                         required=False)
 
@@ -4336,11 +4336,11 @@ def main():
 
     # This shouldn't fail as it's a required argument.
     compare_ymls = args.compare_yml
-    for compare_yml in compare_ymls:
-        comp_config = os.path.join(os.getcwd(), args.compare_yml)
-        print(f"analysis_timeseries: Comparison config file {comp_config}")
 
-        if not os.path.isfile(comp_config):
+    for compare_yml in compare_ymls:
+        print(f"analysis_timeseries: Comparison config file {compare_yml}")
+
+        if not os.path.isfile(compare_yml):
             print(f"analysis_timeseries: Could not find comparison config file {compare_yml}")
             sys.exit(1)
 
