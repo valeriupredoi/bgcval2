@@ -214,7 +214,7 @@ against historical observations.
 
 The command to run it is `analysis_timeseries --jobID jobID --keys key`, 
 where jobID is one or more mass jobIDs, such a `u-ab123`.
-The key is one or more pre-defined key, which generates a
+The key is one or more pre-defined keys, which generates a
 list of variables.
 
 Key | What it is | Description
