@@ -32,7 +32,6 @@
 
 #####
 #Standard Python modules:
-from sys import argv, exit
 from os.path import exists
 from calendar import month_name
 from socket import gethostname
@@ -41,6 +40,7 @@ from glob import glob
 from netCDF4 import Dataset
 import numpy as np
 import sys
+import os
 import argparse
 
 #####
@@ -1505,6 +1505,7 @@ def get_args():
     parser = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
+    accepted_keys = ['debug', 'physics', 'leve2', 'annual']
 
     parser.add_argument('-j',
                         '--jobID',
@@ -1528,7 +1529,7 @@ def get_args():
                         default=['best',],
                         nargs='+',
                         type=str,
-                        help=''.join(['Years to analysis. Default is "best". '])
+                        help=''.join(['Years to analysis. Default is "best". ']),
                         required=False,
                         )
 
