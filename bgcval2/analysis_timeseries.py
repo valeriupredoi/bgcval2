@@ -47,6 +47,7 @@ from scipy.interpolate import interp1d
 import numpy as np
 import os, sys
 from getpass import getuser
+import itertools
 
 #####
 # Load specific local code:
@@ -4935,7 +4936,7 @@ def get_args():
     parser = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('j',
+    parser.add_argument('-j',
                         '--jobID',
                         nargs='+',
                         type=str,
@@ -4956,11 +4957,10 @@ def get_args():
 
     parser.add_argument('-c',
                         '--config-file',
-                        default=os.path.join(os.getcwd(),
-                                             'bgcval2-config-user.yml'),
-                        help='User configuration file',
-                        required=False,
-                        )
+                        default=os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                             'default-bgcval2-config.yml'),
+                        help='User configuration file (for paths).',
+                        required=False)
 
     args = parser.parse_args()
     return args
@@ -4980,16 +4980,13 @@ def main():
         if key not in accepted_keys:
             print('Key Argument [',key,'] nor recognised. Accepted keys are:', accepted_keys)
             good_keys= False
-    if good_keys:
+    if not good_keys:
         sys.exit(1)
 
-    if args.config_file:
-        config_user = os.path.join(os.getcwd(), args.config_file)
+    if os.path.isfile(args.config_file):
+        config_user = args.config_file
         print(f"analysis_timeseries: Using user config file {config_user}")
     else:
-        config_user = os.path.join(os.getcwd(), "bgcval2-config-user.yml")
-        print(f"analysis_timeseries: Using user default file {config_user}")
-    if not os.path.isfile(config_user):
         print(f"analysis_timeseries: Could not find configuration file {config_user}."
               "Will proceed with defaults.")
         config_user = None
