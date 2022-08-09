@@ -4144,7 +4144,7 @@ def CompareTwoRuns(jobIDA,
 def load_comparison_yml(master_compare_yml_fn):
     """
     Load the config yaml.
-    TAkes an file path string
+    Takes a file path string
     Returns:
         Details dict.
     """
