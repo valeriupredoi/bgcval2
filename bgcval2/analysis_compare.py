@@ -26,26 +26,28 @@
 """
 .. module:: analysis_compare
    :platform: Unix
-   :synopsis: A script to produce an intercomparison of multiple runs the time series analyses.
+   :synopsis: A tool that generates an intercomparison of multiple UKESM jobs time series analyses.
 .. moduleauthor:: Lee de Mora <ledm@pml.ac.uk>
+.. moduleauthor:: Valeriu Predoi <valeriu.predoi@ncas.ac.uk>
 
 """
 
+import argparse
 import matplotlib
 # Force matplotlib to not use any Xwindows backend.
 matplotlib.use('Agg')
 
 #####
 # Load Standard Python modules:
-from sys import argv, exit
-from os.path import exists
 from calendar import month_name
 from socket import gethostname
 from netCDF4 import Dataset
 from glob import glob
 from scipy.interpolate import interp1d
 import numpy as np
-import os, sys, fnmatch
+import os
+import sys
+import fnmatch
 from getpass import getuser
 from collections import defaultdict
 import yaml
@@ -133,9 +135,9 @@ def apply_shifttimes(mdata, jobID, shifttimes):
     for t in sorted(mdata.keys()):
         t1 = t + float(shifttimes[jobID])
         times.append(t1)
-        datas.append(mdata[t])        
-    return times, datas       
-   
+        datas.append(mdata[t])
+    return times, datas
+
 
 
 def timeseries_compare(jobs,
@@ -144,7 +146,7 @@ def timeseries_compare(jobs,
                        bio=False,
                        debug=False,
                        analysisname='',
-                       shifttimes={},                       
+                       shifttimes={},
                        jobDescriptions={},
                        lineThicknesses=defaultdict(lambda: 1),
                        linestyles=defaultdict(lambda: '-'),
@@ -153,16 +155,16 @@ def timeseries_compare(jobs,
     """
     timeseries_compare:
         Suite of tools to take pre-analyses time series model data
-        then compile into single plots, then publish it to an html 
+        then compile into single plots, then publish it to an html
         document.
 
     """
     ### strategy here is a simple wrapper.
     # It's a little cheat-y, as I'm copying straight from analysis_timeseries.py
-    
+
     jobs = sorted(jobs)
     #jobs = sorted(colours.keys())
-    
+
     for ensemble in list(ensembles.keys()):
         # ensembles names can not be the same as jobIDs
         jobs.remove(ensemble)
@@ -4004,7 +4006,7 @@ def timeseries_compare(jobs,
             for filename in fnmatch.filter(filenames, '*.png'):
                 AllImages.append(os.path.join(root, filename))
                 print('AllImages:','fors', root, dirnames, filenames, filename)
- 
+
 
     if ensembles != {}:
         jobs = list(ensembles.keys())
@@ -4142,21 +4144,26 @@ def CompareTwoRuns(jobIDA,
 def load_comparison_yml(master_compare_yml_fn):
     """
     Load the config yaml.
-    TAkes an file path string 
+    Takes a file path string
     Returns:
         Details dict.
     """
     with open(master_compare_yml_fn, 'r') as openfile:
         dictionary = yaml.safe_load(openfile)
 
-    details = {}    
+    if not dictionary or not isinstance(dictionary, dict):
+        print(f"Configuration file {master_compare_yml_fn} "
+              "is either empty or corrupt, please check its contents")
+        sys.exit(1)
+
+    details = {}
     details['name'] = dictionary.get('name', False)
-    details['jobs'] = dictionary.get('jobs', False) 
+    details['jobs'] = dictionary.get('jobs', False)
 
     if not details['name']:
         print('Please provide a name for your analysis. In your yaml, this is:')
         print('name: MyAnalysisName')
-        exit(0)
+        sys.exit(0)
     if not details['jobs']:
         print('Please provide at least one JobID for your analysis. In your yaml, this is:')
         print('jobs: ')
@@ -4166,96 +4173,90 @@ def load_comparison_yml(master_compare_yml_fn):
         print('        thickness: 0.7')
         print("        linestyle: '-'")
         print('        shifttime: 0.')
-        exit(0)       
+        sys.exit(0)
 
-    details['do_analysis_timeseries'] = dictionary.get('do_analysis_timeseries', False) 
+    details['do_analysis_timeseries'] = dictionary.get('do_analysis_timeseries', False)
     details['do_mass_download'] = dictionary.get('do_mass_download', False)
-    
+
     details['master_suites'] = dictionary.get('master_suites', [])
-    
-    default_thickness = 0.75
-    default_linestyle = '-'
+
+    default_thickness = 0.7
+    default_linestyle = 'solid'
     default_suite = 'kmf'
-  
+
     thicknesses = {}
     linestyles = {}
     colours = {}
     suites = {}
     descriptions = {}
     shifttimes = {} # number of years to shift time axis.
-   
+
     for jobID, job_dict in details['jobs'].items():
         if job_dict.get('colour', False):
             colours[jobID] = job_dict['colour']
         else:
-            colours[jobID] = ''.join(['#', "%06x" % random.randint(0, 0xFFFFFF)])        
+            colours[jobID] = ''.join(['#', "%06x" % random.randint(0, 0xFFFFFF)])
             print('WARNING: No colour provided, setting to random hex colour:', colours[jobID])
-            
+
         descriptions[jobID] = job_dict.get('description', '')
         thicknesses[jobID] = job_dict.get('thickness', default_thickness)
         linestyles[jobID] = job_dict.get('linestyle', default_linestyle)
         shifttimes[jobID] = float(job_dict.get('shifttime', 0.))
         suites[jobID] = job_dict.get('suite', default_suite)
-                 
+
     details['colours'] = colours
     details['descriptions'] = descriptions
     details['thicknesses'] = thicknesses
-    details['linestyles'] = linestyles            
-    details['shifttimes'] = shifttimes            
+    details['linestyles'] = linestyles
+    details['shifttimes'] = shifttimes
     details['suites'] = suites
     return details
-    
 
-def main():
-    if "--help" in argv or len(argv) == 1:
-        print("Running with no arguments. Exiting.")
-        if "--help" in argv:
-            print("Read the documentation.")
-        exit(0)
 
-    config_user=None
-    if "bgcval2-config-user.yml" in argv[1:]:
-        config_user = "bgcval2-config-user.yml"
-        print(f"analysis_timeseries: Using user config file {config_user}")
+def load_yml_and_run(compare_yml, config_user):
+    """
+    Loads the comparison yaml file and run compare_yml.
 
-    details = load_comparison_yml(argv[1])
-  
+    """
+    # Below here is analysis
+    details = load_comparison_yml(comp_config)
+
     jobs = details['jobs']
-    analysis_name = details['name']    
+    analysis_name = details['name']
     do_analysis_timeseries = details['do_analysis_timeseries']
     do_mass_download = details['do_mass_download']
-    master_suites = details['master_suites']  
- 
+    master_suites = details['master_suites']
+
     colours = details['colours']
     thicknesses = details['thicknesses']
     linestyles = details['linestyles']
     descriptions = details['descriptions']
     shifttimes = details['shifttimes']
-    suites = details['suites']   
- 
+    suites = details['suites']
+
     print('---------------------')
     print('timeseries_compare:',  analysis_name)
     print('job ids:', jobs.keys())
     for jobID in jobs:
         print(jobID, 'description:',descriptions[jobID])
-        print(jobID, 'colour:',colours[jobID])        
+        print(jobID, 'colour:',colours[jobID])
         print(jobID, 'line thickness & style:',thicknesses[jobID], linestyles[jobID])
         print(jobID, 'Shift time by', shifttimes[jobID])
         print(jobID, 'suite:', suites[jobID])
 
     for jobID in jobs:
-        # even if you don't want to download, it's good to run this
-        # as it clears up the path and ensures recently downloed data is 
+        # even if you don't want to download, we run this 
+        # as it clears up the path and ensures recently downloed data is
         # correctly symlinked.
         download_from_mass(jobID, doMoo=do_mass_download)
-    
+
     if do_analysis_timeseries:
         for jobID in jobs:
             analysis_timeseries(
                 jobID=jobID,
                 analysisSuite=suites[jobID],
                 config_user=config_user
-            )   
+            )
 
     # Master suite leys:
     if not master_suites:
@@ -4298,9 +4299,55 @@ def main():
         linestyles=linestyles,
         config_user=config_user
     )
-            
+
+
+def get_args():
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+
+    parser.add_argument('-y',
+                        '--compare_yml',
+                        nargs='+',
+                        type=str,
+                        help='One or more Comparison Analysis configuration file, for examples see bgcval2 input_yml directory.',
+                        required=True,
+                        )
+
+    parser.add_argument('-c',
+                        '--config-file',
+                        default=os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                             'default-bgcval2-config.yml'),
+                        help='User configuration file (for paths).',
+                        required=False)
+
+    args = parser.parse_args()
+
+    return args
+
+
+def main():
+    """Run the main routine."""
+    args = get_args()
+
+    # This has a sensible default value.
+    config_user=args.config_file
+
+    # This shouldn't fail as it's a required argument.
+    compare_ymls = args.compare_yml
+
+    for compare_yml in compare_ymls:
+        print(f"analysis_timeseries: Comparison config file {compare_yml}")
+
+        if not os.path.isfile(compare_yml):
+            print(f"analysis_timeseries: Could not find comparison config file {compare_yml}")
+            sys.exit(1)
+
+        load_yml_and_run(compare_yml, config_user)
+
     print("Finished... ")
 
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     main()

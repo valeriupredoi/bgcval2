@@ -31,11 +31,11 @@
 .. moduleauthor:: Lee de Mora <ledm@pml.ac.uk>
 """
 
+import argparse
 import matplotlib
 # Force matplotlib to not use any Xwindows backend.
 matplotlib.use('Agg')
 import sys
-from sys import argv, exit
 from multiprocessing import Pool
 
 from .download_from_mass import findLastFinishedYear
@@ -245,36 +245,55 @@ def theWholePackage(jobID, year=False, suite='level1'):
                clean=True,
                physicsOnly=physicsOnly)
 
+
+def get_args():
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('-i',
+                        '--job-id',
+                        default=None,
+                        help='Job ID',
+                        required=True)
+    parser.add_argument('-y',
+                        '--year',
+                        default=None,
+                        help='Year',
+                        required=False)
+    parser.add_argument('-p',
+                        '--physics',
+                        action='store_true',
+                        help='Physics or not',
+                        required=False)
+
+    args = parser.parse_args()
+
+    return args
+
+
 def run():
     from ._version import __version__
     print(f'BGCVal2: {__version__}')
-    if "--help" in argv or len(argv) == 1:
-        print("Running with no arguments. Exiting.")
-        if "--help" in argv:
-            print("Read the documentation.")
-        sys.exit(0)
-    try:
-        jobID = argv[1]
-    except:
-        print("Please provide a job ID")
-        exit()
-    #if 'ReportOnly' in argv[:]:ReportOnly=True
-    #else:	ReportOnly = False
 
-    if 'physics' in argv[:]:
+    args = get_args()
+    jobID = args.job_id
+
+    if args.physics:
+        print("bgcval: Running with Physics option! Number files 6")
         physicsOnly = True
         numberfiles = 4
     else:
+        print("bgcval: Running without Physics option! Number files 4")
         physicsOnly = False
         numberfiles = 6
 
     year = False
-    for ar in argv:
+    if args.year:
         try:
-            ar = int(ar)
-        except:
-            continue
-        year = str(ar)
+            year = str(int(args.year))
+        except ValueError:
+            print("analysis_timeseries: Invalid input for year - must be an integer, got {args.year}")
     for divby in [100, 50, 25, 10, 5, 1]:
         print("main", divby, year)
         if year: continue
