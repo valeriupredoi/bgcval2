@@ -139,7 +139,7 @@ These values are:
 
 
 A sample yaml exists in `input_yml/comparison_analysis_template.yml`,
-which can be adapted to additional analysis.
+which can be adapted to additional analyses.
 
 
 
