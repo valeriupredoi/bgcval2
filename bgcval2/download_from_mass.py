@@ -118,7 +118,8 @@ def rebaseSymlinks(fn, dryrun=True, debug=False):
     #       print "rebaseSymlinks:\tfile does not exist.",fn
     #       return
     if not os.path.islink(fn):
-        if debug: print("download_from_mass:\trebaseSymlinks:\tfile is not a symlink.", fn)
+        if debug: 
+            print("download_from_mass:\trebaseSymlinks:\tfile is not a symlink.", fn)
         return
 
 #####
@@ -128,7 +129,8 @@ def rebaseSymlinks(fn, dryrun=True, debug=False):
 
     if realpath == linkpath: return
 
-    print("download_from_mass:\trebaseSymlinks:\tdeleting and re-linking ", fn, '-->', realpath)
+    if debug:
+        print("download_from_mass:\trebaseSymlinks:\tdeleting and re-linking ", fn, '-->', realpath)
     if dryrun: return
     os.remove(fn)
     os.symlink(realpath, fn)
@@ -484,16 +486,17 @@ def download_from_mass(jobID, doMoo=True):
     outfile.write(download_script_txt)
     outfile.close()
 
-    fixFilePaths(outputFold, jobID)
-    deleteBadLinksAndZeroSize(outputFold, jobID)
+    fixFilePaths(outputFold, jobID, debug=False,)
+    deleteBadLinksAndZeroSize(outputFold, jobID, debug=False,)
 
 
 def fixFilePaths(outputFold, jobID, debug=False):
     #####
     # The coupled model looses the first two characters of the name in the netcdf file.
     fns = glob(outputFold + "/*" + jobID[2:] + "*.nc")
-    print("download_from_mass:\tfixFilePaths:\tLooking for",
-          outputFold + "/" + jobID[2:] + "*.nc")
+    if debug:
+        print("download_from_mass:\tfixFilePaths:\tLooking for",
+              outputFold + "/" + jobID[2:] + "*.nc")
     fns.extend(
         glob(outputFold +
              '/MetOffice*'))  # Because ocean assess might use the lisence?
@@ -508,22 +511,23 @@ def fixFilePaths(outputFold, jobID, debug=False):
                       correctfn)
             continue
         if correctfn == fn: continue
-        print("download_from_mass:\tfixFilePaths:\tFixing file prefix", fn,
-              '-->', correctfn)
+        if debug:
+            print("download_from_mass:\tfixFilePaths:\tFixing file prefix", fn,
+                  '-->', correctfn)
         try:
             os.symlink(fn, correctfn)
         except:
-            print("Unable to make link:", correctfn)
+            if debug:
+                print("Unable to make link:", correctfn)
             continue
-#	        print "download_from_mass:\tfixFilePaths:\t", correctfn
 
-#####
-# Some runs have nemo/medusa as a preface to the file name.
+    #####
+    # Some runs have nemo/medusa as a preface to the file name.
     for pref in ['nemo_', 'medusa_']:
-        #nemo_u-ai886o_1y_26291201-26301201_grid-V.nc
         fns = glob(outputFold + "/" + pref + jobID + "*.nc")
-        print("download_from_mass:\tfixFilePaths:\tLooking for new prefix:",
-              pref, outputFold + "/" + pref + jobID + "*.nc")
+        if debug:
+            print("download_from_mass:\tfixFilePaths:\tLooking for new prefix:",
+                  pref, outputFold + "/" + pref + jobID + "*.nc")
         for fn in sorted(fns):
             #####
             correctfn = os.path.dirname(fn) + '/' + os.path.basename(
@@ -534,14 +538,16 @@ def fixFilePaths(outputFold, jobID, debug=False):
                         "download_from_mass:\tfixFilePaths:\tcorrect path exists.",
                         correctfn)
                 continue
-            print("download_from_mass:\tfixFilePaths:\tFixing file prefix",
-                  pref,
-                  end=' ')
+            if debug:
+                print("download_from_mass:\tfixFilePaths:\tFixing file prefix",
+                      pref,
+                      end=' ')
             os.symlink(fn, correctfn)
-            print("download_from_mass:\tfixFilePaths:\t", correctfn)
+            if debug:
+                print("download_from_mass:\tfixFilePaths:\t", correctfn)
 
-#####
-# Some runs have nemo/medusa as a preface to the file name.
+    #####
+    # Some runs have nemo/medusa as a preface to the file name.
     suffDict = {
         'grid-T': 'grid_T',
         'grid-U': 'grid_U',
@@ -554,8 +560,9 @@ def fixFilePaths(outputFold, jobID, debug=False):
     for badsuff, suff in list(suffDict.items()):
         #nemo_u-ai886o_1y_26291201-26301201_grid-V.nc
         fns = glob(outputFold + "/" + jobID + "*" + badsuff + ".nc")
-        print("download_from_mass:\tfixFilePaths:\tLooking for new suff:",
-              badsuff, outputFold + "/" + jobID + "*" + badsuff + ".nc")
+        if debug:
+            print("download_from_mass:\tfixFilePaths:\tLooking for new suff:",
+                  badsuff, outputFold + "/" + jobID + "*" + badsuff + ".nc")
         for fn in sorted(fns):
             #####
             correctfn = os.path.dirname(fn) + '/' + os.path.basename(
@@ -566,36 +573,38 @@ def fixFilePaths(outputFold, jobID, debug=False):
                         "download_from_mass:\tfixFilePaths:\tcorrect path exists.",
                         correctfn)
                 continue
-            print("download_from_mass:\tfixFilePaths:\tFixing file suffix",
-                  badsuff,
-                  '->',
-                  suff,
-                  end=' ')
+            if debug:
+                print("download_from_mass:\tfixFilePaths:\tFixing file suffix",
+                      badsuff,
+                      '->',
+                      suff,
+                      end=' ')
             if correctfn == fn: continue
 
             try:
                 os.symlink(fn, correctfn)
             except:
                 continue
-            print("download_from_mass:\tfixFilePaths:\t", correctfn)
+            if debug:
+                print("download_from_mass:\tfixFilePaths:\t", correctfn)
 
     #####
     # This code looks at symoblic links and points them at their ultimate source, removing the long link chains.
     for fn in glob(outputFold + '/*'):
-        rebaseSymlinks(fn, dryrun=False)
+        rebaseSymlinks(fn, dryrun=False, debug=False)
 
 
-def deleteBadLinksAndZeroSize(outputFold, jobID):
+def deleteBadLinksAndZeroSize(outputFold, jobID, debug=True):
 
     bashCommand1 = "find " + outputFold + "/. -size 0 -print -delete"
     bashCommand2 = "find -L " + outputFold + "/. -type l -delete  -print"
 
-    print("deleteBadLinksAndZeroSize:\t", bashCommand1)
+    if debug: print("deleteBadLinksAndZeroSize:\t", bashCommand1)
 
     process1 = subprocess.Popen(bashCommand1.split(), stdout=subprocess.PIPE)
     output1 = process1.communicate()[0]
 
-    print("deleteBadLinksAndZeroSize:\t", bashCommand2)
+    if debug: print("deleteBadLinksAndZeroSize:\t", bashCommand2)
 
     process2 = subprocess.Popen(bashCommand2.split(), stdout=subprocess.PIPE)
     output2 = process2.communicate()[0]
@@ -615,9 +624,11 @@ def perform_download(jobID, keys, doMoo):
     """
     #####
     # Default behaviour is to download annual files
-    if not keys:
+    if not keys or 'annual' in keys:
         download_from_mass(jobID, doMoo=doMoo)
+        keys = pop_keys(keys, ['annual', ])
 
+    dryrun = not doMoo
     #####
     # Monthly Ice files
     if 'ice' in keys or 'soicecov' in keys:
@@ -666,23 +677,24 @@ def get_args():
     parser = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('-i',
-                        '--job-id',
+    parser.add_argument('-j',
+                        '--jobID',
                         nargs='+', type=str,
-                        help='Job ID to download (one or more)',
+                        help='One or more JobIDs to download',
                         required=True)
     parser.add_argument('-k',
                         '--keys',
-                        default=[],
+                        default=['annual', ],
                         nargs='+', type=str,
-                        help='Runtime keys',
+                        help='Download keys - default options are: annual (which downloads all the annual files), '
+                             'or chl, mld, ice, export, which downkoads monthly files for these fields. '
+                             'Note that monthly files download is unstable and slow.',
                         required=False)
     parser.add_argument('-d',
                         '--dry-run',
-                        default=False,
-                        type=bool,
-                        help='Dry run - do not download any files.',
-                        required=False)
+                        action='store_true', 
+                        help='Dry run: Do not download any files.',
+                        )
 
     args = parser.parse_args()
 
@@ -693,7 +705,7 @@ def main():
     """Run the main routine."""
     args = get_args()
 
-    jobIDs = args.job_id
+    jobIDs = args.jobID
     keys = args.keys
     dryrun = args.dry_run
     doMoo = not dryrun
@@ -703,7 +715,7 @@ def main():
     if keys:
         keys = [str(k) for k in keys]
 
-    print(f"Running with job_ids: {jobID} and keys {keys}")
+    print(f"Running with job_ids: {jobIDs} and keys {keys}")
 
     for jobID in jobIDs:
         perform_download(jobID, keys, doMoo)
