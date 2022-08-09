@@ -153,7 +153,7 @@ download_from_mass -j jobID
 ```
 where `jobID` is one or more jobIDs.
 
-This script will only work on jasmin's `mass-cli1` machine,
+This script will only work on JASMIN's `mass-cli1` machine,
 which is set up to interact with the Met Office Storate System MASS.
 
 The optional flag `--dry-run` skips the download part of the script,
