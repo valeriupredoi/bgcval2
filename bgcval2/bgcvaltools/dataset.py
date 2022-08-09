@@ -36,17 +36,27 @@ from sys import argv
 
 class dataset:
 
-    def __init__(self, filename, readflag='r', Quiet=True):
+    def __init__(self, filename, readflag='r', Quiet=True, skip_file=False):
         self.__filename__ = filename
         self.netcdfPath = filename
         self.filename = filename
+        self.skip_file = skip_file
         try:
             self.dataset = netCDF4.Dataset(filename, 'r')
-        except:
-            print("dataset:\tUnable to open", filename)
-            self.dataset = netCDF4.Dataset(
-                filename, 'r'
-            )  # This is a ham fisted way to print the file name being loaded and the error message.
+            self.dataset = netCDF4.Dataset(filename, 'r', format='NETCDF4')
+        except OSError as oserr:
+            print(oserr)
+            print(f"dataset:\tUnable to open {filename}")
+            if oserr.errno == -101:
+                print(f"File {filename} appears to be corrupted")
+                if self.skip_file:
+                    print("Skipping it.")
+                    pass
+                else:
+                    print("This file can not be skipped, exiting, " \
+                          "please check the file!")
+                    raise
+            
 
         #####
         # link to various fields, so that the user experience is similar.
