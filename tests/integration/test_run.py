@@ -108,7 +108,7 @@ def test_download_from_mass_command():
             download_from_mass_main()
         assert pytest_wrapped_e.type == SystemExit
         assert pytest_wrapped_e.value.code == 0
-    err = "the following arguments are required: -i/--job-id"
+    err = "the following arguments are required: -j/--jobID"
     with arguments('download_from_mass'):
         with pytest.raises(SystemExit) as cm, capture_sys_output() \
             as (stdout, stderr):
