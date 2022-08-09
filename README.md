@@ -67,7 +67,7 @@ Running the tool to compare multiple jobs
 =========================================
 
 The time developmenmt of several models can be compared 
-and sumarised in a single comparison report html. 
+and summarized in a single comparison report html. 
 This report can be generated with a single command, based on a simple yml file input:
 
 ```
