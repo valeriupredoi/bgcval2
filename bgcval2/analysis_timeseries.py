@@ -258,14 +258,16 @@ def build_list_of_suite_keys(suites, debug=True):
     Generate a list of keys from a list of suites.
 
     """
-
+    print('build_list_of_suite_keys')
     paths_dir = os.path.dirname(os.path.realpath(__file__))
     key_lists_dir = os.path.join(os.path.dirname(paths_dir), 'key_lists')
 
+    print('key_lists_dir', key_lists_dir)
     analysisKeys = {}
     for suite in suites:
+        print(suite)
         # look for a list in keys_list directory:
-        suite_yml = os.path.join(key_lists_dir, suite.lower(),'.yml')
+        suite_yml = os.path.join(key_lists_dir, ''.join([suite.lower(),'.yml']))
         if debug:
             print('build_list_of_suite_keys:\tlooking for suite yaml:', suite_yml)
 
@@ -274,23 +276,30 @@ def build_list_of_suite_keys(suites, debug=True):
             sys.exit(1)
 
         # Open yml file:
-        with open(master_compare_yml_fn, 'r') as openfile:
+        with open(suite_yml, 'r') as openfile:
             dictionary = yaml.safe_load(openfile)
 
         if not dictionary or not isinstance(dictionary, dict):
-            print(f"Configuration file {master_compare_yml_fn} "
+            print(f"Configuration file {suite_yml} "
                   "is either empty or corrupt, please check its contents")
             sys.exit(1)
 
         keys_dict = dictionary.get('keys', {})
 
-        for key, keybool in keys_dict:
+        for key, keybool in keys_dict.items():
+            if debug and key in analysisKeys:
+                print('build_list_of_suite_keys:\tKey exists in multiple suites:', key)
+               
+
             if key in analysisKeys and keybool != analysisKeys[key]:
                 print('build_list_of_suite_keys:\tERROR: conflick in input yamls:', key, keybool, '!=', analysisKeys[key])
                 sys.exit(1)
 
             if keybool:
-                analysisKey[key] = keybool
+                if debug:
+                    print('build_list_of_suite_keys:\tAdding key:', key)
+
+                analysisKeys[key] = keybool
     analysisKeys = [key for key in analysisKeys.keys()]
     return analysisKeys
 
@@ -354,7 +363,7 @@ def analysis_timeseries(
     # These are some booleans that allow us to choose which analysis to run.
     # This lets up give a list of keys one at a time, or in parrallel.
     #if type(suites) == type(['Its', 'A', 'list!']):
-    if isinstrance(suites, str):
+    if isinstance(suites, str):
         suites = [suites, ]
 
     analysisKeys = build_list_of_suite_keys(suites, debug = True)
@@ -365,7 +374,7 @@ def analysis_timeseries(
     #####
     # Switches:
     # These are some preset switches to run in series.
-
+    if True:
 
         # if analysisSuite.lower() in [
         #         'keymetricsfirst', 'kmf',
