@@ -1,0 +1,43 @@
+# Note that fast refers to the UKESM parameterisation, not that this analysis
+# will run faster.
+keys:
+    N: True  # WOA Nitrate
+    Si: True  # WOA Siliate
+    O2: True  # WOA Oxygen
+    Alk: True  # Glodap Alkalinity
+    DIC: True  # Globap tCO2
+    AirSeaFluxCO2: True  # Air Sea Flux
+    TotalAirSeaFluxCO2: True  # Total global air sea flux
+    IntPP_OSU: True  # OSU Integrated primpary production
+    PP_OSU: True  # OSU Integrated primpary production
+    # TotalOMZVolume: True           # Total Oxygen Minimum zone Volume
+    VolumeMeanOxygen: True  # Volune Mean regional oxygen concentation
+    Iron: True  # Iron
+    Dust: True  # Dust
+    CHL: True  # Total Chlorophyll
+    pH: True
+
+    Temperature: True  # WOA Temperature
+    GlobalMeanTemperature: True  # Global Mean Temperature
+    GlobalMeanTemperature_700: True
+    GlobalMeanTemperature_2000: True
+
+    VolumeMeanTemperature: True  # Global Mean Temperature
+    GlobalMeanSalinity: True  # Global Mean Salinity
+    Salinity: True  # WOA Salinity
+    MLD: True  # iFERMER Mixed Layer Depth
+
+    TotalIceExtent: True  # work in progress
+    NorthernTotalIceExtent: True  # work in progress
+    SouthernTotalIceExtent: True  # work in progress
+
+    DrakePassageTransport: True  # DrakePassageTransport
+    AMOC_26N: True  # AMOC 26N
+
+    FreshwaterFlux: True  # Freshwater flux
+    sowaflup: True  # Net Upward Water Flux
+
+    TotalHeatFlux: True
+    scvoltot: True
+    soga: True
+    thetaoga: True

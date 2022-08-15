@@ -1,0 +1,9 @@
+keys:
+    O2: True  # WOA Oxygen
+    DIC: True  # work in progress
+    Alk: True  # Glodap Alkalinity
+    Iron: True  # work in progress
+    N: True  # WOA Nitrate
+    Si: True  # WOA Nitrate
+    Temperature: True  #             # WOA Temperature
+    Salinity: True  #             # WOA Salinity
