@@ -55,3 +55,6 @@ keys:
     # sofmflup: True                     # Water flux due to freezing/melting
     # sosfldow: True                     # Downward salt flux
     # sossheig: True                 # Sea surface height
+    # TotalHeatFlux: True  # Total Heat Flux
+    # scvoltot: True
+    # scalarHeatContent: True
