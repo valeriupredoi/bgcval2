@@ -234,20 +234,12 @@ def analysis_timeseries(
             'NorthernHemisphere',
         ]
 
-    if analysisSuite.lower() == 'debug':
-        regionList = ['Global', 'ArcticOcean']
+    if regions in ['debug', 'Global', 'spinup']:
+        regionList = ['Global', ]
 
-    if analysisSuite.lower() in [
-            'spinup',
-            'salinity',
-    ]:
-        regionList = [
-            'Global',
-        ]
         metricList = [
             'mean',
         ]
-        layerList = ['500m', '1000m', '2000m', '4000m']
 
     # Regions from Pierce 1995 - https://doi.org/10.1175/1520-0485(1995)025<2046:CROHAF>2.0.CO;2
     PierceRegions = [
@@ -299,7 +291,11 @@ def analysis_timeseries(
     machinelocation = ''
 
 
-    shelvedir = ukp.folder(paths.shelvedir + "/timeseries/" + jobID)
+    shelvedir = ukp.folder([paths.shelvedir, "timeseries", jobID])
+    imagedir = ukp.folder([paths.imagedir, jobID, 'timeseries'])
+
+    if annual: WOAFolder = paths.WOAFolder_annual
+    else: WOAFolder = paths.WOAFolder
 
     #####
     # PML
@@ -308,13 +304,6 @@ def analysis_timeseries(
     if hostname.find('pmpc') > -1:
         print("analysis-timeseries.py:\tBeing run at PML on ", gethostname())
 
-        imagedir = ukp.folder(paths.imagedir + '/' + jobID + '/timeseries')
-
-        if annual: WOAFolder = paths.WOAFolder_annual
-        else: WOAFolder = paths.WOAFolder
-
-        #shelvedir 	= ukp.folder(paths.shelvedir+'/'+jobID+'/timeseries/'+jobID)
-        #shelvedir = ukp.folder(paths.shelvedir + "/timeseries/" + jobID)
     #####
     # JASMIN
     if hostname.find('ceda.ac.uk') > -1 or hostname.find(
@@ -322,54 +311,8 @@ def analysis_timeseries(
         print("analysis-timeseries.py:\tBeing run at CEDA on ", hostname)
         #machinelocation = 'JASMIN'
 
-        #try:	shelvedir 	= ukp.folder("/group_workspaces/jasmin2/ukesm/BGC_data/"+getuser()+"/shelves/timeseries/"+jobID)
-        #except: shelvedir       =            "/group_workspaces/jasmin2/ukesm/BGC_data/"+getuser()+"/shelves/timeseries/"+jobID
-        #try:
-        #    shelvedir = ukp.folder("/gws/nopw/j04/ukesm/BGC_data/" +
-        #                           getuser() + "/shelves/timeseries/" + jobID)
-        #except:
-        #    shelvedir = "/gws/nopw/j04/ukesm/BGC_data/" + getuser(
-        #    ) + "/shelves/timeseries/" + jobID
-
-        if annual: WOAFolder = paths.WOAFolder_annual
-        else: WOAFolder = paths.WOAFolder
-
-        try:
-            imagedir = ukp.folder(paths.imagedir + '/' + jobID + '/timeseries')
-        except:
-            imagedir = paths.imagedir + '/' + jobID + '/timeseries'
-
-    if hostname.find('monsoon') > -1:
-        print("Please set up paths.py")
-        assert 0
-
-#print "analysis-timeseries.py:\tBeing run at the Met Office on ",gethostname()
-#machinelocation = 'MONSOON'
-
-#ObsFolder       = "/projects/ukesm/ldmora/BGC-data/"
-#ModelFolder       = "/projects/ukesm/ldmora/UKESM"
-#####
-# Location of model files.
-#MEDUSAFolder_pref       = ukp.folder(ModelFolder)
-
-#####
-# Location of data files.
-#if annual:      WOAFolder       = ukp.folder(ObsFolder+"WOA/annual")
-#else:           WOAFolder       = ukp.folder(ObsFolder+"WOA/")
-
-#MAREDATFolder   = ObsFolder+"/MAREDAT/MAREDAT/"
-#GEOTRACESFolder = ObsFolder+"/GEOTRACES/GEOTRACES_PostProccessed/"
-#TakahashiFolder = ObsFolder+"/Takahashi2009_pCO2/"
-#MLDFolder       = ObsFolder+"/IFREMER-MLD/"
-#iMarNetFolder   = ObsFolder+"/LestersReportData/"
-#GlodapDir       = ObsFolder+"/GLODAP/"
-#GLODAPv2Dir     = ObsFolder+"/GLODAPv2/GLODAPv2_Mapped_Climatologies/"
-#OSUDir          = ObsFolder+"OSU/"
-#CCIDir          = ObsFolder+"CCI/"
-#orcaGridfn      = ModelFolder+'/mesh_mask_eORCA1_wrk.nc'
-
-#####
-# Unable to find location of files/data.
+    #####
+    # Unable to find location of files/data.
     if not paths.machinelocation:
         print(
             "analysis-timeseries.py:\tFATAL:\tWas unable to determine location of host: ",
@@ -381,10 +324,9 @@ def analysis_timeseries(
         else:
             assert False
 
-#####
-# Because we can never be sure someone won't randomly rename the
-# time dimension without saying anything.
-# if jobID in ['u-am515','u-am927','u-am064','u-an326',]:
+    #####
+    # Because we can never be sure someone won't randomly rename the
+    # time dimension without saying anything.
     try:
         tmpModelFiles = listModelDataFiles(jobID, 'grid_T',
                                            paths.ModelFolder_pref, annual)
@@ -4518,6 +4460,10 @@ def analysis_timeseries(
 # At the moment, this dictioary is not used, but we could for instance open the shelve to highlight specific data,
 #	(ie, andy asked to produce a table showing the final year of data.
 
+    for name in list(av.keys()):
+        print(name, av[name])
+        print('ynml dump:\n',yaml.dump(av[name]))
+    assert 0
     shelves = {}
     shelves_insitu = {}
     for name in list(av.keys()):
@@ -4708,7 +4654,7 @@ def main():
               "Will proceed with defaults.")
         config_user = None
 
-    for jobID in itertools.product(jobIDs):
+    for jobID in jobIDs:
         analysis_timeseries(
             jobID=jobID,
             suites=keys,
