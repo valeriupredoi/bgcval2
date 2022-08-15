@@ -368,7 +368,7 @@ def analysis_timeseries(
 
     analysisKeys = build_list_of_suite_keys(suites, debug = True)
     print('analysisKeys', analysisKeys)
-    assert 0
+    # assert 0
     #    analysisKeys = analysisSuite
 
     #####
