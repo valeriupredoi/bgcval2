@@ -16,7 +16,7 @@ keys:
     # DMS: True                      
     # DTC: True                      # Detrital carbon
     # LocalExportRatio: True         # Export ratio (no data)
-    #	GlobalExportRatio: True        # Export ratio (no data)
+    # GlobalExportRatio: True        # Export ratio (no data)
 
     # Carbonate system:
     Alk: True  # Glodap Alkalinity
