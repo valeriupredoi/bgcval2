@@ -67,171 +67,6 @@ from ._runtime_config import get_run_configuration
 from .Paths.paths import paths_setter
 
 
-#####
-# Biogeochemistry keys
-# bgcKeys = []
-# if True:
-#     bgcKeys.append('N')  # WOA Nitrate
-#     bgcKeys.append('Si')  # WOA Siliate
-#     bgcKeys.append('O2')  # WOA Oxygen
-#     bgcKeys.append('Alk')  # Glodap Alkalinity
-#     bgcKeys.append('DIC')  # Globap tCO2
-#     bgcKeys.append('AirSeaFluxCO2')  # Air Sea Flux
-#     bgcKeys.append('TotalAirSeaFluxCO2')  # Total global air sea flux
-#     bgcKeys.append('IntPP_OSU')  # OSU Integrated primpary production
-#     bgcKeys.append('PP_OSU')  # OSU Integrated primpary production
-#     #	bgcKeys.append('LocalExportRatio')         # Export ratio (no data)
-#     #	bgcKeys.append('GlobalExportRatio')        # Export ratio (no data)
-#     bgcKeys.append('TotalOMZVolume')  # Total Oxygen Minimum zone Volume
-#     #	bgcKeys.append('OMZThickness')             # Oxygen Minimum Zone Thickness
-#     #	bgcKeys.append('OMZMeanDepth')             # Oxygen Minimum Zone mean depth
-#     bgcKeys.append(
-#         'VolumeMeanOxygen')  # Volune Mean regional oxygen concentation
-#     #	bgcKeys.append('AOU')                      # Apparent Oxygen Usage
-#     bgcKeys.append('Iron')  # Iron
-#     bgcKeys.append('Dust')  # Dust
-#     #	bgcKeys.append('TotalDust')                # Total Dust
-#     #	bgcKeys.append('DiaFrac')                  # Diatom Fraction
-#     #        bgcKeys.append('DTC')                      # Detrital carbon
-#     bgcKeys.append('CHL')  # Total Chlorophyll
-#     #        bgcKeys.append('DMS_ARAN')                      # Total Chlorophyll
-#     bgcKeys.append('pH')
-#
-# bgcKeysDict = {i: n for i, n in enumerate(bgcKeys)}
-
-#####
-# Physical keys
-# physKeys = []
-# if True:
-#
-#     physKeys.append('Temperature')  # WOA Temperature
-#     #physKeys.append('VolWeightedT')			# Volume weighted WOA Temperature
-#     physKeys.append('GlobalMeanTemperature')  # Global Mean Temperature
-#     physKeys.append('GlobalMeanTemperature_700')
-#     physKeys.append('GlobalMeanTemperature_2000')
-#
-#     physKeys.append('VolumeMeanTemperature')  # Global Mean Temperature
-#     physKeys.append('GlobalMeanSalinity')  # Global Mean Salinity
-#     #	physKeys.append('IcelessMeanSST')    		# Global Mean Surface Temperature with no ice
-#     physKeys.append('Salinity')  # WOA Salinity
-#     physKeys.append('MLD')  # iFERMER Mixed Layer Depth
-#
-#     #	physKeys.append('TotalIceArea')			# work in progress
-#     #	physKeys.append('NorthernTotalIceArea')		# work in progress
-#     #	physKeys.append('SouthernTotalIceArea')		# work in progress
-#     #	physKeys.append('WeddelTotalIceArea')
-#     physKeys.append('TotalIceExtent')  # work in progress
-#     physKeys.append('NorthernTotalIceExtent')  # work in progress
-#     physKeys.append('SouthernTotalIceExtent')  # work in progress
-#     #        physKeys.append('WeddelIceExent')       # work in progress
-#     #physKeys.append('NorthernMIZArea')
-#     #physKeys.append('SouthernMIZArea')
-#     #physKeys.append('TotalMIZArea')
-#     #        physKeys.append('NorthernMIZfraction')
-#     #        physKeys.append('SouthernMIZfraction')
-#     #        physKeys.append('TotalMIZfraction')
-#
-#     physKeys.append('DrakePassageTransport')  # DrakePassageTransport
-#     #	physKeys.append('AMOC_32S')                 	# AMOC 32S
-#     physKeys.append('AMOC_26N')  # AMOC 26N
-#     #        physKeys.append('AMOC_26N_nomexico')            # AMOC 26N
-#     #	physKeys.append('ADRC_26N')                 	# ADRC 26N
-#     #	physKeys.append('ZonalCurrent')             	# Zonal Veloctity
-#     #	physKeys.append('MeridionalCurrent')        	# Meridional Veloctity
-#     #	physKeys.append('VerticalCurrent')          	# Vertical Veloctity
-#
-#     #physKeys.append('FreshwaterFlux')  # Freshwater flux
-#     physKeys.append('sowaflup')  # Net Upward Water Flux
-#     #	physKeys.append('soicecov')			# Ice fraction
-#
-#     #####
-#     # unused:
-#
-#     #        physKeys.append('MaxMonthlyMLD')               # MLD Monthly max
-#     #        physKeys.append('MinMonthlyMLD')               # MLD Monthly min
-#     #        physKeys.append('HeatFlux')
-#     physKeys.append('TotalHeatFlux')
-#     physKeys.append('scvoltot')
-#     physKeys.append('soga')
-#     physKeys.append('thetaoga')
-
-#       physKeys.append('WindStress')                   # Wind Stress
-#       physKeys.append('sohefldo')                     # Net downward Water Flux
-#       physKeys.append('sofmflup')                     # Water flux due to freezing/melting
-#       physKeys.append('sosfldow')                     # Downward salt flux
-#       physKeys.append('sossheig')                 # Sea surface height
-
-# physKeysDict = {i: n for i, n in enumerate(physKeys)}
-
-# fastKeys = []
-# if True:
-#     fastKeys.append('N')  # WOA Nitrate
-#     fastKeys.append('Si')  # WOA Siliate
-#     fastKeys.append('O2')  # WOA Oxygen
-#     fastKeys.append('Alk')  # Glodap Alkalinity
-#     fastKeys.append('DIC')  # Globap tCO2
-#     fastKeys.append('AirSeaFluxCO2')  # Air Sea Flux
-#     fastKeys.append('TotalAirSeaFluxCO2')  # Total global air sea flux
-#     fastKeys.append('IntPP_OSU')  # OSU Integrated primpary production
-#     fastKeys.append('PP_OSU')  # OSU Integrated primpary production
-#     # fastKeys.append('TotalOMZVolume')           # Total Oxygen Minimum zone Volume
-#     fastKeys.append(
-#         'VolumeMeanOxygen')  # Volune Mean regional oxygen concentation
-#     fastKeys.append('Iron')  # Iron
-#     fastKeys.append('Dust')  # Dust
-#     fastKeys.append('CHL')  # Total Chlorophyll
-#     fastKeys.append('pH')
-#
-#     fastKeys.append('Temperature')  # WOA Temperature
-#     fastKeys.append('GlobalMeanTemperature')  # Global Mean Temperature
-#     fastKeys.append('GlobalMeanTemperature_700')
-#     fastKeys.append('GlobalMeanTemperature_2000')
-#
-#     fastKeys.append('VolumeMeanTemperature')  # Global Mean Temperature
-#     fastKeys.append('GlobalMeanSalinity')  # Global Mean Salinity
-#     fastKeys.append('Salinity')  # WOA Salinity
-#     fastKeys.append('MLD')  # iFERMER Mixed Layer Depth
-#
-#     fastKeys.append('TotalIceExtent')  # work in progress
-#     fastKeys.append('NorthernTotalIceExtent')  # work in progress
-#     fastKeys.append('SouthernTotalIceExtent')  # work in progress
-#
-#     fastKeys.append('DrakePassageTransport')  # DrakePassageTransport
-#     fastKeys.append('AMOC_26N')  # AMOC 26N
-#
-#     fastKeys.append('FreshwaterFlux')  # Freshwater flux
-#     fastKeys.append('sowaflup')  # Net Upward Water Flux
-#
-#     fastKeys.append('TotalHeatFlux')
-#     fastKeys.append('scvoltot')
-#     fastKeys.append('soga')
-#     fastKeys.append('thetaoga')
-
-#####
-# Level 1 keys
-# level1Keys = []
-# level1Keys.extend(physKeys)
-# level1Keys.extend(bgcKeys)
-# level1KeysDict = {i: n for i, n in enumerate(level1Keys)}
-#
-# #####
-# # The important keys
-# keymetricsfirstKeys = [
-#     'TotalAirSeaFluxCO2',
-#     #                'NoCaspianAirSeaFluxCO2',
-#     #		'IntPP_OSU',
-#     #		'GlobalExportRatio',
-#     #                'TotalIceExtent',
-#     #                'NorthernTotalIceExtent',
-#     #                'SouthernTotalIceExtent',
-#     'DrakePassageTransport',
-#     'AMOC_26N',
-#     'GlobalMeanTemperature',
-#     #'GlobalMeanSalinity',
-# ]
-# keymetricsfirstDict = {i: n for i, n in enumerate(keymetricsfirstKeys)}
-
-
 def listModelDataFiles(jobID, filekey, datafolder, annual):
     print("listing model data files:\njobID:\t", jobID, '\nfile key:\t',
          filekey, '\ndata folder:\t', datafolder, '\nannual flag:\t', annual)
@@ -263,7 +98,7 @@ def build_list_of_suite_keys(suites, debug=True):
     key_lists_dir = os.path.join(os.path.dirname(paths_dir), 'key_lists')
 
     print('key_lists_dir', key_lists_dir)
-    analysisKeys = {}
+    analysis_keys = {}
     for suite in suites:
         print(suite)
         # look for a list in keys_list directory:
@@ -287,21 +122,21 @@ def build_list_of_suite_keys(suites, debug=True):
         keys_dict = dictionary.get('keys', {})
 
         for key, keybool in keys_dict.items():
-            if debug and key in analysisKeys:
+            if debug and key in analysis_keys:
                 print('build_list_of_suite_keys:\tKey exists in multiple suites:', key)
 
 
-            if key in analysisKeys and keybool != analysisKeys[key]:
-                print('build_list_of_suite_keys:\tERROR: conflick in input yamls:', key, keybool, '!=', analysisKeys[key])
+            if key in analysis_keys and keybool != analysis_keys[key]:
+                print('build_list_of_suite_keys:\tERROR: conflick in input yamls:', key, keybool, '!=', analysis_keys[key])
                 sys.exit(1)
 
             if keybool:
                 if debug:
                     print('build_list_of_suite_keys:\tAdding key:', key)
 
-                analysisKeys[key] = keybool
-    analysisKeys = [key for key in analysisKeys.keys()]
-    return analysisKeys
+                analysis_keys[key] = keybool
+    analysis_keys = [key for key in analysis_keys.keys()]
+    return analysis_keys
 
 
 
@@ -368,182 +203,6 @@ def analysis_timeseries(
 
     analysisKeys = build_list_of_suite_keys(suites, debug = True)
     print('analysisKeys', analysisKeys)
-    # assert 0
-    #    analysisKeys = analysisSuite
-
-    #####
-    # Switches:
-    # These are some preset switches to run in series.
-    # if True:
-    #
-    #     # if analysisSuite.lower() in [
-    #     #         'keymetricsfirst', 'kmf',
-    #     # ]:
-    #     #     analysisKeys.extend(keymetricsfirstKeys)
-    #
-    #     if analysisSuite.lower() in [
-    #             'level1',
-    #     ]:
-    #         analysisKeys.extend(level1Keys)
-    #
-    #     if analysisSuite.lower() in [
-    #             'fast',
-    #     ]:
-    #         analysisKeys.extend(fastKeys)
-    #
-    #     if analysisSuite.lower() in [
-    #             'bgc',
-    #     ]:
-    #         analysisKeys.extend(bgcKeys)
-    #
-    #     if analysisSuite.lower() in [
-    #             'physics',
-    #     ]:
-    #         analysisKeys.extend(physKeys)
-    #
-    #     if analysisSuite.lower() in [
-    #             'level3',
-    #     ]:
-    #         analysisKeys.append('DMS_ARAN')  # DMS Aranami Tsunogai
-    #
-    #     if analysisSuite.lower() in [
-    #             'spinup',
-    #     ]:
-    #         analysisKeys.append('O2')  # WOA Oxygen
-    #         analysisKeys.append('DIC')  # work in progress
-    #         analysisKeys.append('Alk')  # Glodap Alkalinity
-    #         analysisKeys.append('Iron')  # work in progress
-    #         analysisKeys.append('N')  # WOA Nitrate
-    #         analysisKeys.append('Si')  # WOA Nitrate
-    #         analysisKeys.append('Temperature')  #             # WOA Temperature
-    #         analysisKeys.append('Salinity')  #             # WOA Salinity
-    #     if analysisSuite.lower() in [
-    #             'salinity',
-    #     ]:
-    #         analysisKeys.append('Salinity')  #             # WOA Salinity
-    #
-    #     if analysisSuite.lower() in [
-    #             'debug',
-    #     ]:
-    #         analysisKeys.append('AMOC_26N')                # AMOC 26N
-
-            #analysisKeys.append('AirSeaFlux')		# work in progress
-            #analysisKeys.append('TotalAirSeaFluxCO2')	# work in progress
-            #analysisKeys.append('NoCaspianAirSeaFluxCO2')	# work in progress
-            #analysisKeys.append('TotalOMZVolume')		# work in progress
-            #analysisKeys.append('TotalOMZVolume50')	# work in progress
-            #analysisKeys.append('OMZMeanDepth')		# work in progress
-            #analysisKeys.append('OMZThickness')            # Oxygen Minimum Zone Thickness
-            #analysisKeys.append('TotalOMZVolume')		# work in progress
-            #analysisKeys.append('O2')  # WOA Oxygen
-            #analysisKeys.append('AOU')                      # Apparent Oxygen Usage
-            #analysisKeys.append('WindStress')               # Wind Stress
-            #analysisKeys.append('Dust')                    # Dust
-            #analysisKeys.append('TotalDust')               # Total Dust
-            #analysisKeys.append('TotalDust_nomask')
-            #analysisKeys.append('DIC')  # work in progress
-            #analysisKeys.append('DrakePassageTransport')	# DrakePassageTransport
-            #analysisKeys.append('TotalIceArea')		# work in progress
-            #analysisKeys.append('CHN')
-            #analysisKeys.append('CHD')
-            #analysisKeys.append('CHL')
-            #analysisKeys.append('pH')
-            #analysisKeys.append('Alk')  # Glodap Alkalinity
-
-            #if jobID in ['u-am004','u-am005']:
-            #        analysisKeys.append('DMS_ANDR')                 # DMS Anderson
-            #else:   analysisKeys.append('DMS_ARAN')                 # DMS Aranami Tsunogai
-
-            #analysisKeys.append('DiaFrac')			# work in progress
-            #analysisKeys.append('Iron')			# work in progress
-            #analysisKeys.append('DTC')                 # work in progress
-
-            #analysisKeys.append('Iron')  # work in progress
-            #analysisKeys.append('N')  # WOA Nitrate
-            #analysisKeys.append('Si')  # WOA Nitrate
-            #analysisKeys.append('IntPP_OSU')               # OSU Integrated primpary production
-            #analysisKeys.append('Chl_CCI')
-        #analysisKeys.append('CHL_MAM')
-        #analysisKeys.append('CHL_JJA')
-        #analysisKeys.append('CHL_SON')
-        #analysisKeys.append('CHL_DJF')
-        #analysisKeys.append('GC_CHL_MAM')
-        #analysisKeys.append('GC_CHL_JJA')
-        #analysisKeys.append('GC_CHL_SON')
-        #analysisKeys.append('GC_CHL_DJF')
-        #####
-        # Physics switches:
-        # analysisKeys.append('Temperature')          #             # WOA Temperature
-#                        analysisKeys.append('HeatFlux')
-#                        analysisKeys.append('TotalHeatFlux')
-
-#                        analysisKeys.append('scvoltot')
-#                        analysisKeys.append('soga')
-#                        analysisKeys.append('thetaoga')
-#                        analysisKeys.append('scalarHeatContent')
-
-#analysisKeys.append('VolumeMeanTemperature')#
-#                        analysisKeys.append('GlobalMeanTemperature_700')
-#                        analysisKeys.append('GlobalMeanTemperature_2000')
-#			analysisKeys.append('WeddelIceExent')
-#analysisKeys.append('Salinity')                        # WOA Salinity
-#                        analysisKeys.append('MLD')                      # MLD
-#analysisKeys.append('MaxMonthlyMLD')            # MLD
-#analysisKeys.append('MinMonthlyMLD')
-
-#analysisKeys.append('NorthernTotalIceArea')    # work in progress
-#analysisKeys.append('SouthernTotalIceArea')    # work in progress
-#analysisKeys.append('WeddelTotalIceArea')
-#                        analysisKeys.append('NorthernMIZArea')
-#                        analysisKeys.append('SouthernMIZArea')
-#                        analysisKeys.append('TotalMIZArea')
-#analysisKeys.append('NorthernMIZfraction')
-#analysisKeys.append('SouthernMIZfraction')
-#analysisKeys.append('TotalMIZfraction')
-
-#analysisKeys.append('TotalIceArea')            # work in progress
-#analysisKeys.append('TotalIceExtent')		# work in progress
-#analysisKeys.append('NorthernTotalIceExtent')	# work in progress
-#analysisKeys.append('SouthernTotalIceExtent')	# work in progress
-#analysisKeys.append('AMOC_32S')                # AMOC 32S
-#analysisKeys.append('AMOC_26N')                # AMOC 26N
-#analysisKeys.append('AMOC_26N_nomexico')
-#analysisKeys.append('ADRC_26N')                # AMOC 26N
-
-#                       analysisKeys.append('ERSST')    		# Global Surface Mean Temperature
-#analysisKeys.append('VolumeMeanOxygen')
-
-#                        analysisKeys.append('GlobalMeanTemperature')    # Global Mean Temperature#
-#			analysisKeys.append('GlobalMeanSalinity')    	# Global Mean Salinity
-#analysisKeys.append('IcelessMeanSST')    	# Global Mean Surface Temperature with no ice
-#analysisKeys.append('quickSST')    		# Area Weighted Mean Surface Temperature
-
-#analysisKeys.append('ZonalCurrent')             # Zonal Veloctity
-#analysisKeys.append('MeridionalCurrent')        # Meridional Veloctity
-#analysisKeys.append('VerticalCurrent')          # Vertical Veloctity
-
-#analysisKeys.append('sowaflup')			# Net Upward Water Flux
-#analysisKeys.append('sohefldo')			# Net downward Water Flux
-#			analysisKeys.append('sofmflup')			# Water flux due to freezing/melting
-#			analysisKeys.append('sosfldow')			# Downward salt flux
-#			analysisKeys.append('soicecov')			# Ice fraction
-#                       analysisKeys.append('sossheig')                 # Sea surface height
-#analysisKeys.append('FreshwaterFlux')		# Fresh water flux
-#analysisKeys.append('max_soshfldo')		# Max short wave radiation.
-
-#####
-# Physics switches:
-#    if jobID in [
-#            'u-aj588',
-#            'u-ak900',
-#            'u-ar538',
-#            'u-an869',
-#            'u-ar977',
-#    ]:
-#        try:
-#            analysisKeys.remove('FreshwaterFlux')
-#        except:
-#            pass
 
     #####
     # Some lists of region.
@@ -575,11 +234,16 @@ def analysis_timeseries(
             'NorthernHemisphere',
         ]
 
-    if regions in ['debug', 'spinup']:
+    if analysisSuite.lower() == 'debug':
+        regionList = ['Global', 'ArcticOcean']
+
+    if analysisSuite.lower() in [
+            'spinup',
+            'salinity',
+    ]:
         regionList = [
             'Global',
-        ] 
-
+        ]
         metricList = [
             'mean',
         ]
@@ -629,21 +293,83 @@ def analysis_timeseries(
     # So far, this has been run on the following machines:
     #	PML
     #	JASMIN
+    #	Charybdis (Julien's machine at NOCS)
     #
+    # Feel free to add other macihines onto this list, if need be.
     machinelocation = ''
 
-    shelvedir = ukp.folder([paths.shelvedir, "timeseries", jobID])
-    imagedir = ukp.folder([paths.imagedir, jobID, 'timeseries'])
 
-    if annual: WOAFolder = paths.WOAFolder_annual
-    else: WOAFolder = paths.WOAFolder
+    shelvedir = ukp.folder(paths.shelvedir + "/timeseries/" + jobID)
 
     #####
+    # PML
     hostname = gethostname()
-    print("analysis-timeseries.py:\tBeing run at ", hostname)
 
+    if hostname.find('pmpc') > -1:
+        print("analysis-timeseries.py:\tBeing run at PML on ", gethostname())
+
+        imagedir = ukp.folder(paths.imagedir + '/' + jobID + '/timeseries')
+
+        if annual: WOAFolder = paths.WOAFolder_annual
+        else: WOAFolder = paths.WOAFolder
+
+        #shelvedir 	= ukp.folder(paths.shelvedir+'/'+jobID+'/timeseries/'+jobID)
+        #shelvedir = ukp.folder(paths.shelvedir + "/timeseries/" + jobID)
     #####
-    # Unable to find location of files/data.
+    # JASMIN
+    if hostname.find('ceda.ac.uk') > -1 or hostname.find(
+            'jasmin') > -1 or hostname.find('jc.rl.ac.uk') > -1:
+        print("analysis-timeseries.py:\tBeing run at CEDA on ", hostname)
+        #machinelocation = 'JASMIN'
+
+        #try:	shelvedir 	= ukp.folder("/group_workspaces/jasmin2/ukesm/BGC_data/"+getuser()+"/shelves/timeseries/"+jobID)
+        #except: shelvedir       =            "/group_workspaces/jasmin2/ukesm/BGC_data/"+getuser()+"/shelves/timeseries/"+jobID
+        #try:
+        #    shelvedir = ukp.folder("/gws/nopw/j04/ukesm/BGC_data/" +
+        #                           getuser() + "/shelves/timeseries/" + jobID)
+        #except:
+        #    shelvedir = "/gws/nopw/j04/ukesm/BGC_data/" + getuser(
+        #    ) + "/shelves/timeseries/" + jobID
+
+        if annual: WOAFolder = paths.WOAFolder_annual
+        else: WOAFolder = paths.WOAFolder
+
+        try:
+            imagedir = ukp.folder(paths.imagedir + '/' + jobID + '/timeseries')
+        except:
+            imagedir = paths.imagedir + '/' + jobID + '/timeseries'
+
+    if hostname.find('monsoon') > -1:
+        print("Please set up paths.py")
+        assert 0
+
+#print "analysis-timeseries.py:\tBeing run at the Met Office on ",gethostname()
+#machinelocation = 'MONSOON'
+
+#ObsFolder       = "/projects/ukesm/ldmora/BGC-data/"
+#ModelFolder       = "/projects/ukesm/ldmora/UKESM"
+#####
+# Location of model files.
+#MEDUSAFolder_pref       = ukp.folder(ModelFolder)
+
+#####
+# Location of data files.
+#if annual:      WOAFolder       = ukp.folder(ObsFolder+"WOA/annual")
+#else:           WOAFolder       = ukp.folder(ObsFolder+"WOA/")
+
+#MAREDATFolder   = ObsFolder+"/MAREDAT/MAREDAT/"
+#GEOTRACESFolder = ObsFolder+"/GEOTRACES/GEOTRACES_PostProccessed/"
+#TakahashiFolder = ObsFolder+"/Takahashi2009_pCO2/"
+#MLDFolder       = ObsFolder+"/IFREMER-MLD/"
+#iMarNetFolder   = ObsFolder+"/LestersReportData/"
+#GlodapDir       = ObsFolder+"/GLODAP/"
+#GLODAPv2Dir     = ObsFolder+"/GLODAPv2/GLODAPv2_Mapped_Climatologies/"
+#OSUDir          = ObsFolder+"OSU/"
+#CCIDir          = ObsFolder+"CCI/"
+#orcaGridfn      = ModelFolder+'/mesh_mask_eORCA1_wrk.nc'
+
+#####
+# Unable to find location of files/data.
     if not paths.machinelocation:
         print(
             "analysis-timeseries.py:\tFATAL:\tWas unable to determine location of host: ",
@@ -655,9 +381,10 @@ def analysis_timeseries(
         else:
             assert False
 
-    #####
-    # Because we can never be sure someone won't randomly rename the
-    # time dimension without saying anything.
+#####
+# Because we can never be sure someone won't randomly rename the
+# time dimension without saying anything.
+# if jobID in ['u-am515','u-am927','u-am064','u-an326',]:
     try:
         tmpModelFiles = listModelDataFiles(jobID, 'grid_T',
                                            paths.ModelFolder_pref, annual)
@@ -705,22 +432,66 @@ def analysis_timeseries(
             ukesmkeys['w3d'] = 'wo'
             ukesmkeys['MLD'] = 'ssomxl010'
 
-    #####
-    # Coordinate dictionairy
-    # These are python dictionairies, one for each data source and model.
-    # This is because each data provider seems to use a different set of standard names for dimensions and time.
-    # The 'tdict' field is short for "time-dictionary".
-    #	This is a dictionary who's indices are the values on the netcdf time dimension.
-    #	The tdict indices point to a month number in python numbering (ie January = 0)
-    # 	An example would be, if a netcdf uses the middle day of the month as it's time value:
-    #		tdict = {15:0, 45:1 ...}
+#	else:
+#                        ukesmkeys['time']       = 'time_centered'
+#                        ukesmkeys['temp3d']     = 'thetao'
+#                        ukesmkeys['sst']        = 'tos'
+#                        ukesmkeys['sal3d']     = 'so'
+#                        ukesmkeys['sss']        = 'sos'
+#                        ukesmkeys['v3d']     = 'vo'
+#                        ukesmkeys['u3d']     = 'uo'
+#                        ukesmkeys['e3u']    = 'thkcello'
+#                        ukesmkeys['w3d']     = 'wo'
 
-    try: timekey = ukesmkeys['time']
-    except KeyError:
-        print('ERROR: bgcval2 was unable to determine what kind of model data this was.')
-        print('       Is any data present at:',tmpModelFiles, paths.ModelFolder_pref, jobID)
-        print('       Otherwise, what name is time given in that data?')
-        sys.exit(1)
+#                        ukesmkeys['time'] = 'time_counter'
+#                        ukesmkeys['temp3d']     = 'votemper'
+#                        ukesmkeys['sst']        = ''
+#                        ukesmkeys['sal3d']     = 'vosaline'
+#                        ukesmkeys['sss']        = ''
+#                        ukesmkeys['v3d']     = 'vomecrty'
+#                        ukesmkeys['u3d']     = 'vozocrtx'
+#                        ukesmkeys['e3u']    = 'e3u'
+#                        ukesmkeys['w3d']     = 'vovecrtz'
+
+#	if jobID > 'u-am514' and jobID not in ['u-an619','u-an629','u-an631','u-an869', 'u-an908', 'u-an911','u-an989',]:
+#		# There are other changes here too.
+#                #####
+#                # Because we can never be sure someone won't randomly rename the
+#                # time dimension without saying anything.
+#		ukesmkeys={}
+#                ukesmkeys['time'] 	= 'time_centered'
+#		ukesmkeys['temp3d'] 	= 'thetao'
+#                ukesmkeys['sst'] 	= 'tos'
+#                ukesmkeys['sal3d']     = 'so'
+#                ukesmkeys['sss']        = 'sos'
+#                ukesmkeys['v3d']     = 'vo'
+#                ukesmkeys['u3d']     = 'uo'
+#                ukesmkeys['e3u']    = 'thkcello'
+#                ukesmkeys['w3d']     = 'wo'
+#
+#        else:
+#                ukesmkeys={}
+#                ukesmkeys['time'] = 'time_counter'
+#                ukesmkeys['temp3d']     = 'votemper'
+#                ukesmkeys['sst']        = ''
+#                ukesmkeys['sal3d']     = 'vosaline'
+#                ukesmkeys['sss']        = ''
+#                ukesmkeys['v3d']     = 'vomecrty'
+#                ukesmkeys['u3d']     = 'vozocrtx'
+#                ukesmkeys['e3u']    = 'e3u'
+#                ukesmkeys['w3d']     = 'vovecrtz'
+
+#####
+# Coordinate dictionairy
+# These are python dictionairies, one for each data source and model.
+# This is because each data provider seems to use a different set of standard names for dimensions and time.
+# The 'tdict' field is short for "time-dictionary".
+#	This is a dictionary who's indices are the values on the netcdf time dimension.
+#	The tdict indices point to a month number in python numbering (ie January = 0)
+# 	An example would be, if a netcdf uses the middle day of the month as it's time value:
+#		tdict = {15:0, 45:1 ...}
+
+    timekey = ukesmkeys['time']
     medusaCoords = {
         't': timekey,
         'z': 'deptht',
@@ -4937,7 +4708,7 @@ def main():
               "Will proceed with defaults.")
         config_user = None
 
-    for jobID in jobIDs:
+    for jobID in itertools.product(jobIDs):
         analysis_timeseries(
             jobID=jobID,
             suites=keys,
