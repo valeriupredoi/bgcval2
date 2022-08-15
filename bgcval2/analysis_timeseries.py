@@ -575,16 +575,11 @@ def analysis_timeseries(
             'NorthernHemisphere',
         ]
 
-    if analysisSuite.lower() == 'debug':
-        regionList = ['Global', 'ArcticOcean']
-
-    if analysisSuite.lower() in [
-            'spinup',
-            'salinity',
-    ]:
+    if regions in ['debug', 'spinup']:
         regionList = [
             'Global',
-        ]
+        ] 
+
         metricList = [
             'mean',
         ]
@@ -634,83 +629,21 @@ def analysis_timeseries(
     # So far, this has been run on the following machines:
     #	PML
     #	JASMIN
-    #	Charybdis (Julien's machine at NOCS)
     #
-    # Feel free to add other macihines onto this list, if need be.
     machinelocation = ''
 
+    shelvedir = ukp.folder([paths.shelvedir, "timeseries", jobID])
+    imagedir = ukp.folder([paths.imagedir, jobID, 'timeseries'])
 
-    shelvedir = ukp.folder(paths.shelvedir + "/timeseries/" + jobID)
+    if annual: WOAFolder = paths.WOAFolder_annual
+    else: WOAFolder = paths.WOAFolder
 
     #####
-    # PML
     hostname = gethostname()
+    print("analysis-timeseries.py:\tBeing run at ", hostname)
 
-    if hostname.find('pmpc') > -1:
-        print("analysis-timeseries.py:\tBeing run at PML on ", gethostname())
-
-        imagedir = ukp.folder(paths.imagedir + '/' + jobID + '/timeseries')
-
-        if annual: WOAFolder = paths.WOAFolder_annual
-        else: WOAFolder = paths.WOAFolder
-
-        #shelvedir 	= ukp.folder(paths.shelvedir+'/'+jobID+'/timeseries/'+jobID)
-        #shelvedir = ukp.folder(paths.shelvedir + "/timeseries/" + jobID)
     #####
-    # JASMIN
-    if hostname.find('ceda.ac.uk') > -1 or hostname.find(
-            'jasmin') > -1 or hostname.find('jc.rl.ac.uk') > -1:
-        print("analysis-timeseries.py:\tBeing run at CEDA on ", hostname)
-        #machinelocation = 'JASMIN'
-
-        #try:	shelvedir 	= ukp.folder("/group_workspaces/jasmin2/ukesm/BGC_data/"+getuser()+"/shelves/timeseries/"+jobID)
-        #except: shelvedir       =            "/group_workspaces/jasmin2/ukesm/BGC_data/"+getuser()+"/shelves/timeseries/"+jobID
-        #try:
-        #    shelvedir = ukp.folder("/gws/nopw/j04/ukesm/BGC_data/" +
-        #                           getuser() + "/shelves/timeseries/" + jobID)
-        #except:
-        #    shelvedir = "/gws/nopw/j04/ukesm/BGC_data/" + getuser(
-        #    ) + "/shelves/timeseries/" + jobID
-
-        if annual: WOAFolder = paths.WOAFolder_annual
-        else: WOAFolder = paths.WOAFolder
-
-        try:
-            imagedir = ukp.folder(paths.imagedir + '/' + jobID + '/timeseries')
-        except:
-            imagedir = paths.imagedir + '/' + jobID + '/timeseries'
-
-    if hostname.find('monsoon') > -1:
-        print("Please set up paths.py")
-        assert 0
-
-#print "analysis-timeseries.py:\tBeing run at the Met Office on ",gethostname()
-#machinelocation = 'MONSOON'
-
-#ObsFolder       = "/projects/ukesm/ldmora/BGC-data/"
-#ModelFolder       = "/projects/ukesm/ldmora/UKESM"
-#####
-# Location of model files.
-#MEDUSAFolder_pref       = ukp.folder(ModelFolder)
-
-#####
-# Location of data files.
-#if annual:      WOAFolder       = ukp.folder(ObsFolder+"WOA/annual")
-#else:           WOAFolder       = ukp.folder(ObsFolder+"WOA/")
-
-#MAREDATFolder   = ObsFolder+"/MAREDAT/MAREDAT/"
-#GEOTRACESFolder = ObsFolder+"/GEOTRACES/GEOTRACES_PostProccessed/"
-#TakahashiFolder = ObsFolder+"/Takahashi2009_pCO2/"
-#MLDFolder       = ObsFolder+"/IFREMER-MLD/"
-#iMarNetFolder   = ObsFolder+"/LestersReportData/"
-#GlodapDir       = ObsFolder+"/GLODAP/"
-#GLODAPv2Dir     = ObsFolder+"/GLODAPv2/GLODAPv2_Mapped_Climatologies/"
-#OSUDir          = ObsFolder+"OSU/"
-#CCIDir          = ObsFolder+"CCI/"
-#orcaGridfn      = ModelFolder+'/mesh_mask_eORCA1_wrk.nc'
-
-#####
-# Unable to find location of files/data.
+    # Unable to find location of files/data.
     if not paths.machinelocation:
         print(
             "analysis-timeseries.py:\tFATAL:\tWas unable to determine location of host: ",
@@ -722,10 +655,9 @@ def analysis_timeseries(
         else:
             assert False
 
-#####
-# Because we can never be sure someone won't randomly rename the
-# time dimension without saying anything.
-# if jobID in ['u-am515','u-am927','u-am064','u-an326',]:
+    #####
+    # Because we can never be sure someone won't randomly rename the
+    # time dimension without saying anything.
     try:
         tmpModelFiles = listModelDataFiles(jobID, 'grid_T',
                                            paths.ModelFolder_pref, annual)
@@ -773,66 +705,22 @@ def analysis_timeseries(
             ukesmkeys['w3d'] = 'wo'
             ukesmkeys['MLD'] = 'ssomxl010'
 
-#	else:
-#                        ukesmkeys['time']       = 'time_centered'
-#                        ukesmkeys['temp3d']     = 'thetao'
-#                        ukesmkeys['sst']        = 'tos'
-#                        ukesmkeys['sal3d']     = 'so'
-#                        ukesmkeys['sss']        = 'sos'
-#                        ukesmkeys['v3d']     = 'vo'
-#                        ukesmkeys['u3d']     = 'uo'
-#                        ukesmkeys['e3u']    = 'thkcello'
-#                        ukesmkeys['w3d']     = 'wo'
+    #####
+    # Coordinate dictionairy
+    # These are python dictionairies, one for each data source and model.
+    # This is because each data provider seems to use a different set of standard names for dimensions and time.
+    # The 'tdict' field is short for "time-dictionary".
+    #	This is a dictionary who's indices are the values on the netcdf time dimension.
+    #	The tdict indices point to a month number in python numbering (ie January = 0)
+    # 	An example would be, if a netcdf uses the middle day of the month as it's time value:
+    #		tdict = {15:0, 45:1 ...}
 
-#                        ukesmkeys['time'] = 'time_counter'
-#                        ukesmkeys['temp3d']     = 'votemper'
-#                        ukesmkeys['sst']        = ''
-#                        ukesmkeys['sal3d']     = 'vosaline'
-#                        ukesmkeys['sss']        = ''
-#                        ukesmkeys['v3d']     = 'vomecrty'
-#                        ukesmkeys['u3d']     = 'vozocrtx'
-#                        ukesmkeys['e3u']    = 'e3u'
-#                        ukesmkeys['w3d']     = 'vovecrtz'
-
-#	if jobID > 'u-am514' and jobID not in ['u-an619','u-an629','u-an631','u-an869', 'u-an908', 'u-an911','u-an989',]:
-#		# There are other changes here too.
-#                #####
-#                # Because we can never be sure someone won't randomly rename the
-#                # time dimension without saying anything.
-#		ukesmkeys={}
-#                ukesmkeys['time'] 	= 'time_centered'
-#		ukesmkeys['temp3d'] 	= 'thetao'
-#                ukesmkeys['sst'] 	= 'tos'
-#                ukesmkeys['sal3d']     = 'so'
-#                ukesmkeys['sss']        = 'sos'
-#                ukesmkeys['v3d']     = 'vo'
-#                ukesmkeys['u3d']     = 'uo'
-#                ukesmkeys['e3u']    = 'thkcello'
-#                ukesmkeys['w3d']     = 'wo'
-#
-#        else:
-#                ukesmkeys={}
-#                ukesmkeys['time'] = 'time_counter'
-#                ukesmkeys['temp3d']     = 'votemper'
-#                ukesmkeys['sst']        = ''
-#                ukesmkeys['sal3d']     = 'vosaline'
-#                ukesmkeys['sss']        = ''
-#                ukesmkeys['v3d']     = 'vomecrty'
-#                ukesmkeys['u3d']     = 'vozocrtx'
-#                ukesmkeys['e3u']    = 'e3u'
-#                ukesmkeys['w3d']     = 'vovecrtz'
-
-#####
-# Coordinate dictionairy
-# These are python dictionairies, one for each data source and model.
-# This is because each data provider seems to use a different set of standard names for dimensions and time.
-# The 'tdict' field is short for "time-dictionary".
-#	This is a dictionary who's indices are the values on the netcdf time dimension.
-#	The tdict indices point to a month number in python numbering (ie January = 0)
-# 	An example would be, if a netcdf uses the middle day of the month as it's time value:
-#		tdict = {15:0, 45:1 ...}
-
-    timekey = ukesmkeys['time']
+    try: timekey = ukesmkeys['time']
+    except KeyError:
+        print('ERROR: bgcval2 was unable to determine what kind of model data this was.')
+        print('       Is any data present at:',tmpModelFiles, paths.ModelFolder_pref, jobID)
+        print('       Otherwise, what name is time given in that data?')
+        sys.exit(1)
     medusaCoords = {
         't': timekey,
         'z': 'deptht',
@@ -5049,7 +4937,7 @@ def main():
               "Will proceed with defaults.")
         config_user = None
 
-    for jobID in itertools.product(jobIDs):
+    for jobID in jobIDs:
         analysis_timeseries(
             jobID=jobID,
             suites=keys,

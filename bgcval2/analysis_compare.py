@@ -142,7 +142,7 @@ def apply_shifttimes(mdata, jobID, shifttimes):
 
 def timeseries_compare(jobs,
                        colours,
-                       suites = []
+                       suites = [],
                        analysisname='',
                        shifttimes={},
                        jobDescriptions={},
@@ -4217,7 +4217,7 @@ def load_yml_and_run(compare_yml, config_user):
 
     """
     # Below here is analysis
-    details = load_comparison_yml(comp_config)
+    details = load_comparison_yml(compare_yml)
 
     jobs = details['jobs']
     analysis_name = details['name']

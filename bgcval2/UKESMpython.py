@@ -71,8 +71,8 @@ def folder(name):
     """ This snippet takes a string, makes the folder and the string.
 	    It also accepts lists of strings.
 	"""
-    if type(name) == type(['a', 'b', 'c']):
-        name = join(name, '/')
+    if isinstance(name, list):
+        name = os.path.join(*name) # splat!
     if name[-1] != '/':
         name = name + '/'
     if exists(name) is False:
