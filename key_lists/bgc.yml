@@ -8,7 +8,7 @@ keys:
     CHL: True  # Total Chlorophyll
     # CHD: True  # Diatom Chlorophyll
     # CHN: True  # Non-diatom Chlorophyll
-    #	DiaFrac: True                  # Diatom Fraction
+    # DiaFrac: True  # Diatom Fraction
 
     IntPP_OSU: True  # OSU Integrated primpary production
     PP_OSU: True  # OSU Integrated primpary production
