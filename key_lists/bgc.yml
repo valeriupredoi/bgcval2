@@ -1,25 +1,38 @@
 keys:
+    # Nutrients
     N: True  # WOA Nitrate
     Si: True  # WOA Siliate
-    O2: True  # WOA Oxygen
+    Iron: True  # Iron
+
+    # Production, Export, Chlorophyll and DMS
+    CHL: True  # Total Chlorophyll
+    # CHD: True  # Diatom Chlorophyll
+    # CHN: True  # Non-diatom Chlorophyll
+    #	DiaFrac: True                  # Diatom Fraction
+
+    IntPP_OSU: True  # OSU Integrated primpary production
+    PP_OSU: True  # OSU Integrated primpary production
+    # DMS_ARAN: True
+    # DMS: True                      
+    # DTC: True                      # Detrital carbon
+    #	LocalExportRatio: True         # Export ratio (no data)
+    #	GlobalExportRatio: True        # Export ratio (no data)
+
+    # Carbonate system:
     Alk: True  # Glodap Alkalinity
     DIC: True  # Globap tCO2
     AirSeaFluxCO2: True  # Air Sea Flux
     TotalAirSeaFluxCO2: True  # Total global air sea flux
-    IntPP_OSU: True  # OSU Integrated primpary production
-    PP_OSU: True  # OSU Integrated primpary production
-    #	LocalExportRatio: True         # Export ratio (no data)
-    #	GlobalExportRatio: True        # Export ratio (no data)
+    pH: True
+
+    # Oxygen:
+    O2: True  # WOA Oxygen
     TotalOMZVolume: True  # Total Oxygen Minimum zone Volume
     #	OMZThickness: True             # Oxygen Minimum Zone Thickness
     #	OMZMeanDepth: True             # Oxygen Minimum Zone mean depth
     VolumeMeanOxygen: True  # Volune Mean regional oxygen concentation
     #	AOU: True                      # Apparent Oxygen Usage
-    Iron: True  # Iron
+
+    #Dust
     Dust: True  # Dust
     #	TotalDust: True                # Total Dust
-    #	DiaFrac: True                  # Diatom Fraction
-    # DTC: True                      # Detrital carbon
-    CHL: True  # Total Chlorophyll
-    # DMS_ARAN: True                      # Total Chlorophyll
-    pH: True
