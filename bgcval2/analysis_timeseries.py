@@ -4991,7 +4991,7 @@ def main():
               "Will proceed with defaults.")
         config_user = None
 
-    for jobID, suite in itertools.product(keys, jobIDs):
+    for jobID, suite in itertools.product(jobIDs, keys):
         analysis_timeseries(
             jobID=jobID,
             analysisSuite=suite,

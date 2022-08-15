@@ -1785,7 +1785,7 @@ def main():
 
     args = get_args()
 
-    jobID = args.job_id
+    jobIDs = args.jobID
     config_user = args.config_file
     clean = args.clean
     physics = args.physics

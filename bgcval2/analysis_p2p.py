@@ -32,7 +32,6 @@
 
 #####
 #Standard Python modules:
-from os.path import exists
 from calendar import month_name
 from socket import gethostname
 from getpass import getuser
@@ -42,6 +41,7 @@ import numpy as np
 import sys
 import os
 import argparse
+import itertools
 
 #####
 #Specific local code:
@@ -51,6 +51,7 @@ from .p2p.summaryTargets import summaryTargets
 from .p2p.patternAnalyses import InterAnnualPatterns, BGCvsPhysics
 from .bgcvaltools.pftnames import months
 from .p2p.shelveToDictionary import shelveToDictionary
+from .download_from_mass import findLastFinishedYear
 
 #####
 # User defined set of paths pointing towards the datasets.
@@ -1557,35 +1558,40 @@ def main():
 
     accepted_keys = ['debug', 'physics', 'leve2', 'annual']
     for jobID, year, suite in itertools.product(jobIDs, years, keys):
+        print('p2p:', jobID, year, suite)
         if year == 'best':
             best_year = False
             for divby in [100, 50, 25, 10, 5, 1]:
-                print("analysis_p2p:\t find best year", divby, year,best_year )
                 if best_year:
                     continue
+                print("analysis_p2p:\t find best year", divby, year,best_year )
                 best_year = findLastFinishedYear(jobID,
-                                            dividby=divby,) #  numberfiles=numberfiles)
+                                            dividby=divby, debug= False) #  numberfiles=numberfiles)
             if best_year == False:
                 continue
             else:
                 year = best_year
 
+        analysis_p2p(
+            models=[
+                'NEMO',
+                'MEDUSA',
+            ],
+            jobID=jobID,
+            years=[
+                year,
+            ],  #'2075','2076',
+            modelGrid='eORCA1',
+            annual=True,
+            noPlots=False,
+            analysisSuite=[suite,
+            ],
+        )
+
+ 
         print('analysis_p2p:', jobID, year, suite)
         single_p2p(jobID, suite, year)
-        # analysis_p2p(
-        #     models=[
-        #         'NEMO',
-        #         'MEDUSA',
-        #     ],
-        #     jobID=jobID,
-        #     years=[
-        #         year,
-        #     ],
-        #     modelGrid='eORCA1',
-        #     annual=True,
-        #     noPlots=False,
-        #     analysisSuite=suite,
-        # )
+
     print("Finished p2p... ")
 
 
