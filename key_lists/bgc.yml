@@ -15,7 +15,7 @@ keys:
     # DMS_ARAN: True
     # DMS: True                      
     # DTC: True                      # Detrital carbon
-    #	LocalExportRatio: True         # Export ratio (no data)
+    # LocalExportRatio: True         # Export ratio (no data)
     #	GlobalExportRatio: True        # Export ratio (no data)
 
     # Carbonate system:
