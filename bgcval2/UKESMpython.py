@@ -72,7 +72,7 @@ def folder(name):
 	    It also accepts lists of strings.
 	"""
     if type(name) == type(['a', 'b', 'c']):
-        name = join(name, '/')
+        name = os.path.join(name)
     if name[-1] != '/':
         name = name + '/'
     if exists(name) is False:

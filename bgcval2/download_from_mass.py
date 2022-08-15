@@ -31,13 +31,14 @@
 #####
 # Load Standard Python modules:
 import argparse
-
+import sys
 from sys import stdout
 import subprocess
 from socket import gethostname
 import os
 from glob import glob
 from re import findall
+import numpy as np
 
 #####
 # Load specific local code:
@@ -136,7 +137,7 @@ def rebaseSymlinks(fn, dryrun=True, debug=False):
     os.symlink(realpath, fn)
 
 
-def findLastFinishedYear(jobID, dividby=1, numberfiles=6):
+def findLastFinishedYear(jobID, dividby=1, numberfiles=None,debug=False,):
     """
 	:param jobID: The job ID, as elsewhere.
 	:param 	dividby: Outputs every "dividby" years.
@@ -163,16 +164,22 @@ def findLastFinishedYear(jobID, dividby=1, numberfiles=6):
 
     for fn in files:
         yr = getYearFromFile(fn)
-        print("download_from_mass:\tgetYearFromFile:", fn, yr)
+        if debug:
+            print("download_from_mass:\tgetYearFromFile:", fn, yr)
         try:
             fnDict[yr] += 1
         except:
             fnDict[yr] = 1
 
+    if not numberfiles:
+        numberfiles = np.max([v for v in fnDict.values()])
+        if debug:print('numberfiles:', numberfiles)
+
     years = sorted(fnDict.keys())
     years.reverse()
 
-    print("download_from_mass:\t",years, fnDict)
+    if debug:
+        print("download_from_mass:\t",years, fnDict)
 
     if len(years) == 0:
         print("download_from_mass:\tfindLastFinishedYear:\tNo files found.\t")
@@ -181,13 +188,14 @@ def findLastFinishedYear(jobID, dividby=1, numberfiles=6):
     if len(years) < dividby:
         print("download_from_mass:\tfindLastFinishedYear:\tLess than", dividby,
               "years of model run, returning first year:", years[-1])
-        return years[0]
+        return False
 
     for y in years:
-        if int(y) % dividby != 0: continue
+        if int(y) % dividby == 0: 
+            if debug: print('Found year:', y)
+            return y
 
-        print(y, ':', fnDict[y])
-        if fnDict[y] >= numberfiles: return y
+        #if fnDict[y] >= numberfiles: return y
 
     print(
         "No correct year, there's probably a problem here findLastFinishedYear(",
@@ -445,9 +453,15 @@ def download_from_mass(jobID, doMoo=True):
     else:
         print("download_from_mass:\trunning the command:", bashCommand)
         stdout.flush()
-        process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-        output = process.communicate()[0]
+        try:
+            process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+            output = process.communicate()[0]
+        except FileNotFoundError:
+            print('ERROR: FileNotFoundError: are you running this on a mass-connected machine like mass-cli1?')
+            print('ERROR: If not, try --dry-run')
+            sys.exit(1)
 
+    print('output', output)
     # moo get:
     if len(output.split('\n')) > 6000:
         failed = 0

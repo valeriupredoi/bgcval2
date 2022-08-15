@@ -4245,7 +4245,7 @@ def load_yml_and_run(compare_yml, config_user):
         print(jobID, 'suite:', suites[jobID])
 
     for jobID in jobs:
-        # even if you don't want to download, we run this 
+        # even if you don't want to download, we run this
         # as it clears up the path and ensures recently downloed data is
         # correctly symlinked.
         download_from_mass(jobID, doMoo=do_mass_download)
@@ -4338,15 +4338,15 @@ def main():
     compare_ymls = args.compare_yml
 
     for compare_yml in compare_ymls:
-        print(f"analysis_timeseries: Comparison config file {compare_yml}")
+        print(f"analysis_compare: Comparison config file {compare_yml}")
 
         if not os.path.isfile(compare_yml):
-            print(f"analysis_timeseries: Could not find comparison config file {compare_yml}")
+            print(f"analysis_compare: Could not find comparison config file {compare_yml}")
             sys.exit(1)
 
         load_yml_and_run(compare_yml, config_user)
 
-    print("Finished... ")
+    print("Finished analysis_compare... ")
 
 
 if __name__ == "__main__":
