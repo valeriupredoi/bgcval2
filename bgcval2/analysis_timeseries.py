@@ -48,6 +48,7 @@ import numpy as np
 import os, sys
 from getpass import getuser
 import itertools
+import yaml
 
 #####
 # Load specific local code:
@@ -252,9 +253,52 @@ def listModelDataFiles(jobID, filekey, datafolder, annual):
     return model_files
 
 
+def build_list_of_suite_keys(suites, debug=True):
+    """
+    Generate a list of keys from a list of suites.
+
+    """
+
+    paths_dir = os.path.dirname(os.path.realpath(__file__))
+    key_lists_dir = os.path.join(os.path.dirname(paths_dir), 'key_lists')
+
+    analysisKeys = {}
+    for suite in suites:
+        # look for a list in keys_list directory:
+        suite_yml = os.path.join(key_lists_dir, suite.lower(),'.yml')
+        if debug:
+            print('build_list_of_suite_keys:\tlooking for suite yaml:', suite_yml)
+
+        if not os.path.exists(suite_yml):
+            print('build_list_of_suite_keys:\tERROR: suite yaml:', suite_yml, 'does not exist')
+            sys.exit(1)
+
+        # Open yml file:
+        with open(master_compare_yml_fn, 'r') as openfile:
+            dictionary = yaml.safe_load(openfile)
+
+        if not dictionary or not isinstance(dictionary, dict):
+            print(f"Configuration file {master_compare_yml_fn} "
+                  "is either empty or corrupt, please check its contents")
+            sys.exit(1)
+
+        keys_dict = dictionary.get('keys', {})
+
+        for key, keybool in keys_dict:
+            if key in analysisKeys and keybool != analysisKeys[key]:
+                print('build_list_of_suite_keys:\tERROR: conflick in input yamls:', key, keybool, '!=', analysisKeys[key])
+                sys.exit(1)
+
+            if keybool:
+                analysisKey[key] = keybool
+    analysisKeys = [key for key in analysisKeys.keys()]
+    return analysisKeys
+
+
+
 def analysis_timeseries(
     jobID="u-ab671",
-    analysisSuite='all',
+    suites=['all', ],
     regions='all',
     clean=0,
     annual=True,
@@ -288,9 +332,9 @@ def analysis_timeseries(
     print('-----------------------')
     print('Starting analysis_timeseries')
     print('jobID:', jobID)
-    print('analysisSuite:',analysisSuite)
+    print('suites:', suites)
     print('regions:', regions)
-    print('clean:',  clean, 'annual:',annual, 'strictFileCheck:', strictFileCheck)
+    print('clean:',  clean, 'annual:', annual, 'strictFileCheck:', strictFileCheck)
     print('config_user:', config_user)
 
     # get runtime configuration
@@ -309,19 +353,24 @@ def analysis_timeseries(
     # Switches:
     # These are some booleans that allow us to choose which analysis to run.
     # This lets up give a list of keys one at a time, or in parrallel.
-    if type(analysisSuite) == type(['Its', 'A', 'list!']):
-        analysisKeys = analysisSuite
+    #if type(suites) == type(['Its', 'A', 'list!']):
+    if isinstrance(suites, str):
+        suites = [suites, ]
+
+    analysisKeys = build_list_of_suite_keys(suites, debug = True)
+    print('analysisKeys', analysisKeys)
+    assert 0
+    #    analysisKeys = analysisSuite
 
     #####
     # Switches:
     # These are some preset switches to run in series.
-    if type(analysisSuite) == type('Its_A_string'):
-        analysisKeys = []
 
-        if analysisSuite.lower() in [
-                'keymetricsfirst', 'kmf',
-        ]:
-            analysisKeys.extend(keymetricsfirstKeys)
+
+        # if analysisSuite.lower() in [
+        #         'keymetricsfirst', 'kmf',
+        # ]:
+        #     analysisKeys.extend(keymetricsfirstKeys)
 
         if analysisSuite.lower() in [
                 'level1',
@@ -4991,10 +5040,10 @@ def main():
               "Will proceed with defaults.")
         config_user = None
 
-    for jobID, suite in itertools.product(keys, jobIDs):
+    for jobID in itertools.product(jobIDs):
         analysis_timeseries(
             jobID=jobID,
-            analysisSuite=suite,
+            suites=keys,
             config_user=config_user
         )
 
