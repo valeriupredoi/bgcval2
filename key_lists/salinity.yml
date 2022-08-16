@@ -1,3 +1,6 @@
+---
+# Salinity
+# Salinity only related metrics
 keys:
     # Salinity keys:
     GlobalMeanSalinity: True

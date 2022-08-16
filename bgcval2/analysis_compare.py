@@ -184,11 +184,12 @@ def timeseries_compare(jobs,
     annual = True
     strictFileCheck = False
 
-    if isinstance(suites, str):
-        suites = [suites, ]
+    if not isinstance(suites, list):
+        ValueError(f"Suites need to be a list, got: {suites}")
+        sys.exit(1)
 
-    analysisKeys = build_list_of_suite_keys(suites, debug = True)
-    print('analysisKeys', analysisKeys)
+    analysisKeys = build_list_of_suite_keys(suites, debug=True)
+    print(f'Using analysis keys {str(analysisKeys)}')
 
     layerList = [
         'Surface',
@@ -4001,7 +4002,7 @@ def load_yml_and_run(compare_yml, config_user):
 
     # Master suite leys:
     if not master_suites:
-        master_suites=['physics', 'bgc'] # Defaults
+        master_suites=['physics', 'bgc']  # Defaults
 
     # make sure its a list:
     if isinstance(master_suites, list) :

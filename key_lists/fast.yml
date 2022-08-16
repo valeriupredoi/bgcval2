@@ -1,7 +1,9 @@
-# Note that fast refers to the UKESM parameterisation, not that this analysis
-# will run faster.
+---
+# UKESM-fast analysis.
+# Note that `fast` refers to the lighter weight UKESM parameterisation,
+# not that this analysis will run faster.
 keys:
-    N: True  # WOA Nitrate
+    N: True   # WOA Nitrate
     Si: True  # WOA Siliate
     O2: True  # WOA Oxygen
     Alk: True  # Glodap Alkalinity
@@ -10,7 +12,7 @@ keys:
     TotalAirSeaFluxCO2: True  # Total global air sea flux
     IntPP_OSU: True  # OSU Integrated primpary production
     PP_OSU: True  # OSU Integrated primpary production
-    # TotalOMZVolume: True           # Total Oxygen Minimum zone Volume
+    # TotalOMZVolume: True  # Total Oxygen Minimum zone Volume
     VolumeMeanOxygen: True  # Volune Mean regional oxygen concentation
     Iron: True  # Iron
     Dust: True  # Dust

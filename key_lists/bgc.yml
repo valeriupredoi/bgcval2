@@ -1,38 +1,39 @@
+---
+# Biogeochemistry keys for UKESM analysis.
 keys:
     # Nutrients
-    N: True  # WOA Nitrate
-    Si: True  # WOA Siliate
-    Iron: True  # Iron
+    N: True                          # WOA Nitrate
+    Si: True                         # WOA Siliate
+    Iron: True                       # Iron
 
-    # Production, Export, Chlorophyll and DMS
-    CHL: True  # Total Chlorophyll
-    # CHD: True  # Diatom Chlorophyll
-    # CHN: True  # Non-diatom Chlorophyll
+    # Chlorophyll, Production, Export and DMS
+    CHL: True                        # Total Chlorophyll
+    # CHD: True                      # Diatom Chlorophyll
+    # CHN: True                      # Non-diatom Chlorophyll
     #	DiaFrac: True                  # Diatom Fraction
-
-    IntPP_OSU: True  # OSU Integrated primpary production
-    PP_OSU: True  # OSU Integrated primpary production
+    IntPP_OSU: True                  # OSU Integrated primpary production
+    PP_OSU: True                     # OSU Integrated primpary production
+    #	LocalExportRatio: True         # Export ratio
+    #	GlobalExportRatio: True        # Export ratio
     # DMS_ARAN: True
-    # DMS: True                      
+    # DMS: True
     # DTC: True                      # Detrital carbon
-    #	LocalExportRatio: True         # Export ratio (no data)
-    #	GlobalExportRatio: True        # Export ratio (no data)
 
     # Carbonate system:
-    Alk: True  # Glodap Alkalinity
-    DIC: True  # Globap tCO2
-    AirSeaFluxCO2: True  # Air Sea Flux
-    TotalAirSeaFluxCO2: True  # Total global air sea flux
+    Alk: True                        # Glodap Alkalinity
+    DIC: True                        # Globap dissolved inorganic carbon
+    AirSeaFluxCO2: True              # Air Sea Flux of CO2
+    TotalAirSeaFluxCO2: True         # Total global air sea flux
     pH: True
 
     # Oxygen:
-    O2: True  # WOA Oxygen
-    TotalOMZVolume: True  # Total Oxygen Minimum zone Volume
+    O2: True                         # WOA Oxygen
+    TotalOMZVolume: True             # Total Oxygen Minimum zone Volume
     #	OMZThickness: True             # Oxygen Minimum Zone Thickness
     #	OMZMeanDepth: True             # Oxygen Minimum Zone mean depth
-    VolumeMeanOxygen: True  # Volune Mean regional oxygen concentation
+    VolumeMeanOxygen: True           # Volune Mean regional oxygen concentation
     #	AOU: True                      # Apparent Oxygen Usage
 
-    #Dust
+    # Misc.
     Dust: True  # Dust
     #	TotalDust: True                # Total Dust

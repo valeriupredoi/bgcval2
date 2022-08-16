@@ -1,3 +1,6 @@
+---
+# Physics:
+# A list of physical keys.
 keys:
     # Temperature keys:
     Temperature: True  # WOA Temperature
