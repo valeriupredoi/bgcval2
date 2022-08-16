@@ -97,7 +97,7 @@ def build_list_of_suite_keys(suites, debug=True):
     paths_dir = os.path.dirname(os.path.realpath(__file__))
     key_lists_dir = os.path.join(os.path.dirname(paths_dir), 'key_lists')
 
-    print('key_lists_dir', key_lists_dir)
+    print(f'analysis_timeseries: Directory where keys are stored: {key_lists_dir}')
     analysis_keys = {}
     for suite in suites:
         print(suite)
@@ -107,7 +107,7 @@ def build_list_of_suite_keys(suites, debug=True):
             print('build_list_of_suite_keys:\tlooking for suite yaml:', suite_yml)
 
         if not os.path.exists(suite_yml):
-            print('build_list_of_suite_keys:\tERROR: suite yaml:', suite_yml, 'does not exist')
+            print(f'analysis_timeseries: build_list_of_suite_keys:\tERROR: suite yaml: {suite_yml} file does not exist')
             sys.exit(1)
 
         # Open yml file:
@@ -123,11 +123,11 @@ def build_list_of_suite_keys(suites, debug=True):
 
         for key, keybool in keys_dict.items():
             if debug and key in analysis_keys:
-                print('build_list_of_suite_keys:\tKey exists in multiple suites:', key)
+                print(f'build_list_of_suite_keys:\tKey {key} exists in multiple suites:')
 
 
             if key in analysis_keys and keybool != analysis_keys[key]:
-                print('build_list_of_suite_keys:\tERROR: conflick in input yamls:', key, keybool, '!=', analysis_keys[key])
+                print(f'build_list_of_suite_keys:\tERROR: conflict in input yamls: {key}, {keybool} != {analysis_keys[key]}')
                 sys.exit(1)
 
             if keybool:
@@ -178,7 +178,7 @@ def analysis_timeseries(
     print('jobID:', jobID)
     print('suites:', suites)
     print('regions:', regions)
-    print('clean:',  clean, 'annual:', annual, 'strictFileCheck:', strictFileCheck)
+    print(f'clean: {clean},  annual: {annual}, strictFileCheck: {strictFileCheck}')
     print('config_user:', config_user)
 
     # get runtime configuration
