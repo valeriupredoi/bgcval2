@@ -4451,14 +4451,14 @@ def analysis_timeseries(
         av[name]['Dimensions'] = 1
 
 
-#####
-# Calling timeseriesAnalysis
-# This is where the above settings is passed to timeseriesAnalysis, for the actual work to begin.
-# We loop over all fiels in the first layer dictionary in the autovificiation, av.
-#
-# Once the timeseriesAnalysis has completed, we save all the output shelves in a dictionairy.
-# At the moment, this dictioary is not used, but we could for instance open the shelve to highlight specific data,
-#	(ie, andy asked to produce a table showing the final year of data.
+    #####
+    # Calling timeseriesAnalysis
+    # This is where the above settings is passed to timeseriesAnalysis, for the actual work to begin.
+    # We loop over all fiels in the first layer dictionary in the autovificiation, av.
+    #
+    # Once the timeseriesAnalysis has completed, we save all the output shelves in a dictionairy.
+    # At the moment, this dictioary is not used, but we could for instance open the shelve to highlight specific data,
+    #	(ie, andy asked to produce a table showing the final year of data.
 
     for name in list(av.keys()):
         print(name, av[name])
