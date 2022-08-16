@@ -34,6 +34,8 @@ from netCDF4 import num2date
 import os
 import shutil
 import glob
+import errno
+
 
 #Specific local code:
 from .. import UKESMpython as ukp
@@ -470,7 +472,9 @@ class timeseriesAnalysis:
         """
   	Adding Area dictionany for Model.
   	"""
-
+        if not os.path.exists(self.gridFile):
+            raise FileNotFoundError(
+                errno.ENOENT, os.strerror(errno.ENOENT), self.gridFile)
         nc = dataset(self.gridFile, 'r')
         tmask = nc.variables['tmask'][:]
         try:

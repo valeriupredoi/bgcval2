@@ -46,7 +46,7 @@ from glob import glob
 from scipy.interpolate import interp1d
 import numpy as np
 import os, sys
-from getpass import getuser
+import getpass 
 import itertools
 import yaml
 
@@ -88,6 +88,28 @@ def listModelDataFiles(jobID, filekey, datafolder, annual):
 
     return model_files
 
+
+def list_input_files(files_path, dictionary, paths):
+    """
+    Generate a list of files from a path, which may include 
+    several $PATH values.
+    """
+    #####
+    # Replace some values for $FLAGS in the path:
+    flags = ['USERNAME','basedir_model', 'basedir_obs','PATHS_GRIDFILE']
+    flag_values = [getpass.getuser(), paths.ModelFolder_pref, paths.ObsFolder, paths.orcaGridfn]
+
+    for flag in ['jobID', 'model', 'years','year', 'scenario']:
+        if dictionary.get(flag, False):
+            flags.append(flag.upper())
+            flag_values.append(dictionary[flag])
+ 
+    for flag, flag_value in zip(flags, flag_values):
+        print('Changing FLAG:',flag,'to',flag_value, 'in', files_path)
+        files_path = findReplaceFlag(files_path, flag, flag_value)
+
+    input_files = sorted(glob(files_path))
+    return input_files
 
 def build_list_of_suite_keys(suites, debug=True):
     """
@@ -138,6 +160,74 @@ def build_list_of_suite_keys(suites, debug=True):
                 analysis_keys[key] = keybool
     analysis_keys = [key for key in analysis_keys.keys()]
     return analysis_keys
+
+
+def load_function(functionname):
+    """
+    Using the named function in the key yaml, load that function and return it. 
+    """
+    # load functions:
+    if functionname in std_functions.keys():
+        print( "Standard Function Found:", functionname)
+        func = std_functions[functionname]
+
+    if functionname.find(':') > -1:
+        [functionFileName,functionname] = functionname.split(':')
+        lst = functionFileName.replace('.py','').replace('/', '.').split('.')
+        modulename =  '.'.join(lst)
+
+        print("parseFunction:\tAttempting to load the function:",functionname, "from the:",modulename)
+        mod = __import__(modulename, fromlist=[functionname,])
+        func = getattr(mod, functionname)
+    return func     
+
+
+def load_function_kwargs(dictionary, m_or_d):
+    """
+    Loads key word arguments from yaml file dictionairy.
+    """
+    data_kwargs = {}
+    #, data_convert_kwargss = [], []
+    #####
+    # Looking for kwargs to pass to convert:
+    for key, value in dictionary.items():
+        searchFor =  m_or_d+'_convert_'
+        findstr = key.find(searchFor)
+        if findstr==-1: continue
+        kwargkey = key[len(searchFor):]
+        data_kwargs[kwargkey] = value
+    return data_kwargs 
+
+
+def findReplaceFlag(filepath, flag, new_value):
+    """
+    Looking for $FLAG in the filepath.
+    If found, we replace $FLAG with new_value
+    """
+    lookingFor = '$'+flag.upper()
+    if filepath.find(lookingFor) ==-1: 
+        return filepath
+    filepath = filepath.replace(lookingFor, new_value)
+    return filepath
+
+
+def parse_list_from_string(list1):
+    """
+    This tool takes a string and returns it as a list.
+    """
+    if isinstance(list1, list):
+       raise TypeError('Expected a string')
+
+    list1 = list1.replace('\t', ' ')
+    list1 = list1.replace(',', ' ')
+    list1 = list1.replace('  ', ' ')
+    list1 = list1.replace('\'', '')
+    list1 = list1.replace('\"', '')
+    list1 = list1.replace(';', '')
+    while list1.count('  ')>0:
+        list1 = list1.replace('  ', ' ')
+    #if len(list1)==0: return []
+    return list1.split(' ')
 
 
 
@@ -634,28 +724,75 @@ def analysis_timeseries(
                   "is either empty or corrupt, please check its contents")
             sys.exit(1)
 
+        # add jobID to dict:
+        dictionary['jobID'] = jobID
+
         # Load basic fields: 
-        for field in ['name', 'units', 'dimensions', 'layers', 'regions', 'model_convert']:
-            av[key][field] = dictionary[field]
-            print('Adding', field,':', dictionary[field])
-
-        # load functions:
-        functionname = dictionary['model_convert']
-
-        if functionname in std_functions.keys():
-            print( "Standard Function Found:", functionname)
-            func = std_functions[functionname]
-
-        if functionname.find(':') > -1:		
-            [functionFileName,functionname] = functionname.split(':')
-            lst = functionFileName.replace('.py','').replace('/', '.').split('.')		
-            modulename =  '.'.join(lst)
-
-            print("parseFunction:\tAttempting to load the function:",functionname, "from the:",modulename)
-            mod = __import__(modulename, fromlist=[functionname,])
-            func = getattr(mod, functionname)
-            #return func       
+        for field in ['name', 'units', 'dimensions', 'modelgrid']:
+            av[key][field] = dictionary.get(field, None)
+            print('Adding', field,':', av[key][field])
+      
+        # Lists: 
+        for field in ['layers', 'regions', ]:
+            av[key][field] = dictionary.get(field, '')
+            av[key][field] = parse_list_from_string(av[key][field]) 
+            print('Adding', field,':', av[key][field])
  
+        # Load Grid:
+        gridFile = dictionary.get('gridFile', paths.orcaGridfn)
+        av[key]['gridFile'] = list_input_files(gridFile, dictionary, paths)[0]
+
+        # load model or data specific parts: 
+        for m_or_d in ['model', 'data']:
+            md_vars = dictionary.get(''.join([m_or_d, '_vars']), False)
+            if not md_vars:
+                # Some analyses don't have observational data.  
+                continue
+            md_vars = parse_list_from_string(md_vars)
+            functionname = dictionary[''.join([m_or_d, '_convert'])]
+            convert_func = load_function(functionname)
+            kwargs = load_function_kwargs(dictionary, m_or_d)
+
+            av[key][''.join([m_or_d, 'details'])] = {
+                'name': dictionary['name'],
+                'vars': md_vars ,
+                'convert': convert_func,
+                'units': dictionary['units'],
+            }
+            for kwarg, kwarg_value in kwargs.items():
+                if isinstance(kwarg_value, str) and kwarg_value.lower().find('file')>-1:
+                    av[key][''.join([m_or_d,'details'])][kwarg] = list_input_files(kwarg_value, dictionary, paths)
+                else:
+                    av[key][''.join([m_or_d,'details'])][kwarg] = kwarg_value
+
+
+            if m_or_d == 'model':
+                av[key]['modelcoords'] = {
+                    't': dictionary.get('model_t', timekey),
+                    'z': dictionary.get('model_z', 'deptht'),
+                    'lat': dictionary.get('model_lat', 'nav_lat'),
+                   'lon': dictionary.get('model_lon', 'nav_lon'),
+                  'cal': dictionary.get('model_cal', '360_day'),
+                } 
+                # get paths
+                file_path = dictionary[''.join([m_or_d, 'Files'])]
+                mdfile = list_input_files(file_path, dictionary, paths)
+                av[key][''.join([m_or_d, 'Files'])] = mdfile
+ 
+            else:
+                av[key]['datacoords'] = {
+                    't': dictionary.get('data_t', 'index_t'),
+                    'z': dictionary.get('data_z', 'depth'),
+                    'lat': dictionary.get('data_lat', 'lat'),
+                    'lon': dictionary.get('data_lon', 'lon'),
+                    'cal': dictionary.get('data_cal', 'standard'),
+                    'tdict': ukp.tdicts[dictionary.get('tdict', 'ZeroToZero')]
+                }
+                # get path
+                file_path = dictionary[''.join([m_or_d, 'File'])]
+                mdfile = list_input_files(file_path, dictionary, paths)
+                av[key][''.join([m_or_d, 'File'])] = mdfile
+
 #[GlobalMeanTemperature]
 #name		: GlobalMeanTemperature
 #units		: degrees C
@@ -669,7 +806,7 @@ def analysis_timeseries(
 #regions 	: regionless
 
  
-    assert 0
+#    assert 0
 
     if 'Chl_pig' in analysisKeys:
         name = 'Chlorophyll_pig'
@@ -3029,8 +3166,8 @@ def analysis_timeseries(
             av[name]['gridFile'] = paths.orcaGridfn
             av[name]['Dimensions'] = 1
 
-    if 'Temperature' in analysisKeys:
-        name = 'Temperature'
+    if 'Temperature_old' in analysisKeys:
+        name = 'Temperature_old'
 
         av[name]['modelFiles'] = listModelDataFiles(jobID, 'grid_T',
                                                     paths.ModelFolder_pref,
@@ -4529,7 +4666,7 @@ def analysis_timeseries(
                 print(f, 'does not exist')
             if strictFileCheck: assert 0
 
-        if av[name]['dataFile'] != '':
+        if av[name]['dataFile']:
             if not os.path.exists(av[name]['dataFile']):
                 print(
                     "analysis-Timeseries.py:\tWARNING:\tdata file is not found:",

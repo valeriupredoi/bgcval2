@@ -31,6 +31,9 @@
 
 import numpy as np
 from ..bgcvaltools.dataset import dataset
+import os, sys
+import errno
+
 #from bgcvaltools.bgcvalpython import Area
 
 tmask     = 0
@@ -44,6 +47,9 @@ def loadDataMask(gridfn):
     global loadedArea
     global tmask
     global pvol
+    if not gridfn or not os.path.exists(gridfn):
+        raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), gridfn)
+
     nc = dataset(gridfn, 'r')        
     try:
         pvol   = nc.variables['pvol'][:]
@@ -63,9 +69,12 @@ def globalVolumeMean(nc, keys, **kwargs):
     """
     try:
         areafile = kwargs['areafile']
+        print('globalVolumeMean:', areafile, kwargs)
     except:
         raise AssertionError("globalVolumeMean:\t Needs an `areafile` kwarg to calculate Global Volume Mean")
 
+    if isinstance(areafile, list) and len(areafile)==1:
+        areafile = areafile[0]
     try:
         addvalue = float(kwargs['addvalue'])
         # In case you want to add a constant value to the data (usually Kelvin to Celcius)

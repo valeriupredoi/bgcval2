@@ -33,6 +33,7 @@ from .. import UKESMpython as ukp
 from ..netcdf_manipulation import convertToOneDNC
 from ..bgcvaltools.dataset import dataset
 from ..bgcvaltools.makeMask import makeMask
+from ..functions.standard_functions import extractData as std_extractData
 """
 .. module:: timeseriesTools
    :platform: Unix
@@ -80,7 +81,7 @@ def loadData(nc, details):
 
     if type(nc) == type('filename'):
         nc = dataset(nc, 'r')
-    return ukp.extractData(nc, details)[:]
+    return std_extractData(nc, details)[:]
 
 
 def ApplyDepthSlice(arr, k):
@@ -106,7 +107,7 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
     # This is useful
     if coords['z'] == '' or coords['z'] not in list(nc.variables.keys()):
         print("getHorizontalSlice:\tNo depth field in", details['name'])
-        if type(data) == type(''): data = ukp.extractData(nc, details)
+        if type(data) == type(''): data = std_extractData(nc, details)
         return data
 
     ####
@@ -116,14 +117,14 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
     ]:
         print("getHorizontalSlice:\tNo depth field only 1 value",
               details['name'])
-        if data == '': data = ukp.extractData(nc, details)
+        if data == '': data = std_extractData(nc, details)
         return ApplyDepthSlice(data, 0)
 
     if layer in [
             'layerless',
     ]:
         print("getHorizontalSlice:\tNo layer data requested", layer)
-        if type(data) == type(''): data = ukp.extractData(nc, details)
+        if type(data) == type(''): data = std_extractData(nc, details)
         return data
 
     #####
@@ -131,7 +132,7 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
     if len(list(
             nc.dimensions.keys())) == 1 and layer in ['Surface', 'layerless']:
         print("getHorizontalSlice:\tOne D file", details['name'])
-        if data == '': data = ukp.extractData(nc, details)
+        if data == '': data = std_extractData(nc, details)
         data = np.ma.masked_where(nc.variables[coords['z']][:] > 0, data)
         return data
         #return ApplyDepthSlice(data, 0)
@@ -159,7 +160,7 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
         print(z)
         k = ukp.getORCAdepth(z, nc.variables[coords['z']][:], debug=False)
         if type(data) == type(''):
-            data = ukp.extractData(nc, details)
+            data = std_extractData(nc, details)
         print("getHorizontalSlice:\tSpecific depth field requested",
               details['name'], layer, [k], nc.variables[coords['z']][k],
               data.shape)
@@ -174,9 +175,9 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
         k_low = ukp.getORCAdepth(z, nc.variables[coords['z']][:], debug=False)
         print("getHorizontalSlice:\t", layer, "surface:", k_surf, '-->', k_low)
         if data == '':
-            return ApplyDepthSlice(ukp.extractData(nc, details),
+            return ApplyDepthSlice(std_extractData(nc, details),
                                    k_surf) - ApplyDepthSlice(
-                                       ukp.extractData(nc, details), k_low)
+                                       std_extractData(nc, details), k_low)
         return ApplyDepthSlice(data, k_surf) - ApplyDepthSlice(data, k_low)
 
     elif layer in [
@@ -195,7 +196,7 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
         k_low = ukp.getORCAdepth(z, nc.variables[coords['z']][:], debug=False)
         print("getHorizontalSlice:\t", layer, "surface:", k_surf, '-->', k_low)
         if len(data) == 0:
-            return ApplyDepthrange(ukp.extractData(nc, details), k_surf, k_low)
+            return ApplyDepthrange(std_extractData(nc, details), k_surf, k_low)
         return ApplyDepthrange(data, k_surf, k_low)
     elif layer == 'depthint':
         print(
@@ -213,7 +214,7 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
             z = nc.variables[coords['z']][k]
         except:
             return []
-        if data == '': data = ukp.extractData(nc, details)
+        if data == '': data = std_extractData(nc, details)
         print("getHorizontalSlice:\tSpecific depth level requested",
               details['name'], layer, nc.variables[coords['z']][k], data.shape)
         return ApplyDepthSlice(data, k)
@@ -221,7 +222,7 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
     if layer in nc.variables[coords['z']][:]:
         z = layer
         k = ukp.getORCAdepth(z, nc.variables[coords['z']][:], debug=False)
-        if data == '': data = ukp.extractData(nc, details)
+        if data == '': data = std_extractData(nc, details)
         print("getHorizontalSlice:\tSpecific depth requested", details['name'],
               layer, nc.variables[coords['z']][k], data.shape)
         return ApplyDepthSlice(data, k)
@@ -254,7 +255,7 @@ class DataLoader:
         self.regions = regions
         self.layers = layers
         self.name = self.details['name']
-        if data == '': data = ukp.extractData(nc, self.details)
+        if data == '': data = std_extractData(nc, self.details)
         self.Fulldata = data
         self.__lay__ = -999.
         self._makeTimeDict_()
