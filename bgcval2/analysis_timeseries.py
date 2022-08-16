@@ -160,7 +160,7 @@ def analysis_timeseries(
 	The strictFileCheck switch checks that the data/model netcdf files exist.
 	It fails if the switch is on and the files no not exist.
 
-	analysisSuite chooses a set of fields to look at.
+	suites chooses a set of fields to look at.
 
 	regions selects a list of regions, default is 'all', which is the list supplied by Andy Yool.
 
@@ -168,7 +168,7 @@ def analysis_timeseries(
 	:param clean: deletes old images if true
 	:param annual: Flag for monthly or annual model data.
 	:param strictFileCheck: CStrickt check for model and data files. Asserts if no files are found.
-	:param analysisSuite: Which data to analyse, ie level1, physics only, debug, etc
+	:param suites: Which data to analyse, ie level1, physics only, debug, etc
 	:param regions:
 
 	"""
@@ -1165,14 +1165,7 @@ def analysis_timeseries(
             'units': 'mmol O2/m^3'
         }
 
-        if analysisSuite.lower() == 'spinup':
-            av[name]['layers'] = layerList
-        else:
-            av[name]['layers'] = [
-                'Surface',
-                '500m',
-                '1000m',
-            ]  #layerList
+        av[name]['layers'] = layerList
         av[name]['regions'] = regionList
         av[name]['metrics'] = metricList
 
@@ -1669,26 +1662,26 @@ def analysis_timeseries(
         av[name]['datadetails'] = {'name': '', 'units': ''}
         av[name]['dataFile'] = ''
         av[name]['datasource'] = ''
-        if analysisSuite.lower() == 'fast':
-            av[name]['Dimensions'] = 2
-            av[name]['modeldetails'] = {
-                'name': name,
-                'vars': [
-                    'OCN_PH',
-                ],
-                'convert': ukp.NoChange,
-                'units': 'pH',
-            }
-        else:
-            av[name]['Dimensions'] = 3
-            av[name]['modeldetails'] = {
-                'name': name,
-                'vars': [
-                    'PH3',
-                ],
-                'convert': ukp.NoChange,
-                'units': 'pH',
-            }
+#        if analysisSuite.lower() == 'fast':
+#            av[name]['Dimensions'] = 2
+#            av[name]['modeldetails'] = {
+#                'name': name,
+#                'vars': [
+#                    'OCN_PH',
+#                ],
+#                'convert': ukp.NoChange,
+#                'units': 'pH',
+#            }
+#        else:
+        av[name]['Dimensions'] = 3
+        av[name]['modeldetails'] = {
+            'name': name,
+            'vars': [
+                'PH3',
+            ],
+            'convert': ukp.NoChange,
+            'units': 'pH',
+        }
         #av[name]['datadetails']  	= {'name': name, 'vars':['Alk',], 'convert': convertmeqm3TOumolkg,'units':'meq/m^3',}
 
         av[name]['layers'] = [
@@ -3009,20 +3002,15 @@ def analysis_timeseries(
             'units': 'degrees C'
         }
 
-        tregions = [
-            'Global', 'ignoreInlandSeas', 'Equator10', 'AtlanticSOcean',
-            'SouthernOcean', 'ArcticOcean', 'Remainder',
-            'NorthernSubpolarAtlantic', 'NorthernSubpolarPacific', 'WeddelSea',
-            'Cornwall'
-        ]
-        tregions.extend(PierceRegions)
-        #tregions = ['Global',]
-        if analysisSuite.lower() == 'spinup':
-            av[name]['layers'] = layerList
-            av[name]['regions'] = regionList
-        else:
-            av[name]['layers'] = layerList
-            av[name]['regions'] = tregions
+        #tregions = [
+        #    'Global', 'ignoreInlandSeas', 'Equator10', 'AtlanticSOcean',
+        #    'SouthernOcean', 'ArcticOcean', 'Remainder',
+        #    'NorthernSubpolarAtlantic', 'NorthernSubpolarPacific', 'WeddelSea',
+        #    'Cornwall'
+        #]
+        #tregions.extend(PierceRegions)
+        av[name]['layers'] = layerList
+        av[name]['regions'] = regionList
         av[name]['metrics'] = metricList
 
         #try:
@@ -3070,18 +3058,14 @@ def analysis_timeseries(
             'units': 'PSU'
         }
 
-        salregions = [
-            'Global', 'ignoreInlandSeas', 'Equator10', 'AtlanticSOcean',
-            'SouthernOcean', 'ArcticOcean', 'Remainder',
-            'NorthernSubpolarAtlantic', 'NorthernSubpolarPacific', 'WeddelSea'
-        ]
-        salregions.extend(PierceRegions)
-        if analysisSuite.lower() in ['spinup', 'salinity']:
-            av[name]['layers'] = layerList
-            av[name]['regions'] = regionList
-        else:
-            av[name]['layers'] = layerList
-            av[name]['regions'] = salregions
+        #salregions = [
+        #    'Global', 'ignoreInlandSeas', 'Equator10', 'AtlanticSOcean',
+        #    'SouthernOcean', 'ArcticOcean', 'Remainder',
+        #    'NorthernSubpolarAtlantic', 'NorthernSubpolarPacific', 'WeddelSea'
+        #]
+        #salregions.extend(PierceRegions)
+        av[name]['layers'] = layerList
+        av[name]['regions'] = regionList
         av[name]['metrics'] = metricList
 
         av[name]['datasource'] = 'WOA'
@@ -4565,7 +4549,7 @@ def singleTimeSeriesProfile(jobID, key):
     if key in FullDepths:
         analysis_timeseries(
             jobID=jobID,
-            analysisSuite=[
+            suites=[
                 key,
             ],
         )
@@ -4577,7 +4561,7 @@ def singleTimeSeries(
 ):
     #	try:
     analysis_timeseries(jobID=jobID,
-                        analysisSuite=[
+                        suites=[
                             key,
                         ],
                         strictFileCheck=False)  #clean=1)
