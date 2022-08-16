@@ -97,7 +97,7 @@ def build_list_of_suite_keys(suites, debug=True):
     paths_dir = os.path.dirname(os.path.realpath(__file__))
     key_lists_dir = os.path.join(os.path.dirname(paths_dir), 'key_lists')
 
-    print('key_lists_dir', key_lists_dir)
+    print(f'analysis_timeseries: Directory where keys are stored: {key_lists_dir}')
     analysis_keys = {}
     for suite in suites:
         print(suite)
