@@ -3996,7 +3996,7 @@ def load_yml_and_run(compare_yml, config_user):
         for jobID in jobs:
             analysis_timeseries(
                 jobID=jobID,
-                analysisSuite=suites[jobID],
+                suites=suites[jobID],
                 config_user=config_user
             )
 
