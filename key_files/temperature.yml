@@ -1,0 +1,32 @@
+---
+name            : Temperature
+units           : degrees C
+dimensions      : 3
+model           : NEMO
+datasource      : WOA
+# The filenames
+modelFiles      : $BASEDIR_MODEL/$JOBID/nemo*_1y_*_grid-T.nc
+modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*_1y_*$YEAR????_grid-T.nc
+dataFile        : $BASEDIR_OBS/WOA/annual/woa13_decav_t00_01v2.nc
+
+# Model coordinates/dimension names
+model_vars      : thetao
+model_convert   : NoChange
+
+
+# Data coordinates names
+data_t          : time
+data_cal        : standard
+data_z          : depth
+data_lat        : lat
+data_lon        : lon
+data_vars       : t_an
+data_convert    : NoChange
+data_tdict      : ZeroToZero
+
+layers          : Surface
+regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 Remainder NorthernSubpolarAtlantic NorthernSubpolarPacific
+
+
+
+

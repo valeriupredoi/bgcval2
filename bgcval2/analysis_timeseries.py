@@ -61,6 +61,7 @@ from .bgcvaltools.mergeMonthlyFiles import mergeMonthlyFiles, meanDJF
 from .bgcvaltools.AOU import AOU
 from .bgcvaltools.dataset import dataset
 from ._runtime_config import get_run_configuration
+from bgcval2.functions.standard_functions import std_functions
 
 #####
 # User defined set of paths pointing towards the datasets.
@@ -632,14 +633,18 @@ def analysis_timeseries(
             print(f"Key Yaml file {key_yml_path} "
                   "is either empty or corrupt, please check its contents")
             sys.exit(1)
-        print(dictionary) 
+
+        # Load basic fields: 
         for field in ['name', 'units', 'dimensions', 'layers', 'regions', 'model_convert']:
             av[key][field] = dictionary[field]
             print('Adding', field,':', dictionary[field])
+
+        # load functions:
         functionname = dictionary['model_convert']
-        #if functionname in std_functions.keys():
-#	print "Standard Function Found:",functionname
-#	return std_functions[functionname]
+
+        if functionname in std_functions.keys():
+            print( "Standard Function Found:", functionname)
+            func = std_functions[functionname]
 
         if functionname.find(':') > -1:		
             [functionFileName,functionname] = functionname.split(':')
