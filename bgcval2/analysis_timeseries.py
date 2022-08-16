@@ -178,7 +178,7 @@ def analysis_timeseries(
     print('jobID:', jobID)
     print('suites:', suites)
     print('regions:', regions)
-    print('clean:',  clean, 'annual:', annual, 'strictFileCheck:', strictFileCheck)
+    print(f'clean: {clean},  annual: {annual}, strictFileCheck: {strictFileCheck}')
     print('config_user:', config_user)
 
     # get runtime configuration
