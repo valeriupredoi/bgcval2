@@ -107,7 +107,7 @@ def build_list_of_suite_keys(suites, debug=True):
             print('build_list_of_suite_keys:\tlooking for suite yaml:', suite_yml)
 
         if not os.path.exists(suite_yml):
-            print('build_list_of_suite_keys:\tERROR: suite yaml:', suite_yml, 'does not exist')
+            print(f'analysis_timeseries: build_list_of_suite_keys:\tERROR: suite yaml: {suite_yml} file does not exist')
             sys.exit(1)
 
         # Open yml file:
