@@ -184,8 +184,9 @@ def timeseries_compare(jobs,
     annual = True
     strictFileCheck = False
 
-    if isinstance(suites, str):
-        suites = [suites, ]
+    if not isinstance(suites, list):
+        ValueError(f"Suites need to be a list, got: {suites}")
+        sys.exit(1)
 
     analysisKeys = build_list_of_suite_keys(suites, debug=True)
     print(f'Using analysis keys {str(analysisKeys)}')
