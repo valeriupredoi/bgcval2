@@ -1,0 +1,14 @@
+---
+# Quick shortlist of keys to help debug analysis code.
+keys:
+    # TotalAirSeaFluxCO2: True
+    # NoCaspianAirSeaFluxCO2: True
+    # IntPP_OSU: True
+    # GlobalExportRatio: True
+    # TotalIceExtent: True
+    # NorthernTotalIceExtent: True
+    # SouthernTotalIceExtent: True
+    # DrakePassageTransport: True
+    AMOC_26N: True
+    # GlobalMeanTemperature: True
+    # GlobalMeanSalinity: True

@@ -1,0 +1,8 @@
+---
+# Salinity
+# Salinity only related metrics
+keys:
+    # Salinity keys:
+    GlobalMeanSalinity: True
+    Salinity: True
+    soga: True

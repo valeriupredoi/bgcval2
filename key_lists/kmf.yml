@@ -1,0 +1,16 @@
+---
+# Key metrics first - KMF
+# A short list of key metrics to run first to get a very quick idea
+# of how a model is working.
+keys:
+    GlobalMeanTemperature: True
+    DrakePassageTransport: True
+    AMOC_26N: True
+    TotalAirSeaFluxCO2: True
+    # NoCaspianAirSeaFluxCO2: True
+    # IntPP_OSU: True
+    # GlobalExportRatio: True
+    TotalIceExtent: True
+    # NorthernTotalIceExtent: True
+    # SouthernTotalIceExtent: True
+    # GlobalMeanSalinity: True

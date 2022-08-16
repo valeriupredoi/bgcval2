@@ -1,0 +1,87 @@
+---
+# Level 1 analysis
+# A full list of both BGC and Physical keys
+keys:
+    # BGC keys:
+    N: True  # WOA Nitrate
+    Si: True  # WOA Siliate
+    O2: True  # WOA Oxygen
+    Alk: True  # Glodap Alkalinity
+    DIC: True  # Globap tCO2
+    AirSeaFluxCO2: True  # Air Sea Flux
+    TotalAirSeaFluxCO2: True  # Total global air sea flux
+    IntPP_OSU: True  # OSU Integrated primpary production
+    PP_OSU: True  # OSU Integrated primpary production
+    #	LocalExportRatio: True         # Export ratio (no data)
+    #	GlobalExportRatio: True        # Export ratio (no data)
+    TotalOMZVolume: True  # Total Oxygen Minimum zone Volume
+    #	OMZThickness: True             # Oxygen Minimum Zone Thickness
+    #	OMZMeanDepth: True             # Oxygen Minimum Zone mean depth
+    VolumeMeanOxygen: True  # Volune Mean regional oxygen concentation
+    #	AOU: True                      # Apparent Oxygen Usage
+    Iron: True  # Iron
+    Dust: True  # Dust
+    #	TotalDust: True                # Total Dust
+    #	DiaFrac: True                  # Diatom Fraction
+    # DTC: True                      # Detrital carbon
+    CHL: True  # Total Chlorophyll
+    # DMS_ARAN: True                      # Total Chlorophyll
+    pH: True
+
+    # Physics:
+    # Temperature keys:
+    Temperature: True  # WOA Temperature
+    GlobalMeanTemperature: True  # Global Mean Temperature
+    GlobalMeanTemperature_700: True
+    GlobalMeanTemperature_2000: True
+    VolumeMeanTemperature: True  # Global Mean Temperature
+    #VolWeightedT: True			# Volume weighted WOA Temperature
+    #	IcelessMeanSST: True    		# Global Mean Surface Temperature with no ice
+    thetaoga: True
+
+    # Salinity keys:
+    GlobalMeanSalinity: True  # Global Mean Salinity
+    Salinity: True  # WOA Salinity
+    soga: True
+
+    # Mixed layer depth keys:
+    MLD: True  # iFERMER Mixed Layer Depth
+    # MaxMonthlyMLD: True               # MLD Monthly max
+    # MinMonthlyMLD: True               # MLD Monthly min
+
+    # Ice keys:
+    #	TotalIceArea: True			# work in progress
+    #	NorthernTotalIceArea: True		# work in progress
+    #	SouthernTotalIceArea: True		# work in progress
+    #	WeddelTotalIceArea: True
+    TotalIceExtent: True  # work in progress
+    NorthernTotalIceExtent: True  # work in progress
+    SouthernTotalIceExtent: True  # work in progress
+    # WeddelIceExent: True       # work in progress
+    # NorthernMIZArea: True
+    # SouthernMIZArea: True
+    # TotalMIZArea: True
+    # NorthernMIZfraction: True
+    # SouthernMIZfraction: True
+    # TotalMIZfraction: True
+
+    # Circulation keys:
+    DrakePassageTransport: True  # DrakePassageTransport
+    #	AMOC_32S: True                 	# AMOC 32S
+    AMOC_26N: True  # AMOC 26N
+    # AMOC_26N_nomexico: True            # AMOC 26N
+    #	ADRC_26N: True                 	# ADRC 26N
+    #	ZonalCurrent: True             	# Zonal Veloctity
+    #	MeridionalCurrent: True        	# Meridional Veloctity
+    #	VerticalCurrent: True          	# Vertical Veloctity
+
+    # Misc fluxes:
+    #FreshwaterFlux: True  # Freshwater flux
+    sowaflup: True  # Net Upward Water Flux
+    #	soicecov: True			# Ice fraction
+    # HeatFlux: True
+    # WindStress: True                   # Wind Stress
+    # sohefldo: True                     # Net downward Water Flux
+    # sofmflup: True                     # Water flux due to freezing/melting
+    # sosfldow: True                     # Downward salt flux
+    # sossheig: True                 # Sea surface height
