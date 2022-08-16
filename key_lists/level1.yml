@@ -1,3 +1,6 @@
+---
+# Level 1 analysis
+# A full list of both BGC and Physical keys
 keys:
     # BGC keys:
     N: True  # WOA Nitrate

@@ -1,3 +1,7 @@
+---
+# spinup
+# A shortened list of keys to watch the spin up progress
+# Usually run in addition to KMF.yml. 
 keys:
     O2: True  # WOA Oxygen
     DIC: True  # work in progress
