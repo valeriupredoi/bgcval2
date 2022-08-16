@@ -4001,7 +4001,7 @@ def load_yml_and_run(compare_yml, config_user):
 
     # Master suite leys:
     if not master_suites:
-        master_suites=['physics', 'bgc'] # Defaults
+        master_suites=['physics', 'bgc']  # Defaults
 
     # make sure its a list:
     if isinstance(master_suites, list) :
