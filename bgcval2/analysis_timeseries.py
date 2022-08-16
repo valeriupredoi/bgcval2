@@ -93,7 +93,7 @@ def build_list_of_suite_keys(suites, debug=True):
     Generate a list of keys from a list of suites.
 
     """
-    print('build_list_of_suite_keys')
+    print('analysis_timeseries: Calling build_list_of_suite_keys to build list of keys')
     paths_dir = os.path.dirname(os.path.realpath(__file__))
     key_lists_dir = os.path.join(os.path.dirname(paths_dir), 'key_lists')
 
