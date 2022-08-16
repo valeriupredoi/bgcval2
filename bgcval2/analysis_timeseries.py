@@ -217,7 +217,7 @@ def parse_list_from_string(list1):
     This tool takes a string and returns it as a list.
     """
     if isinstance(list1, list):
-       raise TypeError('Expected a string')
+       return list1
 
     list1 = list1.replace('\t', ' ')
     list1 = list1.replace(',', ' ')
@@ -230,6 +230,107 @@ def parse_list_from_string(list1):
     #if len(list1)==0: return []
     return list1.split(' ')
 
+
+def load_key_file(key, paths, jobID):
+    """
+    load_key_file:
+        takes an input file from key_files directory
+        and outputs a dictionairy.
+    """
+    output_dict = {}
+    print('load_key_file: checking {key}', key)
+    key_yml_path = os.path.join(os.path.join(paths.bgcval2_repo, 'key_files', ''.join([key.lower(),'.yml'])))
+    if os.path.exists(key_yml_path):
+        print('key_yml_path exists:', key_yml_path)
+    else:
+        print('key_yml_path does not exist:', key_yml_path)
+        raise FileNotFoundError
+
+    # Open yml file:
+    with open(key_yml_path, 'r') as openfile:
+        dictionary = yaml.safe_load(openfile)
+
+    if not dictionary or not isinstance(dictionary, dict):
+        print(f"Key Yaml file {key_yml_path} "
+              "is either empty or corrupt, please check its contents")
+        sys.exit(1)
+
+    # add jobID to dict:
+    dictionary['jobID'] = jobID
+
+    # Load basic fields: 
+    for field in ['name', 'units', 'dimensions', 'modelgrid']:
+        output_dict[field] = dictionary.get(field, None)
+        print('Adding', field,':', output_dict[field])
+
+    # Lists: 
+    for field in ['layers', 'regions', ]:
+        output_dict[field] = dictionary.get(field, '')
+        output_dict[field] = parse_list_from_string(output_dict[field])
+        print('Adding', field,':', output_dict[field])
+
+    # Metrics
+    if dictionary['dimensions'] in  [1,]:
+        metricList = ['metricless',]
+    else: 
+        metricList = ['mean', ] #'median', '10pc','20pc','30pc','40pc','50pc','60pc','70pc','80pc','90pc','min','max']
+    output_dict['metrics'] = dictionary.get('metrics', metricList)
+    output_dict['metrics'] = parse_list_from_string(output_dict['metrics'])
+
+    # Load Grid:
+    gridFile = dictionary.get('gridFile', paths.orcaGridfn)
+    output_dict['gridFile'] = list_input_files(gridFile, dictionary, paths)[0]
+
+    # load model or data specific parts: 
+    for m_or_d in ['model', 'data']:
+        md_vars = dictionary.get(''.join([m_or_d, '_vars']), False)
+        if md_vars is False:
+            # Some analyses don't have observational data.  
+            continue
+        md_vars = parse_list_from_string(md_vars)
+        functionname = dictionary[''.join([m_or_d, '_convert'])]
+        convert_func = load_function(functionname)
+        kwargs = load_function_kwargs(dictionary, m_or_d)
+
+        output_dict[''.join([m_or_d, 'details'])] = {
+            'name': dictionary['name'],
+            'vars': md_vars ,
+            'convert': convert_func,
+            'units': dictionary['units'],
+            }
+        for kwarg, kwarg_value in kwargs.items():
+            if isinstance(kwarg_value, str) and kwarg_value.lower().find('file')>-1:
+                output_dict[''.join([m_or_d,'details'])][kwarg] = list_input_files(kwarg_value, dictionary, paths)
+            else:
+                output_dict[''.join([m_or_d,'details'])][kwarg] = kwarg_value
+
+        if m_or_d == 'model':
+            output_dict['modelcoords'] = {
+                't': dictionary.get('model_t', 'time_centered'),
+                'z': dictionary.get('model_z', 'deptht'),
+                'lat': dictionary.get('model_lat', 'nav_lat'),
+                'lon': dictionary.get('model_lon', 'nav_lon'),
+                'cal': dictionary.get('model_cal', '360_day'),
+                }
+            # get model files paths
+            file_path = dictionary[''.join([m_or_d, 'Files'])]
+            mdfile = list_input_files(file_path, dictionary, paths)
+            output_dict[''.join([m_or_d, 'Files'])] = mdfile
+        else:
+            output_dict['datacoords'] = {
+                't': dictionary.get('data_t', 'index_t'),
+                'z': dictionary.get('data_z', 'depth'),
+                'lat': dictionary.get('data_lat', 'lat'),
+                'lon': dictionary.get('data_lon', 'lon'),
+                'cal': dictionary.get('data_cal', 'standard'),
+                'tdict': ukp.tdicts[dictionary.get('tdict', 'ZeroToZero')]
+                }
+            # get data file path
+            file_path = dictionary[''.join([m_or_d, 'File'])]
+            mdfile = list_input_files(file_path, dictionary, paths)
+            if isinstance(mdfile, list) and len(mdfile) == 1:
+                mdfile = mdfile[0]
+    return output_dict
 
 
 def analysis_timeseries(
@@ -678,6 +779,7 @@ def analysis_timeseries(
 
     def applyLandMask1e3(nc, keys):
         return applyLandMask(nc, keys) * 1000.
+
 #####
 # The analysis settings:
 # Below here is a list of analysis settings.
@@ -705,112 +807,13 @@ def analysis_timeseries(
 #	If so, just set to data file to an empty string:
 #		av[name]['dataFile']  = ''
 
+    # NEW STYLE keys from file:
     av = ukp.AutoVivification()
     for key in analysisKeys:
-        print('checking {key}', key)
-        key_yml_path = os.path.join(os.path.join(paths.bgcval2_repo, 'key_files', ''.join([key.lower(),'.yml'])))
-        if os.path.exists(key_yml_path): 
-            print('key_yml_path exists:', key_yml_path)
-        else:
-            print('key_yml_path does not exist:', key_yml_path)
-        #v[key] = load_keydict_from_yaml(key_yml_path)
-        # Move this into its own function before merge:
-
-        # Open yml file:
-        with open(key_yml_path, 'r') as openfile:
-            dictionary = yaml.safe_load(openfile)
-
-        if not dictionary or not isinstance(dictionary, dict):
-            print(f"Key Yaml file {key_yml_path} "
-                  "is either empty or corrupt, please check its contents")
-            sys.exit(1)
-
-        # add jobID to dict:
-        dictionary['jobID'] = jobID
-
-        # Load basic fields: 
-        for field in ['name', 'units', 'dimensions', 'modelgrid']:
-            av[key][field] = dictionary.get(field, None)
-            print('Adding', field,':', av[key][field])
-      
-        # Lists: 
-        for field in ['layers', 'regions', ]:
-            av[key][field] = dictionary.get(field, '')
-            av[key][field] = parse_list_from_string(av[key][field]) 
-            print('Adding', field,':', av[key][field])
- 
-        # Load Grid:
-        gridFile = dictionary.get('gridFile', paths.orcaGridfn)
-        av[key]['gridFile'] = list_input_files(gridFile, dictionary, paths)[0]
-
-        # load model or data specific parts: 
-        for m_or_d in ['model', 'data']:
-            md_vars = dictionary.get(''.join([m_or_d, '_vars']), False)
-            if md_vars is False:
-                # Some analyses don't have observational data.  
-                continue
-            md_vars = parse_list_from_string(md_vars)
-            functionname = dictionary[''.join([m_or_d, '_convert'])]
-            convert_func = load_function(functionname)
-            kwargs = load_function_kwargs(dictionary, m_or_d)
-
-            av[key][''.join([m_or_d, 'details'])] = {
-                'name': dictionary['name'],
-                'vars': md_vars ,
-                'convert': convert_func,
-                'units': dictionary['units'],
-            }
-            for kwarg, kwarg_value in kwargs.items():
-                if isinstance(kwarg_value, str) and kwarg_value.lower().find('file')>-1:
-                    av[key][''.join([m_or_d,'details'])][kwarg] = list_input_files(kwarg_value, dictionary, paths)
-                else:
-                    av[key][''.join([m_or_d,'details'])][kwarg] = kwarg_value
+        av[key] = load_key_file(key, paths, jobID)
 
 
-            if m_or_d == 'model':
-                av[key]['modelcoords'] = {
-                    't': dictionary.get('model_t', timekey),
-                    'z': dictionary.get('model_z', 'deptht'),
-                    'lat': dictionary.get('model_lat', 'nav_lat'),
-                   'lon': dictionary.get('model_lon', 'nav_lon'),
-                  'cal': dictionary.get('model_cal', '360_day'),
-                } 
-                # get paths
-                file_path = dictionary[''.join([m_or_d, 'Files'])]
-                mdfile = list_input_files(file_path, dictionary, paths)
-                av[key][''.join([m_or_d, 'Files'])] = mdfile
- 
-            else:
-                av[key]['datacoords'] = {
-                    't': dictionary.get('data_t', 'index_t'),
-                    'z': dictionary.get('data_z', 'depth'),
-                    'lat': dictionary.get('data_lat', 'lat'),
-                    'lon': dictionary.get('data_lon', 'lon'),
-                    'cal': dictionary.get('data_cal', 'standard'),
-                    'tdict': ukp.tdicts[dictionary.get('tdict', 'ZeroToZero')]
-                }
-                # get path
-                file_path = dictionary[''.join([m_or_d, 'File'])]
-                mdfile = list_input_files(file_path, dictionary, paths)
-                if isinstance(mdfile, list) and len(mdfile) == 1:
-                    mdfile = mdfile[0]
-                av[key]['dataFile'] = mdfile
-
-#[GlobalMeanTemperature]
-#name		: GlobalMeanTemperature
-#units		: degrees C
-#dimensions	: 1
-#model		: NEMO
-#modelFiles 	: $BASEDIR_MODEL/$JOBID/nemo*_1y_*_grid-T.nc
-#model_vars	: thetao
-#model_convert	: functions/globalVolMean.py:globalVolumeMean
-#model_convert_areafile : /data/euryale7/scratch/ledm/UKESM/MEDUSA/mesh_mask_eORCA1_wrk.nc
-#layers 		: layerless
-#regions 	: regionless
-
- 
-#    assert 0
-
+    # OLD STYLE way:
     if 'Chl_pig' in analysisKeys:
         name = 'Chlorophyll_pig'
         av[name]['modelFiles'] = sorted(
@@ -846,7 +849,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 3
+        av[name]['dimensions'] = 3
 
     if 'CHL' in analysisKeys:
         name = 'Chlorophyll'
@@ -879,7 +882,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 3
+        av[name]['dimensions'] = 3
 
     if 'Chl_CCI' in analysisKeys:
         name = 'Chlorophyll_cci'
@@ -926,7 +929,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 2
+        av[name]['dimensions'] = 2
 
     if 'CHD' in analysisKeys or 'CHN' in analysisKeys:
         for name in [
@@ -963,7 +966,7 @@ def analysis_timeseries(
 
             av[name]['modelgrid'] = 'eORCA1'
             av[name]['gridFile'] = paths.orcaGridfn
-            av[name]['Dimensions'] = 3
+            av[name]['dimensions'] = 3
 
     for name in [
             'CHL_JJA', 'CHL_DJF', 'CHL_SON', 'CHL_MAM', 'GC_CHL_JJA',
@@ -1164,7 +1167,7 @@ def analysis_timeseries(
 
             av[name]['modelgrid'] = 'eORCA1'
             av[name]['gridFile'] = paths.orcaGridfn
-            av[name]['Dimensions'] = 2
+            av[name]['dimensions'] = 2
 
         else:
             print("No monthly CHL files found")
@@ -1203,7 +1206,7 @@ def analysis_timeseries(
 
             av[name]['modelgrid'] = 'eORCA1'
             av[name]['gridFile'] = paths.orcaGridfn
-            av[name]['Dimensions'] = 3
+            av[name]['dimensions'] = 3
 
     if 'DiaFrac' in analysisKeys:
 
@@ -1249,7 +1252,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 3
+        av[name]['dimensions'] = 3
 
     if 'N' in analysisKeys:
         name = 'Nitrate'
@@ -1293,7 +1296,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 3
+        av[name]['dimensions'] = 3
 
     if 'Si' in analysisKeys:
         name = 'Silicate'
@@ -1333,7 +1336,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 3
+        av[name]['dimensions'] = 3
 
     if 'O2' in analysisKeys:
         name = 'Oxygen'
@@ -1371,7 +1374,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 3
+        av[name]['dimensions'] = 3
 
     if 'OMZMeanDepth' in analysisKeys:
         if annual:
@@ -1451,7 +1454,7 @@ def analysis_timeseries(
 
         av['OMZMeanDepth']['modelgrid'] = 'eORCA1'
         av['OMZMeanDepth']['gridFile'] = paths.orcaGridfn
-        av['OMZMeanDepth']['Dimensions'] = 2
+        av['OMZMeanDepth']['dimensions'] = 2
 
     if 'OMZThickness' in analysisKeys or 'OMZThickness50' in analysisKeys:
         if 'OMZThickness' in analysisKeys and 'OMZThickness50' in analysisKeys:
@@ -1537,7 +1540,7 @@ def analysis_timeseries(
 
         av['OMZThickness']['modelgrid'] = 'eORCA1'
         av['OMZThickness']['gridFile'] = paths.orcaGridfn
-        av['OMZThickness']['Dimensions'] = 2
+        av['OMZThickness']['dimensions'] = 2
 
     if 'TotalOMZVolume' in analysisKeys or 'TotalOMZVolume50' in analysisKeys:
         if 'TotalOMZVolume' in analysisKeys and 'TotalOMZVolume50' in analysisKeys:
@@ -1628,7 +1631,7 @@ def analysis_timeseries(
 
         av['TotalOMZVolume']['modelgrid'] = 'eORCA1'
         av['TotalOMZVolume']['gridFile'] = paths.orcaGridfn
-        av['TotalOMZVolume']['Dimensions'] = 1
+        av['TotalOMZVolume']['dimensions'] = 1
 
     if 'VolumeMeanOxygen' in analysisKeys:
         name = 'VolumeMeanOxygen'
@@ -1701,7 +1704,7 @@ def analysis_timeseries(
         av[name]['model'] = 'NEMO'
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 2
+        av[name]['dimensions'] = 2
 
     if 'AOU' in analysisKeys:
         name = 'AOU'
@@ -1748,7 +1751,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 3
+        av[name]['dimensions'] = 3
 
     if 'DIC' in analysisKeys:
 
@@ -1791,7 +1794,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 3
+        av[name]['dimensions'] = 3
 
     if 'Alk' in analysisKeys:
 
@@ -1838,7 +1841,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 3
+        av[name]['dimensions'] = 3
 
     if 'pH' in analysisKeys:
 
@@ -1860,7 +1863,7 @@ def analysis_timeseries(
         av[name]['dataFile'] = ''
         av[name]['datasource'] = ''
 #        if analysisSuite.lower() == 'fast':
-#            av[name]['Dimensions'] = 2
+#            av[name]['dimensions'] = 2
 #            av[name]['modeldetails'] = {
 #                'name': name,
 #                'vars': [
@@ -1870,7 +1873,7 @@ def analysis_timeseries(
 #                'units': 'pH',
 #            }
 #        else:
-        av[name]['Dimensions'] = 3
+        av[name]['dimensions'] = 3
         av[name]['modeldetails'] = {
             'name': name,
             'vars': [
@@ -1893,7 +1896,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 3
+        av[name]['dimensions'] = 3
 
     if 'AirSeaFluxCO2' in analysisKeys:
 
@@ -1964,7 +1967,7 @@ def analysis_timeseries(
         av[name]['model'] = 'MEDUSA'
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 2
+        av[name]['dimensions'] = 2
 
     if 'TotalAirSeaFluxCO2' in analysisKeys:
         name = 'TotalAirSeaFluxCO2'
@@ -2020,7 +2023,7 @@ def analysis_timeseries(
         av[name]['model'] = 'MEDUSA'
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 2
+        av[name]['dimensions'] = 2
 
         noTaka = True
         if noTaka:
@@ -2092,7 +2095,7 @@ def analysis_timeseries(
         av[name]['model'] = 'MEDUSA'
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 2
+        av[name]['dimensions'] = 2
 
         av[name]['datacoords'] = {'name': '', 'units': ''}
         av[name]['datadetails'] = {'name': '', 'units': ''}
@@ -2142,7 +2145,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 2
+        av[name]['dimensions'] = 2
 
     if 'PP_OSU' in analysisKeys:
         nc = dataset(paths.orcaGridfn, 'r')
@@ -2217,7 +2220,7 @@ def analysis_timeseries(
         av[name]['model'] = 'MEDUSA'
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 2
+        av[name]['dimensions'] = 2
 
     #####
     # Total
@@ -2307,7 +2310,7 @@ def analysis_timeseries(
         av[name]['model'] = 'MEDUSA'
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 1
+        av[name]['dimensions'] = 1
 
     if 'GlobalExportRatio' in analysisKeys:
 
@@ -2354,7 +2357,7 @@ def analysis_timeseries(
         av[name]['model'] = 'MEDUSA'
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 1
+        av[name]['dimensions'] = 1
 
     if 'LocalExportRatio' in analysisKeys:
 
@@ -2396,7 +2399,7 @@ def analysis_timeseries(
         av[name]['model'] = 'MEDUSA'
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 2
+        av[name]['dimensions'] = 2
 
     if 'Iron' in analysisKeys:
 
@@ -2432,79 +2435,79 @@ def analysis_timeseries(
         av[name]['model'] = 'MEDUSA'
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 3
+        av[name]['dimensions'] = 3
 
 
 
-    if 'GlobalMeanTemperature_old' in analysisKeys:
-        name = 'GlobalMeanTemperature_old'
-        if jobID == 'u-as462monthly':
-            av[name]['modelFiles'] = sorted(
-                glob(
-                    '/group_workspaces/jasmin2/ukesm/BGC_data/u-as462/monthly/*.nc'
-                ))
-        elif jobID == 'u-ar977monthly':
-            av[name]['modelFiles'] = sorted(
-                glob(
-                    '/group_workspaces/jasmin2/ukesm/BGC_data/u-ar977/monthly/*.nc'
-                ))
-        else:
-            av[name]['modelFiles'] = listModelDataFiles(
-                jobID, 'grid_T', paths.ModelFolder_pref, annual)
-
-        #av[name]['modelFiles']  = listModelDataFiles(jobID, 'grid_T', paths.ModelFolder_pref, annual)
-        av[name]['dataFile'] = ''
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = woaCoords
-
-        nc = dataset(paths.orcaGridfn, 'r')
-        try:
-            pvol = nc.variables['pvol'][:]
-            gmttmask = nc.variables['tmask'][:]
-        except:
-            gmttmask = nc.variables['tmask'][:]
-            area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
-            pvol = nc.variables['e3t'][:] * area
-            pvol = np.ma.masked_where(gmttmask == 0, pvol)
-        nc.close()
-
-        def sumMeanLandMask(nc, keys):
-            #### works like no change, but applies a mask.
-            temp = np.ma.array(nc.variables[keys[0]][:].squeeze())
-            temp = np.ma.masked_where((gmttmask == 0) + (temp.mask), temp)
-            #try:
-            vol = np.ma.masked_where(
-                temp.mask,
-                nc('thkcello')[:].squeeze() *
-                nc('area')[:])  # preferentially use in file volume.
-            #except: vol = np.ma.masked_where(temp.mask, pvol)
-            return (temp * vol).sum() / (vol.sum())
-
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': [
-                ukesmkeys['temp3d'],
-            ],
-            'convert': sumMeanLandMask,
-            'units': 'degrees C'
-        }
-        av[name]['datadetails'] = {'name': '', 'units': ''}
-        #av[name]['datadetails']  	= {'name': name, 'vars':['t_an',], 'convert': ukp.NoChange,'units':'degrees C'}
-
-        av[name]['layers'] = [
-            'layerless',
-        ]
-        av[name]['regions'] = [
-            'regionless',
-        ]
-        av[name]['metrics'] = [
-            'metricless',
-        ]
-        av[name]['datasource'] = ''
-        av[name]['model'] = 'NEMO'
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 1
+#    if 'GlobalMeanTemperature_old' in analysisKeys:
+#        name = 'GlobalMeanTemperature_old'
+#        if jobID == 'u-as462monthly':
+#            av[name]['modelFiles'] = sorted(
+#                glob(
+#                    '/group_workspaces/jasmin2/ukesm/BGC_data/u-as462/monthly/*.nc'
+#                ))
+#        elif jobID == 'u-ar977monthly':
+#            av[name]['modelFiles'] = sorted(
+#                glob(
+#                    '/group_workspaces/jasmin2/ukesm/BGC_data/u-ar977/monthly/*.nc'
+#                ))
+#        else:
+#            av[name]['modelFiles'] = listModelDataFiles(
+#                jobID, 'grid_T', paths.ModelFolder_pref, annual)
+#
+#        #av[name]['modelFiles']  = listModelDataFiles(jobID, 'grid_T', paths.ModelFolder_pref, annual)
+#        av[name]['dataFile'] = ''
+#        av[name]['modelcoords'] = medusaCoords
+#        av[name]['datacoords'] = woaCoords
+#
+#        nc = dataset(paths.orcaGridfn, 'r')
+#        try:
+#            pvol = nc.variables['pvol'][:]
+#            gmttmask = nc.variables['tmask'][:]
+#        except:
+#            gmttmask = nc.variables['tmask'][:]
+#            area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
+#            pvol = nc.variables['e3t'][:] * area
+#            pvol = np.ma.masked_where(gmttmask == 0, pvol)
+#        nc.close()
+#
+#        def sumMeanLandMask(nc, keys):
+#            #### works like no change, but applies a mask.
+#            temp = np.ma.array(nc.variables[keys[0]][:].squeeze())
+#            temp = np.ma.masked_where((gmttmask == 0) + (temp.mask), temp)
+#            #try:
+#            vol = np.ma.masked_where(
+#                temp.mask,
+#                nc('thkcello')[:].squeeze() *
+#                nc('area')[:])  # preferentially use in file volume.
+#            #except: vol = np.ma.masked_where(temp.mask, pvol)
+#            return (temp * vol).sum() / (vol.sum())
+#
+#        av[name]['modeldetails'] = {
+#            'name': name,
+#            'vars': [
+#                ukesmkeys['temp3d'],
+#            ],
+#            'convert': sumMeanLandMask,
+#            'units': 'degrees C'
+#        }
+#        av[name]['datadetails'] = {'name': '', 'units': ''}
+#        #av[name]['datadetails']  	= {'name': name, 'vars':['t_an',], 'convert': ukp.NoChange,'units':'degrees C'}
+#
+#        av[name]['layers'] = [
+#            'layerless',
+#        ]
+#        av[name]['regions'] = [
+#            'regionless',
+#        ]
+#        av[name]['metrics'] = [
+#            'metricless',
+#        ]
+#        av[name]['datasource'] = ''
+#        av[name]['model'] = 'NEMO'
+#        av[name]['modelgrid'] = 'eORCA1'
+#        av[name]['gridFile'] = paths.orcaGridfn
+#        av[name]['dimensions'] = 1
 
     if 'GlobalMeanTemperature_700' in analysisKeys:
         name = 'GlobalMeanTemperature_700'
@@ -2564,7 +2567,7 @@ def analysis_timeseries(
         av[name]['model'] = 'NEMO'
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 1
+        av[name]['dimensions'] = 1
 
     if 'GlobalMeanTemperature_2000' in analysisKeys:
         name = 'GlobalMeanTemperature_2000'
@@ -2624,7 +2627,7 @@ def analysis_timeseries(
         av[name]['model'] = 'NEMO'
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 1
+        av[name]['dimensions'] = 1
 
     if 'VolumeMeanTemperature' in analysisKeys:
         name = 'VolumeMeanTemperature'
@@ -2692,7 +2695,7 @@ def analysis_timeseries(
         av[name]['model'] = 'NEMO'
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 2
+        av[name]['dimensions'] = 2
 
     if 'scvoltot' in analysisKeys:
         name = 'scvoltot'
@@ -2730,7 +2733,7 @@ def analysis_timeseries(
             av[name]['model'] = 'NEMO'
             av[name]['modelgrid'] = 'eORCA1'
             av[name]['gridFile'] = paths.orcaGridfn
-            av[name]['Dimensions'] = 1
+            av[name]['dimensions'] = 1
 
     if 'soga' in analysisKeys:
         name = 'soga'
@@ -2768,7 +2771,7 @@ def analysis_timeseries(
             av[name]['model'] = 'NEMO'
             av[name]['modelgrid'] = 'eORCA1'
             av[name]['gridFile'] = paths.orcaGridfn
-            av[name]['Dimensions'] = 1
+            av[name]['dimensions'] = 1
 
     if 'thetaoga' in analysisKeys:
         name = 'thetaoga'
@@ -2806,7 +2809,7 @@ def analysis_timeseries(
             av[name]['model'] = 'NEMO'
             av[name]['modelgrid'] = 'eORCA1'
             av[name]['gridFile'] = paths.orcaGridfn
-            av[name]['Dimensions'] = 1
+            av[name]['dimensions'] = 1
 
     if 'scalarHeatContent' in analysisKeys:
         name = 'scalarHeatContent'
@@ -2857,7 +2860,7 @@ def analysis_timeseries(
             av[name]['model'] = 'NEMO'
             av[name]['modelgrid'] = 'eORCA1'
             av[name]['gridFile'] = paths.orcaGridfn
-            av[name]['Dimensions'] = 1
+            av[name]['dimensions'] = 1
 
     if 'HeatFlux' in analysisKeys:
         name = 'HeatFlux'
@@ -2885,7 +2888,7 @@ def analysis_timeseries(
         av[name]['model'] = 'MEDUSA'
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 2
+        av[name]['dimensions'] = 2
 
     if 'TotalHeatFlux' in analysisKeys:
         name = 'TotalHeatFlux'
@@ -2931,7 +2934,7 @@ def analysis_timeseries(
         av[name]['model'] = 'NEMO'
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 2
+        av[name]['dimensions'] = 2
         av[name]['datacoords'] = {'name': '', 'units': ''}
         av[name]['datadetails'] = {'name': '', 'units': ''}
         av[name]['dataFile'] = ''
@@ -2978,7 +2981,7 @@ def analysis_timeseries(
         av[name]['modelgrid'] = 'ERSST_2g'
         av[name][
             'gridFile'] = '/group_workspaces/jasmin4/esmeval/example_data/bgc/ERSST.v4/ERSST_sst_grid.nc'
-        av[name]['Dimensions'] = 2
+        av[name]['dimensions'] = 2
 
     if 'GlobalMeanSalinity' in analysisKeys:
         name = 'GlobalMeanSalinity'
@@ -3052,7 +3055,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 1
+        av[name]['dimensions'] = 1
 
     if 'IcelessMeanSST' in analysisKeys:
         name = 'IcelessMeanSST'
@@ -3108,7 +3111,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 1
+        av[name]['dimensions'] = 1
 
         if 'quickSST' in analysisKeys:
             name = 'quickSST'
@@ -3167,7 +3170,7 @@ def analysis_timeseries(
 
             av[name]['modelgrid'] = 'eORCA1'
             av[name]['gridFile'] = paths.orcaGridfn
-            av[name]['Dimensions'] = 1
+            av[name]['dimensions'] = 1
 
     if 'Temperature_old' in analysisKeys:
         name = 'Temperature_old'
@@ -3223,7 +3226,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 3
+        av[name]['dimensions'] = 3
 
     if 'Salinity' in analysisKeys:
         name = 'Salinity'
@@ -3272,7 +3275,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 3
+        av[name]['dimensions'] = 3
 
     if 'ZonalCurrent' in analysisKeys:
         name = 'ZonalCurrent'
@@ -3310,7 +3313,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = os.path.join(paths.bgcval2_repo, 'bgcval2/data/eORCA1_gridU_mesh.nc')
-        av[name]['Dimensions'] = 3
+        av[name]['dimensions'] = 3
 
     if 'MeridionalCurrent' in analysisKeys:
         name = 'MeridionalCurrent'
@@ -3349,7 +3352,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = os.path.join(paths.bgcval2_repo, 'bgcval2/data/eORCA1_gridV_mesh.nc')
-        av[name]['Dimensions'] = 3
+        av[name]['dimensions'] = 3
 
     if 'VerticalCurrent' in analysisKeys:
         name = 'VerticalCurrent'
@@ -3394,7 +3397,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = os.path.join(paths.bgcval2_repo, 'bgcval2/data/eORCA1_gridW_mesh.nc')
-        av[name]['Dimensions'] = 3
+        av[name]['dimensions'] = 3
 
     if 'WindStress' in analysisKeys:
         name = 'WindStress'
@@ -3443,7 +3446,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = os.path.join(paths.bgcval2_repo, 'bgcval2./data/eORCA1_gridU_mesh.nc')
-        av[name]['Dimensions'] = 2
+        av[name]['dimensions'] = 2
 
     #####
     # North Atlantic Salinity
@@ -3518,7 +3521,7 @@ def analysis_timeseries(
             av[name]['model'] = 'NEMO'
             av[name]['modelgrid'] = 'eORCA1'
             av[name]['gridFile'] = paths.orcaGridfn
-            av[name]['Dimensions'] = 2
+            av[name]['dimensions'] = 2
 
     naskeys = [
         'max_soshfldo',
@@ -3581,7 +3584,7 @@ def analysis_timeseries(
             av[name]['model'] = 'NEMO'
             av[name]['modelgrid'] = 'eORCA1'
             av[name]['gridFile'] = paths.orcaGridfn
-            av[name]['Dimensions'] = 1
+            av[name]['dimensions'] = 1
 
     if 'FreshwaterFlux' in analysisKeys:
 
@@ -3637,7 +3640,7 @@ def analysis_timeseries(
         av[name]['model'] = 'MEDUSA'
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 2
+        av[name]['dimensions'] = 2
 
     if 'MLD' in analysisKeys:
 
@@ -3709,7 +3712,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 2
+        av[name]['dimensions'] = 2
 
     if 'MaxMonthlyMLD' in analysisKeys or 'MinMonthlyMLD' in analysisKeys:
 
@@ -3807,7 +3810,7 @@ def analysis_timeseries(
 
                 av[name]['modelgrid'] = 'eORCA1'
                 av[name]['gridFile'] = paths.orcaGridfn
-                av[name]['Dimensions'] = 2
+                av[name]['dimensions'] = 2
 
         else:
             print("No monthly MLD files found")
@@ -4133,7 +4136,7 @@ def analysis_timeseries(
             av[name]['model'] = 'CICE'
             av[name]['modelgrid'] = 'eORCA1'
             av[name]['gridFile'] = paths.orcaGridfn
-            av[name]['Dimensions'] = 1
+            av[name]['dimensions'] = 1
 
     if 'DrakePassageTransport' in analysisKeys:
         name = 'DrakePassageTransport'
@@ -4190,7 +4193,7 @@ def analysis_timeseries(
         av[name]['model'] = 'NEMO'
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 1
+        av[name]['dimensions'] = 1
 
     if 'AMOC_26N' in analysisKeys or 'AMOC_32S' in analysisKeys or 'ADRC_26N' in analysisKeys or 'AMOC_26N_nomexico' in analysisKeys:
         # Note that this will only work with the eORCAgrid.
@@ -4346,7 +4349,7 @@ def analysis_timeseries(
             av[name]['model'] = 'NEMO'
             av[name]['modelgrid'] = 'eORCA1'
             av[name]['gridFile'] = paths.orcaGridfn
-            av[name]['Dimensions'] = 1
+            av[name]['dimensions'] = 1
 
     if 'DMS_ARAN' in analysisKeys:
         name = 'DMS'
@@ -4389,7 +4392,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 2
+        av[name]['dimensions'] = 2
 
     if 'DMS_ANDR' in analysisKeys:
         name = 'DMS'
@@ -4432,7 +4435,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 2
+        av[name]['dimensions'] = 2
 
     if 'Dust' in analysisKeys:
         name = 'Dust'
@@ -4485,7 +4488,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 2
+        av[name]['dimensions'] = 2
 
     if 'TotalDust' in analysisKeys:
         name = 'TotalDust'
@@ -4558,7 +4561,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 1
+        av[name]['dimensions'] = 1
 
     if 'TotalDust_nomask' in analysisKeys:
         name = 'TotalDust_nomask'
@@ -4631,7 +4634,7 @@ def analysis_timeseries(
 
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['Dimensions'] = 1
+        av[name]['dimensions'] = 1
 
 
     #####
@@ -4679,14 +4682,14 @@ def analysis_timeseries(
 
         tsa = timeseriesAnalysis(
             av[name]['modelFiles'],
-            av[name]['dataFile'],
+            av[name].get('dataFile', None),
             dataType=name,
             modelcoords=av[name]['modelcoords'],
             modeldetails=av[name]['modeldetails'],
-            datacoords=av[name]['datacoords'],
-            datadetails=av[name]['datadetails'],
-            datasource=av[name]['datasource'],
-            model=av[name]['model'],
+            datacoords=av[name].get('datacoords', None),
+            datadetails=av[name].get('datadetails', None),
+            datasource=av[name].get('datasource', None),
+            model=av[name].get('model', None),
             jobID=jobID,
             layers=av[name]['layers'],
             regions=av[name]['regions'],
@@ -4700,7 +4703,7 @@ def analysis_timeseries(
 
         #####
         # Profile plots
-        if av[name]['Dimensions'] == 3 and name not in ['Iron', 'Fe']:
+        if av[name]['dimensions'] == 3: 
             continue
             profa = profileAnalysis(
                 av[name]['modelFiles'],
