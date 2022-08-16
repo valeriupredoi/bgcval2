@@ -111,6 +111,7 @@ def list_input_files(files_path, dictionary, paths):
     input_files = sorted(glob(files_path))
     return input_files
 
+
 def build_list_of_suite_keys(suites, debug=True):
     """
     Generate a list of keys from a list of suites.
@@ -745,7 +746,7 @@ def analysis_timeseries(
         # load model or data specific parts: 
         for m_or_d in ['model', 'data']:
             md_vars = dictionary.get(''.join([m_or_d, '_vars']), False)
-            if not md_vars:
+            if md_vars is False:
                 # Some analyses don't have observational data.  
                 continue
             md_vars = parse_list_from_string(md_vars)
@@ -791,7 +792,9 @@ def analysis_timeseries(
                 # get path
                 file_path = dictionary[''.join([m_or_d, 'File'])]
                 mdfile = list_input_files(file_path, dictionary, paths)
-                av[key][''.join([m_or_d, 'File'])] = mdfile
+                if isinstance(mdfile, list) and len(mdfile) == 1:
+                    mdfile = mdfile[0]
+                av[key]['dataFile'] = mdfile
 
 #[GlobalMeanTemperature]
 #name		: GlobalMeanTemperature
@@ -4650,7 +4653,7 @@ def analysis_timeseries(
             "analysis-Timeseries.py:\tBeginning to call timeseriesAnalysis for ",
             name)
 
-        if len(av[name]['modelFiles']) == 0:
+        if 'modelFiles' not in av[name].keys() == 0:
             print(
                 "analysis-Timeseries.py:\tWARNING:\tmodel files are not found:",
                 name, av[name]['modelFiles'])
@@ -4666,7 +4669,8 @@ def analysis_timeseries(
                 print(f, 'does not exist')
             if strictFileCheck: assert 0
 
-        if av[name]['dataFile']:
+        if 'dataFile' in av[name].keys():
+            print(name, 'dataFile', av[name]['dataFile'])
             if not os.path.exists(av[name]['dataFile']):
                 print(
                     "analysis-Timeseries.py:\tWARNING:\tdata file is not found:",
