@@ -187,7 +187,7 @@ def timeseries_compare(jobs,
     if isinstance(suites, str):
         suites = [suites, ]
 
-    analysisKeys = build_list_of_suite_keys(suites, debug = True)
+    analysisKeys = build_list_of_suite_keys(suites, debug=True)
     print('analysisKeys', analysisKeys)
 
     layerList = [
