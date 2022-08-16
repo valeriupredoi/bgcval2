@@ -48,7 +48,7 @@ Test that the tool has been installed correctly with:
 ```
 analysis_compare -h
 ```
-which should print the module information and instructions on how to run the tool. 
+which should print the module information and instructions on how to run the tool.
 
 
 ### Available executables
@@ -66,8 +66,8 @@ Executable name | What it does | Command
 Running the tool to compare multiple jobs
 =========================================
 
-The time developmenmt of several models can be compared 
-and summarized in a single comparison report html. 
+The time developmenmt of several models can be compared
+and summarized in a single comparison report html.
 This report can be generated with a single command, based on a simple yml file input:
 
 ```
@@ -100,26 +100,26 @@ jobs:
 ```
 
 These values are:
- - `name`: 
+ - `name`:
    - The name of the analysis.
    - This will be the path of output report.
- - `do_analysis_timeseries`: 
-   -  A Boolean value to run or skip the single model timeseries. 
+ - `do_analysis_timeseries`:
+   -  A Boolean value to run or skip the single model timeseries.
    -  Set to False if the single model analysis has already completed.
- - `do_mass_download`: 
-   - A boolean value to run the mass download. 
+ - `do_mass_download`:
+   - A boolean value to run the mass download.
    - This is not currently possible as we can only download mass file from mass-cli1 on jasmin.
    - See below for details on how to download jobs data.
  - `master_suites`:
-   - A list of the type of analysis report to produce. 
+   - A list of the type of analysis report to produce.
    - Options are: `physics`, `bio`, `debug`.
    - Default is `['physics', 'bio',]`.
  - `jobs`:
-   - A list of jobIDs, and some options on how they will appear in the final report. 
+   - A list of jobIDs, and some options on how they will appear in the final report.
    - The options are:
      - `description`:
        - A description of job, which helps people differentiate the jobs in the final report.
-     - `colour`: 
+     - `colour`:
        - The colour of this jobs line in the report plots.
        - Default colour is a randomly generated hex colour.
      - `thickness`:
@@ -134,13 +134,13 @@ These values are:
        - this is useful if jobs start from different initial years in spin up, for instance.
        - Default is `0.` ( no time shift ).
      - `suite`:
-       - An analysis suite to run the analysis_timeseries.
-       - See `analysis_timeseries` for more details.
+       - One or more analysis suites to run the analysis_timeseries.
+       - Options include: `bgc` (biogeochemistry), `kmf` (key metrics first), `physics`, `level1`.
+       - See `analysis_timeseries` for more details, below.
 
 
 A sample yaml exists in `input_yml/comparison_analysis_template.yml`,
 which can be adapted to additional analyses.
-
 
 
 Downloading data using MASS
@@ -174,7 +174,7 @@ Several different keys can be included in the download if monthly data is requir
 However, it's not recommended to include monthly data at this stage as that code
 both to download, but also to run the monthly analysis is not currently tested.
 
-This tool downloads the data, but also includes several functions which create symbolic links 
+This tool downloads the data, but also includes several functions which create symbolic links
 in the data's directory in order to accomodate incompatible changes in NEMO's output formatting.
 
 
@@ -188,7 +188,7 @@ To run an in-depth analysis of a single job, the following command can be run:
 bgcval2 -j jobID
 ```
 
-This will run a time series analysis, a point to point analysis, and 
+This will run a time series analysis, a point to point analysis, and
 publish the reports into a single job html5 report.
 
 
@@ -212,7 +212,7 @@ This is an analysis that investigates the time development of specific marine
 physics and Biogeochemistry fields in the given model, and then compares them
 against historical observations.
 
-The command to run it is `analysis_timeseries --jobID jobID --keys key`, 
+The command to run it is `analysis_timeseries --jobID jobID --keys key`,
 where jobID is one or more mass jobIDs, such a `u-ab123`.
 The key is one or more pre-defined keys, which generates a
 list of variables.
@@ -226,8 +226,11 @@ Key | What it is | Description
 `debug` | Debug | A very short list of a couple keys to test code changes.
 `fast` | UKESM1-fast  | A list of metrics tailored to the UKESM1-Fast model.
 
-
 Note that there may be some overlap between the contents of these keys.
+
+These key lists are defined in the bgcval2 directory, `key_lists`.
+To add an additional list of keys, the file must be present there
+as a yaml and must be named with all-lower-case letters.
 
 
 Point to point analysis
