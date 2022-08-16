@@ -127,7 +127,7 @@ def build_list_of_suite_keys(suites, debug=True):
 
 
             if key in analysis_keys and keybool != analysis_keys[key]:
-                print('build_list_of_suite_keys:\tERROR: conflick in input yamls:', key, keybool, '!=', analysis_keys[key])
+                print(f'build_list_of_suite_keys:\tERROR: conflict in input yamls: {key}, {keybool} != {analysis_keys[key]}')
                 sys.exit(1)
 
             if keybool:
