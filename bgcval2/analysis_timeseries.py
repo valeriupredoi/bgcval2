@@ -614,6 +614,58 @@ def analysis_timeseries(
 #		av[name]['dataFile']  = ''
 
     av = ukp.AutoVivification()
+    for key in analysisKeys:
+        print('checking {key}', key)
+        key_yml_path = os.path.join(os.path.join(paths.bgcval2_repo, 'key_files', ''.join([key.lower(),'.yml'])))
+        if os.path.exists(key_yml_path): 
+            print('key_yml_path exists:', key_yml_path)
+        else:
+            print('key_yml_path does not exist:', key_yml_path)
+        #v[key] = load_keydict_from_yaml(key_yml_path)
+        # Move this into its own function before merge:
+
+        # Open yml file:
+        with open(key_yml_path, 'r') as openfile:
+            dictionary = yaml.safe_load(openfile)
+
+        if not dictionary or not isinstance(dictionary, dict):
+            print(f"Key Yaml file {key_yml_path} "
+                  "is either empty or corrupt, please check its contents")
+            sys.exit(1)
+        print(dictionary) 
+        for field in ['name', 'units', 'dimensions', 'layers', 'regions', 'model_convert']:
+            av[key][field] = dictionary[field]
+            print('Adding', field,':', dictionary[field])
+        functionname = dictionary['model_convert']
+        #if functionname in std_functions.keys():
+#	print "Standard Function Found:",functionname
+#	return std_functions[functionname]
+
+        if functionname.find(':') > -1:		
+            [functionFileName,functionname] = functionname.split(':')
+            lst = functionFileName.replace('.py','').replace('/', '.').split('.')		
+            modulename =  '.'.join(lst)
+
+            print("parseFunction:\tAttempting to load the function:",functionname, "from the:",modulename)
+            mod = __import__(modulename, fromlist=[functionname,])
+            func = getattr(mod, functionname)
+            #return func       
+ 
+#[GlobalMeanTemperature]
+#name		: GlobalMeanTemperature
+#units		: degrees C
+#dimensions	: 1
+#model		: NEMO
+#modelFiles 	: $BASEDIR_MODEL/$JOBID/nemo*_1y_*_grid-T.nc
+#model_vars	: thetao
+#model_convert	: functions/globalVolMean.py:globalVolumeMean
+#model_convert_areafile : /data/euryale7/scratch/ledm/UKESM/MEDUSA/mesh_mask_eORCA1_wrk.nc
+#layers 		: layerless
+#regions 	: regionless
+
+ 
+    assert 0
+
     if 'Chl_pig' in analysisKeys:
         name = 'Chlorophyll_pig'
         av[name]['modelFiles'] = sorted(
@@ -2237,8 +2289,10 @@ def analysis_timeseries(
         av[name]['gridFile'] = paths.orcaGridfn
         av[name]['Dimensions'] = 3
 
-    if 'GlobalMeanTemperature' in analysisKeys:
-        name = 'GlobalMeanTemperature'
+
+
+    if 'GlobalMeanTemperature_old' in analysisKeys:
+        name = 'GlobalMeanTemperature_old'
         if jobID == 'u-as462monthly':
             av[name]['modelFiles'] = sorted(
                 glob(

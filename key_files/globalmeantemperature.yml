@@ -1,0 +1,16 @@
+---
+name            : GlobalMeanTemperature
+units           : degrees C
+dimensions      : 1
+model           : NEMO
+modelFiles      : $BASEDIR_MODEL/$JOBID/nemo*_1y_*_grid-T.nc
+model_vars      : thetao
+model_convert   : bgcval2/functions/globalVolMean.py:globalVolumeMean
+model_convert_areafile : /data/euryale7/scratch/ledm/UKESM/MEDUSA/mesh_mask_eORCA1_wrk.nc
+layers          : layerless
+regions         : regionless
+
+# changes from original:
+#   add --- at start
+#   remove [name]
+#   add bgcval2 berfore functions 
