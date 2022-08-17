@@ -424,7 +424,7 @@ class DataLoader:
             dims = self.nc.variables[self.details['vars'][0]].dimensions
 
         else:
-            if self.coords['lat'] not in self.nc.variables.keys() or self.coords['lon'] not in self.nc.variables.keys():
+            if self.coords['lat'] not in self.nc.variables or self.coords['lon'] not in self.nc.variables:
                 print('ERROR: coordinates provided do not match coordinates in file:',self.coords['lat'], self.coords['lon'])
                 raise KeyError 
             lat = self.nc.variables[self.coords['lat']][:]
