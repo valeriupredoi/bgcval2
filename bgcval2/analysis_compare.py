@@ -3097,7 +3097,7 @@ def timeseries_compare(jobs,
                     av[name]['modelFiles'])
                 if strictFileCheck: assert 0
 
-            if 'dataFile' in av[name].keys():
+            if 'dataFile' in av[name]:
                 if not os.path.exists(av[name]['dataFile']):
                     print(
                         "analysis-Timeseries.py:\tWARNING:\tdata file is not found:",
