@@ -214,7 +214,8 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
             z = nc.variables[coords['z']][k]
         except:
             return []
-        if data == '': data = std_extractData(nc, details)
+        if data == '':
+            data = std_extractData(nc, details)
         print("getHorizontalSlice:\tSpecific depth level requested",
               details['name'], layer, nc.variables[coords['z']][k], data.shape)
         return ApplyDepthSlice(data, k)
