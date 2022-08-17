@@ -35,7 +35,7 @@ from ..bgcvaltools.dataset import dataset
 
 #####
 # This is the algorithm that applied the evaluation functions below.
-def extractData(nc, details,key = ['',],debug=False):
+def extractData(nc, details, key=['',], debug=False):
     """     
     This extracts the data the the netcdf based on the instructions from details dictionairy.
     If you want to do something funky to the data before plotting it, just create a new convert function in this directory.
