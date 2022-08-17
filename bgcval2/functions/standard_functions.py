@@ -53,7 +53,8 @@ def extractData(nc, details, key=['',], debug=False):
     # that the convert function needs.
     kwargs={}
     for _, k in details.items():
-        if k in ['name','vars','convert', 'units']: continue
+        if k in ['name','vars','convert', 'units']:
+            continue
         kwargs[k] = details[k]
          
     #####
