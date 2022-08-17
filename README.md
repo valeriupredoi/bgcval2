@@ -212,12 +212,12 @@ This is an analysis that investigates the time development of specific marine
 physics and Biogeochemistry fields in the given model, and then compares them
 against historical observations.
 
-The command to run it is `analysis_timeseries --jobID jobID --keys key`,
+The command to run it is `analysis_timeseries --jobID jobID --keys suites`,
 where jobID is one or more mass jobIDs, such a `u-ab123`.
-The key is one or more pre-defined keys, which generates a
+The suite is one or more pre-defined suites, which is a yaml file of
 list of variables.
 
-Key | What it is | Description
+Suite  | What it is | Description
 :--------------:|:------------:|:------------:
 `kmf` | Key Metrics First | A short and quick list of the most important metrics.
 `physics` | Physics | A comprehensive list of physical metrics.
@@ -226,11 +226,65 @@ Key | What it is | Description
 `debug` | Debug | A very short list of a couple keys to test code changes.
 `fast` | UKESM1-fast  | A list of metrics tailored to the UKESM1-Fast model.
 
-Note that there may be some overlap between the contents of these keys.
+Note that there may be some overlap between the contents of these suites.
 
-These key lists are defined in the bgcval2 directory, `key_lists`.
-To add an additional list of keys, the file must be present there
+These suites are defined in the bgcval2 directory, `key_lists`.
+To create a new user defined suite, the file must be present there
 as a yaml and must be named with all-lower-case letters.
+
+The contents of the suite is a list of keys. Each key in the suite
+much have an associated yaml file in the `key_files` directory.
+These files define how bgcval2 locates and interacts with model and
+observational data.
+The values in these files depend on the analysis but includes:
+```
+---
+name: Analysis_Name
+units: Units
+dimensions: 1,2 or  3 # The number of dimensions after the calculations are performed
+layers          : Surface
+regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 Remainder NorthernSubpolarAtlantic NorthernSubpolarPacific
+
+#paths:
+modelFiles      : $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_grid-T.nc
+dataFile        : $BASEDIR_OBS/WOA/annual/woa13_decav_t00_01v2.nc
+gridFile        : $PATHS_GRIDFILE
+
+# model details
+model: Model_name
+model_t         : time_centered         # model time dimension
+model_cal       : 360_day               # model calendar
+model_z         : deptht                # model depth dimension
+model_lat       : nav_lat               # model latitude dimension
+model_lon       : nav_lon               # model latitude dimension
+model_vars      : thetao_con
+model_convert   : NoChange
+
+# Observational Data coordinates names
+datasource      : WOA
+data_t          : time
+data_cal        : standard
+data_z          : depth
+data_lat        : lat
+data_lon        : lon
+data_vars       : t_an
+data_convert    : NoChange
+data_tdict      : ZeroToZero
+```
+
+Certain key fields in paths can be replaced with another value, allowing more
+flexibility of inputs. For instance, if the path includes the username,
+then `$USER` will be replaced by the users name.
+These fields include:
+  - `$JOBID`
+  - `$USER`
+  - `$YEAR`
+  - `$MODEL`
+
+In addition, some paths from the `Paths.py` can also be used:
+  - `basedir_model`
+  - `basedir_obs`
+  - `PATHS_GRIDFILE`
 
 
 Point to point analysis
