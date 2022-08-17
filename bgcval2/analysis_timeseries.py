@@ -82,7 +82,7 @@ def listModelDataFiles(jobID, filekey, datafolder, annual):
         print("listing model data files:",
                datafolder + jobID + "/" + jobID + "o_1m_*_" + filekey + ".nc")
         datafolder = os.path.join(datafolder, jobID)
-        model_file = sorted(
+        model_files = sorted(
             glob(datafolder + "/" + jobID + "o_1m_*_" + filekey +
                  ".nc"))
 
@@ -481,8 +481,6 @@ def analysis_timeseries(
     #	Charybdis (Julien's machine at NOCS)
     #
     # Feel free to add other macihines onto this list, if need be.
-    machinelocation = ''
-
 
     shelvedir = ukp.folder([paths.shelvedir, "timeseries", jobID])
     imagedir = ukp.folder([paths.imagedir, jobID, 'timeseries'])
@@ -502,7 +500,6 @@ def analysis_timeseries(
     if hostname.find('ceda.ac.uk') > -1 or hostname.find(
             'jasmin') > -1 or hostname.find('jc.rl.ac.uk') > -1:
         print("analysis-timeseries.py:\tBeing run at CEDA on ", hostname)
-        #machinelocation = 'JASMIN'
 
     #####
     # Unable to find location of files/data.
