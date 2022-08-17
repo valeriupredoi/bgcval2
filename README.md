@@ -44,22 +44,11 @@ conda activate bgcval2
 pip install -e .[develop]
 ```
 
-Running the tool
-================
-
-The tool has a number of executables one can invoke individually, e.g.:
-
+Test that the tool has been installed correctly with:
 ```
-analysis_timeseries u-bc179 level1
-analysis_p2p u-bc179 level2 2010
+analysis_compare -h
 ```
-Once these have completed, a summary HTML page can be generated with the command:
-
-```
-bgcval2_make_report u-bc179 2010
-```
-This produces an html5 mobile-friendly website which can be opened using your
-browser of choice.
+which should print the module information and instructions on how to run the tool.
 
 
 ### Available executables
@@ -73,6 +62,149 @@ Executable name | What it does | Command
 `analysis_compare` | runs comparison of multiple single jobs  | analysis_compare
 
 
+
+Running the tool to compare multiple jobs
+=========================================
+
+The time developmenmt of several models can be compared
+and summarized in a single comparison report html.
+This report can be generated with a single command, based on a simple yml file input:
+
+```
+analysis_compare --compare_yml comparison_recipe.yml
+```
+
+Example input yaml files exist in the `input_yml` directory.
+However, there are a few key values:
+
+
+In this yml file, the structure is:
+```
+---
+name: <Analysis name string>
+do_analysis_timeseries: <bool>
+do_mass_download: <bool>
+master_suites: <str>
+
+jobs:
+   <jobID1>:
+      description: <descrption of the first job>
+      colour: red
+      thickness: 0.7
+      linestyle: '-'
+      shifttime: 0.
+      suite: physics
+   <jobID2>:
+      description: <descrption of the second job>
+      ...
+```
+
+These values are:
+ - `name`:
+   - The name of the analysis.
+   - This will be the path of output report.
+ - `do_analysis_timeseries`:
+   -  A Boolean value to run or skip the single model timeseries.
+   -  Set to False if the single model analysis has already completed.
+ - `do_mass_download`:
+   - A boolean value to run the mass download.
+   - This is not currently possible as we can only download mass file from mass-cli1 on jasmin.
+   - See below for details on how to download jobs data.
+ - `master_suites`:
+   - A list of the type of analysis report to produce.
+   - Options are: `physics`, `bio`, `debug`.
+   - Default is `['physics', 'bio',]`.
+ - `jobs`:
+   - A list of jobIDs, and some options on how they will appear in the final report.
+   - The options are:
+     - `description`:
+       - A description of job, which helps people differentiate the jobs in the final report.
+     - `colour`:
+       - The colour of this jobs line in the report plots.
+       - Default colour is a randomly generated hex colour.
+     - `thickness`:
+       - The thickness of this jobs line in the report plots.
+       - default is 0.7
+     - `linestyle`:
+       - The linestyle of this jobs line in the report plots.
+       - Accepts typical matplotlib line styles: `'solid', 'dashed', 'dotted', 'dashdot', '-'. ';', ', etc`
+       - default is `-'`
+     - `shiftime`:
+       - A number in whole years by which the jobs line is shifted.
+       - this is useful if jobs start from different initial years in spin up, for instance.
+       - Default is `0.` ( no time shift ).
+     - `suite`:
+       - One or more analysis suites to run the analysis_timeseries.
+       - Options include: `bgc` (biogeochemistry), `kmf` (key metrics first), `physics`, `level1`.
+       - See `analysis_timeseries` for more details, below.
+
+
+A sample yaml exists in `input_yml/comparison_analysis_template.yml`,
+which can be adapted to additional analyses.
+
+
+Downloading data using MASS
+===========================
+
+Data can be downloaded and prepared for analysis using the `download_from_mass` bgcval2 tool,
+with the command:
+```
+download_from_mass -j jobID
+```
+where `jobID` is one or more jobIDs.
+
+This script will only work on JASMIN's `mass-cli1` machine,
+which is set up to interact with the Met Office Storate System MASS.
+
+The optional flag `--dry-run` skips the download part of the script,
+and generates a script in the `bgcval2/mass_scripts` directory.
+From there, users can ssh to `mass-cli1` and execute this script:
+
+```
+# from login1.jasmin.ac.uk, ssh to the mass machine:
+ssh -X  mass-cli1
+
+# run script with:
+source /path/to/bgcval2/is/here/bgcval2/mass_scripts/jobID.sh
+```
+
+Alternatively, the whole `download_from_mass` tool could be executed on the `mass-cli1` machine.
+
+Several different keys can be included in the download if monthly data is required.
+However, it's not recommended to include monthly data at this stage as that code
+both to download, but also to run the monthly analysis is not currently tested.
+
+This tool downloads the data, but also includes several functions which create symbolic links
+in the data's directory in order to accomodate incompatible changes in NEMO's output formatting.
+
+
+Running the tool for a single job
+=================================
+
+The multi-job analysis described above can only do timeseries analysis.
+To run an in-depth analysis of a single job, the following command can be run:
+
+```
+bgcval2 -j jobID
+```
+
+This will run a time series analysis, a point to point analysis, and
+publish the reports into a single job html5 report.
+
+
+Alternatively, these tasks can be invoked individually, e.g.:
+
+```
+analysis_timeseries --jobID u-bc179 --keys kmf level1
+analysis_p2p u-bc179 level2 2010
+bgcval2_make_report u-bc179 2010
+
+```
+This produces an html5 mobile-friendly website which can be opened using your
+browser of choice.
+
+
+
 Time series analysis
 --------------------
 
@@ -80,8 +212,9 @@ This is an analysis that investigates the time development of specific marine
 physics and Biogeochemistry fields in the given model, and then compares them
 against historical observations.
 
-The command to run it is `analysis_timeseries jobID key`, where jobID is a mass
-job id, such a `u-ab123`, and the key is a pre-defined key, which generates a
+The command to run it is `analysis_timeseries --jobID jobID --keys key`,
+where jobID is one or more mass jobIDs, such a `u-ab123`.
+The key is one or more pre-defined keys, which generates a
 list of variables.
 
 Key | What it is | Description
@@ -93,12 +226,17 @@ Key | What it is | Description
 `debug` | Debug | A very short list of a couple keys to test code changes.
 `fast` | UKESM1-fast  | A list of metrics tailored to the UKESM1-Fast model.
 
-
 Note that there may be some overlap between the contents of these keys.
+
+These key lists are defined in the bgcval2 directory, `key_lists`.
+To add an additional list of keys, the file must be present there
+as a yaml and must be named with all-lower-case letters.
 
 
 Point to point analysis
 -----------------------
+
+WORK IN PROGRESS.
 
 This is an analysis that compares a specific year of the model
 against several climatological datasets, and produces comparison
@@ -121,6 +259,8 @@ Note that there may be some overlap between the contents of these keys.
 Single Model report
 -------------------
 
+WORK IN PROGRESS.
+
 Once an analysis has run, either time series or point to point, a report
 can be generated from this output, using the command:
 ```
@@ -129,81 +269,6 @@ bgcval2_make_report jobID year
 This  gnerated an HTML5 mobile-friendlyt report, summarising the output of a
 single model run.
 
-
-Multi-model comaprison report
------------------------------
-
-Once several models have been analysed using the time series analysis,
-their time development can be compared using the `analysis_compare` command:
-```
-analysis_compare recipe.yml
-```
-
-The comparison reports are generated from a user defined yaml recipe.
-
-In this yml file, the key structure is:
-```
-name: <Analysis name string>
-do_analysis_timeseries: <bool>
-jobs:
-   <jobID1>:
-      description: <descrption of the first job>
-   <jobID2>:
-      description: <descrption of the second job>      
-```
-Where the `name` is a short unique string describing the analysis script
-and the ultimately the name given here will become part of the path
-of the final output comparison report.
-
-The `do_analysis_timeseries` bool lets `analysis_compare` send jobs to 
-`analysis_timeseries`, allowing the user to run the entire suite in one 
-command, instead of individually running the `analysis_timeseries` then
-the `analysis_compare` part afterwards.
-
-The `jobs` is a dict of job IDs, that describe how each job will appear in the 
-final report. 
-
-The optional arguments for each job are:
-    - colour: a colour hex, or html recognised string (default is a randomly generated hex colour.)
-    - thickness: line thickness for matplotlib (default (`0.7`)
-    - linestyle: line style for matplotlib (default: `'-'`)
-    - suite: suite to send to `analysis_timeseries` if `do_analysis_timeseries` is true.
-    
-A sample yaml exists in `input_yml/comparison_analysis_template.yml`,
-which can be adapted to additional analysis. 
-
-Download data from MASS
------------------------
-
-It's straightforward to download data from the Met Office
-Storage System, MASS.
-The bgcval2 tool `download_data_from mass` sets up the command and 
-outputs a script which you can run on Jasmin's mass-cli1 machine. 
-
-Note that the only place on CEDA-JASMIN you can download data  
-is the dedicated virtual machine, mass-cli1.jasmin.ac.uk.
-
-The recommended process is to generate the download script on an interactive node,
-like sci1 with the command:
-```
-download_from_mass jobID noMoo
-```
-Which will then create a script in the directory `mass_scripts`.
-The runtime flag `noMoo` stops the script from attempted to execute the script.
-
-From there, the user must log into the mass machine, and execute the script:
-```
-#from login1.jasmin.ac.uk:
-ssh -X mas-cli1
-cd bgcval2
-source mass_script/*.sh
-```
-
-Note that these scripts can also be automatically generated by 
-the `analysis_compare` command by including the 
-```
-do_mass_download: True 
-```
 
 Documentation
 =============

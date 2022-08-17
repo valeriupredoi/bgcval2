@@ -26,26 +26,28 @@
 """
 .. module:: analysis_compare
    :platform: Unix
-   :synopsis: A script to produce an intercomparison of multiple runs the time series analyses.
+   :synopsis: A tool that generates an intercomparison of multiple UKESM jobs time series analyses.
 .. moduleauthor:: Lee de Mora <ledm@pml.ac.uk>
+.. moduleauthor:: Valeriu Predoi <valeriu.predoi@ncas.ac.uk>
 
 """
 
+import argparse
 import matplotlib
 # Force matplotlib to not use any Xwindows backend.
 matplotlib.use('Agg')
 
 #####
 # Load Standard Python modules:
-from sys import argv, exit
-from os.path import exists
 from calendar import month_name
 from socket import gethostname
 from netCDF4 import Dataset
 from glob import glob
 from scipy.interpolate import interp1d
 import numpy as np
-import os, sys, fnmatch
+import os
+import sys
+import fnmatch
 from getpass import getuser
 from collections import defaultdict
 import yaml
@@ -58,7 +60,7 @@ from . import UKESMpython as ukp
 from .timeseries import timeseriesAnalysis
 from .timeseries import profileAnalysis
 from .timeseries import timeseriesPlots as tsp
-from bgcval2.analysis_timeseries import analysis_timeseries
+from bgcval2.analysis_timeseries import analysis_timeseries, build_list_of_suite_keys
 from bgcval2.download_from_mass import download_from_mass
 
 
@@ -133,18 +135,16 @@ def apply_shifttimes(mdata, jobID, shifttimes):
     for t in sorted(mdata.keys()):
         t1 = t + float(shifttimes[jobID])
         times.append(t1)
-        datas.append(mdata[t])        
-    return times, datas       
-   
+        datas.append(mdata[t])
+    return times, datas
+
 
 
 def timeseries_compare(jobs,
                        colours,
-                       physics=True,
-                       bio=False,
-                       debug=False,
+                       suites = [],
                        analysisname='',
-                       shifttimes={},                       
+                       shifttimes={},
                        jobDescriptions={},
                        lineThicknesses=defaultdict(lambda: 1),
                        linestyles=defaultdict(lambda: '-'),
@@ -153,16 +153,16 @@ def timeseries_compare(jobs,
     """
     timeseries_compare:
         Suite of tools to take pre-analyses time series model data
-        then compile into single plots, then publish it to an html 
+        then compile into single plots, then publish it to an html
         document.
 
     """
     ### strategy here is a simple wrapper.
     # It's a little cheat-y, as I'm copying straight from analysis_timeseries.py
-    
+
     jobs = sorted(jobs)
     #jobs = sorted(colours.keys())
-    
+
     for ensemble in list(ensembles.keys()):
         # ensembles names can not be the same as jobIDs
         jobs.remove(ensemble)
@@ -181,163 +181,15 @@ def timeseries_compare(jobs,
     else:
         imageFolder = paths.imagedir + '/TimeseriesCompare/' + analysisname
 
-    if debug:
-        imageFolder = imageFolder + '_debug'
-        analysisname = analysisname + '_debug'
-
     annual = True
     strictFileCheck = False
 
-    analysisKeys = []
+    if not isinstance(suites, list):
+        ValueError(f"Suites need to be a list, got: {suites}")
+        sys.exit(1)
 
-    if physics:
-        # what if these were loaded in advance from a separate file?
-        analysisKeys.append('DrakePassageTransport')  # DrakePassageTransport
-        analysisKeys.append('TotalIceArea')  # TotalIceArea
-        analysisKeys.append('NorthernTotalIceArea')  # North TotalIceArea
-        analysisKeys.append('SouthernTotalIceArea')  # South TotalIceArea
-        analysisKeys.append('TotalIceExtent')  # work in progress
-        analysisKeys.append('NorthernTotalIceExtent')  # work in progress
-        analysisKeys.append('SouthernTotalIceExtent')  # work in progress
-        analysisKeys.append('WeddelIceExent')  # work in progress
-        #analysisKeys.append('NorthernMIZArea')
-        #analysisKeys.append('SouthernMIZArea')
-        #analysisKeys.append('TotalMIZArea')
-        analysisKeys.append('NorthernMIZfraction')
-        analysisKeys.append('SouthernMIZfraction')
-        analysisKeys.append('TotalMIZfraction')
-
-        analysisKeys.append('AMOC_26N')
-        analysisKeys.append('AMOC_32S')
-        analysisKeys.append('ADRC_26N')  # AMOC 26N
-        analysisKeys.append('Temperature')  # WOA Temperature
-        analysisKeys.append('Salinity')  # WOA Salinity
-        analysisKeys.append('MLD')  # MLD
-        analysisKeys.append('MaxMonthlyMLD')  # MLD Monthly max
-        analysisKeys.append('MinMonthlyMLD')  # MLD Monthly min
-
-        analysisKeys.append('ZonalCurrent')  # Zonal Veloctity
-        analysisKeys.append('MeridionalCurrent')  # Meridional Veloctity
-        analysisKeys.append('VerticalCurrent')  # Vertical Veloctity
-        analysisKeys.append('GlobalMeanTemperature')  # Global Mean Temperature
-        analysisKeys.append('VolumeMeanTemperature')  # Global Mean Temperature
-        analysisKeys.append('GlobalMeanSalinity')  # Global Mean Salinity
-        analysisKeys.append(
-            'IcelessMeanSST')  # Global Mean Surface Temperature with no ice
-
-        analysisKeys.append('sowaflup')  # Net Upward Water Flux
-        analysisKeys.append('sohefldo')  # Net downward Water Flux
-        analysisKeys.append('sofmflup')  # Water flux due to freezing/melting
-        analysisKeys.append('sosfldow')  # Downward salt flux
-        analysisKeys.append('soicecov')  # Ice fraction
-        analysisKeys.append('sossheig')  # SSH
-        analysisKeys.append('FreshwaterFlux')  # Fresh water flux
-        analysisKeys.append('HeatFlux')
-        analysisKeys.append('TotalHeatFlux')
-        analysisKeys.append('scvoltot')
-        analysisKeys.append('soga')
-        analysisKeys.append('thetaoga')
-        analysisKeys.append('scalarHeatContent')
-
-    if bio:
-        analysisKeys.append('TotalAirSeaFluxCO2')  # work in progress
-        analysisKeys.append('NoCaspianAirSeaFluxCO2')  # work in progress
-
-        analysisKeys.append('AirSeaFlux')  # work in progress
-        analysisKeys.append('IntPP_OSU')  # OSU Integrated primpary production
-        analysisKeys.append('GlobalExportRatio')
-
-        analysisKeys.append('N')  # WOA Nitrate
-        analysisKeys.append('Si')  # WOA Siliate
-        analysisKeys.append('O2')  # WOA Oxygen
-        analysisKeys.append('Iron')
-        analysisKeys.append('Alk')
-        analysisKeys.append('DIC')
-        analysisKeys.append('pH')
-
-        analysisKeys.append('CHD')
-        analysisKeys.append('CHN')
-        analysisKeys.append('CHL')
-        analysisKeys.append('DiaFrac')
-        analysisKeys.append('DMS')
-        analysisKeys.append('Dust')  # Dust
-        analysisKeys.append('TotalDust')  # Total Dust
-
-        #                analysisKeys.append('DMS_ARAN')
-
-        analysisKeys.append('DTC')
-
-        analysisKeys.append(
-            'TotalOMZVolume')  # Total Oxygen Minimum zone Volume
-        analysisKeys.append('OMZThickness')  # Oxygen Minimum Zone Thickness
-        analysisKeys.append('OMZMeanDepth')  # Oxygen Minimum Zone mean depth
-        analysisKeys.append('VolumeMeanOxygen')  # Volume weighted mean Oxygen
-
-    if debug:
-        ####
-        # Supercedes other flags.
-        analysisKeys = []
-        #		analysisKeys.append('ERSST')
-        #analysisKeys.append('DrakePassageTransport')  # DrakePassageTransport
-        #                analysisKeys.append('VolumeMeanOxygen')         # Volume weighted mean Oxygen
-        analysisKeys.append('AMOC_26N')
-        #                analysisKeys.append('NoCaspianAirSeaFluxCO2')   # work in progress
-        #analysisKeys.append('VolumeMeanTemperature')  # Global Mean Temperature
-        #		analysisKeys.append('CHD')
-        #		analysisKeys.append('CHN')
-        #		analysisKeys.append('DiaFrac')
-        #                analysisKeys.append('AMOC_26N')
-        #                analysisKeys.append('MLD')
-        #                analysisKeys.append('Temperature')             # WOA Temperature
-        #                analysisKeys.append('Salinity')                # WOA Salinity
-        #                analysisKeys.append('DMS')
-        #                analysisKeys.append('N')                        # WOA Nitrate
-        #                analysisKeys.append('Si')                       # WOA Siliate
-
-        #                analysisKeys.append('TotalAirSeaFluxCO2')          # work in progress
-        #                analysisKeys.append('AirSeaFlux')          # work in progress
-        #                analysisKeys.append('AirSeaFluxCO2')          # work in progress
-
-        #                analysisKeys.append('scvoltot')
-        #                analysisKeys.append('soga')
-        #                analysisKeys.append('thetaoga')
-        #                analysisKeys.append('scalarHeatContent')
-
-        #analysisKeys.append('ADRC_26N')                # AMOC 26N
-        #                analysisKeys.append('VerticalCurrent')          # Vertical Veloctity
-        #                analysisKeys.append('sossheig')                 # SSH
-        #                analysisKeys.append('NorthernTotalIceArea')     # North TotalIceArea
-        #                analysisKeys.append('SouthernTotalIceArea')     # South TotalIceArea
-        #                analysisKeys.append('TotalIceArea')     	#  TotalIceArea
-        #                analysisKeys.append('NorthernTotalIceExtent')   # work in progress
-        #                analysisKeys.append('SouthernTotalIceExtent')   # work in progress
-        #                analysisKeys.append('WeddelIceExent')   # work in progress
-        #                analysisKeys.append('TotalIceExtent')           # work in progress
-        #                analysisKeys.append('NorthernMIZArea')
-        #                analysisKeys.append('SouthernMIZArea')
-        #                analysisKeys.append('TotalMIZArea')
-
-        #                        analysisKeys.append('NorthernMIZArea')
-        #                        analysisKeys.append('SouthernMIZArea')
-        #                        analysisKeys.append('TotalMIZArea')
-        #                analysisKeys.append('NorthernMIZfraction')
-        #                analysisKeys.append('SouthernMIZfraction')
-        #                analysisKeys.append('TotalMIZfraction')
-
-        #		analysisKeys.append('FreshwaterFlux')		# Fresh water flux
-        #analysisKeys.append('GlobalMeanTemperature')
-#                analysisKeys.append('GlobalMeanSalinity')
-
-#                analysisKeys.append('HeatFlux')
-#                analysisKeys.append('TotalHeatFlux')
-
-#               	analysisKeys.append('quickSST')    		# Area Weighted Mean Surface Temperature
-#       	  	analysisKeys.append('TotalOMZVolume')           # Total Oxygen Minimum zone Volume
-#       	 	analysisKeys.append('OMZThickness')             # Oxygen Minimum Zone Thickness
-#        	analysisKeys.append('OMZMeanDepth')             # Oxygen Minimum Zone mean depth
-#		analysisKeys.append('O2')                       # WOA Oxygen
-#       	if bio ==False:return
-#       	if physics == True:return
+    analysisKeys = build_list_of_suite_keys(suites, debug=True)
+    print(f'Using analysis keys {str(analysisKeys)}')
 
     layerList = [
         'Surface',
@@ -4004,7 +3856,7 @@ def timeseries_compare(jobs,
             for filename in fnmatch.filter(filenames, '*.png'):
                 AllImages.append(os.path.join(root, filename))
                 print('AllImages:','fors', root, dirnames, filenames, filename)
- 
+
 
     if ensembles != {}:
         jobs = list(ensembles.keys())
@@ -4031,132 +3883,29 @@ def flatten(lats, lons, dataA, dataB):
      np.ma.masked_where(m, dataB).compressed()
 
 
-def CompareTwoRuns(jobIDA,
-                   jobIDB,
-                   physics=True,
-                   bio=True,
-                   yearA='',
-                   yearB='',
-                   debug=True):
-    #
-    #spatial maps of specific fields
-
-    filetype = []
-    if physics:
-        filetype.extend([
-            'grid_T',
-            'grid_U',
-            'grid_V',
-            'grid_W',
-        ])
-    if bio:
-        filetype.extend([
-            'diad_T',
-            'ptrc_T',
-        ])
-    filesA = {}
-    filesB = {}
-
-    imageFolder = 'images/TimeseriesCompare/'
-    imageFolder += jobIDA + '-' + yearA + '_and_' + jobIDB + '-' + yearB
-
-    for ft in filetype:
-        filesA[ft] = listModelDataFiles(jobIDA,
-                                        ft,
-                                        paths.ModelFolder_pref,
-                                        True,
-                                        year=yearA)[0]
-        filesB[ft] = listModelDataFiles(jobIDB,
-                                        ft,
-                                        paths.ModelFolder_pref,
-                                        True,
-                                        year=yearB)[0]
-        print("files A:", filesA[ft])
-        print("files B:", filesB[ft])
-
-        ncA = Dataset(filesA[ft], 'r')
-        ncB = Dataset(filesB[ft], 'r')
-        keys = ukp.intersection(list(ncA.variables.keys()),
-                                list(ncB.variables.keys()))
-
-        lats = ncA.variables['nav_lat'][:]
-        lons = ncA.variables['nav_lon'][:]
-
-        for key in keys:
-            filename = ukp.folder(imageFolder + '/' +
-                                  ft) + ft + '-' + key + '.png'
-            if os.path.exists(filename): continue
-
-            dataA = 0.
-            dataB = 0.
-            if key in alwaysInclude: continue
-            if key in ['bounds_lon', 'bounds_lat']: continue
-            if ncA.variables[key].ndim == 4:
-                dataA = ncA.variables[key][0, 0, :, :]
-                dataB = ncB.variables[key][0, 0, :, :]
-
-            elif ncA.variables[key].ndim == 3:
-                dataA = ncA.variables[key][0, :, :]
-                dataB = ncB.variables[key][0, :, :]
-            elif ncA.variables[key].ndim == 2:
-                continue
-                dataA = ncA.variables[key][:, :]
-                dataB = ncB.variables[key][:, :]
-            else:
-                print("can't plot:", key, ncA.variables[key].ndim)
-                continue
-            try:
-                title = ncA.variables[key].long_name
-            except:
-                title = getLongName(key)
-
-            dmin = min([dataA.min(), dataB.min()])
-            dmax = max([dataA.max(), dataB.max()])
-
-            print(key, lats.shape, lons.shape, dataA.shape, dataB.shape)
-            la, lo, data, datb = flatten(lats, lons, dataA, dataB)
-            print(key, la.shape, lo.shape, data.shape, datb.shape)
-
-            if 0 in [len(la), len(lo), len(data), len(datb)]: continue
-            #		filename = ukp.folder(imageFolder+'/'+ft)+ft+'-'+key+'.png'
-            #		if os.path.exists(filename):continue
-            ukp.robinPlotQuad(
-                lo,
-                la,
-                data,
-                datb,
-                filename,
-                titles=[jobIDA + ' ' + yearA, jobIDB + ' ' + yearB],
-                title=title,
-                lon0=0.,
-                marble=False,
-                drawCbar=True,
-                cbarlabel='',
-                doLog=False,
-                vmin=dmin,
-                vmax=dmax,
-                maptype='Cartopy',
-                scatter=False)
-
-
 def load_comparison_yml(master_compare_yml_fn):
     """
     Load the config yaml.
-    TAkes an file path string 
+    Takes a file path string
     Returns:
         Details dict.
     """
     with open(master_compare_yml_fn, 'r') as openfile:
         dictionary = yaml.safe_load(openfile)
 
-    details = {}    
+    if not dictionary or not isinstance(dictionary, dict):
+        print(f"Configuration file {master_compare_yml_fn} "
+              "is either empty or corrupt, please check its contents")
+        sys.exit(1)
+
+    details = {}
     details['name'] = dictionary.get('name', False)
-    details['jobs'] = dictionary.get('jobs', False) 
+    details['jobs'] = dictionary.get('jobs', False)
 
     if not details['name']:
         print('Please provide a name for your analysis. In your yaml, this is:')
         print('name: MyAnalysisName')
-        exit(0)
+        sys.exit(0)
     if not details['jobs']:
         print('Please provide at least one JobID for your analysis. In your yaml, this is:')
         print('jobs: ')
@@ -4166,100 +3915,94 @@ def load_comparison_yml(master_compare_yml_fn):
         print('        thickness: 0.7')
         print("        linestyle: '-'")
         print('        shifttime: 0.')
-        exit(0)       
+        sys.exit(0)
 
-    details['do_analysis_timeseries'] = dictionary.get('do_analysis_timeseries', False) 
+    details['do_analysis_timeseries'] = dictionary.get('do_analysis_timeseries', False)
     details['do_mass_download'] = dictionary.get('do_mass_download', False)
-    
+
     details['master_suites'] = dictionary.get('master_suites', [])
-    
-    default_thickness = 0.75
-    default_linestyle = '-'
+
+    default_thickness = 0.7
+    default_linestyle = 'solid'
     default_suite = 'kmf'
-  
+
     thicknesses = {}
     linestyles = {}
     colours = {}
     suites = {}
     descriptions = {}
     shifttimes = {} # number of years to shift time axis.
-   
+
     for jobID, job_dict in details['jobs'].items():
         if job_dict.get('colour', False):
             colours[jobID] = job_dict['colour']
         else:
-            colours[jobID] = ''.join(['#', "%06x" % random.randint(0, 0xFFFFFF)])        
+            colours[jobID] = ''.join(['#', "%06x" % random.randint(0, 0xFFFFFF)])
             print('WARNING: No colour provided, setting to random hex colour:', colours[jobID])
-            
+
         descriptions[jobID] = job_dict.get('description', '')
         thicknesses[jobID] = job_dict.get('thickness', default_thickness)
         linestyles[jobID] = job_dict.get('linestyle', default_linestyle)
         shifttimes[jobID] = float(job_dict.get('shifttime', 0.))
         suites[jobID] = job_dict.get('suite', default_suite)
-                 
+
     details['colours'] = colours
     details['descriptions'] = descriptions
     details['thicknesses'] = thicknesses
-    details['linestyles'] = linestyles            
-    details['shifttimes'] = shifttimes            
+    details['linestyles'] = linestyles
+    details['shifttimes'] = shifttimes
     details['suites'] = suites
     return details
-    
 
-def main():
-    if "--help" in argv or len(argv) == 1:
-        print("Running with no arguments. Exiting.")
-        if "--help" in argv:
-            print("Read the documentation.")
-        exit(0)
 
-    config_user=None
-    if "bgcval2-config-user.yml" in argv[1:]:
-        config_user = "bgcval2-config-user.yml"
-        print(f"analysis_timeseries: Using user config file {config_user}")
+def load_yml_and_run(compare_yml, config_user):
+    """
+    Loads the comparison yaml file and run compare_yml.
 
-    details = load_comparison_yml(argv[1])
-  
+    """
+    # Below here is analysis
+    details = load_comparison_yml(compare_yml)
+
     jobs = details['jobs']
-    analysis_name = details['name']    
+    analysis_name = details['name']
     do_analysis_timeseries = details['do_analysis_timeseries']
     do_mass_download = details['do_mass_download']
-    master_suites = details['master_suites']  
- 
+    master_suites = details['master_suites']
+
     colours = details['colours']
     thicknesses = details['thicknesses']
     linestyles = details['linestyles']
     descriptions = details['descriptions']
     shifttimes = details['shifttimes']
-    suites = details['suites']   
- 
+    suites = details['suites']
+
     print('---------------------')
     print('timeseries_compare:',  analysis_name)
     print('job ids:', jobs.keys())
     for jobID in jobs:
         print(jobID, 'description:',descriptions[jobID])
-        print(jobID, 'colour:',colours[jobID])        
+        print(jobID, 'colour:',colours[jobID])
         print(jobID, 'line thickness & style:',thicknesses[jobID], linestyles[jobID])
         print(jobID, 'Shift time by', shifttimes[jobID])
         print(jobID, 'suite:', suites[jobID])
 
     for jobID in jobs:
-        # even if you don't want to download, it's good to run this
-        # as it clears up the path and ensures recently downloed data is 
+        # even if you don't want to download, we run this
+        # as it clears up the path and ensures recently downloed data is
         # correctly symlinked.
         download_from_mass(jobID, doMoo=do_mass_download)
-    
+
     if do_analysis_timeseries:
         for jobID in jobs:
             analysis_timeseries(
                 jobID=jobID,
-                analysisSuite=suites[jobID],
+                suites=suites[jobID],
                 config_user=config_user
-            )   
+            )
 
     # Master suite leys:
     if not master_suites:
-        master_suites=['physics', 'bio'] # Defaults
+        master_suites=['physics', 'bgc']  # Defaults
 
     # make sure its a list:
     if isinstance(master_suites, list) :
@@ -4270,27 +4013,10 @@ def main():
             master_suites = master_suites.replace(split_char, ';')
         master_suites = master_suites.split(';')
 
-    if 'physics' in master_suites:
-        key_physics = True
-    else:
-        key_physics = False
-
-    if 'bio' in master_suites:
-        key_bio = True
-    else:
-        key_bio = False
-
-    if 'debug' in master_suites:
-        key_debug = True
-    else:
-        key_debug = False
-
     timeseries_compare(
         jobs,
         colours = colours,
-        physics=key_physics,
-        bio=key_bio,
-        debug=key_debug,
+        suites = master_suites,
         shifttimes=shifttimes,
         jobDescriptions=descriptions,
         analysisname=analysis_name,
@@ -4298,9 +4024,55 @@ def main():
         linestyles=linestyles,
         config_user=config_user
     )
-            
+
+
+def get_args():
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+
+    parser.add_argument('-y',
+                        '--compare_yml',
+                        nargs='+',
+                        type=str,
+                        help='One or more Comparison Analysis configuration file, for examples see bgcval2 input_yml directory.',
+                        required=True,
+                        )
+
+    parser.add_argument('-c',
+                        '--config-file',
+                        default=os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                             'default-bgcval2-config.yml'),
+                        help='User configuration file (for paths).',
+                        required=False)
+
+    args = parser.parse_args()
+
+    return args
+
+
+def main():
+    """Run the main routine."""
+    args = get_args()
+
+    # This has a sensible default value.
+    config_user=args.config_file
+
+    # This shouldn't fail as it's a required argument.
+    compare_ymls = args.compare_yml
+
+    for compare_yml in compare_ymls:
+        print(f"analysis_timeseries: Comparison config file {compare_yml}")
+
+        if not os.path.isfile(compare_yml):
+            print(f"analysis_timeseries: Could not find comparison config file {compare_yml}")
+            sys.exit(1)
+
+        load_yml_and_run(compare_yml, config_user)
+
     print("Finished... ")
 
 
-if __name__ == "__main__": 
+if __name__ == "__main__":
     main()
