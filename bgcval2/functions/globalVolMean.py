@@ -105,4 +105,5 @@ def globalVolumeMean(nc, keys, **kwargs):
         for t in range(temp.shape[0]):
             outvol.append((temp[t]*vol).sum()/volsum)
         return outvol 
-    assert ("It looks like your data have a strange shape:"+str(temp.shape)+" and the mask shape is "+str(pvol.shape))                            
+    else:
+        print(f"It looks like your data has a strange shape {str(temp.shape)} and the mask shape is {str(pvol.shape)}")                            
