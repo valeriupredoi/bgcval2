@@ -222,7 +222,8 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
     if layer in nc.variables[coords['z']][:]:
         z = layer
         k = ukp.getORCAdepth(z, nc.variables[coords['z']][:], debug=False)
-        if data == '': data = std_extractData(nc, details)
+        if data == '':
+            data = std_extractData(nc, details)
         print("getHorizontalSlice:\tSpecific depth requested", details['name'],
               layer, nc.variables[coords['z']][k], data.shape)
         return ApplyDepthSlice(data, k)
