@@ -425,7 +425,6 @@ class DataLoader:
 
         else:
             if self.coords['lat'] not in self.nc.variables or self.coords['lon'] not in self.nc.variables:
-                print('ERROR: coordinates provided do not match coordinates in file:',self.coords['lat'], self.coords['lon'])
                 raise KeyError(f'ERROR: coordinates provided do not match coordinates in file: {self.coords['lat']}, {self.coords['lon']}')
             lat = self.nc.variables[self.coords['lat']][:]
             lon = ukp.makeLonSafeArr(self.nc.variables[self.coords['lon']]
