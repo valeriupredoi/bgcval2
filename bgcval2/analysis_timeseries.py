@@ -168,7 +168,7 @@ def load_function(functionname):
     Using the named function in the key yaml, load that function and return it.
     """
     # load functions:
-    if functionname in std_functions.keys():
+    if functionname in std_functions:
         print( "Standard Function Found:", functionname)
         func = std_functions[functionname]
 
