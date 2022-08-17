@@ -42,7 +42,6 @@ class dataset:
         self.filename = filename
         self.skip_option = skip_option
         try:
-            #self.dataset = netCDF4.Dataset(filename, 'r')
             self.dataset = netCDF4.Dataset(filename, 'r', format='NETCDF4')
         except OSError as oserr:
             print(oserr)
