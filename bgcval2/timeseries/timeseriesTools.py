@@ -423,6 +423,9 @@ class DataLoader:
             dims = self.nc.variables[self.details['vars'][0]].dimensions
 
         else:
+            if self.coords['lat'] not in self.nc.variables.keys() or self.coords['lon'] not in self.nc.variables.keys():
+                print('ERROR: coordinates provided do not match coordinates in file:',self.coords['lat'], self.coords['lon'])
+                raise KeyError 
             lat = self.nc.variables[self.coords['lat']][:]
             lon = ukp.makeLonSafeArr(self.nc.variables[self.coords['lon']]
                                      [:])  # makes sure it's between +/-180

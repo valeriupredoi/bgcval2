@@ -119,13 +119,15 @@ class timeseriesAnalysis:
         #####
         # Load Model File
         self.loadModelWeightsDict()
-        if 'wcvweighted' in self.metrics: self.loadModelwcvDict()
+        if 'wcvweighted' in self.metrics: 
+            self.loadModelwcvDict()
         self.loadModel()
         #assert 0
 
         #####
         # return Model data without making new images
-        if self.noNewFiles: return
+        if self.noNewFiles: 
+            return
 
         #####
         # Make the plots:
@@ -596,7 +598,7 @@ class timeseriesAnalysis:
 
         if not self.dataFile:
             if self.debug:
-                print("timeseriesAnalysis:\t No data File provided:",
+                print("timeseriesAnalysis:\t No data (obs) File provided:",
                       self.dataFile)
             self.dataD = {}
             return
@@ -746,7 +748,8 @@ class timeseriesAnalysis:
         self.dataD = dataD
 
     def mapplotsRegionsLayers(self, ):
-        """	Makes a map plot of model vs data for each string-named layer (not numbered layers). 
+        """	
+        Makes a map plot of model vs data for each string-named layer (not numbered layers). 
   	"""
         newlayers = [
             l for l in self.layers

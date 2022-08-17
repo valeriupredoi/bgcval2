@@ -284,9 +284,14 @@ def load_key_file(key, paths, jobID):
     # load model or data specific parts: 
     for m_or_d in ['model', 'data']:
         md_vars = dictionary.get(''.join([m_or_d, '_vars']), False)
-        if md_vars is False:
+        if m_or_d == 'data' and md_vars is False:
             # Some analyses don't have observational data.  
             continue
+       
+        if m_or_d == 'model' and md_vars is False:
+            print('What are you trying to analyse:', md_vars)
+            assert 0
+
         md_vars = parse_list_from_string(md_vars)
         functionname = dictionary[''.join([m_or_d, '_convert'])]
         convert_func = load_function(functionname)
