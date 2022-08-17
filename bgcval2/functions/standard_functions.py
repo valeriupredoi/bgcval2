@@ -42,7 +42,7 @@ def extractData(nc, details,key = ['',],debug=False):
     Exampple details dict: 
         {'name': 'Chlorophylla', 'vars':['Chlorophylla',], 'convert': std_functions['div1000'],'units':'ug/L'}
     """
-    if isinstance(details,dict): 
+    if isinstance(details, dict): 
           if debug: print("extractData: details is a dict", list(details.keys()))
     else:
          raise AssertionError("std_functions:\textractData:\t Details is not a dictionairy!")        
