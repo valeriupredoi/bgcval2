@@ -168,7 +168,7 @@ def load_function(functionname):
     Using the named function in the key yaml, load that function and return it.
     """
     # load functions:
-    if functionname in std_functions:
+    if functionname in std_functions.keys():
         print( "Standard Function Found:", functionname)
         func = std_functions[functionname]
 
@@ -185,7 +185,7 @@ def load_function(functionname):
 
 def load_function_kwargs(key_dict, m_or_d):
     """
-    Loads key word arguments from yaml file dictionairy.
+    Loads key word arguments from yaml file dictionary.
     """
     data_kwargs = {}
     #, data_convert_kwargss = [], []
@@ -219,13 +219,8 @@ def parse_list_from_string(list1):
     """
     if isinstance(list1, list):
        return list1
-
-    list1 = list1.replace('\t', ' ')
-    list1 = list1.replace(',', ' ')
-    list1 = list1.replace('  ', ' ')
-    list1 = list1.replace('\'', '')
-    list1 = list1.replace('\"', '')
-    list1 = list1.replace(';', '')
+    list1 = list1.replace('\t', ' ').replace(',', ' ').replace('  ', ' ')
+    list1 = list1.replace('\'', '').replace('\"', '').replace(';', '')
     while list1.count('  ')>0:
         list1 = list1.replace('  ', ' ')
     #if len(list1)==0: return []
@@ -236,7 +231,7 @@ def load_key_file(key, paths, jobID):
     """
     load_key_file:
         takes an input file from key_files directory
-        and outputs a dictionairy.
+        and outputs a dictionary.
     """
     output_dict = {}
     print('load_key_file: checking {key}', key)
@@ -244,8 +239,7 @@ def load_key_file(key, paths, jobID):
     if os.path.exists(key_yml_path):
         print('key_yml_path exists:', key_yml_path)
     else:
-        print('key_yml_path does not exist:', key_yml_path)
-        raise FileNotFoundError
+        raise FileNotFoundError(f'{key_yml_path} does not exist')
 
     # Open yml file:
     with open(key_yml_path, 'r') as openfile:
@@ -623,7 +617,7 @@ def analysis_timeseries(
 #                ukesmkeys['w3d']     = 'vovecrtz'
 
 #####
-# Coordinate dictionairy
+# Coordinate dictionary
 # These are python dictionairies, one for each data source and model.
 # This is because each data provider seems to use a different set of standard names for dimensions and time.
 # The 'tdict' field is short for "time-dictionary".
@@ -4648,7 +4642,7 @@ def analysis_timeseries(
     # This is where the above settings is passed to timeseriesAnalysis, for the actual work to begin.
     # We loop over all fiels in the first layer dictionary in the autovificiation, av.
     #
-    # Once the timeseriesAnalysis has completed, we save all the output shelves in a dictionairy.
+    # Once the timeseriesAnalysis has completed, we save all the output shelves in a dictionary.
     # At the moment, this dictioary is not used, but we could for instance open the shelve to highlight specific data,
     #	(ie, andy asked to produce a table showing the final year of data.
 
