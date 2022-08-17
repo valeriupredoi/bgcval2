@@ -97,7 +97,7 @@ def globalVolumeMean(nc, keys, **kwargs):
         vol = np.ma.masked_where(temp.mask, pvol)
         return (temp*vol).sum()/(vol.sum())
 
-    if temp.shape[1:] == pvol.shape:
+    elif temp.shape[1:] == pvol.shape:
         # the temperature has a time dimension.
         outvol = []
         vol = np.ma.masked_where(temp[0].mask, pvol)
