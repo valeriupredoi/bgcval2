@@ -71,7 +71,7 @@ def globalVolumeMean(nc, keys, **kwargs):
         areafile = kwargs['areafile']
         print('globalVolumeMean:', areafile, kwargs)
     except:
-        raise AssertionError("globalVolumeMean:\t Needs an `areafile` kwarg to calculate Global Volume Mean")
+        raise KeyError("globalVolumeMean:\t Needs an `areafile` kwarg to calculate Global Volume Mean")
 
     if isinstance(areafile, list) and len(areafile)==1:
         areafile = areafile[0]
