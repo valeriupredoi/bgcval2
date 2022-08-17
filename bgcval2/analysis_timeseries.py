@@ -49,6 +49,8 @@ import os, sys
 import getpass
 import itertools
 import yaml
+import importlib
+from pathlib import Path as pathlibpath
 
 #####
 # Load specific local code:
@@ -167,6 +169,21 @@ def load_function(functionname):
     """
     Using the named function in the key yaml, load that function and return it.
     """
+    # this imports anything in a parent dir that starts A-Z and is a Python script
+    if functionname in std_functions.keys():
+        print( "Standard Function Found:", functionname)
+        return std_functions[functionname]
+
+    for path in Path(__file__).parent.glob('[a-z]*.py'):
+        short_name = path.stem
+        module = importlib.import_module(
+            f'rootdir.subdir.{short_name}')
+
+
+def load_function_old(functionname):
+    """
+    Using the named function in the key yaml, load that function and return it.
+    """
     # load functions:
     if functionname in std_functions.keys():
         print( "Standard Function Found:", functionname)
@@ -183,7 +200,7 @@ def load_function(functionname):
     return func
 
 
-def load_function_kwargs(key_dict, m_or_d):
+def load_function_kwargs(key_dict, model_or_data):
     """
     Loads key word arguments from yaml file dictionary.
     """
@@ -192,7 +209,7 @@ def load_function_kwargs(key_dict, m_or_d):
     #####
     # Looking for kwargs to pass to convert:
     for key, value in key_dict.items():
-        searchFor =  m_or_d+'_convert_'
+        searchFor =  model_or_data + '_convert_'
         findstr = key.find(searchFor)
         if findstr==-1:
             continue
@@ -206,8 +223,8 @@ def findReplaceFlag(filepath, flag, new_value):
     Looking for $FLAG in the filepath.
     If found, we replace $FLAG with new_value
     """
-    lookingFor = '$'+flag.upper()
-    if filepath.find(lookingFor) ==-1:
+    lookingFor = ''.join(['$', flag.upper()])
+    if filepath.find(lookingFor) == -1:
         return filepath
     filepath = filepath.replace(lookingFor, new_value)
     return filepath
@@ -277,22 +294,22 @@ def load_key_file(key, paths, jobID):
     output_dict['gridFile'] = list_input_files(gridFile, key_dict, paths)[0]
 
     # load model or data specific parts:
-    for m_or_d in ['model', 'data']:
-        md_vars = key_dict.get(''.join([m_or_d, '_vars']), False)
-        if m_or_d == 'data' and md_vars is False:
+    for model_or_data in ['model', 'data']:
+        md_vars = key_dict.get(''.join([model_or_data, '_vars']), False)
+        if model_or_data == 'data' and md_vars is False:
             # Some analyses don't have observational data.
             continue
 
-        if m_or_d == 'model' and md_vars is False:
+        if model_or_data == 'model' and md_vars is False:
             print('What are you trying to analyse:', md_vars)
             assert 0
 
         md_vars = parse_list_from_string(md_vars)
-        functionname = key_dict[''.join([m_or_d, '_convert'])]
+        functionname = key_dict[''.join([model_or_data, '_convert'])]
         convert_func = load_function(functionname)
-        kwargs = load_function_kwargs(key_dict, m_or_d)
+        kwargs = load_function_kwargs(key_dict, model_or_data)
 
-        output_dict[''.join([m_or_d, 'details'])] = {
+        output_dict[''.join([model_or_data, 'details'])] = {
             'name': key_dict['name'],
             'vars': md_vars ,
             'convert': convert_func,
@@ -300,11 +317,11 @@ def load_key_file(key, paths, jobID):
             }
         for kwarg, kwarg_value in kwargs.items():
             if isinstance(kwarg_value, str) and kwarg_value.lower().find('file')>-1:
-                output_dict[''.join([m_or_d,'details'])][kwarg] = list_input_files(kwarg_value, key_dict, paths)
+                output_dict[''.join([model_or_data,'details'])][kwarg] = list_input_files(kwarg_value, key_dict, paths)
             else:
-                output_dict[''.join([m_or_d,'details'])][kwarg] = kwarg_value
+                output_dict[''.join([model_or_data,'details'])][kwarg] = kwarg_value
 
-        if m_or_d == 'model':
+        if model_or_data == 'model':
             output_dict['modelcoords'] = {
                 't': key_dict.get('model_t', 'time_centered'),
                 'z': key_dict.get('model_z', 'deptht'),
@@ -313,9 +330,9 @@ def load_key_file(key, paths, jobID):
                 'cal': key_dict.get('model_cal', '360_day'),
                 }
             # get model files paths
-            file_path = key_dict[''.join([m_or_d, 'Files'])]
+            file_path = key_dict[''.join([model_or_data, 'Files'])]
             mdfile = list_input_files(file_path, key_dict, paths)
-            output_dict[''.join([m_or_d, 'Files'])] = mdfile
+            output_dict[''.join([model_or_data, 'Files'])] = mdfile
         else:
             output_dict['datacoords'] = {
                 't': key_dict.get('data_t', 'index_t'),
@@ -326,7 +343,7 @@ def load_key_file(key, paths, jobID):
                 'tdict': ukp.tdicts[key_dict.get('tdict', 'ZeroToZero')]
                 }
             # get data file path
-            file_path = key_dict[''.join([m_or_d, 'File'])]
+            file_path = key_dict[''.join([model_or_data, 'File'])]
             mdfile = list_input_files(file_path, key_dict, paths)
             if isinstance(mdfile, list) and len(mdfile) == 1:
                 mdfile = mdfile[0]
@@ -2434,77 +2451,6 @@ def analysis_timeseries(
         av[name]['gridFile'] = paths.orcaGridfn
         av[name]['dimensions'] = 3
 
-
-
-#    if 'GlobalMeanTemperature_old' in analysisKeys:
-#        name = 'GlobalMeanTemperature_old'
-#        if jobID == 'u-as462monthly':
-#            av[name]['modelFiles'] = sorted(
-#                glob(
-#                    '/group_workspaces/jasmin2/ukesm/BGC_data/u-as462/monthly/*.nc'
-#                ))
-#        elif jobID == 'u-ar977monthly':
-#            av[name]['modelFiles'] = sorted(
-#                glob(
-#                    '/group_workspaces/jasmin2/ukesm/BGC_data/u-ar977/monthly/*.nc'
-#                ))
-#        else:
-#            av[name]['modelFiles'] = listModelDataFiles(
-#                jobID, 'grid_T', paths.ModelFolder_pref, annual)
-#
-#        #av[name]['modelFiles']  = listModelDataFiles(jobID, 'grid_T', paths.ModelFolder_pref, annual)
-#        av[name]['dataFile'] = ''
-#        av[name]['modelcoords'] = medusaCoords
-#        av[name]['datacoords'] = woaCoords
-#
-#        nc = dataset(paths.orcaGridfn, 'r')
-#        try:
-#            pvol = nc.variables['pvol'][:]
-#            gmttmask = nc.variables['tmask'][:]
-#        except:
-#            gmttmask = nc.variables['tmask'][:]
-#            area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
-#            pvol = nc.variables['e3t'][:] * area
-#            pvol = np.ma.masked_where(gmttmask == 0, pvol)
-#        nc.close()
-#
-#        def sumMeanLandMask(nc, keys):
-#            #### works like no change, but applies a mask.
-#            temp = np.ma.array(nc.variables[keys[0]][:].squeeze())
-#            temp = np.ma.masked_where((gmttmask == 0) + (temp.mask), temp)
-#            #try:
-#            vol = np.ma.masked_where(
-#                temp.mask,
-#                nc('thkcello')[:].squeeze() *
-#                nc('area')[:])  # preferentially use in file volume.
-#            #except: vol = np.ma.masked_where(temp.mask, pvol)
-#            return (temp * vol).sum() / (vol.sum())
-#
-#        av[name]['modeldetails'] = {
-#            'name': name,
-#            'vars': [
-#                ukesmkeys['temp3d'],
-#            ],
-#            'convert': sumMeanLandMask,
-#            'units': 'degrees C'
-#        }
-#        av[name]['datadetails'] = {'name': '', 'units': ''}
-#        #av[name]['datadetails']  	= {'name': name, 'vars':['t_an',], 'convert': ukp.NoChange,'units':'degrees C'}
-#
-#        av[name]['layers'] = [
-#            'layerless',
-#        ]
-#        av[name]['regions'] = [
-#            'regionless',
-#        ]
-#        av[name]['metrics'] = [
-#            'metricless',
-#        ]
-#        av[name]['datasource'] = ''
-#        av[name]['model'] = 'NEMO'
-#        av[name]['modelgrid'] = 'eORCA1'
-#        av[name]['gridFile'] = paths.orcaGridfn
-#        av[name]['dimensions'] = 1
 
     if 'GlobalMeanTemperature_700' in analysisKeys:
         name = 'GlobalMeanTemperature_700'
