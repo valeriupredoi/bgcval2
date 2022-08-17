@@ -46,7 +46,7 @@ from glob import glob
 from scipy.interpolate import interp1d
 import numpy as np
 import os, sys
-import getpass 
+import getpass
 import itertools
 import yaml
 
@@ -89,9 +89,9 @@ def listModelDataFiles(jobID, filekey, datafolder, annual):
     return model_files
 
 
-def list_input_files(files_path, dictionary, paths):
+def list_input_files(files_path, key_dict, paths):
     """
-    Generate a list of files from a path, which may include 
+    Generate a list of files from a path, which may include
     several $PATH values.
     """
     #####
@@ -100,10 +100,10 @@ def list_input_files(files_path, dictionary, paths):
     flag_values = [getpass.getuser(), paths.ModelFolder_pref, paths.ObsFolder, paths.orcaGridfn]
 
     for flag in ['jobID', 'model', 'years','year', 'scenario']:
-        if dictionary.get(flag, False):
+        if key_dict.get(flag, False):
             flags.append(flag.upper())
-            flag_values.append(dictionary[flag])
- 
+            flag_values.append(key_dict[flag])
+
     for flag, flag_value in zip(flags, flag_values):
         print('Changing FLAG:',flag,'to',flag_value, 'in', files_path)
         files_path = findReplaceFlag(files_path, flag, flag_value)
@@ -136,14 +136,14 @@ def build_list_of_suite_keys(suites, debug=True):
 
         # Open yml file:
         with open(suite_yml, 'r') as openfile:
-            dictionary = yaml.safe_load(openfile)
+            suite_dict = yaml.safe_load(openfile)
 
-        if not dictionary or not isinstance(dictionary, dict):
+        if not suite_dict or not isinstance(suite_dict, dict):
             print(f"Configuration file {suite_yml} "
                   "is either empty or corrupt, please check its contents")
             sys.exit(1)
 
-        keys_dict = dictionary.get('keys', {})
+        keys_dict = suite_dict.get('keys', {})
 
         for key, keybool in keys_dict.items():
             if debug and key in analysis_keys:
@@ -165,7 +165,7 @@ def build_list_of_suite_keys(suites, debug=True):
 
 def load_function(functionname):
     """
-    Using the named function in the key yaml, load that function and return it. 
+    Using the named function in the key yaml, load that function and return it.
     """
     # load functions:
     if functionname in std_functions.keys():
@@ -180,10 +180,10 @@ def load_function(functionname):
         print("parseFunction:\tAttempting to load the function:",functionname, "from the:",modulename)
         mod = __import__(modulename, fromlist=[functionname,])
         func = getattr(mod, functionname)
-    return func     
+    return func
 
 
-def load_function_kwargs(dictionary, m_or_d):
+def load_function_kwargs(key_dict, m_or_d):
     """
     Loads key word arguments from yaml file dictionairy.
     """
@@ -191,13 +191,13 @@ def load_function_kwargs(dictionary, m_or_d):
     #, data_convert_kwargss = [], []
     #####
     # Looking for kwargs to pass to convert:
-    for key, value in dictionary.items():
+    for key, value in key_dict.items():
         searchFor =  m_or_d+'_convert_'
         findstr = key.find(searchFor)
         if findstr==-1: continue
         kwargkey = key[len(searchFor):]
         data_kwargs[kwargkey] = value
-    return data_kwargs 
+    return data_kwargs
 
 
 def findReplaceFlag(filepath, flag, new_value):
@@ -206,7 +206,7 @@ def findReplaceFlag(filepath, flag, new_value):
     If found, we replace $FLAG with new_value
     """
     lookingFor = '$'+flag.upper()
-    if filepath.find(lookingFor) ==-1: 
+    if filepath.find(lookingFor) ==-1:
         return filepath
     filepath = filepath.replace(lookingFor, new_value)
     return filepath
@@ -248,91 +248,91 @@ def load_key_file(key, paths, jobID):
 
     # Open yml file:
     with open(key_yml_path, 'r') as openfile:
-        dictionary = yaml.safe_load(openfile)
+        key_dict = yaml.safe_load(openfile)
 
-    if not dictionary or not isinstance(dictionary, dict):
+    if not key_dict or not isinstance(key_dict, dict):
         print(f"Key Yaml file {key_yml_path} "
               "is either empty or corrupt, please check its contents")
         sys.exit(1)
 
     # add jobID to dict:
-    dictionary['jobID'] = jobID
+    key_dict['jobID'] = jobID
 
-    # Load basic fields: 
+    # Load basic fields:
     for field in ['name', 'units', 'dimensions', 'modelgrid']:
-        output_dict[field] = dictionary.get(field, None)
+        output_dict[field] = key_dict.get(field, None)
         print('Adding', field,':', output_dict[field])
 
-    # Lists: 
+    # Lists:
     for field in ['layers', 'regions', ]:
-        output_dict[field] = dictionary.get(field, '')
+        output_dict[field] = key_dict.get(field, '')
         output_dict[field] = parse_list_from_string(output_dict[field])
         print('Adding', field,':', output_dict[field])
 
     # Metrics
-    if dictionary['dimensions'] in  [1,]:
+    if key_dict['dimensions'] in  [1,]:
         metricList = ['metricless',]
-    else: 
+    else:
         metricList = ['mean', ] #'median', '10pc','20pc','30pc','40pc','50pc','60pc','70pc','80pc','90pc','min','max']
-    output_dict['metrics'] = dictionary.get('metrics', metricList)
+    output_dict['metrics'] = key_dict.get('metrics', metricList)
     output_dict['metrics'] = parse_list_from_string(output_dict['metrics'])
 
     # Load Grid:
-    gridFile = dictionary.get('gridFile', paths.orcaGridfn)
-    output_dict['gridFile'] = list_input_files(gridFile, dictionary, paths)[0]
+    gridFile = key_dict.get('gridFile', paths.orcaGridfn)
+    output_dict['gridFile'] = list_input_files(gridFile, key_dict, paths)[0]
 
-    # load model or data specific parts: 
+    # load model or data specific parts:
     for m_or_d in ['model', 'data']:
-        md_vars = dictionary.get(''.join([m_or_d, '_vars']), False)
+        md_vars = key_dict.get(''.join([m_or_d, '_vars']), False)
         if m_or_d == 'data' and md_vars is False:
-            # Some analyses don't have observational data.  
+            # Some analyses don't have observational data.
             continue
-       
+
         if m_or_d == 'model' and md_vars is False:
             print('What are you trying to analyse:', md_vars)
             assert 0
 
         md_vars = parse_list_from_string(md_vars)
-        functionname = dictionary[''.join([m_or_d, '_convert'])]
+        functionname = key_dict[''.join([m_or_d, '_convert'])]
         convert_func = load_function(functionname)
-        kwargs = load_function_kwargs(dictionary, m_or_d)
+        kwargs = load_function_kwargs(key_dict, m_or_d)
 
         output_dict[''.join([m_or_d, 'details'])] = {
-            'name': dictionary['name'],
+            'name': key_dict['name'],
             'vars': md_vars ,
             'convert': convert_func,
-            'units': dictionary['units'],
+            'units': key_dict['units'],
             }
         for kwarg, kwarg_value in kwargs.items():
             if isinstance(kwarg_value, str) and kwarg_value.lower().find('file')>-1:
-                output_dict[''.join([m_or_d,'details'])][kwarg] = list_input_files(kwarg_value, dictionary, paths)
+                output_dict[''.join([m_or_d,'details'])][kwarg] = list_input_files(kwarg_value, key_dict, paths)
             else:
                 output_dict[''.join([m_or_d,'details'])][kwarg] = kwarg_value
 
         if m_or_d == 'model':
             output_dict['modelcoords'] = {
-                't': dictionary.get('model_t', 'time_centered'),
-                'z': dictionary.get('model_z', 'deptht'),
-                'lat': dictionary.get('model_lat', 'nav_lat'),
-                'lon': dictionary.get('model_lon', 'nav_lon'),
-                'cal': dictionary.get('model_cal', '360_day'),
+                't': key_dict.get('model_t', 'time_centered'),
+                'z': key_dict.get('model_z', 'deptht'),
+                'lat': key_dict.get('model_lat', 'nav_lat'),
+                'lon': key_dict.get('model_lon', 'nav_lon'),
+                'cal': key_dict.get('model_cal', '360_day'),
                 }
             # get model files paths
-            file_path = dictionary[''.join([m_or_d, 'Files'])]
-            mdfile = list_input_files(file_path, dictionary, paths)
+            file_path = key_dict[''.join([m_or_d, 'Files'])]
+            mdfile = list_input_files(file_path, key_dict, paths)
             output_dict[''.join([m_or_d, 'Files'])] = mdfile
         else:
             output_dict['datacoords'] = {
-                't': dictionary.get('data_t', 'index_t'),
-                'z': dictionary.get('data_z', 'depth'),
-                'lat': dictionary.get('data_lat', 'lat'),
-                'lon': dictionary.get('data_lon', 'lon'),
-                'cal': dictionary.get('data_cal', 'standard'),
-                'tdict': ukp.tdicts[dictionary.get('tdict', 'ZeroToZero')]
+                't': key_dict.get('data_t', 'index_t'),
+                'z': key_dict.get('data_z', 'depth'),
+                'lat': key_dict.get('data_lat', 'lat'),
+                'lon': key_dict.get('data_lon', 'lon'),
+                'cal': key_dict.get('data_cal', 'standard'),
+                'tdict': ukp.tdicts[key_dict.get('tdict', 'ZeroToZero')]
                 }
             # get data file path
-            file_path = dictionary[''.join([m_or_d, 'File'])]
-            mdfile = list_input_files(file_path, dictionary, paths)
+            file_path = key_dict[''.join([m_or_d, 'File'])]
+            mdfile = list_input_files(file_path, key_dict, paths)
             if isinstance(mdfile, list) and len(mdfile) == 1:
                 mdfile = mdfile[0]
     return output_dict
@@ -4708,7 +4708,7 @@ def analysis_timeseries(
 
         #####
         # Profile plots
-        if av[name]['dimensions'] == 3: 
+        if av[name]['dimensions'] == 3:
             continue
             profa = profileAnalysis(
                 av[name]['modelFiles'],
