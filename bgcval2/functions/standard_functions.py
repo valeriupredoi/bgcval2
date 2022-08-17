@@ -45,7 +45,7 @@ def extractData(nc, details,key = ['',],debug=False):
     if isinstance(details, dict): 
           if debug: print(f"extractData: details is a dict of keys {str(details.keys())}")
     else:
-         raise AssertionError("std_functions:\textractData:\t Details is not a dictionairy!")        
+         raise TypeError("std_functions:\textractData:\t Details type is not a dictionary!")        
      
     #####
     # Finding key word arguments (kwargs):
