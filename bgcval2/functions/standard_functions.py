@@ -52,7 +52,7 @@ def extractData(nc, details, key=['',], debug=False):
     # We define these as extra items in the details dict, and they can literally be anything
     # that the convert function needs.
     kwargs={}
-    for k in list(details.keys()):
+    for _, k in details.items():
         if k in ['name','vars','convert', 'units']: continue
         kwargs[k] = details[k]
          
