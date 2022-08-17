@@ -79,7 +79,7 @@ def N2Biomass(nc,keys):
     """ 
     Loads keys[0] from the netcdf, but multiplies by 79.572 (to convert Nitrogen into biomass).
     """
-    return nc.variables[keys[0]][:]* 79.573
+    return nc.variables[keys[0]] * 79.573
 
 
 def KtoC(nc,keys):        
