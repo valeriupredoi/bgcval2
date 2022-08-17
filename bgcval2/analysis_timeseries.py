@@ -194,7 +194,8 @@ def load_function_kwargs(key_dict, m_or_d):
     for key, value in key_dict.items():
         searchFor =  m_or_d+'_convert_'
         findstr = key.find(searchFor)
-        if findstr==-1: continue
+        if findstr==-1:
+            continue
         kwargkey = key[len(searchFor):]
         data_kwargs[kwargkey] = value
     return data_kwargs
