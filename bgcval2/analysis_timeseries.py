@@ -4599,7 +4599,7 @@ def analysis_timeseries(
             "analysis-Timeseries.py:\tBeginning to call timeseriesAnalysis for ",
             name)
 
-        if 'modelFiles' not in av[name].keys() == 0:
+        if 'modelFiles' not in av[name]:
             print(
                 "analysis-Timeseries.py:\tWARNING:\tmodel files are not found:",
                 name, av[name]['modelFiles'])
