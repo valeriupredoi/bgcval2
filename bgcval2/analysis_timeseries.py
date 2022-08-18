@@ -198,7 +198,7 @@ def load_function(convert):
 
     func_path = convert.get('path', False)
     if not func_path:
-        raise FileNotFoundError('No path provided in convert dictionary:',convert)
+        raise KeyError(f'No path provided in {str(convert)} dictionary')
 
     if func_path[:7] == 'bgcval2':
         # path is relative to bgcval2 repo.
@@ -206,14 +206,13 @@ def load_function(convert):
         func_path = os.path.join(repo_dir, func_path)
    
     if not os.path.exists(func_path):
-        raise FileNotFoundError(f'Path to custom function not found: {path}')
+        raise FileNotFoundError(f'Path {path} to custom function file not found.')
     
-    # load function from path.
-    spec = importlib.util.spec_from_file_location(functionname, func_path)
-    foo = importlib.util.module_from_spec(spec)
-    sys.modules.
-    func = spec.loader.exec_module(functionname)
-    print(spec, foo, func)
+    # load function from Python file in path
+    modulename = os.path.splitext(os.path.basename(func_path))[0]
+    loader = importlib.machinery.SourceFileLoader(modulename, func_path)
+    module = loader.load_module()
+    func = getattr(module, functionname)
 
     kwargs = get_kwargs_from_dict(convert)
 
