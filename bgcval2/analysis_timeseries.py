@@ -3363,7 +3363,7 @@ def analysis_timeseries(
         av[name]['model'] = 'NEMO'
 
         av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = os.path.join(paths.bgcval2_repo, 'bgcval2./data/eORCA1_gridU_mesh.nc')
+        av[name]['gridFile'] = os.path.join(paths.bgcval2_repo, 'bgcval2/data/eORCA1_gridU_mesh.nc')
         av[name]['dimensions'] = 2
 
     #####
