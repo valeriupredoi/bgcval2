@@ -160,7 +160,7 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
         if layer == '4000m': z = 4000.
         print(z)
         k = ukp.getORCAdepth(z, nc.variables[coords['z']][:], debug=False)
-        if type(data) == type(''):
+        if isinstance(data, str):
             data = std_extractData(nc, details)
         print("getHorizontalSlice:\tSpecific depth field requested",
               details['name'], layer, [k], nc.variables[coords['z']][k],
