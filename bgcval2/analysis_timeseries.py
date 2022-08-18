@@ -167,11 +167,11 @@ def build_list_of_suite_keys(suites, debug=True):
 
 def get_kwargs_from_dict(convert_dict, avoids = ['path', 'function']):
     """
-    Get the KWARGS fromn a dict 
+    Get the KWARGS fromn a dict
     """
     kwargs = {}
     for key, value in convert_dict.items():
-        if key in avoids: 
+        if key in avoids:
             continue
         kwargs[key] = value
     return kwargs
@@ -204,10 +204,10 @@ def load_function(convert):
         # path is relative to bgcval2 repo.
         repo_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
         func_path = os.path.join(repo_dir, func_path)
-   
+
     if not os.path.exists(func_path):
         raise FileNotFoundError(f'Path to custom function not found: {path}')
-    
+
     # load function from path.
     spec = importlib.util.spec_from_file_location(functionname, func_path)
     foo = importlib.util.module_from_spec(spec)
@@ -283,6 +283,173 @@ def parse_list_from_string(list1):
         list1 = list1.replace('  ', ' ')
     #if len(list1)==0: return []
     return list1.split(' ')
+
+
+def load_coords_from_netcdf(mdfile):
+    """
+    Looks in mdfile to see what the coords look like.
+    """
+    # Set input coordinates:
+    coord_candidates = {
+        't': ['time_centered','time', 'index_t', 'time_counter'],
+        'z':  ['depth', 'deptht', 'depthu', 'nav_lev', 'index_z', 'level'],
+        'lat': ['lat', 'lattitude', 'nav_lat', ],
+        'lon': ['lat', 'lattitude', 'nav_lat', ],
+        }
+    # Exntend with capitalization:
+    for coord, coord_candidate_list in coord_candidates.items():
+        coord_candidates[coord].extend([c.upper() for c in coord_candidate_list])
+        coord_candidates[coord].extend([c.title() for c in coord_candidate_list])
+
+    # Load variable names:
+    if isinstance(mdfile, list):
+        mdfile = mdfile[0]
+    nctmp = dataset(mdfile, 'r')
+    nckeys = set(nctmp.variables.keys())
+
+    output_coords = {}
+    for coord, coord_candidate_list in coord_candidates.items():
+        intersection = list(set(coord_candidate_list) & nckeys)
+        if len(intersection) == 1:
+            output_coords[coord] = intersection[0]
+        elif len(intersection) == 0:
+            output_coords[coord] = None
+        else:
+            raise KeyError(f'Several {coord} coordinates found: {intersection}')
+
+    calendar = nc.variables[output_coords.get('t')].calendar # might break.
+    output_coords['cal'] = calendar
+    nctmp.close()
+    return output_coords
+
+    # timekey = ukesmkeys['time']
+    #
+    # medusaCoords = {
+    #     'z': 'deptht',
+    #     'lat': 'nav_lat',
+    #     'lon': 'nav_lon',
+    #     'cal': '360_day',
+    # }  # model doesn't need time dict.
+    # medusaUCoords = {
+    #     'z': 'depthu',
+    #     'lat': 'nav_lat',
+    #     'lon': 'nav_lon',
+    #     'cal': '360_day',
+    # }  # model doesn't need time dict.
+    # medusaVCoords = {
+    #     't': timekey,
+    #     'z': 'depthv',
+    #     'lat': 'nav_lat',
+    #     'lon': 'nav_lon',
+    #     'cal': '360_day',
+    # }  # model doesn't need time dict.
+    # medusaWCoords = {
+    #     't': timekey,
+    #     'z': 'depthw',
+    #     'lat': 'nav_lat',
+    #     'lon': 'nav_lon',
+    #     'cal': '360_day',
+    # }  # model doesn't need time dict.
+    #
+    # icCoords = {
+    #     't': timekey,
+    #     'z': 'nav_lev',
+    #     'lat': 'nav_lat',
+    #     'lon': 'nav_lon',
+    #     'cal': '360_day',
+    # }  # model doesn't need time dict.
+    # maredatCoords = {
+    #     't': 'index_t',
+    #     'z': 'DEPTH',
+    #     'lat': 'LATITUDE',
+    #     'lon': 'LONGITUDE',
+    #     'cal': 'standard',
+    #     'tdict': ukp.tdicts['ZeroToZero']
+    # }
+    # takahashiCoords = {
+    #     't': 'index_t',
+    #     'z': 'index_z',
+    #     'lat': 'LAT',
+    #     'lon': 'LON',
+    #     'cal': 'standard',
+    #     'tdict': ukp.tdicts['ZeroToZero']
+    # }
+    # woaCoords = {
+    #     't': 'index_t',
+    #     'z': 'depth',
+    #     'lat': 'lat',
+    #     'lon': 'lon',
+    #     'cal': 'standard',
+    #     'tdict': ukp.tdicts['ZeroToZero']
+    # }
+    # osuCoords = {
+    #     't': 'index_t',
+    #     'z': '',
+    #     'lat': 'latitude',
+    #     'lon': 'longitude',
+    #     'cal': 'standard',
+    #     'tdict': []
+    # }
+    # glodapCoords = {
+    #     't': 'index_t',
+    #     'z': 'depth',
+    #     'lat': 'latitude',
+    #     'lon': 'longitude',
+    #     'cal': 'standard',
+    #     'tdict': []
+    # }
+    # glodapv2Coords = {
+    #     't': 'time',
+    #     'z': 'Pressure',
+    #     'lat': 'lat',
+    #     'lon': 'lon',
+    #     'cal': '',
+    #     'tdict': {
+    #         0: 0,
+    #     }
+    # }
+    # mldCoords = {
+    #     't': 'index_t',
+    #     'z': 'index_z',
+    #     'lat': 'lat',
+    #     'lon': 'lon',
+    #     'cal': 'standard',
+    #     'tdict': ukp.tdicts['ZeroToZero']
+    # }
+    # dmsCoords = {
+    #     't': 'time',
+    #     'z': 'depth',
+    #     'lat': 'Latitude',
+    #     'lon': 'Longitude',
+    #     'cal': 'standard',
+    #     'tdict': ukp.tdicts['ZeroToZero']
+    # }
+    # cciCoords = {
+    #     't': 'index_t',
+    #     'z': 'index_z',
+    #     'lat': 'lat',
+    #     'lon': 'lon',
+    #     'cal': 'standard',
+    #     'tdict': ['ZeroToZero']
+    # }
+    # mogcCoords = {
+    #     't': 'index_t',
+    #     'z': 'index_z',
+    #     'lat': 'latitude',
+    #     'lon': 'longitude',
+    #     'cal': 'standard',
+    #     'tdict': ukp.tdicts['ZeroToZero']
+    # }
+    # godasCoords = {
+    #     't': 'index_t',
+    #     'z': 'level',
+    #     'lat': 'lat',
+    #     'lon': 'lon',
+    #     'cal': 'standard',
+    #     'tdict': ['ZeroToZero']
+    # }
+
+
 
 
 def load_key_file(key, paths, jobID):
@@ -361,32 +528,25 @@ def load_key_file(key, paths, jobID):
             else:
                 output_dict[''.join([model_or_data,'details'])][kwarg] = kwarg_value
 
+        # Get list of files:
         if model_or_data == 'model':
-            output_dict['modelcoords'] = {
-                't': key_dict.get('model_t', 'time_centered'),
-                'z': key_dict.get('model_z', 'deptht'),
-                'lat': key_dict.get('model_lat', 'nav_lat'),
-                'lon': key_dict.get('model_lon', 'nav_lon'),
-                'cal': key_dict.get('model_cal', '360_day'),
-                }
-            # get model files paths
             file_path = key_dict[''.join([model_or_data, 'Files'])]
             mdfile = list_input_files(file_path, key_dict, paths)
             output_dict[''.join([model_or_data, 'Files'])] = mdfile
         else:
-            output_dict['datacoords'] = {
-                't': key_dict.get('data_t', 'index_t'),
-                'z': key_dict.get('data_z', 'depth'),
-                'lat': key_dict.get('data_lat', 'lat'),
-                'lon': key_dict.get('data_lon', 'lon'),
-                'cal': key_dict.get('data_cal', 'standard'),
-                'tdict': ukp.tdicts[key_dict.get('tdict', 'ZeroToZero')]
-                }
             # get data file path
             file_path = key_dict[''.join([model_or_data, 'File'])]
             mdfile = list_input_files(file_path, key_dict, paths)
             if isinstance(mdfile, list) and len(mdfile) == 1:
                 mdfile = mdfile[0]
+        output_dict[''.join([model_or_data, 'Files'])] = mdfile
+
+        coords = load_coords_from_netcdf(mdfile)
+        output_dict[''.join([model_or_data, 'coords'])] = {
+            'tdict': ukp.tdicts[key_dict.get('tdict', 'ZeroToZero')],
+            }
+        for coord, value in coords:
+            output_dict[''.join([model_or_data, 'coords'])][coord] = value
     return output_dict
 
 
@@ -441,7 +601,7 @@ def analysis_timeseries(
     paths = paths_setter(paths_dict)
 
     #####
-    # Switches:
+    # Switches:/cxoo
     # These are some booleans that allow us to choose which analysis to run.
     # This lets up give a list of keys one at a time, or in parrallel.
     #if type(suites) == type(['Its', 'A', 'list!']):
@@ -571,6 +731,7 @@ def analysis_timeseries(
     #####
     # Because we can never be sure someone won't randomly rename the
     # time dimension without saying anything.
+    guess_coordinates_from_file(jobID, )
     try:
         tmpModelFiles = listModelDataFiles(jobID, 'grid_T',
                                            paths.ModelFolder_pref, annual)
@@ -676,134 +837,6 @@ def analysis_timeseries(
 #	The tdict indices point to a month number in python numbering (ie January = 0)
 # 	An example would be, if a netcdf uses the middle day of the month as it's time value:
 #		tdict = {15:0, 45:1 ...}
-
-    timekey = ukesmkeys['time']
-    medusaCoords = {
-        't': timekey,
-        'z': 'deptht',
-        'lat': 'nav_lat',
-        'lon': 'nav_lon',
-        'cal': '360_day',
-    }  # model doesn't need time dict.
-    medusaUCoords = {
-        't': timekey,
-        'z': 'depthu',
-        'lat': 'nav_lat',
-        'lon': 'nav_lon',
-        'cal': '360_day',
-    }  # model doesn't need time dict.
-    medusaVCoords = {
-        't': timekey,
-        'z': 'depthv',
-        'lat': 'nav_lat',
-        'lon': 'nav_lon',
-        'cal': '360_day',
-    }  # model doesn't need time dict.
-    medusaWCoords = {
-        't': timekey,
-        'z': 'depthw',
-        'lat': 'nav_lat',
-        'lon': 'nav_lon',
-        'cal': '360_day',
-    }  # model doesn't need time dict.
-
-    icCoords = {
-        't': timekey,
-        'z': 'nav_lev',
-        'lat': 'nav_lat',
-        'lon': 'nav_lon',
-        'cal': '360_day',
-    }  # model doesn't need time dict.
-    maredatCoords = {
-        't': 'index_t',
-        'z': 'DEPTH',
-        'lat': 'LATITUDE',
-        'lon': 'LONGITUDE',
-        'cal': 'standard',
-        'tdict': ukp.tdicts['ZeroToZero']
-    }
-    takahashiCoords = {
-        't': 'index_t',
-        'z': 'index_z',
-        'lat': 'LAT',
-        'lon': 'LON',
-        'cal': 'standard',
-        'tdict': ukp.tdicts['ZeroToZero']
-    }
-    woaCoords = {
-        't': 'index_t',
-        'z': 'depth',
-        'lat': 'lat',
-        'lon': 'lon',
-        'cal': 'standard',
-        'tdict': ukp.tdicts['ZeroToZero']
-    }
-    osuCoords = {
-        't': 'index_t',
-        'z': '',
-        'lat': 'latitude',
-        'lon': 'longitude',
-        'cal': 'standard',
-        'tdict': []
-    }
-    glodapCoords = {
-        't': 'index_t',
-        'z': 'depth',
-        'lat': 'latitude',
-        'lon': 'longitude',
-        'cal': 'standard',
-        'tdict': []
-    }
-    glodapv2Coords = {
-        't': 'time',
-        'z': 'Pressure',
-        'lat': 'lat',
-        'lon': 'lon',
-        'cal': '',
-        'tdict': {
-            0: 0,
-        }
-    }
-    mldCoords = {
-        't': 'index_t',
-        'z': 'index_z',
-        'lat': 'lat',
-        'lon': 'lon',
-        'cal': 'standard',
-        'tdict': ukp.tdicts['ZeroToZero']
-    }
-    dmsCoords = {
-        't': 'time',
-        'z': 'depth',
-        'lat': 'Latitude',
-        'lon': 'Longitude',
-        'cal': 'standard',
-        'tdict': ukp.tdicts['ZeroToZero']
-    }
-    cciCoords = {
-        't': 'index_t',
-        'z': 'index_z',
-        'lat': 'lat',
-        'lon': 'lon',
-        'cal': 'standard',
-        'tdict': ['ZeroToZero']
-    }
-    mogcCoords = {
-        't': 'index_t',
-        'z': 'index_z',
-        'lat': 'latitude',
-        'lon': 'longitude',
-        'cal': 'standard',
-        'tdict': ukp.tdicts['ZeroToZero']
-    }
-    godasCoords = {
-        't': 'index_t',
-        'z': 'level',
-        'lat': 'lat',
-        'lon': 'lon',
-        'cal': 'standard',
-        'tdict': ['ZeroToZero']
-    }
 
     #	def listModelDataFiles(jobID, filekey, datafolder, annual):
     #		print "listing model data files:\njobID:\t",jobID, '\nfile key:\t',filekey,'\ndata folder:\t', datafolder, '\nannual flag:\t',annual
