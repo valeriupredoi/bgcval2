@@ -164,7 +164,7 @@ def addValue(nc,keys, **kwargs):
     Loads keys[0] from the netcdf, but adds by the field in kwargs key "value".
     """
     if 'value' not in list(kwargs.keys()):
-        raise AssertionError("std_functions:\taddValue:\t Did not get key word argument, 'value'.")
+        raise KeyError(f"std_functions:\taddValue:\t Did not get key word argument, 'value' in kwargs {str(kwargs)}")        
     return nc.variables[keys[0]][:] + float(kwargs['value'])
     
 
