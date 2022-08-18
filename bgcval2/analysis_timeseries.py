@@ -178,7 +178,7 @@ def load_function(functionname):
         short_name = path.stem
         module = importlib.import_module(
             f'rootdir.subdir.{short_name}')
-
+    working here right now
 
 def load_function_old(functionname):
     """
@@ -301,8 +301,7 @@ def load_key_file(key, paths, jobID):
             continue
 
         if model_or_data == 'model' and md_vars is False:
-            print('What are you trying to analyse:', md_vars)
-            assert 0
+            raise KeyError(f'What are you trying to analyse: model_vars {md_vars} is empty in yml_file: {key_yml_path}')
 
         md_vars = parse_list_from_string(md_vars)
         functionname = key_dict[''.join([model_or_data, '_convert'])]
@@ -399,9 +398,6 @@ def analysis_timeseries(
 
     # filter paths dict into an object that's usable below
     paths = paths_setter(paths_dict)
-
-    #print "analysis_p2p:",	jobID,clean, annual,strictFileCheck,analysisSuite,regions
-    #assert 0
 
     #####
     # Switches:
@@ -510,19 +506,19 @@ def analysis_timeseries(
     hostname = gethostname()
 
     if hostname.find('pmpc') > -1:
-        print("analysis-timeseries.py:\tBeing run at PML on ", gethostname())
+        print("analysis_timeseries:\tBeing run at PML on ", gethostname())
 
     #####
     # JASMIN
     if hostname.find('ceda.ac.uk') > -1 or hostname.find(
             'jasmin') > -1 or hostname.find('jc.rl.ac.uk') > -1:
-        print("analysis-timeseries.py:\tBeing run at CEDA on ", hostname)
+        print("analysis_timeseries:\tBeing run at CEDA on ", hostname)
 
     #####
     # Unable to find location of files/data.
     if not paths.machinelocation:
         print(
-            "analysis-timeseries.py:\tFATAL:\tWas unable to determine location of host: ",
+            "analysis_timeseries:\tFATAL:\tWas unable to determine location of host: ",
             gethostname())
         print("Please set up paths.py, based on Paths/paths_template.py")
         #FIXME this is just for local testing by V
@@ -1921,11 +1917,6 @@ def analysis_timeseries(
         def eOrcaTotal(nc, keys):
             factor = 12. / 1000.
             arr = nc.variables['CO2FLUX'][:].squeeze()  # mmolC/m2/d
-            #if arr.ndim ==3:
-            #	for i in np.arange(arr.shape[0]):
-            #		arr[i] = arr[i]*area
-            #elif arr.ndim ==2: arr = arr*area
-            #else: assert 0
             return arr * factor
 
         def takaTotal(nc, keys):
@@ -4592,36 +4583,38 @@ def analysis_timeseries(
     shelves = {}
     shelves_insitu = {}
     for name in list(av.keys()):
-        print(
-            "------------------------------------------------------------------"
-        )
-        print(
-            "analysis-Timeseries.py:\tBeginning to call timeseriesAnalysis for ",
-            name)
+        print("---------------------------------------------------------------")
+        print("analysis_timeseries:\tBeginning timeseriesAnalysis:", name)
 
         if 'modelFiles' not in av[name]:
             print(
-                "analysis-Timeseries.py:\tWARNING:\tmodel files are not found:",
+                "analysis_timeseries:\tWARNING:\tmodel files are not found:",
                 name, av[name]['modelFiles'])
-            if strictFileCheck: assert 0
+            if strictFileCheck:
+                raise FileNotFoundError(f'Model files are not provided for {name}')
 
         modelfilesexists = [os.path.exists(f) for f in av[name]['modelFiles']]
         if False in modelfilesexists:
             print(
-                "analysis-Timeseries.py:\tWARNING:\tnot model files do not all exist:",
+                "analysis_timeseries:\tWARNING:\tModel files do not all exist:",
                 av[name]['modelFiles'])
+            missing_files = []
             for f in av[name]['modelFiles']:
-                if os.path.exists(f): continue
+                if os.path.exists(f):
+                    continue
                 print(f, 'does not exist')
-            if strictFileCheck: assert 0
+                missing_files.append(f)
+            if strictFileCheck:
+                raise FileNotFoundError(f'Model files are provided but not found for {name} : {missing_files}')
 
         if 'dataFile' in av[name].keys():
             print(name, 'dataFile', av[name]['dataFile'])
             if not os.path.exists(av[name]['dataFile']):
                 print(
-                    "analysis-Timeseries.py:\tWARNING:\tdata file is not found:",
+                    "analysis_timeseries:\tWARNING:\tdata file is not found:",
                     av[name]['dataFile'])
-                if strictFileCheck: assert 0
+                if strictFileCheck:
+                    raise FileNotFoundError(f'Obs data files are provided but not found for {name} : {missing_files}')
 
         tsa = timeseriesAnalysis(
             av[name]['modelFiles'],
@@ -4672,11 +4665,6 @@ def analysis_timeseries(
                 gridFile=av[name]['gridFile'],
                 clean=False,
             )
-            #shelves[name] = profa.shelvefn
-            #shelves_insitu[name] = profa.shelvefn_insitu
-
-        #shelves[name] = tsa.shelvefn
-        #shelves_insitu[name] = tsa.shelvefn_insitu
 
 
 def singleTimeSeriesProfile(jobID, key):
@@ -4713,13 +4701,8 @@ def singleTimeSeries(
                         strictFileCheck=False)  #clean=1)
 
 
-#	except:
-#		print "Failed singleTimeSeries",(jobID,key)
-#		print "Error: %s" % sys.exc_info()[0]
-
-
 def get_args():
-    """Parse command line arguments."""
+    """Parse command line arguments. """
     accepted_keys = ['kmf', 'physics','bgc', 'debug', 'spinup', 'salinity', 'fast', 'level1', 'level3', ]
 
     parser = argparse.ArgumentParser(
@@ -4756,8 +4739,9 @@ def get_args():
 
 
 def main():
-    from ._version import __version__
-    print(f'BGCVal2: {__version__}')
+    """
+    Main function that does all the heavy lifting.
+    """
     args = get_args()
     jobIDs = args.jobID
     keys = args.keys
@@ -4788,6 +4772,7 @@ def main():
         )
 
 
-
 if __name__ == "__main__":
+    from ._version import __version__
+    print(f'BGCVal2: {__version__}')
     main()
