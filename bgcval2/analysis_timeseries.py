@@ -4598,7 +4598,7 @@ def analysis_timeseries(
                     "analysis_timeseries:\tWARNING:\tdata file is not found:",
                     av[name]['dataFile'])
                 if strictFileCheck:
-                    raise FileNotFoundError(f'Obs data files are provided but not found for {name} : {missing_files}')
+                    raise FileNotFoundError(f'Obs data files are provided but not found for {name} : {av[name]["dataFile"]}')
 
         tsa = timeseriesAnalysis(
             av[name]['modelFiles'],
