@@ -21,7 +21,7 @@
 # ledm@pml.ac.uk
 #
 """
-.. module:: globalVolMean 
+.. module:: globalVolMean
    :platform: Unix
    :synopsis: This function calculates the volume weighted mean of a field.
 
@@ -34,33 +34,34 @@ from ..bgcvaltools.dataset import dataset
 import os, sys
 import errno
 
-#from bgcvaltools.bgcvalpython import Area
 
+# Globals - to prevent re-loading from disk every time.
 tmask     = 0
 pvol     = 0
-loadedArea = False
+loaded_volume = False
+
 
 def loadDataMask(gridfn):
     """
     Load data mask, heopfully only once!
     """
-    global loadedArea
+    global loaded_volume
     global tmask
     global pvol
     if not gridfn or not os.path.exists(gridfn):
         raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), gridfn)
 
-    nc = dataset(gridfn, 'r')        
+    nc = dataset(gridfn, 'r')
+    tmask = nc.variables['tmask'][:]
+
     try:
         pvol   = nc.variables['pvol'][:]
-        tmask = nc.variables['tmask'][:]
     except:
-        tmask = nc.variables['tmask'][:]
         area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
         pvol = nc.variables['e3t'][:] * area
         pvol = np.ma.masked_where(tmask==0, pvol)
     nc.close()
-    loadedArea = True
+    loaded_volume = True
 
 
 def globalVolumeMean(nc, keys, **kwargs):
@@ -71,28 +72,30 @@ def globalVolumeMean(nc, keys, **kwargs):
         areafile = kwargs['areafile']
         print('globalVolumeMean:', areafile, kwargs)
     except:
-        raise KeyError("globalVolumeMean:\t Needs an `areafile` kwarg to calculate Global Volume Mean")
+        raise KeyError(f"globalVolumeMean:\tNeeds an `areafile` in kwargs: {kwargs}")
 
     if isinstance(areafile, list) and len(areafile)==1:
         areafile = areafile[0]
+
+    # To add a constant value to the data (usually Kelvin to Celcius)
     try:
         addvalue = float(kwargs['addvalue'])
-        # In case you want to add a constant value to the data (usually Kelvin to Celcius)
     except:
         addvalue = 0.
 
+    # Multiply the data by some factor (ie to change units)
     try:
-        multiplyBy = float(kwargs['multiplyBy'])    # In case you want to multiply the data by a factor
+        multiplyBy = float(kwargs['multiplyBy'])
     except:
-        multiplyBy = 1.        
-        
-    if not loadedArea:
+        multiplyBy = 1.
+
+    if not loaded_volume:
          loadDataMask(areafile)
-            
+
     temp = np.ma.array(nc.variables[keys[0]][:].squeeze())
     temp = np.ma.masked_where((tmask==0) + (temp.mask), temp)
     temp = temp * multiplyBy + addvalue
-    
+
     if temp.shape == pvol.shape:
         vol = np.ma.masked_where(temp.mask, pvol)
         return (temp*vol).sum()/(vol.sum())
@@ -104,6 +107,6 @@ def globalVolumeMean(nc, keys, **kwargs):
         volsum = vol.sum()
         for t in range(temp.shape[0]):
             outvol.append((temp[t]*vol).sum()/volsum)
-        return outvol 
-    else:
-        print(f"It looks like your data has a strange shape {str(temp.shape)} and the mask shape is {str(pvol.shape)}")                            
+        return outvol
+
+    raise ValueError(f"Data or mask has unexpected shape {temp.shape}, {pvol.shape}")
