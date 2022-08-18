@@ -1,0 +1,14 @@
+---
+#DrakePassageTransport
+name: DrakePassageTransport
+units: Sv
+dimensions: 1
+model: NEMO
+modelFiles: $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_grid-U.nc
+model_vars: uo
+model_convert:
+  path: bgcval2/functions/circulation.py
+  function: drakePassage
+  areafile: /data/euryale7/scratch/ledm/UKESM/MEDUSA/mesh_mask_eORCA1_wrk.nc
+layers: layerless
+regions: regionless
