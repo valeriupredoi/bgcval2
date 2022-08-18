@@ -220,26 +220,6 @@ def load_function(convert):
     return func, kwargs
 
 
-def load_function_old(functionname):
-    """
-    Using the named function in the key yaml, load that function and return it.
-    """
-    # load functions:
-    if functionname in std_functions.keys():
-        print( "Standard Function Found:", functionname)
-        func = std_functions[functionname]
-
-    if functionname.find(':') > -1:
-        [functionFileName,functionname] = functionname.split(':')
-        lst = functionFileName.replace('.py','').replace('/', '.').split('.')
-        modulename =  '.'.join(lst)
-
-        print("parseFunction:\tAttempting to load the function:",functionname, "from the:",modulename)
-        mod = __import__(modulename, fromlist=[functionname,])
-        func = getattr(mod, functionname)
-    return func
-
-
 def load_function_kwargs(key_dict, model_or_data):
     """
     Loads key word arguments from yaml file dictionary.
