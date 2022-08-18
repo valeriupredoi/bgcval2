@@ -198,7 +198,7 @@ def load_function(convert):
 
     func_path = convert.get('path', False)
     if not func_path:
-        raise FileNotFoundError('No path provided in convert dictionary:',convert)
+        raise KeyError(f'No path provided in {str(convert)} dictionary')
 
     if func_path[:7] == 'bgcval2':
         # path is relative to bgcval2 repo.
@@ -206,6 +206,15 @@ def load_function(convert):
         func_path = os.path.join(repo_dir, func_path)
 
     if not os.path.exists(func_path):
+<<<<<<< HEAD
+        raise FileNotFoundError(f'Path {path} to custom function file not found.')
+
+    # load function from Python file in path
+    modulename = os.path.splitext(os.path.basename(func_path))[0]
+    loader = importlib.machinery.SourceFileLoader(modulename, func_path)
+    module = loader.load_module()
+    func = getattr(module, functionname)
+=======
         raise FileNotFoundError(f'Path to custom function not found: {path}')
 
     # load function from path.
@@ -214,6 +223,7 @@ def load_function(convert):
     sys.modules[spec.name] = foo
     func = spec.loader.exec_module(functionname)
     print(spec, foo, func)
+>>>>>>> c1c489e45cfcebc34340f8954f3b9c2661272a4f
 
     kwargs = get_kwargs_from_dict(convert)
 
@@ -900,7 +910,6 @@ def analysis_timeseries(
     av = ukp.AutoVivification()
     for key in analysisKeys:
         av[key] = load_key_file(key, paths, jobID)
-
 
     # OLD STYLE way:
     if 'Chl_pig' in analysisKeys:
@@ -3185,61 +3194,6 @@ def analysis_timeseries(
             av[name]['gridFile'] = paths.orcaGridfn
             av[name]['dimensions'] = 1
 
-    if 'Temperature_old' in analysisKeys:
-        name = 'Temperature_old'
-
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'grid_T',
-                                                    paths.ModelFolder_pref,
-                                                    annual)
-        if annual:
-            #av[name]['modelFiles']  	= sorted(glob(paths.ModelFolder_pref+jobID+"/"+jobID+"o_1y_*_grid_T.nc"))
-            av[name]['dataFile'] = WOAFolder + 'woa13_decav_t00_01v2.nc'
-        else:
-            #av[name]['modelFiles']  	= sorted(glob(paths.ModelFolder_pref+jobID+"/"+jobID+"o_1m_*_grid_T.nc"))
-            av[name]['dataFile'] = WOAFolder + 'temperature_monthly_1deg.nc'
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = woaCoords
-
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': [
-                ukesmkeys['temp3d'],
-            ],
-            'convert': applyLandMask,
-            'units': 'degrees C'
-        }
-        av[name]['datadetails'] = {
-            'name': name,
-            'vars': [
-                't_an',
-            ],
-            'convert': ukp.NoChange,
-            'units': 'degrees C'
-        }
-
-        #tregions = [
-        #    'Global', 'ignoreInlandSeas', 'Equator10', 'AtlanticSOcean',
-        #    'SouthernOcean', 'ArcticOcean', 'Remainder',
-        #    'NorthernSubpolarAtlantic', 'NorthernSubpolarPacific', 'WeddelSea',
-        #    'Cornwall'
-        #]
-        #tregions.extend(PierceRegions)
-        av[name]['layers'] = layerList
-        av[name]['regions'] = regionList
-        av[name]['metrics'] = metricList
-
-        #try:
-        #	if analysisSuite.lower() in ['debug',]:
-        #               av[name]['layers']              =  ['Surface',]
-        #	        av[name]['regions']             =  ['Global',]
-        #except:pass
-
-        av[name]['datasource'] = 'WOA'
-        av[name]['model'] = 'NEMO'
-
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 3
 
     if 'Salinity' in analysisKeys:
         name = 'Salinity'

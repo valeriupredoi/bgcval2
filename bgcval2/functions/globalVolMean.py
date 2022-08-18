@@ -30,7 +30,7 @@
 """
 
 import numpy as np
-from ..bgcvaltools.dataset import dataset
+from bgcval2.bgcvaltools.dataset import dataset
 import os, sys
 import errno
 
@@ -94,6 +94,7 @@ def globalVolumeMean(nc, keys, **kwargs):
 
     temp = np.ma.array(nc.variables[keys[0]][:].squeeze())
     temp = np.ma.masked_where((tmask==0) + (temp.mask), temp)
+
     temp = temp * multiplyBy + addvalue
 
     if temp.shape == pvol.shape:

@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - improving_the_timeseries_variables_interface
   schedule:
     - cron: '0 0 * * *'  # nightly
 
