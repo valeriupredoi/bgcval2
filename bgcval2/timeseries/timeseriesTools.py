@@ -124,7 +124,8 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
             'layerless',
     ]:
         print("getHorizontalSlice:\tNo layer data requested", layer)
-        if type(data) == type(''): data = std_extractData(nc, details)
+        if isinstance(data, str):
+            data = std_extractData(nc, details)
         return data
 
     #####
