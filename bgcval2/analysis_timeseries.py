@@ -207,7 +207,7 @@ def load_function(convert):
    
     if not os.path.exists(func_path):
         raise FileNotFoundError(f'Path {path} to custom function file not found.')
-    
+
     # load function from Python file in path
     modulename = os.path.splitext(os.path.basename(func_path))[0]
     loader = importlib.machinery.SourceFileLoader(modulename, func_path)
