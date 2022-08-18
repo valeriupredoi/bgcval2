@@ -60,7 +60,7 @@ from . import UKESMpython as ukp
 from .timeseries import timeseriesAnalysis
 from .timeseries import profileAnalysis
 from .timeseries import timeseriesPlots as tsp
-from bgcval2.analysis_timeseries import analysis_timeseries, build_list_of_suite_keys
+from bgcval2.analysis_timeseries import analysis_timeseries, build_list_of_suite_keys, load_key_file
 from bgcval2.download_from_mass import download_from_mass
 
 
@@ -376,6 +376,11 @@ def timeseries_compare(jobs,
         # ensembles names can not be the same as jobIDs
 
         av = ukp.AutoVivification()
+
+        # NEW STYLE keys from file:
+        for key in analysisKeys:
+            av[key] = load_key_file(key, paths, jobID)
+
         if 'DrakePassageTransport' in analysisKeys:
             name = 'DrakePassageTransport'
             ####
@@ -1862,48 +1867,6 @@ def timeseries_compare(jobs,
             av[name]['gridFile'] = orcaGridfn
             av[name]['Dimensions'] = 3
 
-        if 'Temperature' in analysisKeys:
-            name = 'Temperature'
-            av[name]['modelFiles'] = listModelDataFiles(
-                jobID, 'grid_T', paths.ModelFolder_pref, annual)
-            if annual:
-                #av[name]['modelFiles']  	= sorted(glob(paths.ModelFolder_pref+jobID+"/"+jobID+"o_1y_*_grid_T.nc"))
-                av[name]['dataFile'] = WOAFolder + 'woa13_decav_t00_01v2.nc'
-            else:
-                #av[name]['modelFiles']  	= sorted(glob(paths.ModelFolder_pref+jobID+"/"+jobID+"o_1m_*_grid_T.nc"))
-                av[name][
-                    'dataFile'] = WOAFolder + 'temperature_monthly_1deg.nc'
-            av[name]['modelcoords'] = medusaCoords
-            av[name]['datacoords'] = woaCoords
-
-            av[name]['modeldetails'] = {
-                'name': name,
-                'vars': [
-                    'votemper',
-                ],
-                'convert': ukp.NoChange,
-                'units': 'degrees C'
-            }
-            av[name]['datadetails'] = {
-                'name': name,
-                'vars': [
-                    't_an',
-                ],
-                'convert': ukp.NoChange,
-                'units': 'degrees C'
-            }
-
-            av[name]['layers'] = layerList
-            av[name]['regions'] = vmtregionList
-            av[name]['metrics'] = metricList
-
-            av[name]['datasource'] = 'WOA'
-            av[name]['model'] = 'NEMO'
-
-            av[name]['modelgrid'] = 'eORCA1'
-            av[name]['gridFile'] = orcaGridfn
-            av[name]['Dimensions'] = 3
-
         if 'ERSST' in analysisKeys:
             name = 'ERSST'
             av[name][
@@ -1944,57 +1907,6 @@ def timeseries_compare(jobs,
                 'gridFile'] = paths.ObsFolder + "/bgc/ERSST.v4/sst.mnmean.v4.nc"
             av[name]['Dimensions'] = 2
 
-        if 'GlobalMeanTemperature' in analysisKeys:
-            name = 'GlobalMeanTemperature'
-            av[name]['modelFiles'] = listModelDataFiles(
-                jobID, 'grid_T', paths.ModelFolder_pref, annual)
-            av[name]['dataFile'] = ''
-
-            av[name]['modelcoords'] = medusaCoords
-            av[name]['datacoords'] = woaCoords
-
-            nc = Dataset(paths.orcaGridfn, 'r')
-            try:
-                pvol = nc.variables['pvol'][:]
-                tmask = nc.variables['tmask'][:]
-            except:
-                tmask = nc.variables['tmask'][:]
-                area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
-                pvol = nc.variables['e3t'][:] * area
-                pvol = np.ma.masked_where(tmask == 0, pvol)
-            nc.close()
-
-            def sumMeanLandMask(nc, keys):
-                temperature = np.ma.masked_where(
-                    tmask == 0, nc.variables[keys[0]][:].squeeze())
-                return (temperature * pvol).sum() / (pvol.sum())
-
-            av[name]['modeldetails'] = {
-                'name': name,
-                'vars': [
-                    'votemper',
-                ],
-                'convert': sumMeanLandMask,
-                'units': 'degrees C'
-            }
-            av[name]['datadetails'] = {'name': '', 'units': ''}
-
-            av[name]['layers'] = [
-                'layerless',
-            ]
-            av[name]['regions'] = [
-                'regionless',
-            ]
-            av[name]['metrics'] = [
-                'metricless',
-            ]
-
-            av[name]['datasource'] = ''
-            av[name]['model'] = 'NEMO'
-
-            av[name]['modelgrid'] = 'eORCA1'
-            av[name]['gridFile'] = paths.orcaGridfn
-            av[name]['Dimensions'] = 1
 
         if 'VolumeMeanTemperature' in analysisKeys:
             name = 'VolumeMeanTemperature'
@@ -3185,7 +3097,7 @@ def timeseries_compare(jobs,
                     av[name]['modelFiles'])
                 if strictFileCheck: assert 0
 
-            if av[name]['dataFile'] != '':
+            if 'dataFile' in av[name]:
                 if not os.path.exists(av[name]['dataFile']):
                     print(
                         "analysis-Timeseries.py:\tWARNING:\tdata file is not found:",
@@ -3196,14 +3108,14 @@ def timeseries_compare(jobs,
             # time series and traffic lights.
             tsa = timeseriesAnalysis(
                 av[name]['modelFiles'],
-                av[name]['dataFile'],
+                av[name].get('dataFile', None),
                 dataType=name,
                 modelcoords=av[name]['modelcoords'],
                 modeldetails=av[name]['modeldetails'],
-                datacoords=av[name]['datacoords'],
-                datadetails=av[name]['datadetails'],
-                datasource=av[name]['datasource'],
-                model=av[name]['model'],
+                datacoords=av[name].get('datacoords', None),
+                datadetails=av[name].get('datadetails', None),
+                datasource=av[name].get('datasource', None),
+                model=av[name].get('model', None),
                 jobID=jobID,
                 layers=av[name]['layers'],
                 regions=av[name]['regions'],

@@ -40,7 +40,8 @@ from multiprocessing import Pool
 
 from .download_from_mass import findLastFinishedYear
 from .analysis_timeseries import analysis_timeseries, singleTimeSeries, singleTimeSeriesProfile
-from .analysis_timeseries import level1KeysDict, physKeysDict, bgcKeysDict, keymetricsfirstDict
+# these modules are no more and break the tests
+# from .analysis_timeseries import level1KeysDict, physKeysDict, bgcKeysDict, keymetricsfirstDict
 from .analysis_p2p import analysis_p2p, p2pDict_level2, p2pDict_physics, single_p2p
 from .bgcval2_make_report import html5Maker
 from .UKESMpython import folder
