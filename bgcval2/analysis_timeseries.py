@@ -50,7 +50,7 @@ import getpass
 import itertools
 import yaml
 import importlib
-from pathlib import Path as pathlibpath
+import pathlib
 
 #####
 # Load specific local code:
@@ -165,20 +165,61 @@ def build_list_of_suite_keys(suites, debug=True):
     return analysis_keys
 
 
-def load_function(functionname):
+def get_kwargs_from_dict(convert_dict, avoids = ['path', 'function']):
     """
-    Using the named function in the key yaml, load that function and return it.
+    Get the KWARGS fromn a dict 
     """
-    # this imports anything in a parent dir that starts A-Z and is a Python script
-    if functionname in std_functions.keys():
-        print( "Standard Function Found:", functionname)
-        return std_functions[functionname]
+    kwargs = {}
+    for key, value in convert_dict.items():
+        if key in avoids: 
+            continue
+        kwargs[key] = value
+    return kwargs
 
-    for path in Path(__file__).parent.glob('[a-z]*.py'):
-        short_name = path.stem
-        module = importlib.import_module(
-            f'rootdir.subdir.{short_name}')
-    working here right now
+
+def load_function(convert):
+    """
+    Using the named function in the key yaml, load that function and return it and it kwargs.
+    """
+    # function is listed as a standard function string
+    if isinstance(convert, str) and convert in std_functions:
+        print( "Standard Function Found:", convert)
+        return std_functions[convert], {}
+
+    functionname = convert.get('function', False)
+    if not functionname:
+        raise KeyError(f'Function name not provided in convert dict: {convert}')
+
+    # function is listed as a standard function string with kwargs:
+    if functionname in std_functions:
+        print( "Standard Function Found:", functionname)
+        kwargs = get_kwargs_from_dict(convert)
+        return std_functions[functionname], kwargs
+
+    func_path = convert.get('path', False)
+    if not func_path:
+        raise FileNotFoundError('No path provided in convert dictionary:',convert)
+
+    if func_path[:7] == 'bgcval2':
+        # path is relative to bgcval2 repo.
+        repo_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+        func_path = os.path.join(repo_dir, func_path)
+   
+    if not os.path.exists(func_path):
+        raise FileNotFoundError(f'Path to custom function not found: {path}')
+    
+    # load function from path.
+    spec = importlib.util.spec_from_file_location(functionname, func_path)
+    foo = importlib.util.module_from_spec(spec)
+    sys.modules.
+    func = spec.loader.exec_module(functionname)
+    print(spec, foo, func)
+
+    kwargs = get_kwargs_from_dict(convert)
+
+    print('Successfully loaded function:', functionname, 'from', func_path, 'with kwargs:', kwargs)
+    return func, kwargs
+
 
 def load_function_old(functionname):
     """
@@ -304,9 +345,9 @@ def load_key_file(key, paths, jobID):
             raise KeyError(f'What are you trying to analyse: model_vars {md_vars} is empty in yml_file: {key_yml_path}')
 
         md_vars = parse_list_from_string(md_vars)
-        functionname = key_dict[''.join([model_or_data, '_convert'])]
-        convert_func = load_function(functionname)
-        kwargs = load_function_kwargs(key_dict, model_or_data)
+        md_convert = key_dict[''.join([model_or_data, '_convert'])]
+        convert_func, kwargs = load_function(md_convert)
+        #wargs = load_function_kwargs(key_dict, model_or_data)
 
         output_dict[''.join([model_or_data, 'details'])] = {
             'name': key_dict['name'],

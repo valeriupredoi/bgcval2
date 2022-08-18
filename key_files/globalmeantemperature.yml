@@ -11,7 +11,12 @@ model_cal       : 360_day               # model calendar
 model_z         : deptht                # model depth dimension
 model_lat       : nav_lat               # model latitude dimension
 model_lon       : nav_lon               # model latitude dimension
-model_convert   : bgcval2/functions/globalVolMean.py:globalVolumeMean
+#model_convert   : bgcval2/functions/globalVolMean.py:globalVolumeMean
+model_convert   :
+    path: bgcval2/functions/globalVolMean.py
+    function: globalVolumeMean
+    addvalue: 0.
+    multiplyBy: 1.
 model_convert_areafile : $PATHS_GRIDFILE
 layers          : layerless
 regions         : regionless
