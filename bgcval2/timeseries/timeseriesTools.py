@@ -118,7 +118,8 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
     ]:
         print("getHorizontalSlice:\tNo depth field only 1 value",
               details['name'])
-        if data == '': data = std_extractData(nc, details)
+        if data == '':
+            data = std_extractData(nc, details)
         return ApplyDepthSlice(data, 0)
 
     if layer in [
