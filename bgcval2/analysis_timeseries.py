@@ -206,7 +206,6 @@ def load_function(convert):
         func_path = os.path.join(repo_dir, func_path)
 
     if not os.path.exists(func_path):
-<<<<<<< HEAD
         raise FileNotFoundError(f'Path {path} to custom function file not found.')
 
     # load function from Python file in path
@@ -214,16 +213,6 @@ def load_function(convert):
     loader = importlib.machinery.SourceFileLoader(modulename, func_path)
     module = loader.load_module()
     func = getattr(module, functionname)
-=======
-        raise FileNotFoundError(f'Path to custom function not found: {path}')
-
-    # load function from path.
-    spec = importlib.util.spec_from_file_location(functionname, func_path)
-    foo = importlib.util.module_from_spec(spec)
-    sys.modules[spec.name] = foo
-    func = spec.loader.exec_module(functionname)
-    print(spec, foo, func)
->>>>>>> c1c489e45cfcebc34340f8954f3b9c2661272a4f
 
     kwargs = get_kwargs_from_dict(convert)
 
@@ -303,8 +292,8 @@ def load_coords_from_netcdf(mdfile):
     coord_candidates = {
         't': ['time_centered','time', 'index_t', 'time_counter'],
         'z':  ['depth', 'deptht', 'depthu', 'nav_lev', 'index_z', 'level'],
-        'lat': ['lat', 'lattitude', 'nav_lat', ],
-        'lon': ['lat', 'lattitude', 'nav_lat', ],
+        'lat': ['lat', 'lattitude', 'nav_lat', 'nav_lat_grid_T'],
+        'lon': ['lat', 'lattitude', 'nav_lat', 'nav_lon_grid_T'],
         }
     # Exntend with capitalization:
     for coord, coord_candidate_list in coord_candidates.items():
@@ -317,9 +306,15 @@ def load_coords_from_netcdf(mdfile):
     nctmp = dataset(mdfile, 'r')
     nckeys = set(nctmp.variables.keys())
 
+    # Special cases to find coords:
+    special_cases = {('time_centered', 'time_counter'): ['time_centered',]}
+
     output_coords = {}
     for coord, coord_candidate_list in coord_candidates.items():
-        intersection = list(set(coord_candidate_list) & nckeys)
+        intersection = sorted(list(set(coord_candidate_list) & nckeys))
+        if special_cases.get(tuple(intersection), False):
+            intersection = special_cases[tuple(intersection)]
+
         if len(intersection) == 1:
             output_coords[coord] = intersection[0]
         elif len(intersection) == 0:
@@ -327,7 +322,11 @@ def load_coords_from_netcdf(mdfile):
         else:
             raise KeyError(f'Several {coord} coordinates found: {intersection}')
 
-    calendar = nc.variables[output_coords.get('t')].calendar # might break.
+    try:
+        calendar = nctmp.variables[output_coords.get('t')].calendar # might break.
+    except AttributeError:
+        calendar = 'standard'
+
     output_coords['cal'] = calendar
     nctmp.close()
     return output_coords
@@ -555,7 +554,7 @@ def load_key_file(key, paths, jobID):
         output_dict[''.join([model_or_data, 'coords'])] = {
             'tdict': ukp.tdicts[key_dict.get('tdict', 'ZeroToZero')],
             }
-        for coord, value in coords:
+        for coord, value in coords.items():
             # Coordinate names are guessed, but can be over-written in the yaml.
 
             coord_in_yml = ''.join([model_or_data, '_', coord])
@@ -746,7 +745,6 @@ def analysis_timeseries(
     #####
     # Because we can never be sure someone won't randomly rename the
     # time dimension without saying anything.
-    guess_coordinates_from_file(jobID, )
     try:
         tmpModelFiles = listModelDataFiles(jobID, 'grid_T',
                                            paths.ModelFolder_pref, annual)
