@@ -154,7 +154,7 @@ def multiplyBy(nc,keys, **kwargs):
     """ 
     Loads keys[0] from the netcdf, but multiplies by the field in kwargs , "factor".
     """
-    if 'factor' not in list(kwargs.keys()):
+    if 'factor' not in kwargs:
         raise AssertionError("std_functions:\tmultiplyBy:\t Did not get key word argument, 'factor'.")
     return nc.variables[keys[0]][:]* float(kwargs['factor'])
 
