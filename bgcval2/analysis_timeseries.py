@@ -211,7 +211,7 @@ def load_function(convert):
     # load function from path.
     spec = importlib.util.spec_from_file_location(functionname, func_path)
     foo = importlib.util.module_from_spec(spec)
-    sys.modules.
+    sys.modules[spec.name] = foo
     func = spec.loader.exec_module(functionname)
     print(spec, foo, func)
 

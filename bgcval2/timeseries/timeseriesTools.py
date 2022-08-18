@@ -85,11 +85,12 @@ def loadData(nc, details):
 
 
 def ApplyDepthSlice(arr, k):
-    if arr.ndim == 4: return arr[:, k, :, :]
-    if arr.ndim == 3: return arr[k, :, :]
-    if arr.ndim == 2: return arr
-    if arr.ndim == 1: return arr
-    return arr
+    """
+    Extracts a flat layer, k either
+    """
+    if arr.ndim < 3:
+        return arr
+    return arr[..., k, :, :]
 
 
 def ApplyDepthrange(arr, k1, k2):
@@ -457,8 +458,8 @@ class DataLoader:
             return a, a, a, a, a
 
 
-#####
-# Create Temporary Output Arrays.
+        #####
+        # Create Temporary Output Arrays.
         arr = []
         arr_lat = []
         arr_lon = []
@@ -511,7 +512,6 @@ class DataLoader:
 
             elif dims[-2].lower() in lonnames and dims[-1].lower() in latnames:
 
-                #print 'createDataArray',self.details['name'],layer, "Ridiculous dimsions order:",dims
                 for index, v in ukp.maenumerate(dat):
                     try:
                         (t, z, x, y) = index
@@ -586,11 +586,6 @@ class DataLoader:
         self.oneDData['arr_z'] = np.ma.masked_where(mask, arr_z).compressed()
         self.oneDData['arr_t'] = np.ma.masked_where(mask, arr_t).compressed()
         self.oneDData['arr'] = np.ma.masked_where(mask, arr).compressed()
-
-        #print 'createDataArray:',arr.min(),arr.mean(),arr.max(),arr, len(arr)
-        #print 'createDataArray:',region, arr_lat.min(),arr_lat.mean(),arr_lat.max(),arr_lat, len(arr_lat)
-        #print 'createDataArray:',region, arr_lon.min(),arr_lon.mean(),arr_lon.max(),arr_lon, len(arr_lon)
-        #return arr, arr_t,arr_z,arr_lat,arr_lon
 
 
 def makeArea(fn, coordsdict):

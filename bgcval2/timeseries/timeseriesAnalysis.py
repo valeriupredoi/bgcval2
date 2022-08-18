@@ -1051,6 +1051,7 @@ class timeseriesAnalysis:
         runmapplots = False
         for r in self.regions:
             for l in self.layers:
+                if not runmapplots: continue
                 mapfilename = ukp.folder(self.imageDir + '/' +
                                          self.dataType) + '_'.join([
                                              'map',
@@ -1059,9 +1060,9 @@ class timeseriesAnalysis:
                                              str(l),
                                              r,
                                          ]) + '.png'
-                if ukp.shouldIMakeFile(self.modelFiles[-1],
+                if not ukp.shouldIMakeFile(self.modelFiles[-1],
                                        mapfilename,
                                        debug=False):
-                    runmapplots = True
+                    runmapplots = False
         if runmapplots:
             self.mapplotsRegionsLayers()
