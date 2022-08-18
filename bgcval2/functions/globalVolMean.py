@@ -30,7 +30,7 @@
 """
 
 import numpy as np
-from bgcval2.bgcvaltools import dataset
+from bgcval2.bgcvaltools.dataset import dataset
 import os, sys
 import errno
 

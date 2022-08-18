@@ -16,7 +16,7 @@ model_convert   :
     function: globalVolumeMean
     addvalue: 0.
     multiplyBy: 1.
-model_convert_areafile : $PATHS_GRIDFILE
+    areafile: $PATHS_GRIDFILE
 layers          : layerless
 regions         : regionless
 
