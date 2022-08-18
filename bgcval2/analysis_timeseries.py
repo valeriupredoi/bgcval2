@@ -556,6 +556,11 @@ def load_key_file(key, paths, jobID):
             'tdict': ukp.tdicts[key_dict.get('tdict', 'ZeroToZero')],
             }
         for coord, value in coords:
+            # Coordinate names are guessed, but can be over-written in the yaml.
+
+            coord_in_yml = ''.join([model_or_data, '_', coord])
+            if  coord_in_yml in key_dict:
+                value = key_dict[coord_in_yml]
             output_dict[''.join([model_or_data, 'coords'])][coord] = value
     return output_dict
 
