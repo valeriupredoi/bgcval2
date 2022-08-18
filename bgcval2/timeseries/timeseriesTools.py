@@ -107,7 +107,8 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
     # This is useful
     if coords['z'] == '' or coords['z'] not in list(nc.variables.keys()):
         print("getHorizontalSlice:\tNo depth field in", details['name'])
-        if type(data) == type(''): data = std_extractData(nc, details)
+        if isinstance(data, str):
+            data = std_extractData(nc, details)
         return data
 
     ####
