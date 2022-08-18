@@ -132,7 +132,8 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
     if len(list(
             nc.dimensions.keys())) == 1 and layer in ['Surface', 'layerless']:
         print("getHorizontalSlice:\tOne D file", details['name'])
-        if data == '': data = std_extractData(nc, details)
+        if data == '':
+            data = std_extractData(nc, details)
         data = np.ma.masked_where(nc.variables[coords['z']][:] > 0, data)
         return data
         #return ApplyDepthSlice(data, 0)
