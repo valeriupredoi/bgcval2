@@ -1,0 +1,15 @@
+---
+name            : NorthernTotalIceExtent
+units           : 1E6 km^2
+dimensions      : 1
+model           : CICE
+modelFiles      : $BASEDIR_MODEL/$JOBID/nemo*$JOBIDo_1y_*_grid-T.nc
+model_vars      : soicecov
+model_convert:
+    path: bgcval2/functions/ice.py
+    function: calcTotalIceExtentN
+    areafile : $PATHS_GRIDFILE
+    minIce: 0.15
+layers          : layerless
+regions         : regionless
+
