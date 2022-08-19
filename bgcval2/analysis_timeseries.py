@@ -167,11 +167,11 @@ def build_list_of_suite_keys(suites, debug=True):
 
 def get_kwargs_from_dict(convert_dict, avoids = ['path', 'function']):
     """
-    Get the KWARGS fromn a dict 
+    Get the KWARGS fromn a dict
     """
     kwargs = {}
     for key, value in convert_dict.items():
-        if key in avoids: 
+        if key in avoids:
             continue
         kwargs[key] = value
     return kwargs
@@ -204,7 +204,7 @@ def load_function(convert):
         # path is relative to bgcval2 repo.
         repo_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
         func_path = os.path.join(repo_dir, func_path)
-   
+
     if not os.path.exists(func_path):
         raise FileNotFoundError(f'Path {path} to custom function file not found.')
 
@@ -2917,79 +2917,79 @@ def analysis_timeseries(
             'gridFile'] = '/group_workspaces/jasmin4/esmeval/example_data/bgc/ERSST.v4/ERSST_sst_grid.nc'
         av[name]['dimensions'] = 2
 
-    if 'GlobalMeanSalinity' in analysisKeys:
-        name = 'GlobalMeanSalinity'
-        if jobID == 'u-as462monthly':
-            av[name]['modelFiles'] = sorted(
-                glob(
-                    '/group_workspaces/jasmin2/ukesm/BGC_data/u-as462/monthly/*.nc'
-                ))
-        elif jobID == 'u-ar977monthly':
-            av[name]['modelFiles'] = sorted(
-                glob(
-                    '/group_workspaces/jasmin2/ukesm/BGC_data/u-ar977/monthly/*.nc'
-                ))
-        else:
-            av[name]['modelFiles'] = listModelDataFiles(
-                jobID, 'grid_T', paths.ModelFolder_pref, annual)
-
-        #av[name]['modelFiles']  = listModelDataFiles(jobID, 'grid_T', paths.ModelFolder_pref, annual)
-        av[name]['dataFile'] = ''
-
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = woaCoords
-
-        nc = dataset(paths.orcaGridfn, 'r')
-        try:
-            pvol = nc.variables['pvol'][:]
-            gmstmask = nc.variables['tmask'][:]
-        except:
-            gmstmask = nc.variables['tmask'][:]
-            area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
-            pvol = nc.variables['e3t'][:] * area
-            pvol = np.ma.masked_where(gmstmask == 0, pvol)
-        nc.close()
-
-        def sumMeanLandMask(nc, keys):
-            #### works like no change, but applies a mask.
-            sal = np.ma.array(nc.variables[keys[0]][:].squeeze())
-            sal = np.ma.masked_where((gmstmask == 0) + (sal.mask), sal)
-            try:
-                vol = np.ma.masked_where(
-                    sal.mask,
-                    nc('thkcello')[:].squeeze() *
-                    nc('area')[:])  # preferentially use in file volume.
-            except:
-                vol = np.ma.masked_where(sal.mask, pvol)
-            return (sal * vol).sum() / (vol.sum())
-
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': [
-                ukesmkeys['sal3d'],
-            ],
-            'convert': sumMeanLandMask,
-            'units': 'PSU'
-        }
-        av[name]['datadetails'] = {'name': '', 'units': ''}
-        #av[name]['datadetails']  	globalVolumeMean= {'name': name, 'vars':['t_an',], 'convert': ukp.NoChange,'units':'degrees C'}
-
-        av[name]['layers'] = [
-            'layerless',
-        ]
-        av[name]['regions'] = [
-            'regionless',
-        ]
-        av[name]['metrics'] = [
-            'metricless',
-        ]
-
-        av[name]['datasource'] = ''
-        av[name]['model'] = 'NEMO'
-
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 1
+    # if 'GlobalMeanSalinity' in analysisKeys:
+    #     name = 'GlobalMeanSalinity'
+    #     if jobID == 'u-as462monthly':
+    #         av[name]['modelFiles'] = sorted(
+    #             glob(
+    #                 '/group_workspaces/jasmin2/ukesm/BGC_data/u-as462/monthly/*.nc'
+    #             ))
+    #     elif jobID == 'u-ar977monthly':
+    #         av[name]['modelFiles'] = sorted(
+    #             glob(
+    #                 '/group_workspaces/jasmin2/ukesm/BGC_data/u-ar977/monthly/*.nc'
+    #             ))
+    #     else:
+    #         av[name]['modelFiles'] = listModelDataFiles(
+    #             jobID, 'grid_T', paths.ModelFolder_pref, annual)
+    #
+    #     #av[name]['modelFiles']  = listModelDataFiles(jobID, 'grid_T', paths.ModelFolder_pref, annual)
+    #     av[name]['dataFile'] = ''
+    #
+    #     av[name]['modelcoords'] = medusaCoords
+    #     av[name]['datacoords'] = woaCoords
+    #
+    #     nc = dataset(paths.orcaGridfn, 'r')
+    #     try:
+    #         pvol = nc.variables['pvol'][:]
+    #         gmstmask = nc.variables['tmask'][:]
+    #     except:
+    #         gmstmask = nc.variables['tmask'][:]
+    #         area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
+    #         pvol = nc.variables['e3t'][:] * area
+    #         pvol = np.ma.masked_where(gmstmask == 0, pvol)
+    #     nc.close()
+    #
+    #     def sumMeanLandMask(nc, keys):
+    #         #### works like no change, but applies a mask.
+    #         sal = np.ma.array(nc.variables[keys[0]][:].squeeze())
+    #         sal = np.ma.masked_where((gmstmask == 0) + (sal.mask), sal)
+    #         try:
+    #             vol = np.ma.masked_where(
+    #                 sal.mask,
+    #                 nc('thkcello')[:].squeeze() *
+    #                 nc('area')[:])  # preferentially use in file volume.
+    #         except:
+    #             vol = np.ma.masked_where(sal.mask, pvol)
+    #         return (sal * vol).sum() / (vol.sum())
+    #
+    #     av[name]['modeldetails'] = {
+    #         'name': name,
+    #         'vars': [
+    #             ukesmkeys['sal3d'],
+    #         ],
+    #         'convert': sumMeanLandMask,
+    #         'units': 'PSU'
+    #     }
+    #     av[name]['datadetails'] = {'name': '', 'units': ''}
+    #     #av[name]['datadetails']  	globalVolumeMean= {'name': name, 'vars':['t_an',], 'convert': ukp.NoChange,'units':'degrees C'}
+    #
+    #     av[name]['layers'] = [
+    #         'layerless',
+    #     ]
+    #     av[name]['regions'] = [
+    #         'regionless',
+    #     ]
+    #     av[name]['metrics'] = [
+    #         'metricless',
+    #     ]
+    #
+    #     av[name]['datasource'] = ''
+    #     av[name]['model'] = 'NEMO'
+    #
+    #     av[name]['modelgrid'] = 'eORCA1'
+    #     av[name]['gridFile'] = paths.orcaGridfn
+    #     av[name]['dimensions'] = 1
 
     if 'IcelessMeanSST' in analysisKeys:
         name = 'IcelessMeanSST'
@@ -3107,54 +3107,54 @@ def analysis_timeseries(
             av[name]['dimensions'] = 1
 
 
-    if 'Salinity' in analysisKeys:
-        name = 'Salinity'
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'grid_T',
-                                                    paths.ModelFolder_pref,
-                                                    annual)
-        if annual:
-            #av[name]['modelFiles']  	= sorted(glob(paths.ModelFolder_pref+jobID+"/"+jobID+"o_1y_*_grid_T.nc"))
-            av[name]['dataFile'] = WOAFolder + 'woa13_decav_s00_01v2.nc'
-        else:
-            #av[name]['modelFiles']  	= sorted(glob(paths.ModelFolder_pref+jobID+"/"+jobID+"o_1m_*_grid_T.nc"))
-            av[name]['dataFile'] = WOAFolder + 'salinity_monthly_1deg.nc'
-
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = woaCoords
-
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': [
-                ukesmkeys['sal3d'],
-            ],
-            'convert': applyLandMask,
-            'units': 'PSU'
-        }
-        av[name]['datadetails'] = {
-            'name': name,
-            'vars': [
-                's_an',
-            ],
-            'convert': ukp.NoChange,
-            'units': 'PSU'
-        }
-
-        #salregions = [
-        #    'Global', 'ignoreInlandSeas', 'Equator10', 'AtlanticSOcean',
-        #    'SouthernOcean', 'ArcticOcean', 'Remainder',
-        #    'NorthernSubpolarAtlantic', 'NorthernSubpolarPacific', 'WeddelSea'
-        #]
-        #salregions.extend(PierceRegions)
-        av[name]['layers'] = layerList
-        av[name]['regions'] = regionList
-        av[name]['metrics'] = metricList
-
-        av[name]['datasource'] = 'WOA'
-        av[name]['model'] = 'NEMO'
-
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 3
+    # if 'Salinity' in analysisKeys:
+    #     name = 'Salinity'
+    #     av[name]['modelFiles'] = listModelDataFiles(jobID, 'grid_T',
+    #                                                 paths.ModelFolder_pref,
+    #                                                 annual)
+    #     if annual:
+    #         #av[name]['modelFiles']  	= sorted(glob(paths.ModelFolder_pref+jobID+"/"+jobID+"o_1y_*_grid_T.nc"))
+    #         av[name]['dataFile'] = WOAFolder + 'woa13_decav_s00_01v2.nc'
+    #     else:
+    #         #av[name]['modelFiles']  	= sorted(glob(paths.ModelFolder_pref+jobID+"/"+jobID+"o_1m_*_grid_T.nc"))
+    #         av[name]['dataFile'] = WOAFolder + 'salinity_monthly_1deg.nc'
+    #
+    #     av[name]['modelcoords'] = medusaCoords
+    #     av[name]['datacoords'] = woaCoords
+    #
+    #     av[name]['modeldetails'] = {
+    #         'name': name,
+    #         'vars': [
+    #             ukesmkeys['sal3d'],
+    #         ],
+    #         'convert': applyLandMask,
+    #         'units': 'PSU'
+    #     }
+    #     av[name]['datadetails'] = {
+    #         'name': name,
+    #         'vars': [
+    #             's_an',
+    #         ],
+    #         'convert': ukp.NoChange,
+    #         'units': 'PSU'
+    #     }
+    #
+    #     #salregions = [
+    #     #    'Global', 'ignoreInlandSeas', 'Equator10', 'AtlanticSOcean',
+    #     #    'SouthernOcean', 'ArcticOcean', 'Remainder',
+    #     #    'NorthernSubpolarAtlantic', 'NorthernSubpolarPacific', 'WeddelSea'
+    #     #]
+    #     #salregions.extend(PierceRegions)
+    #     av[name]['layers'] = layerList
+    #     av[name]['regions'] = regionList
+    #     av[name]['metrics'] = metricList
+    #
+    #     av[name]['datasource'] = 'WOA'
+    #     av[name]['model'] = 'NEMO'
+    #
+    #     av[name]['modelgrid'] = 'eORCA1'
+    #     av[name]['gridFile'] = paths.orcaGridfn
+    #     av[name]['dimensions'] = 3
 
     if 'ZonalCurrent' in analysisKeys:
         name = 'ZonalCurrent'
