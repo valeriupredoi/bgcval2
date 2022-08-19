@@ -113,7 +113,7 @@ def calcTotalIceExtent(nc,keys, **kwargs):    #Global
         minIce = 0.15
 
     if not loadedArea:
-    loadDataMask(kwargs['areafile'],maskname)
+        loadDataMask(kwargs['areafile'],maskname)
     
     return np.ma.masked_where((tmask==0)+(nc.variables[keys[0]][:].squeeze()<minIce),area).sum()/1E12
 
