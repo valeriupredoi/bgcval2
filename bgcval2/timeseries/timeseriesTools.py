@@ -92,7 +92,11 @@ def ApplyDepthSlice(arr, k):
     print(arr.shape, k, type(k) )
     if arr.ndim < 3:
         return arr
-    return arr[..., k, :, :]
+    if arr.ndim==4:
+        return arr[:, k]
+    else:
+        assert 0
+    #eturn arr[..., k, :, :]
 
 
 def ApplyDepthrange(arr, k1, k2):
