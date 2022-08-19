@@ -72,7 +72,7 @@ def NoChange(nc,keys):
     """
     Loads keys[0] from the netcdf, but applies no change.
     """
-    return nc.variables[keys[0]]
+    return nc.variables[keys[0]][:]
 
 
 def N2Biomass(nc,keys):
