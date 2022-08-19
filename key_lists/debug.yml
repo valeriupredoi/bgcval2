@@ -12,4 +12,5 @@ keys:
     AMOC_26N: True
     GlobalMeanTemperature: True
     Temperature: True
-    # GlobalMeanSalinity: True
+    GlobalMeanSalinity: True
+    Salinity: True
