@@ -206,7 +206,7 @@ def load_function(convert):
         func_path = os.path.join(repo_dir, func_path)
 
     if not os.path.exists(func_path):
-        raise FileNotFoundError(f'Path {path} to custom function file not found.')
+        raise FileNotFoundError(f'Path {func_path} to custom function file not found.')
 
     # load function from Python file in path
     modulename = os.path.splitext(os.path.basename(func_path))[0]
@@ -2869,7 +2869,7 @@ def analysis_timeseries(
             'gridFile'] = '/group_workspaces/jasmin4/esmeval/example_data/bgc/ERSST.v4/ERSST_sst_grid.nc'
         av[name]['dimensions'] = 2
 
-     if 'IcelessMeanSST' in analysisKeys:
+    if 'IcelessMeanSST' in analysisKeys:
         name = 'IcelessMeanSST'
         av[name]['modelFiles'] = listModelDataFiles(jobID, 'grid_T',
                                                     paths.ModelFolder_pref,
