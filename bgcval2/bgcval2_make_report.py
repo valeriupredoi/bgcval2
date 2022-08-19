@@ -39,12 +39,12 @@ import shutil
 
 #####
 # Load specific local code:
-from .UKESMpython import folder, shouldIMakeFile, round_sig
-from .html5 import html5Tools, htmltables
-from .bgcvaltools.pftnames import getLongName
-from .timeseries.analysis_level0 import analysis_level0, analysis_level0_insitu
-from ._runtime_config import get_run_configuration
-from .Paths.paths import paths_setter
+from bgcval2.UKESMpython import folder, shouldIMakeFile, round_sig
+from bgcval2.html5 import html5Tools, htmltables
+from bgcval2.bgcvaltools.pftnames import getLongName
+from bgcval2.timeseries.analysis_level0 import analysis_level0, analysis_level0_insitu
+from bgcval2._runtime_config import get_run_configuration
+from bgcval2.Paths.paths import paths_setter
 
 
 def copytree(src, dst, symlinks=False, ignore=None):

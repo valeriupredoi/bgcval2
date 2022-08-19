@@ -119,6 +119,7 @@ def _set_jasmin_paths(paths_dict):
 
 def _set_pml_paths(paths_dict):
     """Fix paths for running on PML."""
+    assert 0
     # import UKESM module
     from . import UKESMpython as ukp
 

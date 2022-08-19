@@ -54,20 +54,20 @@ import pathlib
 
 #####
 # Load specific local code:
-from . import UKESMpython as ukp
-from .timeseries import timeseriesAnalysis
-from .timeseries import profileAnalysis
-from .timeseries import timeseriesTools as tst
+from bgcval2 import UKESMpython as ukp
+from bgcval2.timeseries import timeseriesAnalysis
+from bgcval2.timeseries import profileAnalysis
+from bgcval2.timeseries import timeseriesTools as tst
 
-from .bgcvaltools.mergeMonthlyFiles import mergeMonthlyFiles, meanDJF
-from .bgcvaltools.AOU import AOU
-from .bgcvaltools.dataset import dataset
-from ._runtime_config import get_run_configuration
+from bgcval2.bgcvaltools.mergeMonthlyFiles import mergeMonthlyFiles, meanDJF
+from bgcval2.bgcvaltools.AOU import AOU
+from bgcval2.bgcvaltools.dataset import dataset
+from bgcval2._runtime_config import get_run_configuration
 from bgcval2.functions.standard_functions import std_functions
 
 #####
 # User defined set of paths pointing towards the datasets.
-from .Paths.paths import paths_setter
+from bgcval2.Paths.paths import paths_setter
 
 
 def listModelDataFiles(jobID, filekey, datafolder, annual):

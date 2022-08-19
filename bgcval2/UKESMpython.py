@@ -52,7 +52,7 @@ from calendar import month_name
 from shelve import open as shOpen
 import socket
 
-from .bgcvaltools.RobustStatistics import MAD
+from bgcval2.bgcvaltools.RobustStatistics import MAD
 try:
     import yaml
 except:
