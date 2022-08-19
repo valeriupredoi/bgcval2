@@ -5,7 +5,7 @@ keys:
     # NoCaspianAirSeaFluxCO2: True
     # IntPP_OSU: True
     # GlobalExportRatio: True
-    # TotalIceExtent: True
+    TotalIceExtent: True
     # NorthernTotalIceExtent: True
     # SouthernTotalIceExtent: True
     DrakePassageTransport: True
