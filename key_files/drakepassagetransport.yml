@@ -1,5 +1,4 @@
 ---
-#DrakePassageTransport
 name: DrakePassageTransport
 units: Sv
 dimensions: 1
@@ -9,6 +8,6 @@ model_vars: uo
 model_convert:
   path: bgcval2/functions/circulation.py
   function: drakePassage
-  areafile: /data/euryale7/scratch/ledm/UKESM/MEDUSA/mesh_mask_eORCA1_wrk.nc
+  areafile: $PATHS_GRIDFILE
 layers: layerless
 regions: regionless

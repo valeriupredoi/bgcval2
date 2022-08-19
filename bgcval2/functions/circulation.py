@@ -49,6 +49,7 @@ alttmask_AMOC26N= 0
 loadedArea     = False
 loadedAltMask     = False
 
+
 def loadDataMask(gridfn,maskname,):
     global umask_drake
     global e2u_drake
@@ -62,7 +63,7 @@ def loadDataMask(gridfn,maskname,):
     nc = dataset(gridfn,'r')        
     e2u_drake = nc.variables['e2u'][LAT0:LAT1,LON]
     umask_drake = nc.variables['umask'][:,LAT0:LAT1,LON]
-    E3v_AMOC26N = nc.variables['e3v'][:,latslice26Nnm,:]   # z level height 3D
+    e3v_AMOC26N = nc.variables['e3v'][:,latslice26Nnm,:]   # z level height 3D
     e1v_AMOC26N = nc.variables['e1v'][latslice26Nnm,:]     #
     tmask_AMOC26N = nc.variables['tmask'][:,latslice26Nnm,:]    
     nc.close()
@@ -77,6 +78,7 @@ def loadAtlanticMask(altmaskfile,maskname='tmaskatl',):
  #       alttmask_AMOC26N[228,180:208]=0.
     nc.close()
     loadedAltMask = True
+
 
 def drakePassage(nc,keys,**kwargs):
     """
@@ -105,7 +107,6 @@ def drakePassage(nc,keys,**kwargs):
     return drake
 
 
-    
 
 drakedetails     = {}
 def loadDrakeDetails(gridfn):
@@ -122,7 +123,8 @@ def loadDrakeDetails(gridfn):
     drakedetails[(gridfn,'Drake_A')] = Drake_A
     drakedetails[(gridfn,'tmask')]     = tmask
     nc.close()
-        
+       
+ 
 def cmip5DrakePassage(nc,keys,**kwargs):
     if 'gridfile' not in list(kwargs.keys()):
         raise AssertionError("drakePassage:\t Needs an `gridFile` kwarg to run calculation.")    
@@ -180,7 +182,6 @@ def cmip5DrakePassage(nc,keys,**kwargs):
     print("cmip5DrakePassage:\tdrake",keys, out, out.shape,tmasku.shape,velo.shape,out.mean())
     return out    # should return 1 d time array.
             
-            
 
 amocdetails     = {}
 def loadAMOCdetails(gridfn):
@@ -203,7 +204,8 @@ def loadAMOCdetails(gridfn):
         
     amocdetails[(gridfn,'tmask')]     = tmaskv
     nc.close()
-        
+    
+    
 def cmip5AMOC(nc,keys,**kwargs):
     if 'gridfile' not in list(kwargs.keys()):
         raise AssertionError("cmip5AMOC:\t Needs an `gridFile` kwarg to run calculation.")    
@@ -242,6 +244,7 @@ def cmip5AMOC(nc,keys,**kwargs):
     out = np.ma.array(out)
     print("cmip5AMOC: ",keys, out, out.shape,tmaskv.shape,velo.shape,out.mean())
     return out    # should return 1 d time array.
+
 
 def cmip5ADRC(nc,keys,**kwargs):
     if 'gridfile' not in list(kwargs.keys()):
@@ -321,7 +324,6 @@ def cmip5ADRC16(nc,keys,**kwargs):
     out = np.ma.array(out)
     print("cmip5ADRC16",keys, out, out.shape,tmaskv.shape,velo.shape,out.mean())
     return out    # should return 1 d time array.
-    
         
                 
 def TwentySixNorth(nc,keys,**kwargs):
@@ -366,19 +368,21 @@ def TwentySixNorth(nc,keys,**kwargs):
                 if np.ma.is_masked(zv[0, z, la, lo]): continue
                 atlmoc[z, la] = atlmoc[z, la] - e1v_AMOC26N[la, lo]*e3v_AMOC26N[z, la, lo]*zv[0, z, la, lo]/1.E06
                 TotalXsection += e1v_AMOC26N[la, lo]*e3v_AMOC26N[z, la, lo]
-        #print "cmip5AMOC:", la,lo,z,atlmoc.max()
+
     print("TotalXsection:", TotalXsection)
     # Cumulative sum from the bottom up.
     for z in range(73, 1, -1):
         atlmoc[z, :] = atlmoc[z+1, :] + atlmoc[z, :]
     return atlmoc
-        
+       
+ 
 def AMOC26N(nc, keys, **kwargs):
     atlmoc = TwentySixNorth(nc, keys, **kwargs)
     return atlmoc.max()
 
+
 def ADRC26N(nc,keys,**kwargs):
-    atlmoc = TwentySixNorth(nc,keys,**kwargs)
+    atlmoc = TwentySixNorth(nc, keys, **kwargs)
     return atlmoc.min()
         
                 

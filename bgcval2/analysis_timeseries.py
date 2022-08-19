@@ -220,44 +220,6 @@ def load_function(convert):
     return func, kwargs
 
 
-def load_function_old(functionname):
-    """
-    Using the named function in the key yaml, load that function and return it.
-    """
-    # load functions:
-    if functionname in std_functions.keys():
-        print( "Standard Function Found:", functionname)
-        func = std_functions[functionname]
-
-    if functionname.find(':') > -1:
-        [functionFileName,functionname] = functionname.split(':')
-        lst = functionFileName.replace('.py','').replace('/', '.').split('.')
-        modulename =  '.'.join(lst)
-
-        print("parseFunction:\tAttempting to load the function:",functionname, "from the:",modulename)
-        mod = __import__(modulename, fromlist=[functionname,])
-        func = getattr(mod, functionname)
-    return func
-
-
-def load_function_kwargs(key_dict, model_or_data):
-    """
-    Loads key word arguments from yaml file dictionary.
-    """
-    data_kwargs = {}
-    #, data_convert_kwargss = [], []
-    #####
-    # Looking for kwargs to pass to convert:
-    for key, value in key_dict.items():
-        searchFor =  model_or_data + '_convert_'
-        findstr = key.find(searchFor)
-        if findstr==-1:
-            continue
-        kwargkey = key[len(searchFor):]
-        data_kwargs[kwargkey] = value
-    return data_kwargs
-
-
 def findReplaceFlag(filepath, flag, new_value):
     """
     Looking for $FLAG in the filepath.
@@ -346,7 +308,6 @@ def load_key_file(key, paths, jobID):
         md_vars = parse_list_from_string(md_vars)
         md_convert = key_dict[''.join([model_or_data, '_convert'])]
         convert_func, kwargs = load_function(md_convert)
-        #wargs = load_function_kwargs(key_dict, model_or_data)
 
         output_dict[''.join([model_or_data, 'details'])] = {
             'name': key_dict['name'],
@@ -4056,219 +4017,219 @@ def analysis_timeseries(
             av[name]['gridFile'] = paths.orcaGridfn
             av[name]['dimensions'] = 1
 
-    if 'DrakePassageTransport' in analysisKeys:
-        name = 'DrakePassageTransport'
-        ####
-        # Note that this will only work with the eORCAgrid.
+#    if 'DrakePassageTransport' in analysisKeys:
+#        name = 'DrakePassageTransport'
+#        ####
+#        # Note that this will only work with the eORCAgrid.
+#
+#        # coordinates of Drake Passage
+#        LON = 219
+#        LAT0 = 79
+#        LAT1 = 109
+#
+#        nc = dataset(paths.orcaGridfn, 'r')
+#        e2u = nc.variables['e2u'][LAT0:LAT1, LON]
+#        umask = nc.variables['umask'][:, LAT0:LAT1, LON]
+#        nc.close()
+#
+#        def drake(nc, keys):
+#            e3u = nc.variables[ukesmkeys['e3u']][0, :, LAT0:LAT1, LON]
+#            velo = nc.variables[ukesmkeys['u3d']][0, :, LAT0:LAT1, LON]
+#            return np.sum(velo * e3u * e2u * umask) * 1.e-6
+#
+#        av[name]['modelFiles'] = listModelDataFiles(jobID, 'grid_U',
+#                                                    paths.ModelFolder_pref,
+#                                                    annual)
+#        av[name]['dataFile'] = ''
+#
+#        av[name]['modelcoords'] = medusaCoords
+#        av[name]['datacoords'] = medusaCoords
+#
+#        av[name]['modeldetails'] = {
+#            'name': name,
+#            'vars': [
+#                ukesmkeys['e3u'],
+#                ukesmkeys['u3d'],
+#            ],
+#            'convert': drake,
+#            'units': 'Sv'
+#        }
+#
+#        av[name]['regions'] = [
+#            'regionless',
+#        ]
+#        av[name]['datadetails'] = {
+#            'name': '',
+#            'units': '',
+#        }
+#        av[name]['layers'] = [
+#            'layerless',
+#        ]
+#        av[name]['metrics'] = [
+#            'metricless',
+#        ]
+#        av[name]['datasource'] = ''
+#        av[name]['model'] = 'NEMO'
+#        av[name]['modelgrid'] = 'eORCA1'
+#        av[name]['gridFile'] = paths.orcaGridfn
+#        av[name]['dimensions'] = 1
 
-        # coordinates of Drake Passage
-        LON = 219
-        LAT0 = 79
-        LAT1 = 109
-
-        nc = dataset(paths.orcaGridfn, 'r')
-        e2u = nc.variables['e2u'][LAT0:LAT1, LON]
-        umask = nc.variables['umask'][:, LAT0:LAT1, LON]
-        nc.close()
-
-        def drake(nc, keys):
-            e3u = nc.variables[ukesmkeys['e3u']][0, :, LAT0:LAT1, LON]
-            velo = nc.variables[ukesmkeys['u3d']][0, :, LAT0:LAT1, LON]
-            return np.sum(velo * e3u * e2u * umask) * 1.e-6
-
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'grid_U',
-                                                    paths.ModelFolder_pref,
-                                                    annual)
-        av[name]['dataFile'] = ''
-
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = medusaCoords
-
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': [
-                ukesmkeys['e3u'],
-                ukesmkeys['u3d'],
-            ],
-            'convert': drake,
-            'units': 'Sv'
-        }
-
-        av[name]['regions'] = [
-            'regionless',
-        ]
-        av[name]['datadetails'] = {
-            'name': '',
-            'units': '',
-        }
-        av[name]['layers'] = [
-            'layerless',
-        ]
-        av[name]['metrics'] = [
-            'metricless',
-        ]
-        av[name]['datasource'] = ''
-        av[name]['model'] = 'NEMO'
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 1
-
-    if 'AMOC_26N' in analysisKeys or 'AMOC_32S' in analysisKeys or 'ADRC_26N' in analysisKeys or 'AMOC_26N_nomexico' in analysisKeys:
-        # Note that this will only work with the eORCAgrid.
-        latslice26N = slice(227, 228)
-        latslice26Nnm = slice(228, 229)
-        latslice32S = slice(137, 138)
-        e3v, e1v, tmask, alttmask = {}, {}, {}, {}
-        for name in ['AMOC_26N', 'AMOC_32S', 'ADRC_26N', 'AMOC_26N_nomexico']:
-            if name not in analysisKeys: continue
-
-            ####
-            if name in ['AMOC_26N', 'ADRC_26N']: latslice = latslice26N
-            if name == 'AMOC_32S': latslice = latslice32S
-            if name in [
-                    'AMOC_26N_nomexico',
-            ]:
-                latslice = latslice26Nnm
-            # Load grid data
-            nc = dataset(paths.orcaGridfn, 'r')
-            e3v[name] = nc.variables['e3v'][:,
-                                            latslice, :]  # z level height 3D
-            e1v[name] = nc.variables['e1v'][latslice, :]  #
-            tmask[name] = nc.variables['tmask'][:, latslice, :]
-            nc.close()
-
-            # load basin mask
-            nc = dataset(os.path.join(paths.bgcval2_repo, 'bgcval2/data/basinlandmask_eORCA1.nc'), 'r')
-            alttmask[name] = nc.variables['tmaskatl'][
-                latslice, :]  # 2D Atlantic mask
-            if name == [
-                    'AMOC_26N_nomexico',
-            ]:
-                alttmask[name][228, 180:208] = 0.
-            nc.close()
-
-        def calc_amoc32S(nc, keys):
-            name = 'AMOC_32S'
-            zv = np.ma.array(
-                nc.variables[ukesmkeys['v3d']][..., latslice32S, :])  # m/s
-            atlmoc = np.array(np.zeros_like(zv[0, :, :, 0]))
-            e2vshape = e3v[name].shape
-            for la in range(e2vshape[1]):  #ji, y
-                for lo in range(e2vshape[2]):  #jj , x,
-                    if int(alttmask[name][la, lo]) == 0: continue
-                    for z in range(e2vshape[0]):  # jk
-                        if int(tmask[name][z, la, lo]) == 0: continue
-                        if np.ma.is_masked(zv[0, z, la, lo]): continue
-                        atlmoc[z,
-                               la] = atlmoc[z, la] - e1v[name][la, lo] * e3v[
-                                   name][z, la, lo] * zv[0, z, la, lo] / 1.E06
-
+#    if 'AMOC_26N' in analysisKeys or 'AMOC_32S' in analysisKeys or 'ADRC_26N' in analysisKeys or 'AMOC_26N_nomexico' in analysisKeys:
+#        # Note that this will only work with the eORCAgrid.
+#        latslice26N = slice(227, 228)
+#        latslice26Nnm = slice(228, 229)
+#        latslice32S = slice(137, 138)
+#        e3v, e1v, tmask, alttmask = {}, {}, {}, {}
+#        for name in ['AMOC_26N', 'AMOC_32S', 'ADRC_26N', 'AMOC_26N_nomexico']:
+#            if name not in analysisKeys: continue
+#
+#            ####
+#            if name in ['AMOC_26N', 'ADRC_26N']: latslice = latslice26N
+#            if name == 'AMOC_32S': latslice = latslice32S
+#            if name in [
+#                    'AMOC_26N_nomexico',
+#            ]:
+#                latslice = latslice26Nnm
+#            # Load grid data
+#            nc = dataset(paths.orcaGridfn, 'r')
+#            e3v[name] = nc.variables['e3v'][:,
+#                                            latslice, :]  # z level height 3D
+#            e1v[name] = nc.variables['e1v'][latslice, :]  #
+#            tmask[name] = nc.variables['tmask'][:, latslice, :]
+#            nc.close()
+#
+#            # load basin mask
+#            nc = dataset(os.path.join(paths.bgcval2_repo, 'bgcval2/data/basinlandmask_eORCA1.nc'), 'r')
+#            alttmask[name] = nc.variables['tmaskatl'][
+#                latslice, :]  # 2D Atlantic mask
+#            if name == [
+#                    'AMOC_26N_nomexico',
+#            ]:
+#                alttmask[name][228, 180:208] = 0.
+#            nc.close()
+#
+#        def calc_amoc32S(nc, keys):
+#            name = 'AMOC_32S'
+#            zv = np.ma.array(
+#                nc.variables[ukesmkeys['v3d']][..., latslice32S, :])  # m/s
+#            atlmoc = np.array(np.zeros_like(zv[0, :, :, 0]))
+#            e2vshape = e3v[name].shape
+#            for la in range(e2vshape[1]):  #ji, y
+#                for lo in range(e2vshape[2]):  #jj , x,
+#                    if int(alttmask[name][la, lo]) == 0: continue
+#                    for z in range(e2vshape[0]):  # jk
+#                        if int(tmask[name][z, la, lo]) == 0: continue
+#                        if np.ma.is_masked(zv[0, z, la, lo]): continue
+#                        atlmoc[z,
+#                               la] = atlmoc[z, la] - e1v[name][la, lo] * e3v[
+#                                   name][z, la, lo] * zv[0, z, la, lo] / 1.E06
+#
+#####
+## Cumulative sum from the bottom up.
+#            for z in range(73, 1, -1):
+#                atlmoc[z, :] = atlmoc[z + 1, :] + atlmoc[z, :]
+#            return np.ma.max(atlmoc)
+#
+#        def amoc26N_array(nc, keys, amocname='AMOC_26N'):
+#            zv = np.ma.array(
+#                nc.variables[ukesmkeys['v3d']][..., latslice26N, :])  # m/s
+#            atlmoc = np.array(np.zeros_like(zv[0, :, :, 0]))
+#            e2vshape = e3v[amocname].shape
+#            for la in range(e2vshape[1]):  #ji, y
+#                for lo in range(e2vshape[2]):  #jj , x,
+#                    if int(alttmask[amocname][la, lo]) == 0: continue
+#                    for z in range(e2vshape[0]):  # jk
+#                        if int(tmask[amocname][z, la, lo]) == 0: continue
+#                        if np.ma.is_masked(zv[0, z, la, lo]): continue
+#                        atlmoc[z, la] = atlmoc[z, la] - e1v[amocname][
+#                            la, lo] * e3v[amocname][z, la, lo] * zv[0, z, la,
+#                                                                    lo] / 1.E06
+#
 ####
 # Cumulative sum from the bottom up.
-            for z in range(73, 1, -1):
-                atlmoc[z, :] = atlmoc[z + 1, :] + atlmoc[z, :]
-            return np.ma.max(atlmoc)
-
-        def amoc26N_array(nc, keys, amocname='AMOC_26N'):
-            zv = np.ma.array(
-                nc.variables[ukesmkeys['v3d']][..., latslice26N, :])  # m/s
-            atlmoc = np.array(np.zeros_like(zv[0, :, :, 0]))
-            e2vshape = e3v[amocname].shape
-            for la in range(e2vshape[1]):  #ji, y
-                for lo in range(e2vshape[2]):  #jj , x,
-                    if int(alttmask[amocname][la, lo]) == 0: continue
-                    for z in range(e2vshape[0]):  # jk
-                        if int(tmask[amocname][z, la, lo]) == 0: continue
-                        if np.ma.is_masked(zv[0, z, la, lo]): continue
-                        atlmoc[z, la] = atlmoc[z, la] - e1v[amocname][
-                            la, lo] * e3v[amocname][z, la, lo] * zv[0, z, la,
-                                                                    lo] / 1.E06
-
-####
-# Cumulative sum from the bottom up.
-            for z in range(73, 1, -1):
-                atlmoc[z, :] = atlmoc[z + 1, :] + atlmoc[z, :]
-            #return np.ma.max(atlmoc)
-            return atlmoc
-
-        def calc_amoc26N(nc, keys):
-            return np.ma.max(amoc26N_array(nc, keys, amocname='AMOC_26N'))
-
-        def calc_amoc26Nnm(nc, keys):
-            return np.ma.max(
-                amoc26N_array(nc, keys, amocname='AMOC_26N_nomexico'))
-
-        def calc_min_amoc26N(nc, keys):
-            return np.ma.min(amoc26N_array(nc, keys, amocname='ADRC_26N'))
-
-        for name in ['AMOC_26N', 'AMOC_32S', 'ADRC_26N', 'AMOC_26N_nomexico']:
-            if name not in analysisKeys: continue
-
-            av[name]['modelFiles'] = listModelDataFiles(
-                jobID, 'grid_V', paths.ModelFolder_pref, annual)
-            av[name]['dataFile'] = ''
-
-            av[name]['modelcoords'] = medusaCoords
-            av[name]['datacoords'] = medusaCoords
-
-            if name == 'AMOC_26N':
-                av[name]['modeldetails'] = {
-                    'name': name,
-                    'vars': [
-                        ukesmkeys['v3d'],
-                    ],
-                    'convert': calc_amoc26N,
-                    'units': 'Sv'
-                }
-            if name in [
-                    'AMOC_26N_nomexico',
-            ]:
-                av[name]['modeldetails'] = {
-                    'name': name,
-                    'vars': [
-                        ukesmkeys['v3d'],
-                    ],
-                    'convert': calc_amoc26Nnm,
-                    'units': 'Sv'
-                }
-            if name == 'ADRC_26N':
-                av[name]['modeldetails'] = {
-                    'name': name,
-                    'vars': [
-                        ukesmkeys['v3d'],
-                    ],
-                    'convert': calc_min_amoc26N,
-                    'units': 'Sv'
-                }
-            if name == 'AMOC_32S':
-                av[name]['modeldetails'] = {
-                    'name': name,
-                    'vars': [
-                        ukesmkeys['v3d'],
-                    ],
-                    'convert': calc_amoc32S,
-                    'units': 'Sv'
-                }
-
-            av[name]['datadetails'] = {
-                'name': '',
-                'units': '',
-            }
-            av[name]['layers'] = [
-                'layerless',
-            ]
-            av[name]['regions'] = [
-                'regionless',
-            ]
-            av[name]['metrics'] = [
-                'metricless',
-            ]
-            av[name]['datasource'] = ''
-            av[name]['model'] = 'NEMO'
-            av[name]['modelgrid'] = 'eORCA1'
-            av[name]['gridFile'] = paths.orcaGridfn
-            av[name]['dimensions'] = 1
-
+#            for z in range(73, 1, -1):
+#                atlmoc[z, :] = atlmoc[z + 1, :] + atlmoc[z, :]
+#            #return np.ma.max(atlmoc)
+#            return atlmoc
+#
+#        def calc_amoc26N(nc, keys):
+#            return np.ma.max(amoc26N_array(nc, keys, amocname='AMOC_26N'))
+#
+#        def calc_amoc26Nnm(nc, keys):
+#            return np.ma.max(
+#                amoc26N_array(nc, keys, amocname='AMOC_26N_nomexico'))
+#
+#        def calc_min_amoc26N(nc, keys):
+#            return np.ma.min(amoc26N_array(nc, keys, amocname='ADRC_26N'))
+#
+#        for name in ['AMOC_26N', 'AMOC_32S', 'ADRC_26N', 'AMOC_26N_nomexico']:
+#            if name not in analysisKeys: continue
+#
+#            av[name]['modelFiles'] = listModelDataFiles(
+#                jobID, 'grid_V', paths.ModelFolder_pref, annual)
+#            av[name]['dataFile'] = ''
+#
+#            av[name]['modelcoords'] = medusaCoords
+#            av[name]['datacoords'] = medusaCoords
+#
+#            if name == 'AMOC_26N':
+#                av[name]['modeldetails'] = {
+#                    'name': name,
+#                    'vars': [
+#                        ukesmkeys['v3d'],
+#                    ],
+#                    'convert': calc_amoc26N,
+#                    'units': 'Sv'
+#                }
+#            if name in [
+#                    'AMOC_26N_nomexico',
+#            ]:
+#                av[name]['modeldetails'] = {
+#                    'name': name,
+#                    'vars': [
+#                        ukesmkeys['v3d'],
+#                    ],
+#                    'convert': calc_amoc26Nnm,
+#                    'units': 'Sv'
+#                }
+#            if name == 'ADRC_26N':
+#                av[name]['modeldetails'] = {
+#                    'name': name,
+#                    'vars': [
+#                        ukesmkeys['v3d'],
+#                    ],
+#                    'convert': calc_min_amoc26N,
+#                    'units': 'Sv'
+#                }
+#            if name == 'AMOC_32S':
+#                av[name]['modeldetails'] = {
+#                    'name': name,
+#                    'vars': [
+#                        ukesmkeys['v3d'],
+#                    ],
+#                    'convert': calc_amoc32S,
+#                    'units': 'Sv'
+#                }
+#
+#            av[name]['datadetails'] = {
+#                'name': '',
+#                'units': '',
+#            }
+#            av[name]['layers'] = [
+#                'layerless',
+#            ]
+#            av[name]['regions'] = [
+#                'regionless',
+#            ]
+#            av[name]['metrics'] = [
+#                'metricless',
+#            ]
+#            av[name]['datasource'] = ''
+#            av[name]['model'] = 'NEMO'
+#            av[name]['modelgrid'] = 'eORCA1'
+#            av[name]['gridFile'] = paths.orcaGridfn
+#            av[name]['dimensions'] = 1
+#
     if 'DMS_ARAN' in analysisKeys:
         name = 'DMS'
         av[name]['modelFiles'] = listModelDataFiles(jobID, 'diad_T',
@@ -4591,7 +4552,7 @@ def analysis_timeseries(
             if strictFileCheck:
                 raise FileNotFoundError(f'Model files are provided but not found for {name} : {missing_files}')
 
-        if 'dataFile' in av[name].keys():
+        if 'dataFile' in av[name]:
             print(name, 'dataFile', av[name]['dataFile'])
             if not os.path.exists(av[name]['dataFile']):
                 print(
