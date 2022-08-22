@@ -2140,53 +2140,6 @@ def timeseries_compare(jobs,
             av[name]['gridFile'] = orcaGridfn
             av[name]['Dimensions'] = 3
 
-        if 'MLD' in analysisKeys:
-
-            def mldapplymask(nc, keys):
-                mld = np.ma.array(nc.variables[keys[0]][:])
-                return np.ma.masked_where((nc.variables[keys[1]][:] == 0.) +
-                                          mld.mask + (mld == 1.E9), mld)
-
-            name = 'MLD'
-            av[name]['modelFiles'] = listModelDataFiles(
-                jobID, 'grid_T', paths.ModelFolder_pref, annual)
-            av[name][
-                'dataFile'] = paths.MLDFolder + "mld_DT02_c1m_reg2.0-annual.nc"  #mld_DT02_c1m_reg2.0.nc"
-
-            av[name]['modelcoords'] = medusaCoords
-            av[name]['datacoords'] = mldCoords
-
-            av[name]['modeldetails'] = {
-                'name': 'mld',
-                'vars': [
-                    'somxl010',
-                ],
-                'convert': ukp.NoChange,
-                'units': 'm'
-            }
-            av[name]['datadetails'] = {
-                'name': 'mld',
-                'vars': [
-                    'mld',
-                    'mask',
-                ],
-                'convert': mldapplymask,
-                'units': 'm'
-            }
-
-            av[name]['layers'] = [
-                'layerless',
-            ]  #'Surface - 1000m','Surface - 300m',]#'depthint']
-
-            av[name]['regions'] = vmtregionList
-            av[name]['metrics'] = metricList
-
-            av[name]['datasource'] = 'IFREMER'
-            av[name]['model'] = 'NEMO'
-
-            av[name]['modelgrid'] = 'eORCA1'
-            av[name]['gridFile'] = paths.orcaGridfn
-            av[name]['Dimensions'] = 2
 
         if 'MaxMonthlyMLD' in analysisKeys or 'MinMonthlyMLD' in analysisKeys:
 
