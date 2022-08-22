@@ -163,7 +163,7 @@ def loadArea(gridfn):
     nc = dataset(gridfn, 'r')
     lat    = nc.variables['lat'][:]
     try:
-        area   = nc.variables['area' ][:]
+        area   = nc.variables['area'][:]
     except:
         area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
     if lat.ndim ==1:
