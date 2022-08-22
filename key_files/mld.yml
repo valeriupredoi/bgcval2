@@ -18,17 +18,17 @@ model_convert:
     areafile: $PATHS_GRIDFILE
     maskname : tmask
 
-model_t         : time_centered         # model time dimension
-model_cal       : 360_day               # model calendar
-model_z         : deptht                # model depth dimension
-model_lat       : nav_lat               # model latitude dimension
-model_lon       : nav_lon               # model latitude dimension
+#model_t         : time_centered         # model time dimension
+#model_cal       : 360_day               # model calendar
+#model_z         : deptht                # model depth dimension
+#model_lat       : nav_lat               # model latitude dimension
+#model_lon       : nav_lon               # model latitude dimension
 
 # data coordinates names
-data_t          : index_t
-data_cal        : standard
-data_lat        : lat
-data_lon        : lon
+#data_t          : index_t
+#data_cal        : standard
+#data_lat        : lat
+#data_lon        : lon
 data_vars       : mld
 data_tdict      : ZeroToZero
 data_convert:
