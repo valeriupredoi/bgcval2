@@ -214,7 +214,7 @@ def cmipTotalIceExtent(nc, keys, **kwargs):    #Global
             si = sic[i]*area
             if hemisphere.lower() in northern:
                 si = np.ma.masked_where(lat<0., si)
-            if hemisphere.lower() in southern:
+            elif hemisphere.lower() in southern:
                 si = np.ma.masked_where(lat>0., si)
 
             out.append(si.sum() * 1.E-12)
