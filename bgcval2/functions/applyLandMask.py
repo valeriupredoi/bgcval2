@@ -44,31 +44,6 @@ def loadDataMask(areafile, maskname):
     return tmask[(areafile, maskname)]
 
 
-def applyLandMask(nc, keys, **kwargs):
-    areafile = kwargs.get('areafile', False)
-
-
-    if isinstance(areafile, list) and len(areafile)==1:
-        areafile = areafile[0]
-    else:
-        raise FileNotFoundError(f'Unable to find file: {areafile}')
-
-    if not areafile or not os.path.exists(areafile)
-        raise AssertionError(f"applyLandMask: Needs an `areafile` kwarg to apply mask: {areafile}")    
-
-    maskname = kwargs.get('maskname', 'tmask')
-
-    mask = tmask.get(((areafile, maskname), loadDataMask(areafile, maskname)) 
-    
-    arr = np.ma.array(nc.variables[keys[0]][:]).squeeze()
-    m   = np.ma.masked_where(mask + arr.mask, arr)
-    m  += np.ma.masked_invalid(arr).mask
-    arr = np.ma.masked_where(m>1, arr)
-    print("applyLandMask:\t ", arr.mean(), arr.min(), arr.max(), arr.shape, m.mean())
-    assert 0
-    return arr
-
-
 def applyLandMask2D(nc, keys, **kwargs):
     """
     Useful for when the mask is 3D, but the field is only 2D,
