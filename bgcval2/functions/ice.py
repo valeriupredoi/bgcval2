@@ -205,7 +205,7 @@ def cmipTotalIceExtent(nc, keys, **kwargs):    #Global
     sic = np.ma.array(nc.variables[keys[0]][:].squeeze())
     sic = np.ma.masked_where((sic < minIce) + sic.mask, sic)
 
-    northern = ['north', 'northern', 'northernhemisphere', 'northhemishere']
+    northern = ['north', 'northern', 'northernhemisphere', 'northhemisphere']
     southern = ['south', 'southern', 'southernhemisphere', 'southhemishere']
 
     if sic.ndim ==3:
