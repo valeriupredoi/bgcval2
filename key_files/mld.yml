@@ -1,0 +1,40 @@
+---
+name            : MLD
+units           : m
+dimensions      : 2
+model           : NEMO
+datasource      : IFERMER
+
+# The filenames
+modelFiles      : $BASEDIR_MODEL/$JOBID/nemo*_$JOBIDo1y_*_grid-T.nc
+modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*_$JOBIDo1y_*$YEAR????_grid-T.nc
+dataFile        : $BASEDIR_OBS/IFREMER-MLD/mld_DT02_c1m_reg2.0-annual.nc
+
+# Model coordinates/dimension names
+model_vars      : somxl010
+model_convert:
+    path: bgcval2/functions/applyLandMask.py
+    function: applyLandMask2D
+    areafile: $PATHS_GRIDFILE
+    maskname : tmask
+
+model_t         : time_centered         # model time dimension
+model_cal       : 360_day               # model calendar
+model_z         : deptht                # model depth dimension
+model_lat       : nav_lat               # model latitude dimension
+model_lon       : nav_lon               # model latitude dimension
+
+# data coordinates names
+data_t          : index_t
+data_cal        : standard
+data_lat        : lat
+data_lon        : lon
+data_vars       : mld
+data_tdict      : ZeroToZero
+data_convert:
+    path: bgcval2/functions/applyLandMask.py
+    function: applyLandMask_maskInFile
+    maskname : mask
+
+layers          : Surface
+regions         : Global  SouthernOcean

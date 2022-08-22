@@ -29,11 +29,12 @@ from datetime import datetime, timedelta
 #from pyproj import Proj
 
 #Specific local code:
-from .. import UKESMpython as ukp
-from ..netcdf_manipulation import convertToOneDNC
-from ..bgcvaltools.dataset import dataset
-from ..bgcvaltools.makeMask import makeMask
-from ..functions.standard_functions import extractData as std_extractData
+from bgcval2 import UKESMpython as ukp
+from bgcval2.netcdf_manipulation import convertToOneDNC
+from bgcval2.bgcvaltools.dataset import dataset
+from bgcval2.bgcvaltools.makeMask import makeMask
+from bgcval2.functions.standard_functions import extractData as std_extractData
+
 """
 .. module:: timeseriesTools
    :platform: Unix
@@ -88,9 +89,14 @@ def ApplyDepthSlice(arr, k):
     """
     Extracts a flat layer, k either
     """
+    print(arr.shape, k, type(k) )
     if arr.ndim < 3:
         return arr
-    return arr[..., k, :, :]
+    if arr.ndim==4:
+        return arr[:, k]
+    else:
+        assert 0
+    #eturn arr[..., k, :, :]
 
 
 def ApplyDepthrange(arr, k1, k2):

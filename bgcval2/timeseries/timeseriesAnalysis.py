@@ -38,11 +38,12 @@ import errno
 
 
 #Specific local code:
-from .. import UKESMpython as ukp
-from ..bgcvaltools.pftnames import getLongName
-from ..bgcvaltools.dataset import dataset
-from . import timeseriesTools as tst
-from . import timeseriesPlots as tsp
+from bgcval2 import UKESMpython as ukp
+from bgcval2.bgcvaltools.pftnames import getLongName
+from bgcval2.bgcvaltools.dataset import dataset
+from bgcval2.timeseries import timeseriesTools as tst
+from bgcval2.timeseries import timeseriesPlots as tsp
+
 #getTimes, loadData
 
 

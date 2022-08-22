@@ -1,0 +1,26 @@
+---
+name            : GlobalMeanSalinity
+units           : PSU
+dimensions      : 1
+model           : NEMO
+modelFiles      : $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_grid-T.nc
+gridFile        : $PATHS_GRIDFILE
+model_vars      : so_abs
+model_t         : time_centered         # model time dimension
+model_cal       : 360_day               # model calendar
+model_z         : deptht                # model depth dimension
+model_lat       : nav_lat               # model latitude dimension
+model_lon       : nav_lon               # model latitude dimension
+model_convert   :
+    path: bgcval2/functions/globalVolMean.py
+    function: globalVolumeMean
+    addvalue: 0.
+    multiplyBy: 1.
+    areafile : $PATHS_GRIDFILE
+layers          : layerless
+regions         : regionless
+
+# changes from original:
+#   add --- at start
+#   remove [name]
+#   add bgcval2 berfore functions
