@@ -477,6 +477,9 @@ class DataLoader:
             'latitude',
             'latbnd',
             'nav_lat',
+            'y_grid_t',
+            'y_grid_u',
+            'y_grid_v',
             'y',
             'lat',
         ]
@@ -485,6 +488,9 @@ class DataLoader:
             'longitude',
             'lonbnd',
             'nav_lon',
+            'x_grid_t',
+            'x_grid_u',
+            'x_grid_v',
             'x',
             'lon',
         ]
@@ -541,8 +547,7 @@ class DataLoader:
                     arr_lon.append(lo)
 
             else:
-                print("Unknown dimensions order", dims)
-                assert False
+                raise KeyError(f'"Unknown dimensions order {dims} in {self.nc.filename}') 
 
         elif dat.ndim == 1:
             if dims[0] == 'index':

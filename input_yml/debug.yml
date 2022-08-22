@@ -21,13 +21,13 @@ jobs:
         linestyle: '-'
         shifttime: 0.
         suite: debug
-#   u-cp647:
-#       description: 'GC5 N96 ORCA1 spin-up 4: with updated parameters for SI3 and NEMO'
-#       colour: green
-#       thickness: 0.7
-#       linestyle: '-'
-#       shifttime: 0.
-#       suite: debug
+    u-cp647debug:
+       description: 'GC5 N96 ORCA1 spin-up 4: with updated parameters for SI3 and NEMO'
+       colour: green
+       thickness: 0.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: debug
 
 
 
