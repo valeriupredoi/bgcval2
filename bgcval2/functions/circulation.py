@@ -362,7 +362,8 @@ def TwentySixNorth(nc,keys,**kwargs):
     TotalXsection = 0
     for la in range(e2vshape[1]):           #ji, y
         for lo in range(e2vshape[2]):         #jj , x,
-            if int(alttmask_AMOC26N[la, lo]) == 0: continue
+            if int(alttmask_AMOC26N[la, lo]) == 0:
+                continue
             for z in range(e2vshape[0]):        # jk
                 if int(tmask_AMOC26N[z, la, lo]) == 0:     continue
                 if np.ma.is_masked(zv[0, z, la, lo]): continue
