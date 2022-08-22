@@ -101,7 +101,7 @@ def list_input_files(files_path, key_dict, paths):
     flags = ['USERNAME','basedir_model', 'basedir_obs','PATHS_GRIDFILE']
     flag_values = [getpass.getuser(), paths.ModelFolder_pref, paths.ObsFolder, paths.orcaGridfn]
 
-    for flag in ['jobID', 'model', 'years','year', 'scenario']:
+    for flag in ['jobID', 'model', 'years','year', 'scenario', 'name']:
         if key_dict.get(flag, False):
             flags.append(flag.upper())
             flag_values.append(key_dict[flag])
@@ -263,8 +263,10 @@ def load_coords_from_netcdf(mdfile):
         coord_candidates[coord].extend([c.title() for c in coord_candidate_list])
 
     # Load variable names:
-    if isinstance(mdfile, list):
+    if isinstance(mdfile, list) and len(mdfile):
+        print(mdfile) 
         mdfile = mdfile[0]
+    
     nctmp = dataset(mdfile, 'r')
     nckeys = set(nctmp.variables.keys())
 
