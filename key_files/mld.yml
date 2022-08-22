@@ -6,8 +6,8 @@ model           : NEMO
 datasource      : IFERMER
 
 # The filenames
-modelFiles      : $BASEDIR_MODEL/$JOBID/nemo*_$JOBIDo1y_*_grid-T.nc
-modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*_$JOBIDo1y_*$YEAR????_grid-T.nc
+modelFiles      : $BASEDIR_MODEL/$JOBID/nemo*_$JOBIDo_1y_*_grid-T.nc
+modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*_$JOBIDo_1y_*$YEAR????_grid-T.nc
 dataFile        : $BASEDIR_OBS/IFREMER-MLD/mld_DT02_c1m_reg2.0-annual.nc
 
 # Model coordinates/dimension names

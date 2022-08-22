@@ -36,29 +36,34 @@ from bgcval2.bgcvaltools.dataset import dataset
 tmask = {}
 
 
-def loadDataMask(gridfn, maskname):
+def loadDataMask(areafile, maskname):
     global tmask
-    nc = dataset(gridfn, 'r')        
-    tmask[(gridfn, maskname)] = nc.variables[maskname][:].squeeze()
+    nc = dataset(areafile, 'r')        
+    tmask[(areafile, maskname)] = nc.variables[maskname][:].squeeze()
     nc.close()
 
 
 def applyLandMask(nc, keys, **kwargs):
     try:
-        gridfn = kwargs['areafile']
+        areafile = kwargs['areafile']
     except:
         raise AssertionError("applyLandMask:\t Needs an `areafile` kwarg to apply mask")    
-    
+
+    if isinstance(areafile, list) and len(areafile)==1:
+        areafile = areafile[0]
+    else:
+        raise FileNotFoundError(f'Unable to find file: {areafile}')
+ 
     try:
         maskname = kwargs['maskname']
     except:
         maskname = 'tmask'
 
     try:
-        mask = tmask[(gridfn, maskname)]
+        mask = tmask[(areafile, maskname)]
     except:
-        loadDataMask(gridfn, maskname)
-        mask = tmask[(gridfn, maskname)]
+        loadDataMask(areafile, maskname)
+        mask = tmask[(areafile, maskname)]
     
     try:
         shape = mask.shape
@@ -80,26 +85,36 @@ def applyLandMask2D(nc, keys, **kwargs):
     so you want to apply the surface layer of the mask.
     """
     try:
-        gridfn = kwargs['areafile']
+        areafile = kwargs['areafile']
     except:
         raise AssertionError("applyLandMask:\t Needs an `areafile` kwarg to apply mask")    
-    
+   
+    if isinstance(areafile, list) and len(areafile)==1:
+        areafile = areafile[0]
+    else:
+        raise FileNotFoundError(f'Unable to find file: {areafile}')
+ 
     try:
         maskname = kwargs['maskname']
     except:
         maskname = 'tmask'
 
     try:
-        mask = tmask[(gridfn, maskname)][0]
+        mask = tmask[(areafile, maskname)][0]
     except:
-        loadDataMask(gridfn, maskname)
-        mask = tmask[(gridfn, maskname)][0]
+        loadDataMask(areafile, maskname)
+        mask = tmask[(areafile, maskname)][0]
             
     try:
         shape = mask.shape
     except:
         raise AssertionError("applyLandMask.py:\t Model mask not loaded correctly")
 
+    for key in keys:
+        if key not in nc.variables.keys():
+            print(f'key {key} not in file {nc.filename}')
+            print('Available keys:options:', nc.variables.keys())
+            raise KeyError(f'applyLandMask: key {key} not in file {nc.filename}.')
     arr = np.ma.array(nc.variables[keys[0]][:]).squeeze()
     m  = np.ma.masked_where(mask + arr.mask, arr)
     m += np.ma.masked_invalid(arr).mask
@@ -127,7 +142,7 @@ def applyLandMask_maskInFile(nc, keys, **kwargs):
     try:
         shape = mask.shape
     except:
-        raise AssertionError("applyLandMask_maskInFile.py:\t Model mask not loaded correctly")
+        raise AssertionError(f"applyLandMask_maskInFile.py:\t Model mask not loaded correctly:{maskname} in {nc.filename}")
 
     arr = np.ma.array(nc.variables[keys[0]][:]).squeeze()
     m = np.ma.masked_where(mask + arr.mask, arr)

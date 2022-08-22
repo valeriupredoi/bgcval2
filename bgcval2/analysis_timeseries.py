@@ -3350,63 +3350,63 @@ def analysis_timeseries(
         av[name]['gridFile'] = paths.orcaGridfn
         av[name]['dimensions'] = 2
 
-    if 'MLD' in analysisKeys:
-
-        def mldapplymask(nc, keys):
-            mld = np.ma.array(nc.variables[keys[0]][:])
-            return np.ma.masked_where(
-                (nc.variables[keys[1]][:] == 0.) + mld.mask + (mld == 1.E9),
-                mld)
-
-        name = 'MLD'
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'grid_T',
-                                                    paths.ModelFolder_pref,
-                                                    annual)
-        #av[name]['modelFiles']  	= sorted(glob(paths.ModelFolder_pref+jobID+"/"+jobID+"o_1y_*_grid_T.nc"))
-        av[name][
-            'dataFile'] = paths.MLDFolder + "mld_DT02_c1m_reg2.0-annual.nc"  #mld_DT02_c1m_reg2.0.nc"
-        #MLD_DT02 = depth where (T = T_10m +/- 0.2 degC)
-
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = mldCoords
-
-        av[name]['modeldetails'] = {
-            'name': 'mld',
-            'vars': [ ukesmkeys['MLD'],],
-            'convert': applySurfaceMask,
-            'units': 'm'
-        }
-        #av[name]['modeldetails'] 	= {'name': 'mld', 'vars':[ukesmkeys['temp3d'],],   'convert': calcMLD,'units':'m'}
-        av[name]['datadetails'] = {
-            'name': 'mld',
-            'vars': [
-                'mld',
-                'mask',
-            ],
-            'convert': mldapplymask,
-            'units': 'm'
-        }
-
-        av[name]['layers'] = [
-            'layerless',
-        ]  #'Surface - 1000m','Surface - 300m',]#'depthint'
-
-        mldregions = [
-            'Global', 'ignoreInlandSeas', 'Equator10', 'AtlanticSOcean',
-            'SouthernOcean', 'ArcticOcean', 'Remainder',
-            'NorthernSubpolarAtlantic', 'NorthernSubpolarPacific', 'WeddelSea'
-        ]
-        mldregions.extend(PierceRegions)
-
-        av[name]['regions'] = mldregions
-        av[name]['metrics'] = metricList
-
-        av[name]['datasource'] = 'IFREMER'
-        av[name]['model'] = 'NEMO'
-
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 2
+#    if 'MLD' in analysisKeys:
+#
+#        def mldapplymask(nc, keys):
+#            mld = np.ma.array(nc.variables[keys[0]][:])
+#            return np.ma.masked_where(
+#                (nc.variables[keys[1]][:] == 0.) + mld.mask + (mld == 1.E9),
+#                mld)
+#
+#        name = 'MLD'
+#        av[name]['modelFiles'] = listModelDataFiles(jobID, 'grid_T',
+##                                                    paths.ModelFolder_pref,
+#                                                    annual)
+#        #av[name]['modelFiles']  	= sorted(glob(paths.ModelFolder_pref+jobID+"/"+jobID+"o_1y_*_grid_T.nc"))
+#        av[name][
+#            'dataFile'] = paths.MLDFolder + "mld_DT02_c1m_reg2.0-annual.nc"  #mld_DT02_c1m_reg2.0.nc"
+#        #MLD_DT02 = depth where (T = T_10m +/- 0.2 degC)
+#
+#        av[name]['modelcoords'] = medusaCoords
+#        av[name]['datacoords'] = mldCoords
+#
+#        av[name]['modeldetails'] = {
+#            'name': 'mld',
+#            'vars': [ ukesmkeys['MLD'],],
+#            'convert': applySurfaceMask,
+#            'units': 'm'
+#        }
+#        #av[name]['modeldetails'] 	= {'name': 'mld', 'vars':[ukesmkeys['temp3d'],],   'convert': calcMLD,'units':'m'}
+#        av[name]['datadetails'] = {
+#            'name': 'mld',
+#            'vars': [
+#                'mld',
+#                'mask',
+#            ],
+#            'convert': mldapplymask,
+#            'units': 'm'
+#        }
+#
+#        av[name]['layers'] = [
+#            'layerless',
+#        ]  #'Surface - 1000m','Surface - 300m',]#'depthint'
+#
+#        mldregions = [
+#            'Global', 'ignoreInlandSeas', 'Equator10', 'AtlanticSOcean',
+#            'SouthernOcean', 'ArcticOcean', 'Remainder',
+#            'NorthernSubpolarAtlantic', 'NorthernSubpolarPacific', 'WeddelSea'
+#        ]
+#        mldregions.extend(PierceRegions)
+#
+#        av[name]['regions'] = mldregions
+#        av[name]['metrics'] = metricList
+#
+#        av[name]['datasource'] = 'IFREMER'
+#        av[name]['model'] = 'NEMO'
+#
+#        av[name]['modelgrid'] = 'eORCA1'
+#        av[name]['gridFile'] = paths.orcaGridfn
+#        av[name]['dimensions'] = 2
 
     if 'MaxMonthlyMLD' in analysisKeys or 'MinMonthlyMLD' in analysisKeys:
 
