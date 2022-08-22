@@ -365,7 +365,8 @@ def TwentySixNorth(nc,keys,**kwargs):
             if int(alttmask_AMOC26N[la, lo]) == 0:
                 continue
             for z in range(e2vshape[0]):        # jk
-                if int(tmask_AMOC26N[z, la, lo]) == 0:     continue
+                if int(tmask_AMOC26N[z, la, lo]) == 0:
+                    continue
                 if np.ma.is_masked(zv[0, z, la, lo]): continue
                 atlmoc[z, la] = atlmoc[z, la] - e1v_AMOC26N[la, lo]*e3v_AMOC26N[z, la, lo]*zv[0, z, la, lo]/1.E06
                 TotalXsection += e1v_AMOC26N[la, lo]*e3v_AMOC26N[z, la, lo]
