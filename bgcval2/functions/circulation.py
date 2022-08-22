@@ -40,14 +40,23 @@ latslice26N = slice(227,228)
 latslice26Nnm = slice(228,229)
 latslice32S = slice(137,138)
 
-umask_drake     = 0
-e2u_drake    = 0
-e3v_AMOC26N     = 0
-e1v_AMOC26N    = 0
-tmask_AMOC26N    = 0
-alttmask_AMOC26N= 0
-loadedArea     = False
-loadedAltMask     = False
+global umask_drake
+global e2u_drake
+global e3v_AMOC26N
+global e1v_AMOC26N
+global tmask_AMOC26N
+global alttmask_AMOC26N 
+global loadedArea
+global loadedAltMask
+
+umask_drake = 0
+e2u_drake = 0
+e3v_AMOC26N = 0
+e1v_AMOC26N = 0
+tmask_AMOC26N = 0
+alttmask_AMOC26N = 0
+loadedArea = False
+loadedAltMask = False
 
 
 def loadDataMask(gridfn,maskname,):
