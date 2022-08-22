@@ -6,12 +6,6 @@ model           : NEMO
 modelFiles      : $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_grid-T.nc
 gridFile        : $PATHS_GRIDFILE
 model_vars      : thetao_con
-# model_t         : time_centered         # model time dimension
-# model_cal       : 360_day               # model calendar
-# model_z         : deptht                # model depth dimension
-# model_lat       : nav_lat               # model latitude dimension
-# model_lon       : nav_lon               # model latitude dimension
-#model_convert   : bgcval2/functions/globalVolMean.py:globalVolumeMean
 model_convert   :
     path: bgcval2/functions/globalVolMean.py
     function: globalVolumeMean
