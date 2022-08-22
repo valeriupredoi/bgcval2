@@ -98,19 +98,3 @@ def applyLandMask2D(nc, keys, **kwargs):
     return np.ma.masked_where(m, arr)
 
 
-def applyLandMask_maskInFile(nc, keys, **kwargs):
-    """
-    Useful for when the mask is already in the same netcdf.
-    """
-   
-    maskname = kwargs.get('maskname', 'tmask')
-    mask = tmask.get(((areafile, maskname), loadDataMask(areafile, maskname))
-
-    print("applyLandMask_maskInFile", nc.filename)
-    arr = np.ma.array(nc.variables[keys[0]][:]).squeeze()
-    m = np.ma.masked_where(mask + arr.mask, arr)
-    m += np.ma.masked_invalid(arr).mask
-    return np.ma.masked_where(m, arr)
-    
-
-
