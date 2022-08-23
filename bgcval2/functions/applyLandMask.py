@@ -51,8 +51,6 @@ def applyLandMask2D(nc, keys, **kwargs):
     so you want to apply the surface layer of the mask.
     """
     areafile = get_kwarg_file(kwargs, filekey)
-
- 
     maskname = kwargs.get('maskname', 'tmask')
     mask = tmask.get(((areafile, maskname), loadDataMask(areafile, maskname))
 
@@ -61,6 +59,7 @@ def applyLandMask2D(nc, keys, **kwargs):
             print(f'key {key} not in file {nc.filename}')
             print('Available keys:options:', nc.variables.keys())
             raise KeyError(f'applyLandMask: key {key} not in file {nc.filename}.')
+
     arr = np.ma.array(nc.variables[keys[0]][:]).squeeze()
     m  = np.ma.masked_where(mask + arr.mask, arr)
     m += np.ma.masked_invalid(arr).mask

@@ -108,7 +108,6 @@ def find_keys_in_nc(nc, keys):
     return intersection_keys
 
 
-
 def drakePassage(nc, keys, **kwargs):
     """
     This function calculates drake passage for eORCA1. 
@@ -173,7 +172,7 @@ def TwentySixNorth(nc,keys,**kwargs):
         if not tmask_AMOC26N[z, la, lo]:
             continue
         if np.ma.is_masked(zv[0, z, la, lo]):
-                continue
+            continue
         atlmoc[z, la] = atlmoc[z, la] - e1v_AMOC26N[la, lo] * e3v_AMOC26N[z, la, lo] * zv[0, z, la, lo] / 1.E06
 
     for z in range(e3v_AMOC26N.shape[0] -2, 1, -1): # add from the bottom up
