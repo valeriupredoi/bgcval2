@@ -94,9 +94,8 @@ def ApplyDepthSlice(arr, k):
         return arr
     if arr.ndim==4:
         return arr[:, k]
-    else:
-        assert 0
-
+    raise KeyError(f'ApplyDepthSlice: {k} shape not recognised: {arr.shape}')
+    
 
 def ApplyDepthrange(arr, k1, k2):
     if arr.ndim == 4: return arr[:, k1:k2, :, :]
