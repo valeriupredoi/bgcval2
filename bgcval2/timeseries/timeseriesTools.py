@@ -148,6 +148,7 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
 
     if layer in [
             'Surface',
+            '50m',
             '100m',
             '200m',
             '300m',
@@ -158,6 +159,7 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
             '4000m',
     ]:
         if layer == 'Surface': z = 0.
+        if layer == '50m': z = 50.
         if layer == '100m': z = 100.
         if layer == '200m': z = 200.
         if layer == '300m': z = 300.
