@@ -169,9 +169,9 @@ def loadArea(gridfn):
     if lat.ndim ==1:
         lon = nc.variables['lon'][:]
         if area.shape[0]==lat.shape[0]:
-            lats, lond = np.meshgrid(lon, lat)
+            lats, _ = np.meshgrid(lon, lat)
         if area.shape[1]==lat.shape[0]:
-            lats, lond = np.meshgrid(lat, lon)
+            lats, _ = np.meshgrid(lat, lon)
     else:
         lats = lat
     nc.close()

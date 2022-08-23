@@ -60,13 +60,7 @@ loadedAltMask = False
 
 
 def loadDataMask(gridfn,maskname,):
-    global umask_drake
-    global e2u_drake
-    global loadedArea
-    global e3v_AMOC26N
-    global e1v_AMOC26N
-    global tmask_AMOC26N    
-    if isinstance(gridfn, list) and len(gridfn)==1:
+    if isinstance(gridfn, list) and len(gridfn) == 1:
         gridfn = gridfn[0]
 
     nc = dataset(gridfn,'r')        
@@ -80,8 +74,6 @@ def loadDataMask(gridfn,maskname,):
 
 
 def loadAtlanticMask(altmaskfile,maskname='tmaskatl',):
-    global alttmask_AMOC26N
-    global loadedAltMask
     nc = dataset(altmaskfile,'r')        
     alttmask_AMOC26N = nc.variables[maskname][latslice26Nnm,:]   # 2D Atlantic mask
  #       alttmask_AMOC26N[228,180:208]=0.
@@ -98,11 +90,15 @@ def drakePassage(nc,keys,**kwargs):
     
     """
     
-    if 'areafile' not in list(kwargs.keys()):
+    if 'areafile' not in kwargs.keys():
         raise AssertionError("drakePassage:\t Needs an `areafile` kwarg to run calculation.")    
 
-    try:    maskname = kwargs['maskname']
-    except:    maskname = 'tmask'
+    try:
+        maskname = kwargs['maskname']
+    except ValueError:
+        print(f"maskname not in {str(kwargs)} for drakePassage, using 'tmask' instead")
+        maskname = 'tmask'
+        pass
             
     if not loadedArea: loadDataMask(kwargs['areafile'],maskname)
     try:    e3u = nc.variables['thkcello'][0,:,LAT0:LAT1,LON]    
@@ -117,14 +113,14 @@ def drakePassage(nc,keys,**kwargs):
 
 
 
-drakedetails     = {}
+global drakedetails
+drakedetails = dict()
 def loadDrakeDetails(gridfn):
-    global drakedetails
     print("cmip5DrakePassage:\topening grid file", gridfn)    
     nc = dataset(gridfn,'r')
-    if 'Drake_A' in list(nc.variables.keys()): 
+    if 'Drake_A' in nc.variables.keys(): 
         drakeKey = 'Drake_A'
-    elif 'Drake' in list(nc.variables.keys()): 
+    elif 'Drake' in nc.variables.keys(): 
         drakeKey = 'Drake'
             
     Drake_A = nc.variables[drakeKey][:]        
@@ -135,7 +131,7 @@ def loadDrakeDetails(gridfn):
        
  
 def cmip5DrakePassage(nc,keys,**kwargs):
-    if 'gridfile' not in list(kwargs.keys()):
+    if 'gridfile' not in kwargs.keys():
         raise AssertionError("drakePassage:\t Needs an `gridFile` kwarg to run calculation.")    
     gridFile_u =     kwargs['gridfile']
     try:    
@@ -192,9 +188,9 @@ def cmip5DrakePassage(nc,keys,**kwargs):
     return out    # should return 1 d time array.
             
 
-amocdetails     = {}
+global amocdetails
+amocdetails = dict()
 def loadAMOCdetails(gridfn):
-    global amocdetails
     print("loadAMOCdetails:\topening grid file", gridfn)    
     nc = dataset(gridfn,'r')
     if 'AMOC_26N_A' in list(nc.variables.keys()): 

@@ -96,7 +96,6 @@ def ApplyDepthSlice(arr, k):
         return arr[:, k]
     else:
         assert 0
-    #eturn arr[..., k, :, :]
 
 
 def ApplyDepthrange(arr, k1, k2):
