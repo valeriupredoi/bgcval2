@@ -19,36 +19,36 @@ clean: True
 # •     u-cn857 - alk added at bathy - or 200m (if bathy deeper)
 #
 jobs:
-    u-co094:
-        description: 'no alk added'
-        colour: purple
-        thickness: 0.7
-        linestyle: '-'
-        shifttime: 0.
-        suite: bgc alkalinity
-    u-cp800:
-       description: 'alk add at surface'
-       colour: green
-       thickness: 0.7
-       linestyle: '-'
-       shifttime: 0.
-       suite: bgc alkalinity
-
+#    u-co094:
+#        description: 'no alk added'
+#        colour: purple
+#        thickness: 0.7
+#        linestyle: '-'
+#        shifttime: 0.
+#        suite: bgc #alkalinity
+#    u-cp800:
+#       description: 'alk add at surface'
+#       colour: green
+#       thickness: 0.7
+#       linestyle: '-'
+#       shifttime: 0.
+#       suite: bgc #alkalinity
+#
     u-cp799:
        description: 'alk added at bathy - or 100m (if bathy deeper)'
        colour: green
        thickness: 0.7
        linestyle: '-'
        shifttime: 0.
-       suite: bgc alkalinity
+       suite: bgc #alkalinity
 
-    u-cp857:
-       description: 'alk added at bathy - or 200m (if bathy deeper)'
-       colour: green
-       thickness: 0.7
-       linestyle: '-'
-       shifttime: 0.
-       suite: bgc alkalinity
+#    u-cp857:
+#       description: 'alk added at bathy - or 200m (if bathy deeper)'
+#       colour: green
+#       thickness: 0.7
+#       linestyle: '-'
+#       shifttime: 0.
+#       suite: bgc #alkalinity
 
 
 

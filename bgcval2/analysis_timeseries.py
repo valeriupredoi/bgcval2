@@ -334,6 +334,7 @@ def load_key_file(key, paths, jobID):
             mdfile = list_input_files(file_path, key_dict, paths)
             if isinstance(mdfile, list) and len(mdfile) == 1:
                 mdfile = mdfile[0]
+
         output_dict[''.join([model_or_data, 'Files'])] = mdfile
 
         coords = ukp.load_coords_from_netcdf(mdfile)
@@ -680,39 +681,6 @@ def analysis_timeseries(
         av[name]['metrics'] = metricList
 
         av[name]['datasource'] = 'MAREDAT'
-        av[name]['model'] = 'MEDUSA'
-
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 3
-
-    if 'CHL' in analysisKeys:
-        name = 'Chlorophyll'
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'ptrc_T',
-                                                    paths.ModelFolder_pref,
-                                                    annual)
-        av[name]['dataFile'] = ''
-
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = maredatCoords
-
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': ['CHN', 'CHD'],
-            'convert': ukp.sums,
-            'units': 'mg C/m^3'
-        }
-        av[name]['datadetails'] = {'name': '', 'units': ''}
-
-        av[name]['layers'] = [
-            'Surface',
-            '100m',
-            '200m',
-        ]
-        av[name]['regions'] = regionList
-        av[name]['metrics'] = metricList
-
-        av[name]['datasource'] = ''
         av[name]['model'] = 'MEDUSA'
 
         av[name]['modelgrid'] = 'eORCA1'
@@ -1089,127 +1057,7 @@ def analysis_timeseries(
         av[name]['gridFile'] = paths.orcaGridfn
         av[name]['dimensions'] = 3
 
-    if 'N' in analysisKeys:
-        name = 'Nitrate'
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'ptrc_T',
-                                                    paths.ModelFolder_pref,
-                                                    annual)
-        if annual:
-            av[name]['dataFile'] = WOAFolder + '/woa13_all_n00_01.nc'
-        else:
-            av[name]['dataFile'] = WOAFolder + '/nitrate_monthly_1deg.nc'
 
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = woaCoords
-
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': [
-                'DIN',
-            ],
-            'convert': ukp.NoChange,
-            'units': 'mmol N/m^3'
-        }
-        av[name]['datadetails'] = {
-            'name': name,
-            'vars': [
-                'n_an',
-            ],
-            'convert': ukp.NoChange,
-            'units': 'mmol N/m^3'
-        }
-
-        av[name]['layers'] = layerList
-        av[name]['regions'] = regionList
-
-        #av[name]['layers'] 		= ['Surface','300m',]#'1000m',]#'Surface - 300m',]'100m',
-        #av[name]['regions'] 		= regionList#['Global',]#'NorthAtlanticOcean','SouthAtlanticOcean',]#'NorthAtlantic']
-        av[name]['metrics'] = metricList  #['mean','median', ]
-
-        av[name]['datasource'] = 'WOA'
-        av[name]['model'] = 'MEDUSA'
-
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 3
-
-    if 'Si' in analysisKeys:
-        name = 'Silicate'
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'ptrc_T',
-                                                    paths.ModelFolder_pref,
-                                                    annual)
-        if annual:
-            av[name]['dataFile'] = WOAFolder + 'woa13_all_i00_01.nc'
-        else:
-            av[name]['dataFile'] = WOAFolder + 'wsilicate_monthly_1deg.nc'
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = woaCoords
-
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': [
-                'SIL',
-            ],
-            'convert': ukp.NoChange,
-            'units': 'mmol Si/m^3'
-        }
-        av[name]['datadetails'] = {
-            'name': name,
-            'vars': [
-                'i_an',
-            ],
-            'convert': ukp.NoChange,
-            'units': 'mmol Si/m^3'
-        }
-
-        av[name]['layers'] = layerList
-        av[name]['regions'] = regionList
-        av[name]['metrics'] = metricList
-
-        av[name]['datasource'] = 'WOA'
-        av[name]['model'] = 'MEDUSA'
-
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 3
-
-    if 'O2' in analysisKeys:
-        name = 'Oxygen'
-        if annual:
-            av[name]['modelFiles'] = listModelDataFiles(
-                jobID, 'ptrc_T', paths.ModelFolder_pref, annual)
-            av[name]['dataFile'] = WOAFolder + 'woa13_all_o00_01.nc'
-
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = woaCoords
-
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': [
-                'OXY',
-            ],
-            'convert': ukp.NoChange,
-            'units': 'mmol O2/m^3'
-        }
-        av[name]['datadetails'] = {
-            'name': name,
-            'vars': [
-                'o_an',
-            ],
-            'convert': ukp.oxconvert,
-            'units': 'mmol O2/m^3'
-        }
-
-        av[name]['layers'] = layerList
-        av[name]['regions'] = regionList
-        av[name]['metrics'] = metricList
-
-        av[name]['datasource'] = 'WOA'
-        av[name]['model'] = 'MEDUSA'
-
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 3
 
     if 'OMZMeanDepth' in analysisKeys:
         if annual:
@@ -2230,42 +2078,6 @@ def analysis_timeseries(
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
         av[name]['dimensions'] = 2
-
-    if 'Iron' in analysisKeys:
-
-        name = 'Iron'
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'ptrc_T',
-                                                    paths.ModelFolder_pref,
-                                                    annual)
-
-        av[name][
-            'dataFile'] = paths.icFold + "/UKESM_fields_1860_eORCA1_small.nc"
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = icCoords
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': [
-                'FER',
-            ],
-            'convert': ukp.mul1000,
-            'units': 'umolFe/m3'
-        }
-        av[name]['datadetails'] = {
-            'name': name,
-            'vars': [
-                'FER',
-            ],
-            'convert': ukp.mul1000,
-            'units': 'umolFe/m3'
-        }
-        av[name]['layers'] = layerList
-        av[name]['regions'] = regionList
-        av[name]['metrics'] = metricList
-        av[name]['datasource'] = 'InititialCondition'
-        av[name]['model'] = 'MEDUSA'
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 3
 
 
     if 'GlobalMeanTemperature_700' in analysisKeys:
