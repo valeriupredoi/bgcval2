@@ -125,7 +125,8 @@ def build_list_of_suite_keys(suites, debug=True):
     print(f'analysis_timeseries: Directory where keys are stored: {key_lists_dir}')
     analysis_keys = {}
     for suite in suites:
-        print(suite)
+        if not suite or suite in [' ', ',']: 
+            continue
         # look for a list in keys_list directory:
         suite_yml = os.path.join(key_lists_dir, ''.join([suite.lower(),'.yml']))
         if debug:
@@ -405,7 +406,8 @@ def analysis_timeseries(
     # This lets up give a list of keys one at a time, or in parrallel.
     #if type(suites) == type(['Its', 'A', 'list!']):
     if isinstance(suites, str):
-        suites = [suites, ]
+        suites = suites.replace(',', ' ').replace('\'', '').replace('"', '')
+        suites = suites.split(' ')
 
     analysisKeys = build_list_of_suite_keys(suites, debug=True)
     print('analysisKeys', analysisKeys)
