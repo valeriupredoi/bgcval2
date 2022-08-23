@@ -483,7 +483,6 @@ def load_coords_from_netcdf(mdfile):
 
     # Load variable names:
     if isinstance(mdfile, list) and len(mdfile):
-        print(mdfile)
         mdfile = mdfile[0]
 
     nctmp = dataset(mdfile, 'r')
