@@ -400,7 +400,7 @@ def analysis_timeseries(
     paths = paths_setter(paths_dict)
 
     #####
-    # Switches:/cxoo
+    # Switches:
     # These are some booleans that allow us to choose which analysis to run.
     # This lets up give a list of keys one at a time, or in parrallel.
     #if type(suites) == type(['Its', 'A', 'list!']):
