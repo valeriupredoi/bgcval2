@@ -156,7 +156,7 @@ def TwentySixNorth(nc,keys,**kwargs):
     if not loadedArea:
         loadDataMask(areafile, maskname, grid)
 
-    altmaskfile = get_kwarg_file(kwargs, 'altmaskfile',  default = 'bgcval2/data/basinlandmask_eORCA1.nc')
+    altmaskfile = get_kwarg_file(kwargs, 'altmaskfile', default = 'bgcval2/data/basinlandmask_eORCA1.nc')
      
     if not loadedAltMask: 
         loadAtlanticMask(altmaskfile, maskname='tmaskatl', grid=grid)
@@ -166,27 +166,17 @@ def TwentySixNorth(nc,keys,**kwargs):
     
     zv = np.ma.array(nc.variables[keys[0]][..., latslice26Nnm, :]) # m/s
     atlmoc = np.array(np.zeros_like(zv[0, :, :, 0]))
-    print('e3v_AMOC26N:', e3v_AMOC26N)
-    e2vshape = e3v_AMOC26N.shape
-    xsectArea = (e1v_AMOC26N * e3v_AMOC26N)
-    print('TwentySixNorth:', e1v_AMOC26N.shape, e3v_AMOC26N.shape, xsectArea.shape, xsectArea.sum())
 
-    TotalXsection = 0
-    for la in range(e2vshape[1]):           #ji, y
-        for lo in range(e2vshape[2]):         #jj , x,
-            if int(alttmask_AMOC26N[la, lo]) == 0:
+    for (z, la, lo), _ in np.ndenumerate(e3v_AMOC26N):
+        if not alttmask_AMOC26N[la, lo]:
+            continue
+        if not tmask_AMOC26N[z, la, lo]:
+            continue
+        if np.ma.is_masked(zv[0, z, la, lo]):
                 continue
-            for z in range(e2vshape[0]):        # jk
-                if int(tmask_AMOC26N[z, la, lo]) == 0:
-                    continue
-                if np.ma.is_masked(zv[0, z, la, lo]):
-                    continue
-                atlmoc[z, la] = atlmoc[z, la] - e1v_AMOC26N[la, lo]*e3v_AMOC26N[z, la, lo]*zv[0, z, la, lo]/1.E06
-                TotalXsection += e1v_AMOC26N[la, lo]*e3v_AMOC26N[z, la, lo]
+        atlmoc[z, la] = atlmoc[z, la] - e1v_AMOC26N[la, lo] * e3v_AMOC26N[z, la, lo] * zv[0, z, la, lo] / 1.E06
 
-    print("TotalXsection:", TotalXsection)
-    # Cumulative sum from the bottom up.
-    for z in range(73, 1, -1):
+    for z in range(e3v_AMOC26N.shape[0] -2, 1, -1): # add from the bottom up
         atlmoc[z, :] = atlmoc[z+1, :] + atlmoc[z, :]
     return atlmoc
        
