@@ -31,6 +31,7 @@
 
 import numpy as np
 from bgcval2.bgcvaltools.dataset import dataset
+from bgcval2.functions.get_kwarg_file import get_kwarg_file
 
 
 tmask = {}
@@ -49,15 +50,8 @@ def applyLandMask2D(nc, keys, **kwargs):
     Useful for when the mask is 3D, but the field is only 2D,
     so you want to apply the surface layer of the mask.
     """
-    try:
-        areafile = kwargs['areafile']
-    except:
-        raise AssertionError("applyLandMask:\t Needs an `areafile` kwarg to apply mask")    
-   
-    if isinstance(areafile, list) and len(areafile)==1:
-        areafile = areafile[0]
-    else:
-        raise FileNotFoundError(f'Unable to find file: {areafile}')
+    areafile = get_kwarg_file(kwargs, filekey)
+
  
     maskname = kwargs.get('maskname', 'tmask')
     mask = tmask.get(((areafile, maskname), loadDataMask(areafile, maskname))

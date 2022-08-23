@@ -10,6 +10,6 @@ model_convert:
   path: bgcval2/functions/circulation.py
   function: AMOC26N
   areafile: $PATHS_GRIDFILE
-  altmaskfile: /home/users/ldemora/workspace/ukesm-validation/data/basinlandmask_eORCA1.nc
+  altmaskfile: $PATHS_BGCVAL2/bgcval2/data/basinlandmask_eORCA1.nc
 layers: layerless
 regions: regionless

@@ -98,8 +98,8 @@ def list_input_files(files_path, key_dict, paths):
     """
     #####
     # Replace some values for $FLAGS in the path:
-    flags = ['USERNAME','basedir_model', 'basedir_obs','PATHS_GRIDFILE']
-    flag_values = [getpass.getuser(), paths.ModelFolder_pref, paths.ObsFolder, paths.orcaGridfn]
+    flags = ['USERNAME','basedir_model', 'basedir_obs','PATHS_GRIDFILE', 'PATHS_BGCVAL2']
+    flag_values = [getpass.getuser(), paths.ModelFolder_pref, paths.ObsFolder, paths.orcaGridfn, paths.bgcval2_repo]
 
     for flag in ['jobID', 'model', 'years','year', 'scenario']:
         if key_dict.get(flag, False):
@@ -107,7 +107,7 @@ def list_input_files(files_path, key_dict, paths):
             flag_values.append(key_dict[flag])
 
     for flag, flag_value in zip(flags, flag_values):
-        print('Changing FLAG:',flag,'to',flag_value, 'in', files_path)
+        #print('Changing FLAG:',flag,'to',flag_value, 'in', files_path)
         files_path = findReplaceFlag(files_path, flag, flag_value)
 
     input_files = sorted(glob(files_path))
@@ -227,7 +227,10 @@ def findReplaceFlag(filepath, flag, new_value):
     """
     lookingFor = ''.join(['$', flag.upper()])
     if filepath.find(lookingFor) == -1:
+        print('NOT Changing FLAG:', lookingFor, 'to', new_value, 'in', filepath)
+
         return filepath
+    print('Changing FLAG:', lookingFor, 'to', new_value, 'in', filepath)
     filepath = filepath.replace(lookingFor, new_value)
     return filepath
 
@@ -316,10 +319,15 @@ def load_key_file(key, paths, jobID):
             'units': key_dict['units'],
             }
         for kwarg, kwarg_value in kwargs.items():
-            if isinstance(kwarg_value, str) and kwarg_value.lower().find('file')>-1:
+            print(key_dict['name'], kwarg, kwarg_value)
+            if isinstance(kwarg_value, str) and kwarg.lower().find('file')>-1:
+                print(key_dict['name'],kwarg, kwarg_value, type(kwarg_value), type(kwarg_value))  
                 output_dict[''.join([model_or_data,'details'])][kwarg] = list_input_files(kwarg_value, key_dict, paths)
             else:
+                print('else:', key_dict['name'],kwarg, kwarg_value, type(kwarg_value), type(kwarg_value))
                 output_dict[''.join([model_or_data,'details'])][kwarg] = kwarg_value
+
+            if 'BGCVAL2' in kwarg: assert 0
 
         if model_or_data == 'model':
             output_dict['modelcoords'] = {
