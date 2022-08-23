@@ -1,0 +1,33 @@
+---
+# GC5 N96 ORCA1 spinup analysis
+name: debug_49
+
+# Run the single job analysis
+do_analysis_timeseries: True 
+# Download from mass:
+do_mass_download: False
+
+# master analysis suite
+master_suites: debug
+
+clean: True
+
+# Job ID's suites as named by Rose/Cylc
+jobs:
+    u-cp416debug: 
+        description: 'GC5 N96 ORCA1 spin-up 3'
+        colour: purple
+        thickness: 0.7
+        linestyle: '-'
+        shifttime: 0.
+        suite: debug
+#    u-cp647debug:
+#        description: 'GC5 N96 ORCA1 spin-up 4: with updated parameters for SI3 and NEMO'
+#        colour: green
+#        thickness: 0.7
+#        linestyle: '-'
+#        shifttime: 0.
+#        suite: debug
+
+
+

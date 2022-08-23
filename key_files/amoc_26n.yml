@@ -1,0 +1,15 @@
+---
+#AMOC_26N
+name: AMOC_26N
+units: Sv
+dimensions: 1
+model: NEMO
+modelFiles: $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_grid-V.nc
+model_vars: vo
+model_convert:
+  path: bgcval2/functions/circulation.py
+  function: AMOC26N
+  areafile: $PATHS_GRIDFILE
+  altmaskfile: $PATHS_BGCVAL2/bgcval2/data/basinlandmask_eORCA1.nc
+layers: layerless
+regions: regionless
