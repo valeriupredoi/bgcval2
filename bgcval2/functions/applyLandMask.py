@@ -31,6 +31,7 @@
 
 import numpy as np
 from bgcval2.bgcvaltools.dataset import dataset
+from bgcval2.functions.get_kwarg_file import get_kwarg_file
 
 
 tmask = {}
@@ -41,42 +42,7 @@ def loadDataMask(areafile, maskname):
     nc = dataset(areafile, 'r')        
     tmask[(areafile, maskname)] = nc.variables[maskname][:].squeeze()
     nc.close()
-
-
-def applyLandMask(nc, keys, **kwargs):
-    try:
-        areafile = kwargs['areafile']
-    except:
-        raise AssertionError("applyLandMask:\t Needs an `areafile` kwarg to apply mask")    
-
-    if isinstance(areafile, list) and len(areafile)==1:
-        areafile = areafile[0]
-    else:
-        raise FileNotFoundError(f'Unable to find file: {areafile}')
- 
-    try:
-        maskname = kwargs['maskname']
-    except:
-        maskname = 'tmask'
-
-    try:
-        mask = tmask[(areafile, maskname)]
-    except:
-        loadDataMask(areafile, maskname)
-        mask = tmask[(areafile, maskname)]
-    
-    try:
-        shape = mask.shape
-    except:
-        raise AssertionError("applyLandMask.py:\t Model mask not loaded correctly")
-
-    arr = np.ma.array(nc.variables[keys[0]][:]).squeeze()
-    m   = np.ma.masked_where(mask + arr.mask, arr)
-    m  += np.ma.masked_invalid(arr).mask
-    arr = np.ma.masked_where(m>1, arr)
-    print("applyLandMask:\t ", arr.mean(), arr.min(), arr.max(), arr.shape, m.mean())
-    assert 0
-    return arr
+    return tmask[(areafile, maskname)]
 
 
 def applyLandMask2D(nc, keys, **kwargs):
@@ -84,70 +50,19 @@ def applyLandMask2D(nc, keys, **kwargs):
     Useful for when the mask is 3D, but the field is only 2D,
     so you want to apply the surface layer of the mask.
     """
-    try:
-        areafile = kwargs['areafile']
-    except:
-        raise AssertionError("applyLandMask:\t Needs an `areafile` kwarg to apply mask")    
-   
-    if isinstance(areafile, list) and len(areafile)==1:
-        areafile = areafile[0]
-    else:
-        raise FileNotFoundError(f'Unable to find file: {areafile}')
- 
-    try:
-        maskname = kwargs['maskname']
-    except:
-        maskname = 'tmask'
-
-    try:
-        mask = tmask[(areafile, maskname)][0]
-    except:
-        loadDataMask(areafile, maskname)
-        mask = tmask[(areafile, maskname)][0]
-            
-    try:
-        shape = mask.shape
-    except:
-        raise AssertionError("applyLandMask.py:\t Model mask not loaded correctly")
+    areafile = get_kwarg_file(kwargs, filekey)
+    maskname = kwargs.get('maskname', 'tmask')
+    mask = tmask.get(((areafile, maskname), loadDataMask(areafile, maskname))
 
     for key in keys:
         if key not in nc.variables.keys():
             print(f'key {key} not in file {nc.filename}')
             print('Available keys:options:', nc.variables.keys())
             raise KeyError(f'applyLandMask: key {key} not in file {nc.filename}.')
+
     arr = np.ma.array(nc.variables[keys[0]][:]).squeeze()
     m  = np.ma.masked_where(mask + arr.mask, arr)
     m += np.ma.masked_invalid(arr).mask
     return np.ma.masked_where(m, arr)
-
-
-def applyLandMask_maskInFile(nc, keys, **kwargs):
-    """
-    Useful for when the mask is already in the same netcdf.
-    """
-    
-    try:
-        maskname = kwargs['maskname']
-    except:
-        maskname = 'tmask'
-
-    try:
-        mask = tmask[(nc.filename, maskname)]
-    except:
-        loadDataMask(nc.filename, maskname)
-        mask = tmask[(nc.filename, maskname)]
-    
-    print("applyLandMask_maskInFile", nc.filename)
-    
-    try:
-        shape = mask.shape
-    except:
-        raise AssertionError(f"applyLandMask_maskInFile.py:\t Model mask not loaded correctly:{maskname} in {nc.filename}")
-
-    arr = np.ma.array(nc.variables[keys[0]][:]).squeeze()
-    m = np.ma.masked_where(mask + arr.mask, arr)
-    m += np.ma.masked_invalid(arr).mask
-    return np.ma.masked_where(m, arr)
-    
 
 

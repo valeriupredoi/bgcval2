@@ -98,8 +98,8 @@ def list_input_files(files_path, key_dict, paths):
     """
     #####
     # Replace some values for $FLAGS in the path:
-    flags = ['USERNAME','basedir_model', 'basedir_obs','PATHS_GRIDFILE']
-    flag_values = [getpass.getuser(), paths.ModelFolder_pref, paths.ObsFolder, paths.orcaGridfn]
+    flags = ['USERNAME','basedir_model', 'basedir_obs','PATHS_GRIDFILE', 'PATHS_BGCVAL2']
+    flag_values = [getpass.getuser(), paths.ModelFolder_pref, paths.ObsFolder, paths.orcaGridfn, paths.bgcval2_repo]
 
     for flag in ['jobID', 'model', 'years','year', 'scenario', 'name']:
         if key_dict.get(flag, False):
@@ -107,7 +107,7 @@ def list_input_files(files_path, key_dict, paths):
             flag_values.append(key_dict[flag])
 
     for flag, flag_value in zip(flags, flag_values):
-        print('Changing FLAG:',flag,'to',flag_value, 'in', files_path)
+        #print('Changing FLAG:',flag,'to',flag_value, 'in', files_path)
         files_path = findReplaceFlag(files_path, flag, flag_value)
 
     input_files = sorted(glob(files_path))
@@ -227,7 +227,10 @@ def findReplaceFlag(filepath, flag, new_value):
     """
     lookingFor = ''.join(['$', flag.upper()])
     if filepath.find(lookingFor) == -1:
+        print('NOT Changing FLAG:', lookingFor, 'to', new_value, 'in', filepath)
+
         return filepath
+    print('Changing FLAG:', lookingFor, 'to', new_value, 'in', filepath)
     filepath = filepath.replace(lookingFor, new_value)
     return filepath
 
@@ -316,12 +319,14 @@ def load_key_file(key, paths, jobID):
             'units': key_dict['units'],
             }
         for kwarg, kwarg_value in kwargs.items():
-            if isinstance(kwarg_value, str) and kwarg_value.lower().find('file')>-1:
+            print(key_dict['name'], kwarg, kwarg_value)
+            if isinstance(kwarg_value, str) and kwarg.lower().find('file')>-1:
+                print(key_dict['name'],kwarg, kwarg_value, type(kwarg_value), type(kwarg_value))  
                 output_dict[''.join([model_or_data,'details'])][kwarg] = list_input_files(kwarg_value, key_dict, paths)
             else:
+                print('else:', key_dict['name'],kwarg, kwarg_value, type(kwarg_value), type(kwarg_value))
                 output_dict[''.join([model_or_data,'details'])][kwarg] = kwarg_value
 
-        # Get list of files:
         if model_or_data == 'model':
             file_path = key_dict[''.join([model_or_data, 'Files'])]
             mdfile = list_input_files(file_path, key_dict, paths)
@@ -3220,64 +3225,6 @@ def analysis_timeseries(
         av[name]['gridFile'] = paths.orcaGridfn
         av[name]['dimensions'] = 2
 
-#    if 'MLD' in analysisKeys:
-#
-#        def mldapplymask(nc, keys):
-#            mld = np.ma.array(nc.variables[keys[0]][:])
-#            return np.ma.masked_where(
-#                (nc.variables[keys[1]][:] == 0.) + mld.mask + (mld == 1.E9),
-#                mld)
-#
-#        name = 'MLD'
-#        av[name]['modelFiles'] = listModelDataFiles(jobID, 'grid_T',
-##                                                    paths.ModelFolder_pref,
-#                                                    annual)
-#        #av[name]['modelFiles']  	= sorted(glob(paths.ModelFolder_pref+jobID+"/"+jobID+"o_1y_*_grid_T.nc"))
-#        av[name][
-#            'dataFile'] = paths.MLDFolder + "mld_DT02_c1m_reg2.0-annual.nc"  #mld_DT02_c1m_reg2.0.nc"
-#        #MLD_DT02 = depth where (T = T_10m +/- 0.2 degC)
-#
-#        av[name]['modelcoords'] = medusaCoords
-#        av[name]['datacoords'] = mldCoords
-#
-#        av[name]['modeldetails'] = {
-#            'name': 'mld',
-#            'vars': [ ukesmkeys['MLD'],],
-#            'convert': applySurfaceMask,
-#            'units': 'm'
-#        }
-#        #av[name]['modeldetails'] 	= {'name': 'mld', 'vars':[ukesmkeys['temp3d'],],   'convert': calcMLD,'units':'m'}
-#        av[name]['datadetails'] = {
-#            'name': 'mld',
-#            'vars': [
-#                'mld',
-#                'mask',
-#            ],
-#            'convert': mldapplymask,
-#            'units': 'm'
-#        }
-#
-#        av[name]['layers'] = [
-#            'layerless',
-#        ]  #'Surface - 1000m','Surface - 300m',]#'depthint'
-#
-#        mldregions = [
-#            'Global', 'ignoreInlandSeas', 'Equator10', 'AtlanticSOcean',
-#            'SouthernOcean', 'ArcticOcean', 'Remainder',
-#            'NorthernSubpolarAtlantic', 'NorthernSubpolarPacific', 'WeddelSea'
-#        ]
-#        mldregions.extend(PierceRegions)
-#
-#        av[name]['regions'] = mldregions
-#        av[name]['metrics'] = metricList
-#
-#        av[name]['datasource'] = 'IFREMER'
-#        av[name]['model'] = 'NEMO'
-#
-#        av[name]['modelgrid'] = 'eORCA1'
-#        av[name]['gridFile'] = paths.orcaGridfn
-#        av[name]['dimensions'] = 2
-
     if 'MaxMonthlyMLD' in analysisKeys or 'MinMonthlyMLD' in analysisKeys:
 
         #/group_workspaces/jasmin2/ukesm/BGC_data/u-ad371/monthlyMLD/MetOffice_data_licence.325210916
@@ -3378,329 +3325,6 @@ def analysis_timeseries(
 
         else:
             print("No monthly MLD files found")
-
-    # icekeys = [
-    #     'NorthernTotalIceArea', 'SouthernTotalIceArea', 'WeddelTotalIceArea',
-    #     'TotalIceArea', 'NorthernTotalIceExtent', 'WeddelIceExent',
-    #     'SouthernTotalIceExtent', 'TotalIceExtent', 'NorthernMIZArea',
-    #     'SouthernMIZArea', 'TotalMIZArea', 'NorthernMIZfraction',
-    #     'SouthernMIZfraction', 'TotalMIZfraction'
-    # ]
-    # if len(set(icekeys).intersection(set(analysisKeys))):
-    #     for name in icekeys:
-    #         if name not in analysisKeys: continue
-    #
-    #         nc = dataset(paths.orcaGridfn, 'r')
-    #         area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
-    #         tmask = nc.variables['tmask'][0, :, :]
-    #         lat = nc.variables['nav_lat'][:, :]
-    #         lon = nc.variables['nav_lon'][:, :]
-    #         nc.close()
-    #
-    #         def calcTotalIceArea(nc, keys):  #Global
-    #             arr = nc.variables[keys[0]][:].squeeze() * area
-    #             return np.ma.masked_where(tmask == 0, arr).sum() / 1E12
-    #
-    #         def calcTotalIceAreaN(nc, keys):  # North
-    #             arr = nc.variables[keys[0]][:].squeeze() * area
-    #             return np.ma.masked_where(
-    #                 (tmask == 0) + (lat < 0.), arr).sum() / 1E12
-    #
-    #         def calcTotalIceAreaS(nc, keys):  # South
-    #             arr = nc.variables[keys[0]][:].squeeze() * area
-    #             return np.ma.masked_where(
-    #                 (tmask == 0) + (lat > 0.), arr).sum() / 1E12
-    #
-    #         def calcTotalIceAreaWS(nc, keys):
-    #             arr = nc.variables[keys[0]][:].squeeze() * area
-    #             return np.ma.masked_where(
-    #                 (tmask == 0) + weddelmask, arr).sum() / 1E12
-    #
-    #         def calcMIZArea(nc, keys):  #Global
-    #             arr = nc.variables[keys[0]][:].squeeze()
-    #             return np.ma.masked_where(
-    #                 tmask == 0 + (arr < 0.15) +
-    #                 (arr > 0.80), arr * area).sum() / 1E12
-    #
-    #         def calcMIZAreaN(nc, keys):  # North
-    #             arr = nc.variables[keys[0]][:].squeeze()
-    #             return np.ma.masked_where(
-    #                 (tmask == 0) + (lat < 0.) + (arr < 0.15) +
-    #                 (arr > 0.80), arr * area).sum() / 1E12
-    #
-    #         def calcMIZAreaS(nc, keys):  # South
-    #             arr = nc.variables[keys[0]][:].squeeze()
-    #             return np.ma.masked_where(
-    #                 (tmask == 0) + (lat > 0.) + (arr < 0.15) +
-    #                 (arr > 0.80), arr * area).sum() / 1E12
-    #
-    #         def calcMIZfraction(nc, keys):  #Global
-    #             ice = nc.variables[keys[0]][:].squeeze()
-    #             new_area = nc.variables['area'][:].squeeze()
-    #             miz_area = np.ma.masked_where(
-    #                 (ice < 0.15) + (ice > 0.8) + ice.mask, new_area)
-    #             total_area = np.ma.masked_where((ice < 0.15) + ice.mask,
-    #                                             new_area)
-    #             return miz_area.sum() / total_area.sum()
-    #
-    #         def calcMIZfractionN(nc, keys):  # North
-    #             ice = nc.variables[keys[0]][:].squeeze()
-    #             new_area = nc.variables['area'][:].squeeze()
-    #             miz_area = np.ma.masked_where(
-    #                 (lat < 0.) + (ice < 0.15) + (ice > 0.8) + ice.mask,
-    #                 new_area)
-    #             total_area = np.ma.masked_where(
-    #                 (lat < 0.) + (ice < 0.15) + ice.mask, new_area)
-    #             return miz_area.sum() / total_area.sum()
-    #
-    #         def calcMIZfractionS(nc, keys):  # South
-    #             ice = nc.variables[keys[0]][:].squeeze()
-    #             new_area = nc.variables['area'][:].squeeze()
-    #             miz_area = np.ma.masked_where(
-    #                 (lat > 0.) + (ice < 0.15) + (ice > 0.8) + ice.mask,
-    #                 new_area)
-    #             total_area = np.ma.masked_where(
-    #                 (lat > 0.) + (ice < 0.15) + ice.mask, new_area)
-    #             return miz_area.sum() / total_area.sum()
-    #
-    #         def calcTotalIceExtent(nc, keys):  #Global
-    #             return np.ma.masked_where(
-    #                 (tmask == 0) + (nc.variables[keys[0]][:].squeeze() < 0.15),
-    #                 area).sum() / 1E12
-    #
-    #         def calcTotalIceExtentN(nc, keys):  # North
-    #             return np.ma.masked_where(
-    #                 (tmask == 0) +
-    #                 (nc.variables[keys[0]][:].squeeze() < 0.15) +
-    #                 (lat < 0.), area).sum() / 1E12
-    #
-    #         def calcTotalIceExtentS(nc, keys):  # South
-    #             return np.ma.masked_where(
-    #                 (tmask == 0) +
-    #                 (nc.variables[keys[0]][:].squeeze() < 0.15) +
-    #                 (lat > 0.), area).sum() / 1E12
-    #
-    #         weddelmask = (lat < -80.) + (lat > -65.) + (lon < -60.) + (lon >
-    #                                                                    -20.)
-    #
-    #         def calcTotalIceExtentWS(nc, keys):  # South
-    #             return np.ma.masked_where(
-    #                 (tmask == 0) +
-    #                 (nc.variables[keys[0]][:].squeeze() < 0.15) + weddelmask,
-    #                 area).sum() / 1E12
-    #
-    #         if jobID == 'u-as462monthly':
-    #             av[name]['modelFiles'] = sorted(
-    #                 glob(
-    #                     '/group_workspaces/jasmin2/ukesm/BGC_data/u-as462/monthly/*.nc'
-    #                 ))
-    #         elif jobID == 'u-ar977monthly':
-    #             av[name]['modelFiles'] = sorted(
-    #                 glob(
-    #                     '/group_workspaces/jasmin2/ukesm/BGC_data/u-ar977/monthly/*.nc'
-    #                 ))
-    #         else:
-    #             av[name]['modelFiles'] = listModelDataFiles(
-    #                 jobID, 'grid_T', paths.ModelFolder_pref, annual)
-    #         av[name]['dataFile'] = ''
-    #
-    #         av[name]['modelcoords'] = medusaCoords
-    #         av[name]['datacoords'] = medusaCoords
-    #
-    #         if name in [
-    #                 'NorthernTotalIceArea',
-    #         ]:
-    #             av[name]['modeldetails'] = {
-    #                 'name': name,
-    #                 'vars': [
-    #                     'soicecov',
-    #                 ],
-    #                 'convert': calcTotalIceAreaN,
-    #                 'units': '1E6 km^2'
-    #             }
-    # #	av[name]['regions'] 		=  ['NorthHemisphere',]
-    #
-    #         if name in [
-    #                 'SouthernTotalIceArea',
-    #         ]:
-    #             av[name]['modeldetails'] = {
-    #                 'name': name,
-    #                 'vars': [
-    #                     'soicecov',
-    #                 ],
-    #                 'convert': calcTotalIceAreaS,
-    #                 'units': '1E6 km^2'
-    #             }
-    #
-    #         if name in [
-    #                 'WeddelTotalIceArea',
-    #         ]:
-    #             av[name]['modeldetails'] = {
-    #                 'name': name,
-    #                 'vars': [
-    #                     'soicecov',
-    #                 ],
-    #                 'convert': calcTotalIceAreaWS,
-    #                 'units': '1E6 km^2'
-    #             }
-    #
-    #         if name in [
-    #                 'TotalIceArea',
-    #         ]:
-    #             av[name]['modeldetails'] = {
-    #                 'name': name,
-    #                 'vars': [
-    #                     'soicecov',
-    #                 ],
-    #                 'convert': calcTotalIceArea,
-    #                 'units': '1E6 km^2'
-    #             }
-    # #	av[name]['regions'] 		=  ['Global',]
-    #
-    #         if name in [
-    #                 'NorthernTotalIceExtent',
-    #         ]:
-    #             av[name]['modeldetails'] = {
-    #                 'name': name,
-    #                 'vars': [
-    #                     'soicecov',
-    #                 ],
-    #                 'convert': calcTotalIceExtentN,
-    #                 'units': '1E6 km^2'
-    #             }
-    # #	av[name]['regions'] 		=  ['NorthHemisphere',]
-    #
-    #         if name in [
-    #                 'SouthernTotalIceExtent',
-    #         ]:
-    #             av[name]['modeldetails'] = {
-    #                 'name': name,
-    #                 'vars': [
-    #                     'soicecov',
-    #                 ],
-    #                 'convert': calcTotalIceExtentS,
-    #                 'units': '1E6 km^2'
-    #             }
-    # #	av[name]['regions'] 		=  ['SouthHemisphere',]
-    #
-    #         if name in [
-    #                 'WeddelIceExent',
-    #         ]:
-    #             av[name]['modeldetails'] = {
-    #                 'name': name,
-    #                 'vars': [
-    #                     'soicecov',
-    #                 ],
-    #                 'convert': calcTotalIceExtentWS,
-    #                 'units': '1E6 km^2'
-    #             }
-    # #	av[name]['regions'] 		=  ['SouthHemisphere',]
-    #
-    #         if name in [
-    #                 'TotalIceExtent',
-    #         ]:
-    #             av[name]['modeldetails'] = {
-    #                 'name': name,
-    #                 'vars': [
-    #                     'soicecov',
-    #                 ],
-    #                 'convert': calcTotalIceExtent,
-    #                 'units': '1E6 km^2'
-    #             }
-    # #	av[name]['regions'] 		=  ['Global',]
-    #
-    #         if name in [
-    #                 'NorthernMIZArea',
-    #         ]:
-    #             av[name]['modeldetails'] = {
-    #                 'name': name,
-    #                 'vars': [
-    #                     'soicecov',
-    #                 ],
-    #                 'convert': calcMIZAreaN,
-    #                 'units': '1E6 km^2'
-    #             }
-    #
-    #         if name in [
-    #                 'SouthernMIZArea',
-    #         ]:
-    #             av[name]['modeldetails'] = {
-    #                 'name': name,
-    #                 'vars': [
-    #                     'soicecov',
-    #                 ],
-    #                 'convert': calcMIZAreaS,
-    #                 'units': '1E6 km^2'
-    #             }
-    #
-    #         if name in [
-    #                 'TotalMIZArea',
-    #         ]:
-    #             av[name]['modeldetails'] = {
-    #                 'name': name,
-    #                 'vars': [
-    #                     'soicecov',
-    #                 ],
-    #                 'convert': calcMIZArea,
-    #                 'units': '1E6 km^2'
-    #             }
-    #
-    #         if name in [
-    #                 'NorthernMIZfraction',
-    #         ]:
-    #             av[name]['modeldetails'] = {
-    #                 'name': name,
-    #                 'vars': [
-    #                     'soicecov',
-    #                 ],
-    #                 'convert': calcMIZfractionN,
-    #                 'units': ''
-    #             }
-    #
-    #         if name in [
-    #                 'SouthernMIZfraction',
-    #         ]:
-    #             av[name]['modeldetails'] = {
-    #                 'name': name,
-    #                 'vars': [
-    #                     'soicecov',
-    #                 ],
-    #                 'convert': calcMIZfractionS,
-    #                 'units': ''
-    #             }
-    #
-    #         if name in [
-    #                 'TotalMIZfraction',
-    #         ]:
-    #             av[name]['modeldetails'] = {
-    #                 'name': name,
-    #                 'vars': [
-    #                     'soicecov',
-    #                 ],
-    #                 'convert': calcMIZfraction,
-    #                 'units': ''
-    #             }
-    #
-    #         av[name]['regions'] = [
-    #             'regionless',
-    #         ]
-    #
-    #         av[name]['datadetails'] = {
-    #             'name': '',
-    #             'units': '',
-    #         }
-    #         #av[name]['layers'] 		=  ['Surface',]
-    #         av[name]['layers'] = [
-    #             'layerless',
-    #         ]
-    #         av[name]['metrics'] = [
-    #             'metricless',
-    #         ]
-    #         av[name]['datasource'] = ''
-    #         av[name]['model'] = 'CICE'
-    #         av[name]['modelgrid'] = 'eORCA1'
-    #         av[name]['gridFile'] = paths.orcaGridfn
-    #         av[name]['dimensions'] = 1
 
     if 'DMS_ARAN' in analysisKeys:
         name = 'DMS'

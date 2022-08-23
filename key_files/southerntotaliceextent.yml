@@ -7,8 +7,9 @@ modelFiles      : $BASEDIR_MODEL/$JOBID/nemo*$JOBIDo_1y_*_grid-T.nc
 model_vars      : soicecov
 model_convert:
     path: bgcval2/functions/ice.py
-    function: calcTotalIceExtentS
+    function: calculate_ice_extent
     areafile : $PATHS_GRIDFILE
     minIce: 0.15
+    region: SouthernHemisphere
 layers          : layerless
 regions         : regionless

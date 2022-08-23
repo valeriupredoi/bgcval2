@@ -33,8 +33,8 @@ data_vars       : mld
 data_tdict      : ZeroToZero
 data_convert:
     path: bgcval2/functions/applyLandMask.py
-    function: applyLandMask_maskInFile
+    function: applyLandMask2D
     maskname : mask
-
+    areafile: $BASEDIR_OBS/IFREMER-MLD/mld_DT02_c1m_reg2.0-annual.nc
 layers          : Surface
 regions         : Global  SouthernOcean
