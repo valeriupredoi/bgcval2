@@ -9,7 +9,7 @@
 # bgc-val is distributed in the hope that it will be useful, but
 # without any warranty; without even the implied warranty of merchantability
 # or fitness for a particular purpose. See the revised BSD license for more details.
-# You should have received a copy of the revised BSD license along with bgc-val.
+# You should have received a copy of the revised BSD license aeORCA1_LONg with bgc-val.
 # If not, see <http://opensource.org/licenses/BSD-3-Clause>.
 #
 # Address:
@@ -34,13 +34,13 @@ from bgcval2.functions.get_kwarg_file import get_kwarg_file
 
 # coordinates of Drake Passage in eORCA1
 
-LON=219
-LAT0=79
-LAT1=109
+eORCA1_LON=219
+eORCA1_LAT0=79
+eORCA1_LAT1=109
 
-latslice26N = slice(227,228)
-latslice26Nnm = slice(228,229)
-latslice32S = slice(137,138)
+eORCA1_latslice26N = slice(227,228)
+eORCA1_latslice26Nnm = slice(228,229)
+eORCA1_latslice32S = slice(137,138)
 
 umask_drake = 0
 e2u_drake = 0
@@ -52,11 +52,10 @@ loadedArea = False
 loadedAltMask = False
 
 
-def loadDataMask(gridfn, maskname):
+def loadDataMask(gridfn, maskname, grid):
     """
     Load files and some key fields:
     """
-
     global umask_drake
     global e2u_drake
     global e3v_AMOC26N
@@ -64,6 +63,12 @@ def loadDataMask(gridfn, maskname):
     global tmask_AMOC26N
     global loadedArea
     global loadedAltMask
+
+    if grid == 'eORCA1':
+        LON = eORCA1_LON
+        LAT0 = eORCA1_LAT0
+        LAT1 = eORCA1_LAT1
+        latslice26Nnm = eORCA1_latslice26Nnm
 
     nc = dataset(gridfn, 'r')        
     e2u_drake = nc.variables['e2u'][LAT0:LAT1, LON]
@@ -77,8 +82,13 @@ def loadDataMask(gridfn, maskname):
     loadedArea = True
 
 
-def loadAtlanticMask(altmaskfile, maskname='tmaskatl'):
+def loadAtlanticMask(altmaskfile, maskname='tmaskatl', grid = 'eORCA1'):
+    """
+    Load the atlantic ocean mask.
+    """
     global alttmask_AMOC26N
+    if grid == 'eORCA1':
+        latslice26Nnm = eORCA1_latslice26Nnm
 
     nc = dataset(altmaskfile, 'r')        
     alttmask_AMOC26N = nc.variables[maskname][latslice26Nnm, :]
@@ -86,33 +96,48 @@ def loadAtlanticMask(altmaskfile, maskname='tmaskatl'):
     loadedAltMask = True
 
 
+def find_keys_in_nc(nc, keys):
+    """
+    Find some keys in a netcdf.
+    """
+    intersection_keys = list(set(keys) & set(nc.variables.keys()))
+    if not len(intersection_keys):
+        raise KeyError(f'Unable to find keys {keys} in {nc.filename}')
+    if len(intersection_keys)>1:
+        print('WARNING: found more than one key {intersection_keys} in {nc.filename}')
+    return intersection_keys
+
+
+
 def drakePassage(nc, keys, **kwargs):
     """
-    This function. 
+    This function calculates drake passage for eORCA1. 
     
     nc: a netcdf openned as a dataset.
     keys: a list of keys to use in this function.
     
     """
     areafile = get_kwarg_file(kwargs, 'areafile')
-
     maskname = kwargs.get('maskname', 'tmask')
-            
+    grid = kwargs.get('grid', 'eORCA1')
+
     if not loadedArea:
-        loadDataMask(areafile, maskname)
+        loadDataMask(areafile, maskname, grid)
 
-    try:
-        e3u = nc.variables['thkcello'][0, :, LAT0:LAT1, LON]    
-    except:
-        e3u = nc.variables['e3u'     ][0, :, LAT0:LAT1, LON]
+    if grid == 'eORCA1':
+        LON = eORCA1_LON
+        LAT0 = eORCA1_LAT0
+        LAT1 = eORCA1_LAT1
 
-    try:
-        velo = nc.variables['uo' ][0, :, LAT0:LAT1, LON]    
-    except:
-        velo = nc.variables['u3d'][0, :, LAT0:LAT1, LON]
+    all_e3u_keys = ['thkcello', 'e3u']
+    e3u_keys = find_keys_in_nc(nc, all_e3u_keys)
+    e3u = nc.variables[e3u_keys[0]][0, :, LAT0:LAT1, LON]
+
+    all_velo_keys = ['uo', 'u3d']
+    velo_keys = find_keys_in_nc(nc, all_velo_keys)
+    velo = nc.variables[velo_keys[0]][0, :, LAT0:LAT1, LON]    
 
     drake = np.sum(velo * e3u * e2u_drake * umask_drake) * 1.e-6
-    
     return drake
 
 
@@ -126,14 +151,18 @@ def TwentySixNorth(nc,keys,**kwargs):
     """
     areafile = get_kwarg_file(kwargs, 'areafile')
     maskname = kwargs.get('maskname', 'tmask')
+    grid = kwargs.get('grid', 'eORCA1')
 
     if not loadedArea:
-        loadDataMask(areafile, maskname)
+        loadDataMask(areafile, maskname, grid)
 
     altmaskfile = get_kwarg_file(kwargs, 'altmaskfile',  default = 'bgcval2/data/basinlandmask_eORCA1.nc')
      
     if not loadedAltMask: 
-        loadAtlanticMask(altmaskfile, maskname='tmaskatl')
+        loadAtlanticMask(altmaskfile, maskname='tmaskatl', grid=grid)
+
+    if grid == 'eORCA1':
+        latslice26Nnm = eORCA1_latslice26Nnm
     
     zv = np.ma.array(nc.variables[keys[0]][..., latslice26Nnm, :]) # m/s
     atlmoc = np.array(np.zeros_like(zv[0, :, :, 0]))
