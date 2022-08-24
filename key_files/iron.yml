@@ -14,8 +14,9 @@ gridFile        : $BASEDIR_MODEL/mesh_mask_eORCA1_wrk.nc
 
 # Model coordinates/dimension names
 model_vars      : FER
-model_convert   : multiplyBy
-model_convert_factor : 1000
+model_convert   : 
+    function: multiplyBy
+    factor : 1000
 
 # Data coordinates names
 #data_vars       : FER

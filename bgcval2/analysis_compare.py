@@ -608,55 +608,55 @@ def timeseries_compare(jobs,
             av[name]['gridFile'] = paths.orcaGridfn
             av[name]['Dimensions'] = 2
 
-        if 'pH' in analysisKeys:
-
-            def convertmeqm3TOumolkg(nc, keys):
-                return nc.variables[keys[0]][:] * 1.027
-
-            name = 'pH'
-            if annual:
-                av[name]['modelFiles'] = listModelDataFiles(
-                    jobID, 'diad_T', paths.ModelFolder_pref, annual)
-                #av[name]['dataFile'] 	=  paths.GlodapDir+'p.nc'
-            else:
-                print("pH data not available for monthly Analysis")
-                assert 0
-
-            av[name]['modelcoords'] = medusaCoords
-            av[name]['datacoords'] = {'name': '', 'units': ''}
-            av[name]['datadetails'] = {'name': '', 'units': ''}
-            av[name]['dataFile'] = ''
-            av[name]['datasource'] = ''
-
-            av[name]['modeldetails'] = {
-                'name': name,
-                'vars': [
-                    'PH3',
-                ],
-                'convert': ukp.NoChange,
-                'units': 'pH',
-            }
-            #av[name]['datadetails']  	= {'name': name, 'vars':['Alk',], 'convert': convertmeqm3TOumolkg,'units':'meq/m^3',}
-
-            av[name]['layers'] = [
-                'Surface',
-            ]  #'100m','300m','1000m',]
-            #	av[name]['regions'] 		= regionList
-            #av[name]['layers'] 		= layerList
-            if debug:
-                av[name]['regions'] = [
-                    'Global',
-                ]
-            else:
-                av[name]['regions'] = regionList
-            av[name]['metrics'] = metricList
-
-            av[name]['model'] = 'MEDUSA'
-
-            av[name]['modelgrid'] = 'eORCA1'
-            av[name]['gridFile'] = paths.orcaGridfn
-            av[name]['Dimensions'] = 3
-
+#        if 'pH' in analysisKeys:
+#
+#            def convertmeqm3TOumolkg(nc, keys):
+#                return nc.variables[keys[0]][:] * 1.027
+#
+#            name = 'pH'
+#            if annual:
+#                av[name]['modelFiles'] = listModelDataFiles(
+#                    jobID, 'diad_T', paths.ModelFolder_pref, annual)
+#                #av[name]['dataFile'] 	=  paths.GlodapDir+'p.nc'
+#            else:
+#                print("pH data not available for monthly Analysis")
+#                assert 0
+#
+#            av[name]['modelcoords'] = medusaCoords
+#            av[name]['datacoords'] = {'name': '', 'units': ''}
+#            av[name]['datadetails'] = {'name': '', 'units': ''}
+#            av[name]['dataFile'] = ''
+#            av[name]['datasource'] = ''
+#
+#            av[name]['modeldetails'] = {
+#                'name': name,
+#                'vars': [
+#                    'PH3',
+#                ],
+#                'convert': ukp.NoChange,
+#                'units': 'pH',
+#            }
+#            #av[name]['datadetails']  	= {'name': name, 'vars':['Alk',], 'convert': convertmeqm3TOumolkg,'units':'meq/m^3',}
+#
+#            av[name]['layers'] = [
+#                'Surface',
+#            ]  #'100m','300m','1000m',]
+#            #	av[name]['regions'] 		= regionList
+#            #av[name]['layers'] 		= layerList
+#            if debug:
+#                av[name]['regions'] = [
+#                    'Global',
+#                ]
+#            else:
+#                av[name]['regions'] = regionList
+#            av[name]['metrics'] = metricList
+#
+#            av[name]['model'] = 'MEDUSA'
+#
+#            av[name]['modelgrid'] = 'eORCA1'
+#            av[name]['gridFile'] = paths.orcaGridfn
+#            av[name]['Dimensions'] = 3
+#
         if 'CHD' in analysisKeys or 'CHN' in analysisKeys:
             for name in [
                     'CHD',
@@ -1102,7 +1102,7 @@ def timeseries_compare(jobs,
             av[name]['modelgrid'] = 'eORCA1'
             av[name]['gridFile'] = paths.orcaGridfn
             av[name]['Dimensions'] = 2
-
+        """
         if 'DIC' in analysisKeys:
 
             def convertkgToM3(nc, keys):
@@ -1192,6 +1192,7 @@ def timeseries_compare(jobs,
             av[name]['modelgrid'] = 'eORCA1'
             av[name]['gridFile'] = orcaGridfn
             av[name]['Dimensions'] = 3
+        """
 
         if 'ERSST' in analysisKeys:
             name = 'ERSST'

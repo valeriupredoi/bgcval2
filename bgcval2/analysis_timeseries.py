@@ -1435,7 +1435,7 @@ def analysis_timeseries(
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
         av[name]['dimensions'] = 3
-
+    """
     if 'DIC' in analysisKeys:
 
         def convertkgToM3(nc, keys):
@@ -1580,7 +1580,7 @@ def analysis_timeseries(
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
         av[name]['dimensions'] = 3
-
+    """
     if 'AirSeaFluxCO2' in analysisKeys:
 
         #nc = dataset(paths.orcaGridfn,'r')

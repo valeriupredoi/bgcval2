@@ -1,5 +1,7 @@
 ---
 keys:
+    pH: True
+    Alkalinity: True
     RIV_ALK : True # alk flux added, 
     TOT_SHALK : True # total alkalinity added (because we want to know how much is added in total)
     ATM_PCO2 : True # atmospheric pCO2
