@@ -34,6 +34,7 @@ from bgcval2.bgcvaltools.dataset import dataset
 import os, sys
 import errno
 from bgcval2.functions.get_kwarg_file import get_kwarg_file
+from bgcval2.functions.standard_functions import choose_best_var 
 
 
 # Globals - to prevent re-loading from disk every time.
@@ -79,7 +80,7 @@ def globalVolumeMean(nc, keys, **kwargs):
     if not loaded_volume:
          loadDataMask(areafile)
 
-    temp = np.ma.array(nc.variables[keys[0]][:].squeeze())
+    temp = choose_best_var(nc, keys).squeeze()
     temp = np.ma.masked_where((tmask==0) + (temp.mask), temp)
 
     temp = temp * multiplyBy + addvalue

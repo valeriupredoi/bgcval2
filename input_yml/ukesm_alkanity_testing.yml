@@ -8,7 +8,7 @@ do_analysis_timeseries: True
 do_mass_download: False
 
 # master analysis suite
-master_suites: bgc alkalinity
+master_suites: kmf bgc alkalinity physics
 
 clean: True
 
@@ -40,7 +40,7 @@ jobs:
        thickness: 0.7
        linestyle: '-'
        shifttime: 0.
-       suite: bgc alkalinity
+       suite: kmf bgc alkalinity physics
 
 #    u-cp857:
 #       description: 'alk added at bathy - or 200m (if bathy deeper)'

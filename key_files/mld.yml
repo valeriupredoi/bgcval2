@@ -14,7 +14,7 @@ dataFile        : $BASEDIR_OBS/IFREMER-MLD/mld_DT02_c1m_reg2.0-annual.nc
 model_vars      : somxl010
 model_convert:
     path: bgcval2/functions/applyLandMask.py
-    function: applyLandMask2D
+    function: applyLandMask
     areafile: $PATHS_GRIDFILE
     maskname : tmask
 
@@ -22,7 +22,7 @@ data_vars       : mld
 data_tdict      : ZeroToZero
 data_convert:
     path: bgcval2/functions/applyLandMask.py
-    function: applyLandMask2D
+    function: applyLandMask
     maskname : mask
     areafile: $BASEDIR_OBS/IFREMER-MLD/mld_DT02_c1m_reg2.0-annual.nc
 layers          : Surface

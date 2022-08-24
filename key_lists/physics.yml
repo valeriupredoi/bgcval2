@@ -5,17 +5,17 @@ keys:
     # Temperature keys:
     Temperature: True  # WOA Temperature
     GlobalMeanTemperature: True  # Global Mean Temperature
-    GlobalMeanTemperature_700: True
-    GlobalMeanTemperature_2000: True
-    VolumeMeanTemperature: True  # Global Mean Temperature
+#    GlobalMeanTemperature_700: True
+#    GlobalMeanTemperature_2000: True
+#    VolumeMeanTemperature: True  # Global Mean Temperature
     #VolWeightedT: True			# Volume weighted WOA Temperature
     #	IcelessMeanSST: True    		# Global Mean Surface Temperature with no ice
-    thetaoga: True
+#    thetaoga: True
 
     # Salinity keys:
     GlobalMeanSalinity: True  # Global Mean Salinity
     Salinity: True  # WOA Salinity
-    soga: True
+#    soga: True
 
     # Mixed layer depth keys:
     MLD: True  # iFERMER Mixed Layer Depth
@@ -49,8 +49,8 @@ keys:
     #	VerticalCurrent: True          	# Vertical Veloctity
 
     # Misc fluxes:
-    #FreshwaterFlux: True  # Freshwater flux
-    sowaflup: True  # Net Upward Water Flux
+    # FreshwaterFlux: True  # Freshwater flux
+    # sowaflup: True  # Net Upward Water Flux
     #	soicecov: True			# Ice fraction
     # HeatFlux: True
     # WindStress: True                   # Wind Stress
