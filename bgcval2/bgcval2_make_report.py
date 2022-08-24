@@ -36,6 +36,7 @@ import sys
 from glob import glob
 import os
 import shutil
+import yaml
 
 #####
 # Load specific local code:
@@ -1606,6 +1607,20 @@ def comparehtml5Maker(
             'thetaoga',
             'scalarHeatContent',
         ]
+        # Add the rest of the names from key_lists directory.
+        key_lists_dir = os.path.join(paths.bgcval2_repo, 'key_lists')
+        for suite_yml in glob(os.path.join(key_lists_dir, '*.yml')):
+            # look for a list in keys_list directory:
+            # Open yml file:
+            with open(suite_yml, 'r') as openfile:
+                suite_dict = yaml.safe_load(openfile)
+
+            keys_dict = suite_dict.get('keys', {})
+            for key, key_bool in keys_dict.items():
+                if not key_bool: continue
+                if key in names: continue
+                names.append(key)
+
         for key in sorted(names):
             #####
             # Determine the list of files:

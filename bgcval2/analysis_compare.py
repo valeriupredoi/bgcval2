@@ -1736,11 +1736,13 @@ def timeseries_compare(jobs,
         units = av[name]['modeldetails']['units']
         title = ''
         for jobID in jobs:
+            # TODO: This should be automated using shelve lists.
+
             if name in [
                     'Iron', 'Nitrate', 'Silicate', 'Oxygen', 'Temperature',
                     'Salinity', 'O2', 'Alkalinity', 'DIC', 'CHD', 'CHN',
                     'DiaFrac', 'CHL', 'Chlorophyll', 'pH', 'ZonalCurrent',
-                    'MeridionalCurrent', 'VerticalCurrent'
+                    'MeridionalCurrent', 'VerticalCurrent', 
             ]:
                 mdata = modeldataD[(jobID, name)][('Global', 'Surface',
                                                    'mean')]
@@ -1756,6 +1758,8 @@ def timeseries_compare(jobs,
                     'MaxMonthlyMLD',
                     'MinMonthlyMLD',
                     'MLD',
+                    'RIVALK',
+                    'totalshelfalk', 'atmospco2',  
             ]:
                 try:
                     mdata = modeldataD[(jobID, name)][('Global', 'layerless',
@@ -1919,7 +1923,7 @@ def timeseries_compare(jobs,
 
     ####
     # Oxygen at Depth:
-    regionList = [
+    regionList = [ # generate from file.
         'Global',
         'ignoreInlandSeas',
         'SouthernOcean',

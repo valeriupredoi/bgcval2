@@ -222,6 +222,7 @@ Suite  | What it is | Description
 `kmf` | Key Metrics First | A short and quick list of the most important metrics.
 `physics` | Physics | A comprehensive list of physical metrics.
 `bgc` | Biogeochemistry | A comprehensive list of biogeochemical metrics.
+`alkalinity` | Alkalininty & CO2 | A list of alkalininty, pH, DIC, and pCO2 metrics.
 `level1` | Level 1 | A comprehensive list of physical and biogeochemical metrics.
 `debug` | Debug | A very short list of a couple keys to test code changes.
 `fast` | UKESM1-fast  | A list of metrics tailored to the UKESM1-Fast model.
@@ -252,21 +253,11 @@ gridFile        : $PATHS_GRIDFILE
 
 # model details
 model: Model_name
-model_t         : time_centered         # model time dimension
-model_cal       : 360_day               # model calendar
-model_z         : deptht                # model depth dimension
-model_lat       : nav_lat               # model latitude dimension
-model_lon       : nav_lon               # model latitude dimension
 model_vars      : thetao_con
 model_convert   : NoChange
 
 # Observational Data coordinates names
 datasource      : WOA
-data_t          : time
-data_cal        : standard
-data_z          : depth
-data_lat        : lat
-data_lon        : lon
 data_vars       : t_an
 data_convert    : NoChange
 data_tdict      : ZeroToZero

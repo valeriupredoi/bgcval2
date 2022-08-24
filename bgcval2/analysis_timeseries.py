@@ -127,6 +127,7 @@ def build_list_of_suite_keys(suites, debug=True):
     for suite in suites:
         if not suite or suite in [' ', ',']: 
             continue
+
         # look for a list in keys_list directory:
         suite_yml = os.path.join(key_lists_dir, ''.join([suite.lower(),'.yml']))
         if debug:
@@ -150,7 +151,6 @@ def build_list_of_suite_keys(suites, debug=True):
         for key, keybool in keys_dict.items():
             if debug and key in analysis_keys:
                 print(f'build_list_of_suite_keys:\tKey {key} exists in multiple suites:')
-
 
             if key in analysis_keys and keybool != analysis_keys[key]:
                 print(f'build_list_of_suite_keys:\tERROR: conflict in input yamls: {key}, {keybool} != {analysis_keys[key]}')

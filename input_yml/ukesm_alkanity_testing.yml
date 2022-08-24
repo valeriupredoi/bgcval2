@@ -8,7 +8,7 @@ do_analysis_timeseries: True
 do_mass_download: False
 
 # master analysis suite
-master_suites: bgc
+master_suites: bgc alkalinity
 
 clean: True
 
