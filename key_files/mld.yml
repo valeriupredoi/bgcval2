@@ -11,7 +11,7 @@ modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*_$JOBIDo_1y_*$YEAR????_grid-T.nc
 dataFile        : $BASEDIR_OBS/IFREMER-MLD/mld_DT02_c1m_reg2.0-annual.nc
 
 # Model coordinates/dimension names
-model_vars      : somxl010
+model_vars      : somxl010 somxzint1
 model_convert:
     path: bgcval2/functions/applyLandMask.py
     function: applyLandMask

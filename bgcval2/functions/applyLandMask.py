@@ -32,7 +32,7 @@
 import numpy as np
 from bgcval2.bgcvaltools.dataset import dataset
 from bgcval2.functions.get_kwarg_file import get_kwarg_file
-
+from bgcval2.functions.standard_functions import choose_best_var
 
 tmask = {}
 
@@ -54,15 +54,14 @@ def applyLandMask(nc, keys, **kwargs):
     maskname = kwargs.get('maskname', 'tmask')
     mask = tmask.get((areafile, maskname), loadDataMask(areafile, maskname))
         
-
-    for key in keys:
-        if key not in nc.variables.keys():
-            print(f'key {key} not in file {nc.filename}')
-            print('Available keys:options:', nc.variables.keys())
-            raise KeyError(f'applyLandMask: key {key} not in file {nc.filename}.')
+    #for key in keys:
+    #    if key not in nc.variables.keys():
+    #        print(f'key {key} not in file {nc.filename}')
+    #        print('Available keys:options:', nc.variables.keys())
+    #        raise KeyError(f'applyLandMask: key {key} not in file {nc.filename}.')
     
     print('loading', keys[0], 'from', nc.filename)
-    arr = np.ma.array(nc.variables[keys[0]][:]).squeeze()
+    arr = choose_best_var(nc, keys).squeeze()
     new_mask = np.ma.masked_invalid(arr).mask + arr.mask
     if arr.ndim == 2 and mask.ndim == 3:
         new_mask += mask[0]
