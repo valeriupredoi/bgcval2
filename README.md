@@ -51,6 +51,14 @@ analysis_compare -h
 which should print the module information and instructions on how to run the tool.
 
 
+On the jasmin computational system, members of the esmeval working group should be able to run the debug analysis script:
+```
+analysis_compare -y input_yaml/debug.yml
+```
+This script performs an analysis of two small physics-only UKESM development jobIDs,
+using the debug suite.
+
+
 ### Available executables
 
 Executable name | What it does | Command
@@ -238,6 +246,7 @@ much have an associated yaml file in the `key_files` directory.
 These files define how bgcval2 locates and interacts with model and
 observational data.
 The values in these files depend on the analysis but includes:
+
 ```
 ---
 name: Analysis_Name
@@ -273,9 +282,30 @@ These fields include:
   - `$MODEL`
 
 In addition, some paths from the `Paths.py` can also be used:
-  - `basedir_model`
-  - `basedir_obs`
-  - `PATHS_GRIDFILE`
+  - `basedir_model`: The path to the model base directory, defined in Paths.paths
+  - `basedir_obs`: he path to the observations base directory, defined in Paths.paths
+  - `PATHS_GRIDFILE`: The path to the gridfile, defined in Paths.paths
+  - `PATHs_BGCVAL2`: the path to the bgcval2 repository directory.
+  
+A `convert`  dictionary can be given to each model or observation data in the yml:
+
+```
+model_convert:
+    function: custom_function
+    path: path/to/custom/function.py
+    kwarg_1: 5.
+    kawrg_2: yellow
+```
+
+For instance, this example applies the function `custom_function` which is in the
+`path/to/custom/function.py` file, and gives it two key word arguments.
+Several example functions exists in `bgcval2/functions` which may be useful 
+for how to write your own.
+
+Simiarly, the `bgcval2/functions/standard_functions.py` contains several 
+basic functions such as multiply by or add to, or `noChange`, which can all be 
+called without providing the `path`, and which may have their own key word
+arguments.
 
 
 Point to point analysis
