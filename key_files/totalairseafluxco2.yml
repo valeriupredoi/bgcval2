@@ -1,0 +1,17 @@
+---
+name            : TotalAirSeaFluxCO2
+units           : Pg C/yr
+model           : MEDUSA
+modelgrid       : eORCA1
+dimensions      : 1
+modelFiles      : $BASEDIR_MODEL/$JOBID/medusa*_$JOBIDo_1y_*_diad-T.nc
+model_vars      : CO2FLUX
+model_convert   :
+    path: bgcval2/functions/AirSeaFluxCO2.py
+    function: calc_total_airseafluxco2
+    areafile: $PATHS_GRIDFILE
+layers          : layerless
+regions         : regionless
+
+
+
