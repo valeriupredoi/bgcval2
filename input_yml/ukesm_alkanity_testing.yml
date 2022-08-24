@@ -1,6 +1,6 @@
 ---
 # GC5 N96 ORCA1 spinup analysis
-name: bgcval_alkalinity
+name: ukesm_bgcval_alkalinity
 
 # Run the single job analysis
 do_analysis_timeseries: True 
@@ -40,7 +40,7 @@ jobs:
        thickness: 0.7
        linestyle: '-'
        shifttime: 0.
-       suite: bgc #alkalinity
+       suite: bgc alkalinity
 
 #    u-cp857:
 #       description: 'alk added at bathy - or 200m (if bathy deeper)'
