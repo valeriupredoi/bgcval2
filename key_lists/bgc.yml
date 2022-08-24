@@ -23,9 +23,8 @@ keys:
     Alkalinity: True                        # Glodap Alkalinity
     pH: True
     DIC: True                        # Globap dissolved inorganic carbon
-#    AirSeaFluxCO2: True              # Air Sea Flux of CO2
-#    TotalAirSeaFluxCO2: True         # Total global air sea flux
-#    pH: True
+    AirSeaFluxCO2: True              # Air Sea Flux of CO2
+    TotalAirSeaFluxCO2: True         # Total global air sea flux
 
     # Oxygen:
     Oxygen: True                         # WOA Oxygen
@@ -36,5 +35,5 @@ keys:
     #	AOU: True                      # Apparent Oxygen Usage
 
     # Misc.
-#    Dust: True  # Dust
-    #	TotalDust: True                # Total Dust
+    Dust: True  # Dust
+    TotalDust: True                # Total Dust

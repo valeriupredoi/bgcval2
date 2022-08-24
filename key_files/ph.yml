@@ -6,8 +6,8 @@ modelgrid       : eORCA1
 dimensions      : 3
 
 # The filenames
-modelFiles      : $BASEDIR_MODEL/$JOBID/medusa*$JOBID*_1y_*_ptrc-T.nc
-modelFile_p2p   : $BASEDIR_MODEL/$JOBID/medusa*$JOBID*_1y_*$YEAR????_ptrc-T.nc
+modelFiles      : $BASEDIR_MODEL/$JOBID/medusa*$JOBID*_1y_*_diad-T.nc
+#modelFile_p2p   : $BASEDIR_MODEL/$JOBID/medusa*$JOBID*_1y_*$YEAR????_ptrc-T.nc
 # dataFile        : $BASEDIR_OBS/WOA/annual/woa13_all_n00_01.nc
 # # Model coordinates/dimension names
 model_vars      : PH3
