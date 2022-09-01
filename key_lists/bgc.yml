@@ -8,6 +8,7 @@ keys:
 
     # Chlorophyll, Production, Export and DMS
     Chlorophyll: True                        # Total Chlorophyll
+    TotalIntPP: True                 # Global Total Integrated Primary Production
     # CHD: True                      # Diatom Chlorophyll
     # CHN: True                      # Non-diatom Chlorophyll
     #	DiaFrac: True                  # Diatom Fraction

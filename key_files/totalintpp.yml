@@ -1,0 +1,15 @@
+---
+name            : TotalIntPP
+units           : Gt/yr
+dimensions      : 1
+
+modelFiles      : $BASEDIR_MODEL/$JOBID/medusa*$JOBIDo_1y_*_diad-T.nc
+
+model_vars      : PRN PRD
+model_convert   : 
+    path: bgcval2/functions/TotalIntPP.py
+    function: TotalIntPP
+    areafile: $PATHS_GRIDFILE
+layers          : layerless
+regions         : regionless
+
