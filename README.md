@@ -150,15 +150,14 @@ These values are:
 A sample yaml exists in `input_yml/comparison_analysis_template.yml`,
 which can be adapted to additional analyses.
 
-Once the comparison suite has been run, members of the UKESM project can copy the
-html report website over to the esmeval public directory, here:
+Once the comparison suite has been run, members of the esmeval group workspace on jasmin
+can copy the html report to a web-visible directory, using the script:
+
 ```
-REPORTPATH=/gws/nopw/j04/esmeval/public/CompareReports/bgcval2/$USER
-mkdir -p $REPORTPATH
-rsync -av CompareReports2/* $REPORTPATH/.
+./rsync_to_esmeval.sh
 ```
 
-which will appear on the [jasmin public facing page](https://gws-access.jasmin.ac.uk/public/esmeval/CompareReports/bgcval2/),
+then the report will appear on the [jasmin public facing page](https://gws-access.jasmin.ac.uk/public/esmeval/CompareReports/bgcval2/),
 which is public facing but password protected.
 
 
