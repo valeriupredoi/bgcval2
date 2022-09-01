@@ -53,7 +53,7 @@ which should print the module information and instructions on how to run the too
 
 On the jasmin computational system, members of the esmeval working group should be able to run the debug analysis script:
 ```
-analysis_compare -y input_yaml/debug.yml
+analysis_compare -y input_yml/debug.yml
 ```
 This script performs an analysis of two small physics-only UKESM development jobIDs,
 using the debug suite.
