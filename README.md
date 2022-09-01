@@ -150,6 +150,18 @@ These values are:
 A sample yaml exists in `input_yml/comparison_analysis_template.yml`,
 which can be adapted to additional analyses.
 
+Once the comparison suite has been run, members of the UKESM project can copy the
+html report website over to the esmeval public directory, here:
+```
+REPORTPATH=/gws/nopw/j04/esmeval/public/CompareReports/bgcval2/$USER
+mkdir -p $REPORTPATH
+rsync -av CompareReports2/* $REPORTPATH/.
+```
+
+which will appear on the [jasmin public facing page]:
+(https://gws-access.jasmin.ac.uk/public/esmeval/CompareReports/bgcval2/),
+which is public facing but password protected.
+
 
 Downloading data using MASS
 ===========================
@@ -157,9 +169,9 @@ Downloading data using MASS
 Data can be downloaded and prepared for analysis using the `download_from_mass` bgcval2 tool,
 with the command:
 ```
-download_from_mass -j jobID
+download_from_mass -j jobIDs
 ```
-where `jobID` is one or more jobIDs.
+where `jobIDs` is one or more jobIDs.
 
 This script will only work on JASMIN's `mass-cli1` machine,
 which is set up to interact with the Met Office Storate System MASS.
