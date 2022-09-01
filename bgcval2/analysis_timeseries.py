@@ -101,7 +101,7 @@ def list_input_files(files_path, key_dict, paths):
     flags = ['USERNAME','basedir_model', 'basedir_obs','PATHS_GRIDFILE', 'PATHS_BGCVAL2']
     flag_values = [getpass.getuser(), paths.ModelFolder_pref, paths.ObsFolder, paths.orcaGridfn, paths.bgcval2_repo]
 
-    for flag in ['jobID', 'model', 'years','year', 'scenario']:
+    for flag in ['jobID', 'model', 'years','year', 'scenario', 'name']:
         if key_dict.get(flag, False):
             flags.append(flag.upper())
             flag_values.append(key_dict[flag])
@@ -324,31 +324,28 @@ def load_key_file(key, paths, jobID):
                 output_dict[''.join([model_or_data,'details'])][kwarg] = kwarg_value
 
         if model_or_data == 'model':
-            output_dict['modelcoords'] = {
-                't': key_dict.get('model_t', 'time_centered'),
-                'z': key_dict.get('model_z', 'deptht'),
-                'lat': key_dict.get('model_lat', 'nav_lat'),
-                'lon': key_dict.get('model_lon', 'nav_lon'),
-                'cal': key_dict.get('model_cal', '360_day'),
-                }
-            # get model files paths
             file_path = key_dict[''.join([model_or_data, 'Files'])]
             mdfile = list_input_files(file_path, key_dict, paths)
             output_dict[''.join([model_or_data, 'Files'])] = mdfile
         else:
-            output_dict['datacoords'] = {
-                't': key_dict.get('data_t', 'index_t'),
-                'z': key_dict.get('data_z', 'depth'),
-                'lat': key_dict.get('data_lat', 'lat'),
-                'lon': key_dict.get('data_lon', 'lon'),
-                'cal': key_dict.get('data_cal', 'standard'),
-                'tdict': ukp.tdicts[key_dict.get('tdict', 'ZeroToZero')]
-                }
             # get data file path
             file_path = key_dict[''.join([model_or_data, 'File'])]
             mdfile = list_input_files(file_path, key_dict, paths)
             if isinstance(mdfile, list) and len(mdfile) == 1:
                 mdfile = mdfile[0]
+        output_dict[''.join([model_or_data, 'Files'])] = mdfile
+
+        coords = ukp.load_coords_from_netcdf(mdfile)
+        output_dict[''.join([model_or_data, 'coords'])] = {
+            'tdict': ukp.tdicts[key_dict.get('tdict', 'ZeroToZero')],
+            }
+        for coord, value in coords.items():
+            # Coordinate names are guessed, but can be over-written in the yaml.
+
+            coord_in_yml = ''.join([model_or_data, '_', coord])
+            if  coord_in_yml in key_dict:
+                value = key_dict[coord_in_yml]
+            output_dict[''.join([model_or_data, 'coords'])][coord] = value
     return output_dict
 
 
@@ -590,134 +587,6 @@ def analysis_timeseries(
 #	The tdict indices point to a month number in python numbering (ie January = 0)
 # 	An example would be, if a netcdf uses the middle day of the month as it's time value:
 #		tdict = {15:0, 45:1 ...}
-
-    timekey = ukesmkeys['time']
-    medusaCoords = {
-        't': timekey,
-        'z': 'deptht',
-        'lat': 'nav_lat',
-        'lon': 'nav_lon',
-        'cal': '360_day',
-    }  # model doesn't need time dict.
-    medusaUCoords = {
-        't': timekey,
-        'z': 'depthu',
-        'lat': 'nav_lat',
-        'lon': 'nav_lon',
-        'cal': '360_day',
-    }  # model doesn't need time dict.
-    medusaVCoords = {
-        't': timekey,
-        'z': 'depthv',
-        'lat': 'nav_lat',
-        'lon': 'nav_lon',
-        'cal': '360_day',
-    }  # model doesn't need time dict.
-    medusaWCoords = {
-        't': timekey,
-        'z': 'depthw',
-        'lat': 'nav_lat',
-        'lon': 'nav_lon',
-        'cal': '360_day',
-    }  # model doesn't need time dict.
-
-    icCoords = {
-        't': timekey,
-        'z': 'nav_lev',
-        'lat': 'nav_lat',
-        'lon': 'nav_lon',
-        'cal': '360_day',
-    }  # model doesn't need time dict.
-    maredatCoords = {
-        't': 'index_t',
-        'z': 'DEPTH',
-        'lat': 'LATITUDE',
-        'lon': 'LONGITUDE',
-        'cal': 'standard',
-        'tdict': ukp.tdicts['ZeroToZero']
-    }
-    takahashiCoords = {
-        't': 'index_t',
-        'z': 'index_z',
-        'lat': 'LAT',
-        'lon': 'LON',
-        'cal': 'standard',
-        'tdict': ukp.tdicts['ZeroToZero']
-    }
-    woaCoords = {
-        't': 'index_t',
-        'z': 'depth',
-        'lat': 'lat',
-        'lon': 'lon',
-        'cal': 'standard',
-        'tdict': ukp.tdicts['ZeroToZero']
-    }
-    osuCoords = {
-        't': 'index_t',
-        'z': '',
-        'lat': 'latitude',
-        'lon': 'longitude',
-        'cal': 'standard',
-        'tdict': []
-    }
-    glodapCoords = {
-        't': 'index_t',
-        'z': 'depth',
-        'lat': 'latitude',
-        'lon': 'longitude',
-        'cal': 'standard',
-        'tdict': []
-    }
-    glodapv2Coords = {
-        't': 'time',
-        'z': 'Pressure',
-        'lat': 'lat',
-        'lon': 'lon',
-        'cal': '',
-        'tdict': {
-            0: 0,
-        }
-    }
-    mldCoords = {
-        't': 'index_t',
-        'z': 'index_z',
-        'lat': 'lat',
-        'lon': 'lon',
-        'cal': 'standard',
-        'tdict': ukp.tdicts['ZeroToZero']
-    }
-    dmsCoords = {
-        't': 'time',
-        'z': 'depth',
-        'lat': 'Latitude',
-        'lon': 'Longitude',
-        'cal': 'standard',
-        'tdict': ukp.tdicts['ZeroToZero']
-    }
-    cciCoords = {
-        't': 'index_t',
-        'z': 'index_z',
-        'lat': 'lat',
-        'lon': 'lon',
-        'cal': 'standard',
-        'tdict': ['ZeroToZero']
-    }
-    mogcCoords = {
-        't': 'index_t',
-        'z': 'index_z',
-        'lat': 'latitude',
-        'lon': 'longitude',
-        'cal': 'standard',
-        'tdict': ukp.tdicts['ZeroToZero']
-    }
-    godasCoords = {
-        't': 'index_t',
-        'z': 'level',
-        'lat': 'lat',
-        'lon': 'lon',
-        'cal': 'standard',
-        'tdict': ['ZeroToZero']
-    }
 
     #	def listModelDataFiles(jobID, filekey, datafolder, annual):
     #		print "listing model data files:\njobID:\t",jobID, '\nfile key:\t',filekey,'\ndata folder:\t', datafolder, '\nannual flag:\t',annual

@@ -11,21 +11,11 @@ dataFile        : $BASEDIR_OBS/WOA/annual/woa13_decav_t00_01v2.nc
 gridFile        : $PATHS_GRIDFILE
 
 # Model coordinates/dimension names
-model_t         : time_centered         # model time dimension
-model_cal       : 360_day               # model calendar
-model_z         : deptht                # model depth dimension
-model_lat       : nav_lat               # model latitude dimension
-model_lon       : nav_lon               # model latitude dimension
 model_vars      : thetao_con
 model_convert   : NoChange
 
 
 # Data coordinates names
-data_t          : time
-data_cal        : standard
-data_z          : depth
-data_lat        : lat
-data_lon        : lon
 data_vars       : t_an
 data_convert    : NoChange
 data_tdict      : ZeroToZero

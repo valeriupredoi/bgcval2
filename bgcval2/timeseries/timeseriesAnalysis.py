@@ -502,8 +502,15 @@ class timeseriesAnalysis:
             self.weightsDict[(False, False)] = 1.
             return
 
-        lats = nc.variables[self.modelcoords['lat']][:]
-        lons = nc.variables[self.modelcoords['lon']][:]
+        
+        grid_coords = {k: self.modelcoords[k] for k in ['lat', 'lon']}
+        
+        if grid_coords['lat'] not in nc.variables.keys() or grid_coords['lon'] not in nc.variables.keys():
+            # guess new coordinate:
+            grid_coords = ukp.load_coords_from_netcdf(nc.filename)
+         
+        lats = nc.variables[grid_coords['lat']][:]
+        lons = nc.variables[grid_coords['lon']][:]
         nc.close()
 
         if lats.ndim == 2:
