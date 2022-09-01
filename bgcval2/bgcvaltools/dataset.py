@@ -24,7 +24,8 @@
 
 import numpy as np
 import netCDF4
-from sys import argv
+import sys
+import os
 
 #####
 # I wish this class wasn't neccesairy.
@@ -35,18 +36,28 @@ from sys import argv
 
 
 class dataset:
-
-    def __init__(self, filename, readflag='r', Quiet=True):
+    def __init__(self, filename, readflag='r', Quiet=True, skip_option='break'):
         self.__filename__ = filename
         self.netcdfPath = filename
         self.filename = filename
+        self.skip_option = skip_option
         try:
-            self.dataset = netCDF4.Dataset(filename, 'r')
-        except:
-            print("dataset:\tUnable to open", filename)
-            self.dataset = netCDF4.Dataset(
-                filename, 'r'
-            )  # This is a ham fisted way to print the file name being loaded and the error message.
+            self.dataset = netCDF4.Dataset(filename, 'r', format='NETCDF4')
+        except OSError as oserr:
+            print(oserr)
+            print(f"dataset:\tUnable to open {filename}")
+            if oserr.errno == -101:
+                print(f"File {filename} appears to be corrupted")
+                if self.skip_option == 'break':
+                    sys.exit(1)
+                elif self.skip_option == 'delete': 
+                    os.remove(filename)
+                else:
+                    print("This file can not be skipped, exiting, " \
+                          "please check the file!")
+                    sys.exit(1)
+               
+            
 
         #####
         # link to various fields, so that the user experience is similar.
@@ -132,4 +143,4 @@ class dataset:
 
 if __name__ == "__main__":
     fn = None
-    nc = dataset(argv[1], Quiet=False)
+    nc = dataset(sys.argv[1], Quiet=False)
