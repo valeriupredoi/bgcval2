@@ -158,8 +158,7 @@ mkdir -p $REPORTPATH
 rsync -av CompareReports2/* $REPORTPATH/.
 ```
 
-which will appear on the [jasmin public facing page]:
-(https://gws-access.jasmin.ac.uk/public/esmeval/CompareReports/bgcval2/),
+which will appear on the [jasmin public facing page](https://gws-access.jasmin.ac.uk/public/esmeval/CompareReports/bgcval2/),
 which is public facing but password protected.
 
 
