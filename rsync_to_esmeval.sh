@@ -1,5 +1,3 @@
-
-
 # Script to copy report to esmeval public facing server.
 # You may need to request access to the esmeval CEDA-JASMIN group
 # or set your own path.
