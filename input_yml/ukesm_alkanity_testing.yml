@@ -32,7 +32,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: bgc #alkalinity
+       suite: kmf bgc alkalinity physics
 #
     u-cp799:
        description: 'alk added at bathy - or 100m (if bathy deeper)'
