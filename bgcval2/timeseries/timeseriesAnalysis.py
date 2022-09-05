@@ -270,7 +270,7 @@ class timeseriesAnalysis:
             print("timeseriesAnalysis:\tloadModel:\tloading new file:",
                   fn,
                   end=' ')
-            nc = dataset(fn, 'r')
+            nc = dataset(fn, 'r', skip_option='delete')
             ts = tst.getTimes(nc, self.modelcoords)
             meantime = np.mean(ts)
             print("\ttime:", meantime)
