@@ -70,7 +70,7 @@ def calc_total_airseafluxco2(nc, keys, **kwargs):
     if arr.ndim ==2: 
         arr = arr * area
     else: 
-        raise AssertionError(f"TotalAirSeaFluxCO2: {keys[0]} from {nc.filename} has an unexpected number of dimensions: {arr.ndim}")
+        raise ValueError(f"TotalAirSeaFluxCO2: {keys[0]} from {nc.filename} has an unexpected number of dimensions: {arr.ndim}")
 
     return arr.sum()
 
