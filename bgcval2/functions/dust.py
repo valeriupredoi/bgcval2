@@ -56,9 +56,6 @@ def modeldustsum(nc, keys, **kwargs):
     if not loadedArea:
         loadDataMask(areafile)
 
-    if np.ma.sum(masked_area) == 0:
-        raise AssertionError("dust.py:\t Model area not loaded correctly")
-            
     dust = nc.variables[keys[0]][:]
     # fix broken parts
     dust[:,234:296,295:348] = 0.
