@@ -65,7 +65,7 @@ def calc_total_airseafluxco2(nc, keys, **kwargs):
     try:   
         arr = nc.variables[keys[0]][:].squeeze() * factor    # mmolC/m2/d
     except: 
-        raise AssertionError(f"TotalAirSeaFluxCO2: Not able to load {keys[0]}) from {nc.filename}")
+        raise ValueError(f"TotalAirSeaFluxCO2: Not able to load {keys[0]}) from {nc.filename}")
     
     if arr.ndim ==2: 
         arr = arr * area
