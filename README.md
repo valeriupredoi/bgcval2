@@ -157,7 +157,7 @@ can copy the html report to a web-visible directory, using the script:
 ./rsync_to_esmeval.sh
 ```
 
-then the report will appear on the [jasmin public facing page](https://gws-access.jasmin.ac.uk/public/esmeval/CompareReports/bgcval2/),
+then the report will appear on the [JASMIN public facing page](https://gws-access.jasmin.ac.uk/public/esmeval/CompareReports/bgcval2/),
 which is public facing but password protected.
 
 
