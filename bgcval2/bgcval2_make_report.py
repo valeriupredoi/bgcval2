@@ -1617,8 +1617,10 @@ def comparehtml5Maker(
 
             keys_dict = suite_dict.get('keys', {})
             for key, key_bool in keys_dict.items():
-                if not key_bool: continue
-                if key in names: continue
+                if not key_bool:
+                    continue
+                if key in names:
+                    continue
                 names.append(key)
 
         for key in sorted(names):
