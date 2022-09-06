@@ -42,6 +42,7 @@ loaded_area_and_mask = False
 
 
 def load_area_and_mask(areafile):
+    """Load area file and its mask."""
     if isinstance(areafile, list) and len(areafile)==1:
         areafile = areafile[0]
     nc = dataset(areafile, 'r')
