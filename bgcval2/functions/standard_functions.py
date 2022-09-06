@@ -157,7 +157,7 @@ def choose_best_var(nc, keys):
         if key not in nc.variables.keys():
             continue
         return nc.variables[key][:]
-    raise KeyError(f'choose_best_var: unable to find {keys} in {nc.filename}')    
+    raise KeyError(f'choose_best_var: unable to find any variable in {keys} in {nc.filename}')    
 
 
 #####
