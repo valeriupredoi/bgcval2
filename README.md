@@ -150,7 +150,7 @@ These values are:
 A sample yaml exists in `input_yml/comparison_analysis_template.yml`,
 which can be adapted to additional analyses.
 
-Once the comparison suite has been run, members of the esmeval group workspace on jasmin
+Once the comparison suite has been run, members of the esmeval group workspace on JASMIN
 can copy the html report to a web-visible directory, using the script:
 
 ```
