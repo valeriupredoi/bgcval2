@@ -70,6 +70,6 @@ def TotalIntPP(nc, keys, **kwargs):
     elif arr.ndim ==2:
         arr = arr*model_area
     else:
-        raise KeyError(f'TotalIntPP: arr shape not recognised: {arr.shape} in {nc.filename}')
+        raise ValueError(f'TotalIntPP: arr shape not recognised, should be either 2 or 3, got value {arr.shape} in {nc.filename}')
     return arr.sum()
 
