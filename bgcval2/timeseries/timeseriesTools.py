@@ -34,6 +34,7 @@ from bgcval2.netcdf_manipulation import convertToOneDNC
 from bgcval2.bgcvaltools.dataset import dataset
 from bgcval2.bgcvaltools.makeMask import makeMask
 from bgcval2.functions.standard_functions import extractData as std_extractData
+from bgcval2.functions.standard_functions import choose_best_var
 
 """
 .. module:: timeseriesTools
@@ -41,18 +42,6 @@ from bgcval2.functions.standard_functions import extractData as std_extractData
    :synopsis: A swiss army knife set of tools for the time series analysis.
 .. moduleauthor:: Lee de Mora <ledm@pml.ac.uk>
 """
-
-
-def choose_best_var(nc, keys):
-    """
-    Takes the list of keys and chooses the first one that exists in the input file.
-    Useful if fields change for no reason.
-    """
-    for key in keys:
-        if key not in nc.variables.keys():
-            continue
-        return nc.variables[key]
-    raise KeyError(f'choose_best_var: unable to find {keys} in {nc.filename}')
 
 
 def getTimes(nc, coords):
