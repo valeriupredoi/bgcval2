@@ -10,6 +10,8 @@ def get_kwarg_file(kwargs, filekey, default = False):
     """
     # load file, area and mask
     filename = kwargs.get(filekey, default)
+    if filekey is None:  # assuming it's initialized with None
+        raise KeyError(f"Function requires a filekey kwarg to run calculation, got filekey {filekey}.")
 
     if not filename:
         raise FileNotFoundError(f"Function requires an {filekey} kwarg to run calculation.")
