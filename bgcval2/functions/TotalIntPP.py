@@ -58,9 +58,6 @@ def TotalIntPP(nc, keys, **kwargs):
     if not loadedArea:
         model_area = loadDataMask(areafile)
 
-    if np.ma.sum(model_area) == 0.:
-        raise AssertionError("TotalIntPP:\t Model area not loaded correctly")
-
     #    mmolN/m2/d        [mg C /m2/d]   [mgC/m2/yr] [gC/m2/yr]     Gt/m2/yr
     factor = 1.     * 6.625 * 12.011 * 365.       / 1000.   /     1E15
     arr = (nc.variables[keys[0]][:]+ nc.variables[keys[1]][:]).squeeze()*factor
