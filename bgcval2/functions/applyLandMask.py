@@ -60,7 +60,7 @@ def applyLandMask(nc, keys, **kwargs):
     #        print('Available keys:options:', nc.variables.keys())
     #        raise KeyError(f'applyLandMask: key {key} not in file {nc.filename}.')
     
-    print('loading', keys[0], 'from', nc.filename)
+    print(f"loading variable {keys[0]} from file {nc.filename}")
     arr = choose_best_var(nc, keys).squeeze()
     new_mask = np.ma.masked_invalid(arr).mask + arr.mask
     if arr.ndim == 2 and mask.ndim == 3:
