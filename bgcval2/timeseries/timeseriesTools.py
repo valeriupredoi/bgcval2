@@ -29,11 +29,13 @@ from datetime import datetime, timedelta
 #from pyproj import Proj
 
 #Specific local code:
-from .. import UKESMpython as ukp
-from ..netcdf_manipulation import convertToOneDNC
-from ..bgcvaltools.dataset import dataset
-from ..bgcvaltools.makeMask import makeMask
-from ..functions.standard_functions import extractData as std_extractData
+from bgcval2 import UKESMpython as ukp
+from bgcval2.netcdf_manipulation import convertToOneDNC
+from bgcval2.bgcvaltools.dataset import dataset
+from bgcval2.bgcvaltools.makeMask import makeMask
+from bgcval2.functions.standard_functions import extractData as std_extractData
+from bgcval2.functions.standard_functions import choose_best_var
+
 """
 .. module:: timeseriesTools
    :platform: Unix
@@ -88,10 +90,13 @@ def ApplyDepthSlice(arr, k):
     """
     Extracts a flat layer, k either
     """
+    print(arr.shape, k, type(k) )
     if arr.ndim < 3:
         return arr
-    return arr[..., k, :, :]
-
+    if arr.ndim==4:
+        return arr[:, k]
+    raise KeyError(f'ApplyDepthSlice: {k} shape not recognised: {arr.shape}')
+    
 
 def ApplyDepthrange(arr, k1, k2):
     if arr.ndim == 4: return arr[:, k1:k2, :, :]
@@ -144,6 +149,7 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
 
     if layer in [
             'Surface',
+            '50m',
             '100m',
             '200m',
             '300m',
@@ -154,6 +160,7 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
             '4000m',
     ]:
         if layer == 'Surface': z = 0.
+        if layer == '50m': z = 50.
         if layer == '100m': z = 100.
         if layer == '200m': z = 200.
         if layer == '300m': z = 300.
@@ -427,7 +434,8 @@ class DataLoader:
 
             lat = np.zeros_like(dat)
             lon = np.zeros_like(dat)
-            dims = self.nc.variables[self.details['vars'][0]].dimensions
+            dims = choose_best_var(self.nc, self.details['vars']).dimensions
+            #dims = self.nc.variables[self.details['vars'][0]].dimensions
 
         else:
             if self.coords['lat'] not in self.nc.variables or self.coords['lon'] not in self.nc.variables:
@@ -435,8 +443,8 @@ class DataLoader:
             lat = self.nc.variables[self.coords['lat']][:]
             lon = ukp.makeLonSafeArr(self.nc.variables[self.coords['lon']]
                                      [:])  # makes sure it's between +/-180
-
-            dims = self.nc.variables[self.details['vars'][0]].dimensions
+            dims = choose_best_var(self.nc, self.details['vars']).dimensions
+            #dims = self.nc.variables[self.details['vars'][0]].dimensions
             dat = self.__getlayerDat__(layer)
         if dat.ndim == 2: dat = dat[None, :, :]
 
@@ -471,6 +479,9 @@ class DataLoader:
             'latitude',
             'latbnd',
             'nav_lat',
+            'y_grid_t',
+            'y_grid_u',
+            'y_grid_v',
             'y',
             'lat',
         ]
@@ -479,6 +490,9 @@ class DataLoader:
             'longitude',
             'lonbnd',
             'nav_lon',
+            'x_grid_t',
+            'x_grid_u',
+            'x_grid_v',
             'x',
             'lon',
         ]
@@ -535,8 +549,7 @@ class DataLoader:
                     arr_lon.append(lo)
 
             else:
-                print("Unknown dimensions order", dims)
-                assert False
+                raise KeyError(f'"Unknown dimensions order {dims} in {self.nc.filename}') 
 
         elif dat.ndim == 1:
             if dims[0] == 'index':

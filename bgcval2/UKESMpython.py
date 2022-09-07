@@ -28,7 +28,6 @@
 
 """
 from sys import argv
-from netCDF4 import Dataset
 from os.path import exists, getmtime
 from os import mkdir, makedirs
 import os
@@ -52,7 +51,8 @@ from calendar import month_name
 from shelve import open as shOpen
 import socket
 
-from .bgcvaltools.RobustStatistics import MAD
+from bgcval2.bgcvaltools.RobustStatistics import MAD
+from bgcval2.bgcvaltools.dataset import dataset
 try:
     import yaml
 except:
@@ -461,6 +461,59 @@ def shouldIMakeFile(fin, fout, debug=True):
         print('shouldIMakeFile: got to the end somehow:')
         print(type(fin), fin, fout)
     return False
+
+
+
+
+def load_coords_from_netcdf(mdfile):
+    """
+    Looks in mdfile to see what the coords look like.
+    """
+    # Set input coordinates:
+    coord_candidates = {
+        't': ['time_centered','time', 'index_t', 'time_counter'],
+        'z':  ['depth', 'deptht', 'depthu', 'nav_lev', 'index_z', 'level'],
+        'lat': ['lat', 'lattitude', 'nav_lat', 'nav_lat_grid_T'],
+        'lon': ['lat', 'lattitude', 'nav_lat', 'nav_lon_grid_T'],
+        }
+    # Exntend with capitalization:
+    for coord, coord_candidate_list in coord_candidates.items():
+        coord_candidates[coord].extend([c.upper() for c in coord_candidate_list])
+        coord_candidates[coord].extend([c.title() for c in coord_candidate_list])
+
+    # Load variable names:
+    if isinstance(mdfile, list) and len(mdfile):
+        mdfile = mdfile[0]
+
+    nctmp = dataset(mdfile, 'r')
+    nckeys = set(nctmp.variables.keys())
+
+    # Special cases to find coords:
+    special_cases = {('time_centered', 'time_counter'): ['time_centered',]}
+
+    output_coords = {}
+    for coord, coord_candidate_list in coord_candidates.items():
+        intersection = sorted(list(set(coord_candidate_list) & nckeys))
+        if special_cases.get(tuple(intersection), False):
+            intersection = special_cases[tuple(intersection)]
+
+        if len(intersection) == 1:
+            output_coords[coord] = intersection[0]
+        elif len(intersection) == 0:
+            output_coords[coord] = None
+        else:
+            raise KeyError(f'Several {coord} coordinates found: {intersection}')
+
+    try:
+        calendar = nctmp.variables[output_coords.get('t')].calendar # might break.
+    except AttributeError:
+        calendar = 'standard'
+
+    output_coords['cal'] = calendar
+    nctmp.close()
+    return output_coords
+
+
 
 
 def makemapplot(fig,

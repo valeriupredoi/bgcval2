@@ -54,20 +54,20 @@ import pathlib
 
 #####
 # Load specific local code:
-from . import UKESMpython as ukp
-from .timeseries import timeseriesAnalysis
-from .timeseries import profileAnalysis
-from .timeseries import timeseriesTools as tst
+from bgcval2 import UKESMpython as ukp
+from bgcval2.timeseries import timeseriesAnalysis
+from bgcval2.timeseries import profileAnalysis
+from bgcval2.timeseries import timeseriesTools as tst
 
-from .bgcvaltools.mergeMonthlyFiles import mergeMonthlyFiles, meanDJF
-from .bgcvaltools.AOU import AOU
-from .bgcvaltools.dataset import dataset
-from ._runtime_config import get_run_configuration
+from bgcval2.bgcvaltools.mergeMonthlyFiles import mergeMonthlyFiles, meanDJF
+from bgcval2.bgcvaltools.AOU import AOU
+from bgcval2.bgcvaltools.dataset import dataset
+from bgcval2._runtime_config import get_run_configuration
 from bgcval2.functions.standard_functions import std_functions
 
 #####
 # User defined set of paths pointing towards the datasets.
-from .Paths.paths import paths_setter
+from bgcval2.Paths.paths import paths_setter
 
 
 def listModelDataFiles(jobID, filekey, datafolder, annual):
@@ -98,16 +98,15 @@ def list_input_files(files_path, key_dict, paths):
     """
     #####
     # Replace some values for $FLAGS in the path:
-    flags = ['USERNAME','basedir_model', 'basedir_obs','PATHS_GRIDFILE']
-    flag_values = [getpass.getuser(), paths.ModelFolder_pref, paths.ObsFolder, paths.orcaGridfn]
+    flags = ['USERNAME','basedir_model', 'basedir_obs','PATHS_GRIDFILE', 'PATHS_BGCVAL2']
+    flag_values = [getpass.getuser(), paths.ModelFolder_pref, paths.ObsFolder, paths.orcaGridfn, paths.bgcval2_repo]
 
-    for flag in ['jobID', 'model', 'years','year', 'scenario']:
+    for flag in ['jobID', 'model', 'years','year', 'scenario', 'name']:
         if key_dict.get(flag, False):
             flags.append(flag.upper())
             flag_values.append(key_dict[flag])
 
     for flag, flag_value in zip(flags, flag_values):
-        print('Changing FLAG:',flag,'to',flag_value, 'in', files_path)
         files_path = findReplaceFlag(files_path, flag, flag_value)
 
     input_files = sorted(glob(files_path))
@@ -126,7 +125,9 @@ def build_list_of_suite_keys(suites, debug=True):
     print(f'analysis_timeseries: Directory where keys are stored: {key_lists_dir}')
     analysis_keys = {}
     for suite in suites:
-        print(suite)
+        if not suite or suite in [' ', ',']: 
+            continue
+
         # look for a list in keys_list directory:
         suite_yml = os.path.join(key_lists_dir, ''.join([suite.lower(),'.yml']))
         if debug:
@@ -151,7 +152,6 @@ def build_list_of_suite_keys(suites, debug=True):
             if debug and key in analysis_keys:
                 print(f'build_list_of_suite_keys:\tKey {key} exists in multiple suites:')
 
-
             if key in analysis_keys and keybool != analysis_keys[key]:
                 print(f'build_list_of_suite_keys:\tERROR: conflict in input yamls: {key}, {keybool} != {analysis_keys[key]}')
                 sys.exit(1)
@@ -167,11 +167,11 @@ def build_list_of_suite_keys(suites, debug=True):
 
 def get_kwargs_from_dict(convert_dict, avoids = ['path', 'function']):
     """
-    Get the KWARGS fromn a dict 
+    Get the KWARGS fromn a dict
     """
     kwargs = {}
     for key, value in convert_dict.items():
-        if key in avoids: 
+        if key in avoids:
             continue
         kwargs[key] = value
     return kwargs
@@ -204,9 +204,9 @@ def load_function(convert):
         # path is relative to bgcval2 repo.
         repo_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
         func_path = os.path.join(repo_dir, func_path)
-   
+
     if not os.path.exists(func_path):
-        raise FileNotFoundError(f'Path {path} to custom function file not found.')
+        raise FileNotFoundError(f'Path {func_path} to custom function file not found.')
 
     # load function from Python file in path
     modulename = os.path.splitext(os.path.basename(func_path))[0]
@@ -220,24 +220,6 @@ def load_function(convert):
     return func, kwargs
 
 
-def load_function_kwargs(key_dict, model_or_data):
-    """
-    Loads key word arguments from yaml file dictionary.
-    """
-    data_kwargs = {}
-    #, data_convert_kwargss = [], []
-    #####
-    # Looking for kwargs to pass to convert:
-    for key, value in key_dict.items():
-        searchFor =  model_or_data + '_convert_'
-        findstr = key.find(searchFor)
-        if findstr==-1:
-            continue
-        kwargkey = key[len(searchFor):]
-        data_kwargs[kwargkey] = value
-    return data_kwargs
-
-
 def findReplaceFlag(filepath, flag, new_value):
     """
     Looking for $FLAG in the filepath.
@@ -245,7 +227,10 @@ def findReplaceFlag(filepath, flag, new_value):
     """
     lookingFor = ''.join(['$', flag.upper()])
     if filepath.find(lookingFor) == -1:
+        print('NOT Changing FLAG:', lookingFor, 'to', new_value, 'in', filepath)
+
         return filepath
+    print('Changing FLAG:', lookingFor, 'to', new_value, 'in', filepath)
     filepath = filepath.replace(lookingFor, new_value)
     return filepath
 
@@ -326,7 +311,6 @@ def load_key_file(key, paths, jobID):
         md_vars = parse_list_from_string(md_vars)
         md_convert = key_dict[''.join([model_or_data, '_convert'])]
         convert_func, kwargs = load_function(md_convert)
-        #wargs = load_function_kwargs(key_dict, model_or_data)
 
         output_dict[''.join([model_or_data, 'details'])] = {
             'name': key_dict['name'],
@@ -335,37 +319,35 @@ def load_key_file(key, paths, jobID):
             'units': key_dict['units'],
             }
         for kwarg, kwarg_value in kwargs.items():
-            if isinstance(kwarg_value, str) and kwarg_value.lower().find('file')>-1:
+            if isinstance(kwarg_value, str) and kwarg.lower().find('file')>-1:
                 output_dict[''.join([model_or_data,'details'])][kwarg] = list_input_files(kwarg_value, key_dict, paths)
             else:
                 output_dict[''.join([model_or_data,'details'])][kwarg] = kwarg_value
 
         if model_or_data == 'model':
-            output_dict['modelcoords'] = {
-                't': key_dict.get('model_t', 'time_centered'),
-                'z': key_dict.get('model_z', 'deptht'),
-                'lat': key_dict.get('model_lat', 'nav_lat'),
-                'lon': key_dict.get('model_lon', 'nav_lon'),
-                'cal': key_dict.get('model_cal', '360_day'),
-                }
-            # get model files paths
             file_path = key_dict[''.join([model_or_data, 'Files'])]
             mdfile = list_input_files(file_path, key_dict, paths)
             output_dict[''.join([model_or_data, 'Files'])] = mdfile
         else:
-            output_dict['datacoords'] = {
-                't': key_dict.get('data_t', 'index_t'),
-                'z': key_dict.get('data_z', 'depth'),
-                'lat': key_dict.get('data_lat', 'lat'),
-                'lon': key_dict.get('data_lon', 'lon'),
-                'cal': key_dict.get('data_cal', 'standard'),
-                'tdict': ukp.tdicts[key_dict.get('tdict', 'ZeroToZero')]
-                }
             # get data file path
             file_path = key_dict[''.join([model_or_data, 'File'])]
             mdfile = list_input_files(file_path, key_dict, paths)
             if isinstance(mdfile, list) and len(mdfile) == 1:
                 mdfile = mdfile[0]
+
+        output_dict[''.join([model_or_data, 'Files'])] = mdfile
+
+        coords = ukp.load_coords_from_netcdf(mdfile)
+        output_dict[''.join([model_or_data, 'coords'])] = {
+            'tdict': ukp.tdicts[key_dict.get('tdict', 'ZeroToZero')],
+            }
+        for coord, value in coords.items():
+            # Coordinate names are guessed, but can be over-written in the yaml.
+
+            coord_in_yml = ''.join([model_or_data, '_', coord])
+            if  coord_in_yml in key_dict:
+                value = key_dict[coord_in_yml]
+            output_dict[''.join([model_or_data, 'coords'])][coord] = value
     return output_dict
 
 
@@ -425,7 +407,8 @@ def analysis_timeseries(
     # This lets up give a list of keys one at a time, or in parrallel.
     #if type(suites) == type(['Its', 'A', 'list!']):
     if isinstance(suites, str):
-        suites = [suites, ]
+        suites = suites.replace(',', ' ').replace('\'', '').replace('"', '')
+        suites = suites.split(' ')
 
     analysisKeys = build_list_of_suite_keys(suites, debug=True)
     print('analysisKeys', analysisKeys)
@@ -597,54 +580,6 @@ def analysis_timeseries(
             ukesmkeys['w3d'] = 'wo'
             ukesmkeys['MLD'] = 'ssomxl010'
 
-#	else:
-#                        ukesmkeys['time']       = 'time_centered'
-#                        ukesmkeys['temp3d']     = 'thetao'
-#                        ukesmkeys['sst']        = 'tos'
-#                        ukesmkeys['sal3d']     = 'so'
-#                        ukesmkeys['sss']        = 'sos'
-#                        ukesmkeys['v3d']     = 'vo'
-#                        ukesmkeys['u3d']     = 'uo'
-#                        ukesmkeys['e3u']    = 'thkcello'
-#                        ukesmkeys['w3d']     = 'wo'
-
-#                        ukesmkeys['time'] = 'time_counter'
-#                        ukesmkeys['temp3d']     = 'votemper'
-#                        ukesmkeys['sst']        = ''
-#                        ukesmkeys['sal3d']     = 'vosaline'
-#                        ukesmkeys['sss']        = ''
-#                        ukesmkeys['v3d']     = 'vomecrty'
-#                        ukesmkeys['u3d']     = 'vozocrtx'
-#                        ukesmkeys['e3u']    = 'e3u'
-#                        ukesmkeys['w3d']     = 'vovecrtz'
-
-#	if jobID > 'u-am514' and jobID not in ['u-an619','u-an629','u-an631','u-an869', 'u-an908', 'u-an911','u-an989',]:
-#		# There are other changes here too.
-#                #####
-#                # Because we can never be sure someone won't randomly rename the
-#                # time dimension without saying anything.
-#		ukesmkeys={}
-#                ukesmkeys['time'] 	= 'time_centered'
-#		ukesmkeys['temp3d'] 	= 'thetao'
-#                ukesmkeys['sst'] 	= 'tos'
-#                ukesmkeys['sal3d']     = 'so'
-#                ukesmkeys['sss']        = 'sos'
-#                ukesmkeys['v3d']     = 'vo'
-#                ukesmkeys['u3d']     = 'uo'
-#                ukesmkeys['e3u']    = 'thkcello'
-#                ukesmkeys['w3d']     = 'wo'
-#
-#        else:
-#                ukesmkeys={}
-#                ukesmkeys['time'] = 'time_counter'
-#                ukesmkeys['temp3d']     = 'votemper'
-#                ukesmkeys['sst']        = ''
-#                ukesmkeys['sal3d']     = 'vosaline'
-#                ukesmkeys['sss']        = ''
-#                ukesmkeys['v3d']     = 'vomecrty'
-#                ukesmkeys['u3d']     = 'vozocrtx'
-#                ukesmkeys['e3u']    = 'e3u'
-#                ukesmkeys['w3d']     = 'vovecrtz'
 
 #####
 # Coordinate dictionary
@@ -655,134 +590,6 @@ def analysis_timeseries(
 #	The tdict indices point to a month number in python numbering (ie January = 0)
 # 	An example would be, if a netcdf uses the middle day of the month as it's time value:
 #		tdict = {15:0, 45:1 ...}
-
-    timekey = ukesmkeys['time']
-    medusaCoords = {
-        't': timekey,
-        'z': 'deptht',
-        'lat': 'nav_lat',
-        'lon': 'nav_lon',
-        'cal': '360_day',
-    }  # model doesn't need time dict.
-    medusaUCoords = {
-        't': timekey,
-        'z': 'depthu',
-        'lat': 'nav_lat',
-        'lon': 'nav_lon',
-        'cal': '360_day',
-    }  # model doesn't need time dict.
-    medusaVCoords = {
-        't': timekey,
-        'z': 'depthv',
-        'lat': 'nav_lat',
-        'lon': 'nav_lon',
-        'cal': '360_day',
-    }  # model doesn't need time dict.
-    medusaWCoords = {
-        't': timekey,
-        'z': 'depthw',
-        'lat': 'nav_lat',
-        'lon': 'nav_lon',
-        'cal': '360_day',
-    }  # model doesn't need time dict.
-
-    icCoords = {
-        't': timekey,
-        'z': 'nav_lev',
-        'lat': 'nav_lat',
-        'lon': 'nav_lon',
-        'cal': '360_day',
-    }  # model doesn't need time dict.
-    maredatCoords = {
-        't': 'index_t',
-        'z': 'DEPTH',
-        'lat': 'LATITUDE',
-        'lon': 'LONGITUDE',
-        'cal': 'standard',
-        'tdict': ukp.tdicts['ZeroToZero']
-    }
-    takahashiCoords = {
-        't': 'index_t',
-        'z': 'index_z',
-        'lat': 'LAT',
-        'lon': 'LON',
-        'cal': 'standard',
-        'tdict': ukp.tdicts['ZeroToZero']
-    }
-    woaCoords = {
-        't': 'index_t',
-        'z': 'depth',
-        'lat': 'lat',
-        'lon': 'lon',
-        'cal': 'standard',
-        'tdict': ukp.tdicts['ZeroToZero']
-    }
-    osuCoords = {
-        't': 'index_t',
-        'z': '',
-        'lat': 'latitude',
-        'lon': 'longitude',
-        'cal': 'standard',
-        'tdict': []
-    }
-    glodapCoords = {
-        't': 'index_t',
-        'z': 'depth',
-        'lat': 'latitude',
-        'lon': 'longitude',
-        'cal': 'standard',
-        'tdict': []
-    }
-    glodapv2Coords = {
-        't': 'time',
-        'z': 'Pressure',
-        'lat': 'lat',
-        'lon': 'lon',
-        'cal': '',
-        'tdict': {
-            0: 0,
-        }
-    }
-    mldCoords = {
-        't': 'index_t',
-        'z': 'index_z',
-        'lat': 'lat',
-        'lon': 'lon',
-        'cal': 'standard',
-        'tdict': ukp.tdicts['ZeroToZero']
-    }
-    dmsCoords = {
-        't': 'time',
-        'z': 'depth',
-        'lat': 'Latitude',
-        'lon': 'Longitude',
-        'cal': 'standard',
-        'tdict': ukp.tdicts['ZeroToZero']
-    }
-    cciCoords = {
-        't': 'index_t',
-        'z': 'index_z',
-        'lat': 'lat',
-        'lon': 'lon',
-        'cal': 'standard',
-        'tdict': ['ZeroToZero']
-    }
-    mogcCoords = {
-        't': 'index_t',
-        'z': 'index_z',
-        'lat': 'latitude',
-        'lon': 'longitude',
-        'cal': 'standard',
-        'tdict': ukp.tdicts['ZeroToZero']
-    }
-    godasCoords = {
-        't': 'index_t',
-        'z': 'level',
-        'lat': 'lat',
-        'lon': 'lon',
-        'cal': 'standard',
-        'tdict': ['ZeroToZero']
-    }
 
     #	def listModelDataFiles(jobID, filekey, datafolder, annual):
     #		print "listing model data files:\njobID:\t",jobID, '\nfile key:\t',filekey,'\ndata folder:\t', datafolder, '\nannual flag:\t',annual
@@ -874,39 +681,6 @@ def analysis_timeseries(
         av[name]['metrics'] = metricList
 
         av[name]['datasource'] = 'MAREDAT'
-        av[name]['model'] = 'MEDUSA'
-
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 3
-
-    if 'CHL' in analysisKeys:
-        name = 'Chlorophyll'
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'ptrc_T',
-                                                    paths.ModelFolder_pref,
-                                                    annual)
-        av[name]['dataFile'] = ''
-
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = maredatCoords
-
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': ['CHN', 'CHD'],
-            'convert': ukp.sums,
-            'units': 'mg C/m^3'
-        }
-        av[name]['datadetails'] = {'name': '', 'units': ''}
-
-        av[name]['layers'] = [
-            'Surface',
-            '100m',
-            '200m',
-        ]
-        av[name]['regions'] = regionList
-        av[name]['metrics'] = metricList
-
-        av[name]['datasource'] = ''
         av[name]['model'] = 'MEDUSA'
 
         av[name]['modelgrid'] = 'eORCA1'
@@ -1283,127 +1057,7 @@ def analysis_timeseries(
         av[name]['gridFile'] = paths.orcaGridfn
         av[name]['dimensions'] = 3
 
-    if 'N' in analysisKeys:
-        name = 'Nitrate'
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'ptrc_T',
-                                                    paths.ModelFolder_pref,
-                                                    annual)
-        if annual:
-            av[name]['dataFile'] = WOAFolder + '/woa13_all_n00_01.nc'
-        else:
-            av[name]['dataFile'] = WOAFolder + '/nitrate_monthly_1deg.nc'
 
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = woaCoords
-
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': [
-                'DIN',
-            ],
-            'convert': ukp.NoChange,
-            'units': 'mmol N/m^3'
-        }
-        av[name]['datadetails'] = {
-            'name': name,
-            'vars': [
-                'n_an',
-            ],
-            'convert': ukp.NoChange,
-            'units': 'mmol N/m^3'
-        }
-
-        av[name]['layers'] = layerList
-        av[name]['regions'] = regionList
-
-        #av[name]['layers'] 		= ['Surface','300m',]#'1000m',]#'Surface - 300m',]'100m',
-        #av[name]['regions'] 		= regionList#['Global',]#'NorthAtlanticOcean','SouthAtlanticOcean',]#'NorthAtlantic']
-        av[name]['metrics'] = metricList  #['mean','median', ]
-
-        av[name]['datasource'] = 'WOA'
-        av[name]['model'] = 'MEDUSA'
-
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 3
-
-    if 'Si' in analysisKeys:
-        name = 'Silicate'
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'ptrc_T',
-                                                    paths.ModelFolder_pref,
-                                                    annual)
-        if annual:
-            av[name]['dataFile'] = WOAFolder + 'woa13_all_i00_01.nc'
-        else:
-            av[name]['dataFile'] = WOAFolder + 'wsilicate_monthly_1deg.nc'
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = woaCoords
-
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': [
-                'SIL',
-            ],
-            'convert': ukp.NoChange,
-            'units': 'mmol Si/m^3'
-        }
-        av[name]['datadetails'] = {
-            'name': name,
-            'vars': [
-                'i_an',
-            ],
-            'convert': ukp.NoChange,
-            'units': 'mmol Si/m^3'
-        }
-
-        av[name]['layers'] = layerList
-        av[name]['regions'] = regionList
-        av[name]['metrics'] = metricList
-
-        av[name]['datasource'] = 'WOA'
-        av[name]['model'] = 'MEDUSA'
-
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 3
-
-    if 'O2' in analysisKeys:
-        name = 'Oxygen'
-        if annual:
-            av[name]['modelFiles'] = listModelDataFiles(
-                jobID, 'ptrc_T', paths.ModelFolder_pref, annual)
-            av[name]['dataFile'] = WOAFolder + 'woa13_all_o00_01.nc'
-
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = woaCoords
-
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': [
-                'OXY',
-            ],
-            'convert': ukp.NoChange,
-            'units': 'mmol O2/m^3'
-        }
-        av[name]['datadetails'] = {
-            'name': name,
-            'vars': [
-                'o_an',
-            ],
-            'convert': ukp.oxconvert,
-            'units': 'mmol O2/m^3'
-        }
-
-        av[name]['layers'] = layerList
-        av[name]['regions'] = regionList
-        av[name]['metrics'] = metricList
-
-        av[name]['datasource'] = 'WOA'
-        av[name]['model'] = 'MEDUSA'
-
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 3
 
     if 'OMZMeanDepth' in analysisKeys:
         if annual:
@@ -1782,560 +1436,6 @@ def analysis_timeseries(
         av[name]['gridFile'] = paths.orcaGridfn
         av[name]['dimensions'] = 3
 
-    if 'DIC' in analysisKeys:
-
-        def convertkgToM3(nc, keys):
-            return nc.variables[keys[0]][:] * 1.027
-
-        name = 'DIC'
-
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'ptrc_T',
-                                                    paths.ModelFolder_pref,
-                                                    annual)
-        av[name]['dataFile'] = paths.GLODAPv2Dir + 'GLODAPv2.tco2.historic.nc'
-
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = glodapv2Coords
-
-        av[name]['modeldetails'] = {
-            'name': 'DIC',
-            'vars': [
-                'DIC',
-            ],
-            'convert': ukp.NoChange,
-            'units': 'mmol C/m^3'
-        }
-        av[name]['datadetails'] = {
-            'name': 'DIC',
-            'vars': [
-                'tco2',
-            ],
-            'convert': ukp.convertkgToM3,
-            'units': 'mmol C/m^3'
-        }
-
-        av[name]['layers'] = layerList
-        av[name]['regions'] = regionList
-        av[name]['metrics'] = metricList
-
-        av[name]['datasource'] = 'GLODAP'
-        av[name]['model'] = 'MEDUSA'
-
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 3
-
-    if 'Alk' in analysisKeys:
-
-        def convertmeqm3TOumolkg(nc, keys):
-            return nc.variables[keys[0]][:] * 1.027
-
-        name = 'Alkalinity'
-        if annual:
-            av[name]['modelFiles'] = listModelDataFiles(
-                jobID, 'ptrc_T', paths.ModelFolder_pref, annual)
-            av[name]['dataFile'] = paths.GlodapDir + 'Alk.nc'
-        else:
-            print("Alkalinity data not available for monthly Analysis")
-            assert 0
-
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = glodapCoords
-
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': [
-                'ALK',
-            ],
-            'convert': ukp.NoChange,
-            'units': 'meq/m^3',
-        }
-        av[name]['datadetails'] = {
-            'name': name,
-            'vars': [
-                'Alk',
-            ],
-            'convert': convertmeqm3TOumolkg,
-            'units': 'meq/m^3',
-        }
-
-        #	av[name]['layers'] 		=  ['Surface','100m','300m','1000m',]
-        #	av[name]['regions'] 		= regionList
-        av[name]['layers'] = layerList
-        av[name]['regions'] = regionList
-        av[name]['metrics'] = metricList
-
-        av[name]['datasource'] = 'GLODAP'
-        av[name]['model'] = 'MEDUSA'
-
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 3
-
-    if 'pH' in analysisKeys:
-
-        def convertmeqm3TOumolkg(nc, keys):
-            return nc.variables[keys[0]][:] * 1.027
-
-        name = 'pH'
-        if annual:
-            av[name]['modelFiles'] = listModelDataFiles(
-                jobID, 'diad_T', paths.ModelFolder_pref, annual)
-            #av[name]['dataFile'] 	=  paths.GlodapDir+'p.nc'
-        else:
-            print("pH data not available for monthly Analysis")
-            assert 0
-
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = {'name': '', 'units': ''}
-        av[name]['datadetails'] = {'name': '', 'units': ''}
-        av[name]['dataFile'] = ''
-        av[name]['datasource'] = ''
-#        if analysisSuite.lower() == 'fast':
-#            av[name]['dimensions'] = 2
-#            av[name]['modeldetails'] = {
-#                'name': name,
-#                'vars': [
-#                    'OCN_PH',
-#                ],
-#                'convert': ukp.NoChange,
-#                'units': 'pH',
-#            }
-#        else:
-        av[name]['dimensions'] = 3
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': [
-                'PH3',
-            ],
-            'convert': ukp.NoChange,
-            'units': 'pH',
-        }
-        #av[name]['datadetails']  	= {'name': name, 'vars':['Alk',], 'convert': convertmeqm3TOumolkg,'units':'meq/m^3',}
-
-        av[name]['layers'] = [
-            'Surface',
-        ]  #'100m','300m','1000m',]
-        #	av[name]['regions'] 		= regionList
-        #av[name]['layers'] 		= layerList
-        av[name]['regions'] = regionList
-        av[name]['metrics'] = metricList
-
-        av[name]['model'] = 'MEDUSA'
-
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 3
-
-    if 'AirSeaFluxCO2' in analysisKeys:
-
-        #nc = dataset(paths.orcaGridfn,'r')
-        #area = nc.variables['e1t'][:]*nc.variables['e2t'][:]
-        #nc.close()
-
-        def eOrcaTotal(nc, keys):
-            factor = 12. / 1000.
-            arr = nc.variables['CO2FLUX'][:].squeeze()  # mmolC/m2/d
-            return arr * factor
-
-        def takaTotal(nc, keys):
-            arr = nc.variables['TFLUXSW06'][:].squeeze(
-            )  # 10^12 g Carbon year^-1
-            arr = -1.E12 * arr / 365.  #g Carbon/day
-            factor = -1.E12 / (365.)  # convert to #/ 1.E12
-            area = nc.variables['AREA_MKM2'][:].squeeze() * 1E12  # 10^6 km^2
-            fluxperarea = arr / area
-            #arr = arr*area #* 1.E24 	# converts area into m^2
-            #print arr.sum(), arr.sum()*factor
-            return fluxperarea
-            # area 10^6 km^2
-            # flux:  10^15 g Carbon month^-1. (GT)/m2/month
-
-        name = 'AirSeaFluxCO2'
-
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'diad_T',
-                                                    paths.ModelFolder_pref,
-                                                    annual)
-        if annual:
-            av[name][
-                'dataFile'] = paths.TakahashiFolder + 'takahashi_2009_Anual_sumflux_2006c_noHead.nc'
-        else:
-            av[name][
-                'dataFile'] = paths.TakahashiFolder + 'takahashi2009_month_flux_pCO2_2006c_noHead.nc'
-            print("Air Sea Flux CO2 monthly not implemented")
-            assert 0
-            #av[name]['dataFile'] 		=  paths.TakahashiFolder+'takahashi2009_month_flux_pCO2_2006c_noHead.nc'
-
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = takahashiCoords
-        av[name]['modeldetails'] = {
-            'name': 'AirSeaFluxCO2',
-            'vars': [
-                'CO2FLUX',
-            ],
-            'convert': eOrcaTotal,
-            'units': 'g C/m2/day'
-        }
-        av[name]['datadetails'] = {
-            'name': 'AirSeaFluxCO2',
-            'vars': ['TFLUXSW06', 'AREA_MKM2'],
-            'convert': takaTotal,
-            'units': 'g C/m2/day'
-        }
-        av[name]['layers'] = [
-            'Surface',
-        ]
-        av[name]['regions'] = regionList
-        av[name]['metrics'] = metricList
-        av[name]['datasource'] = ''
-        av[name]['model'] = 'MEDUSA'
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 2
-
-    if 'TotalAirSeaFluxCO2' in analysisKeys:
-        name = 'TotalAirSeaFluxCO2'
-        nc = dataset(paths.orcaGridfn, 'r')
-        area = nc.variables['e1t'][:] * nc.variables['e2t'][:]
-        nc.close()
-
-        def eOrcaTotal(nc, keys):
-            factor = 365.25 * 12. / 1000. / 1.E15
-            arr = nc.variables['CO2FLUX'][:].squeeze() * factor  # mmolC/m2/d
-            if arr.ndim == 3:
-                for i in np.arange(arr.shape[0]):
-                    arr[i] = arr[i] * area
-            elif arr.ndim == 2:
-                arr = arr * area
-            else:
-                assert 0
-            return arr.sum()
-
-        def takaTotal(nc, keys):
-            arr = nc.variables['TFLUXSW06'][:].squeeze(
-            )  # 10^12 g Carbon year^-1
-            arr = -1.E12 * arr / 1.E15  #/ 365.				#g Carbon/day
-            #area = nc.variables['AREA_MKM2'][:].squeeze() *1E12	# 10^6 km^2
-            #fluxperarea = arr/area
-            return arr.sum()
-            # area 10^6 km^2
-            # flux:  10^15 g Carbon month^-1. (GT)/m2/month
-
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'diad_T',
-                                                    paths.ModelFolder_pref,
-                                                    annual)
-        av[name]['modelcoords'] = medusaCoords
-        #if jobID == 'u-am515':	av[name]['modeldetails']        = {'name': 'AirSeaFluxCO2', 'vars':['CO2FLUX',], 'convert': uam515_TotalCO2,'units':'Pg C/yr'}
-        #else:
-        av[name]['modeldetails'] = {
-            'name': 'AirSeaFluxCO2',
-            'vars': [
-                'CO2FLUX',
-            ],
-            'convert': eOrcaTotal,
-            'units': 'Pg C/yr'
-        }
-        av[name]['layers'] = [
-            'layerless',
-        ]
-        av[name]['regions'] = [
-            'regionless',
-        ]
-        av[name]['metrics'] = [
-            'metricless',
-        ]
-        av[name]['model'] = 'MEDUSA'
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 2
-
-        noTaka = True
-        if noTaka:
-            av[name]['datacoords'] = {'name': '', 'units': ''}
-            av[name]['datadetails'] = {'name': '', 'units': ''}
-            av[name]['dataFile'] = ''
-            av[name]['datasource'] = ''
-        else:
-            if annual:
-                av[name][
-                    'dataFile'] = paths.TakahashiFolder + 'takahashi_2009_Anual_sumflux_2006c_noHead.nc'
-            else:
-                av[name][
-                    'dataFile'] = paths.TakahashiFolder + 'takahashi2009_month_flux_pCO2_2006c_noHead.nc'
-                print("Air Sea Flux CO2 monthly not implemented")
-                assert 0
-                #av[name]['dataFile'] 		=  paths.TakahashiFolder+'takahashi2009_month_flux_pCO2_2006c_noHead.nc'
-            av[name]['datadetails'] = {
-                'name': 'AirSeaFluxCO2',
-                'vars': ['TFLUXSW06', 'AREA_MKM2'],
-                'convert': takaTotal,
-                'units': 'Pg C/yr'
-            }
-            av[name]['datasource'] = 'Takahashi'
-            av[name]['datacoords'] = takahashiCoords
-
-    if 'NoCaspianAirSeaFluxCO2' in analysisKeys:
-        name = 'NoCaspianAirSeaFluxCO2'
-        nc = dataset(paths.orcaGridfn, 'r')
-        area = nc.variables['e1t'][:] * nc.variables['e2t'][:]
-        nc.close()
-
-        def eOrcaTotal(nc, keys):
-            factor = 365.25 * 12. / 1000. / 1.E15
-            arr = nc.variables['CO2FLUX'][:].squeeze() * factor  # mmolC/m2/d
-            if arr.ndim == 3:
-                for i in np.arange(arr.shape[0]):
-                    arr[i] = arr[i] * area
-            elif arr.ndim == 2:
-                arr = arr * area
-            else:
-                assert 0
-            return arr
-
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'diad_T',
-                                                    paths.ModelFolder_pref,
-                                                    annual)
-
-        av[name]['modelcoords'] = medusaCoords
-
-        av[name]['modeldetails'] = {
-            'name': 'AirSeaFluxCO2',
-            'vars': [
-                'CO2FLUX',
-            ],
-            'convert': eOrcaTotal,
-            'units': 'Pg C/yr'
-        }
-
-        av[name]['layers'] = [
-            'layerless',
-        ]
-        av[name]['regions'] = [
-            'ignoreCaspian',
-        ]
-        av[name]['metrics'] = [
-            'sum',
-        ]
-        av[name]['model'] = 'MEDUSA'
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 2
-
-        av[name]['datacoords'] = {'name': '', 'units': ''}
-        av[name]['datadetails'] = {'name': '', 'units': ''}
-        av[name]['dataFile'] = ''
-        av[name]['datasource'] = ''
-
-    if 'IntPP_iMarNet' in analysisKeys:
-        name = 'IntegratedPrimaryProduction_1x1'
-
-        def medusadepthInt(nc, keys):
-            return (nc.variables[keys[0]][:] +
-                    nc.variables[keys[1]][:]) * 6.625 * 12.011 / 1000.
-
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'diad_T',
-                                                    paths.ModelFolder_pref,
-                                                    annual)
-        #av[name]['modelFiles']  	= sorted(glob(paths.ModelFolder_pref+jobID+"/"+jobID+"o_1y_*_diad_T.nc"))
-        av[name]['dataFile'] = paths.iMarNetFolder + "/PPint_1deg.nc"
-
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = maredatCoords
-
-        av[name]['modeldetails'] = {
-            'name': 'IntPP',
-            'vars': ['PRN', 'PRD'],
-            'convert': medusadepthInt,
-            'units': 'mg C/m^3'
-        }
-        #av[name]['datadetails']  	= {'name': 'IntPP', 'vars':['Chlorophylla',], 'convert': ukp.div1000,'units':'ug/L'}
-        av[name]['datadetails'] = {
-            'name': 'IntPP',
-            'vars': [
-                'PPint',
-            ],
-            'convert': ukp.div1000,
-            'units': '[ug/L/d'
-        }
-
-        av[name]['layers'] = [
-            'Surface',
-        ]  #'100m','200m','Surface - 1000m','Surface - 300m',]#'depthint']
-        av[name]['regions'] = regionList
-        av[name]['metrics'] = metricList
-
-        av[name]['datasource'] = 'MAREDAT'
-        av[name]['model'] = 'MEDUSA'
-
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 2
-
-    if 'PP_OSU' in analysisKeys:
-        nc = dataset(paths.orcaGridfn, 'r')
-        area = nc.variables['e1t'][:] * nc.variables['e2t'][:]
-        nc.close()
-
-        def medusadepthInt(nc, keys):
-            #	 mmolN/m2/d        [mg C /m2/d]   [mgC/m2/yr] [gC/m2/yr]     Gt/m2/yr
-            factor = 1. * 6.625 * 12.011  #* 365.	      / 1000.   /     1E15
-            arr = (nc.variables[keys[0]][:] +
-                   nc.variables[keys[1]][:]).squeeze() * factor
-            #if arr.ndim ==3:
-            #	for i in np.arange(arr.shape[0]):
-            #		arr[i] = arr[i]*area
-            #elif arr.ndim ==2: arr = arr*area
-            #else: assert 0
-            return arr
-
-        name = 'IntegratedPrimaryProduction_OSU'
-        if annual:
-            av[name]['modelFiles'] = listModelDataFiles(
-                jobID, 'diad_T', paths.ModelFolder_pref, annual)
-            av[name][
-                'dataFile'] = paths.OSUDir + "/standard_VGPM.SeaWIFS.global.average.nc"
-#		else:
-#			print ""
-
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = osuCoords
-
-        nc = dataset(av[name]['dataFile'], 'r')
-        lats = nc.variables['latitude'][:]
-        osuareas = np.zeros((1080, 2160))
-        osuarea = (111100. / 6.)**2.  # area of a pixel at equator. in m2
-        for a in np.arange(1080):
-            osuareas[a] = np.ones(
-                (2160, )) * osuarea * np.cos(np.deg2rad(lats[a]))
-
-        def osuconvert(nc, keys):
-            arr = nc.variables[keys[0]][:, :, :]
-            #tlen = arr.shape[0]
-
-            #arr  = arr.sum(0)/tlen * 365.	/ 1000. /     1E15
-            #if arr.ndim ==3:
-            #	for i in np.arange(arr.shape[0]):
-            #		arr[i] = arr[i]*osuarea
-            #elif arr.ndim ==2: arr = arr*osuarea
-            #else: assert 0
-            return arr
-
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': ['PRN', 'PRD'],
-            'convert': medusadepthInt,
-            'units': 'mgC/m^2/day'
-        }
-        av[name]['datadetails'] = {
-            'name': name,
-            'vars': [
-                'NPP',
-            ],
-            'convert': osuconvert,
-            'units': 'mgC/m^2/day'
-        }
-
-        av[name]['layers'] = [
-            'Surface',
-        ]
-        av[name]['regions'] = regionList
-        av[name]['metrics'] = metricList
-        av[name]['datasource'] = 'OSU'
-        av[name]['model'] = 'MEDUSA'
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 2
-
-    #####
-    # Total
-    if 'IntPP_OSU' in analysisKeys:
-        noOSU = True
-        nc = dataset(paths.orcaGridfn, 'r')
-        area = nc.variables['e1t'][:] * nc.variables['e2t'][:]
-        nc.close()
-
-        def medusadepthInt(nc, keys):
-            #	 mmolN/m2/d        [mg C /m2/d]   [mgC/m2/yr] [gC/m2/yr]     Gt/m2/yr
-            factor = 1. * 6.625 * 12.011 * 365. / 1000. / 1E15
-            arr = (nc.variables[keys[0]][:] +
-                   nc.variables[keys[1]][:]).squeeze() * factor
-            if arr.ndim == 3:
-                for i in np.arange(arr.shape[0]):
-                    arr[i] = arr[i] * area
-            elif arr.ndim == 2:
-                arr = arr * area
-            else:
-                assert 0
-            return arr.sum()
-
-        name = 'TotalIntegratedPrimaryProduction'
-        if annual:
-            av[name]['modelFiles'] = listModelDataFiles(
-                jobID, 'diad_T', paths.ModelFolder_pref, annual)
-            if noOSU: av[name]['dataFile'] = ''
-            else:
-                av[name][
-                    'dataFile'] = paths.OSUDir + "/standard_VGPM.SeaWIFS.global.average.nc"
-
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = glodapCoords
-
-        av[name]['modeldetails'] = {
-            'name': 'IntPP_OSU',
-            'vars': ['PRN', 'PRD'],
-            'convert': medusadepthInt,
-            'units': 'Gt/yr'
-        }
-        if noOSU:
-            av[name]['datadetails'] = {'name': '', 'units': ''}
-
-        else:
-            nc = dataset(av[name]['dataFile'], 'r')
-            lats = nc.variables['latitude'][:]
-            osuareas = np.zeros((1080, 2160))
-            osuarea = (111100. / 6.)**2.  # area of a pixel at equator. in m2
-            for a in np.arange(1080):
-                osuareas[a] = np.ones(
-                    (2160, )) * osuarea * np.cos(np.deg2rad(lats[a]))
-
-            def osuconvert(nc, keys):
-                arr = nc.variables[keys[0]][:, :, :]
-                tlen = arr.shape[0]
-                arr = arr.sum(0) / tlen * 365. / 1000. / 1E15
-                if arr.ndim == 3:
-                    for i in np.arange(arr.shape[0]):
-                        arr[i] = arr[i] * osuarea
-                elif arr.ndim == 2:
-                    arr = arr * osuarea
-                else:
-                    assert 0
-                return arr.sum()
-
-            av[name]['datadetails'] = {
-                'name': 'IntPP_OSU',
-                'vars': [
-                    'NPP',
-                ],
-                'convert': osuconvert,
-                'units': 'Gt/yr'
-            }
-
-        av[name]['layers'] = [
-            'layerless',
-        ]
-        av[name]['regions'] = [
-            'regionless',
-        ]
-        av[name]['metrics'] = [
-            'metricless',
-        ]
-        if noOSU: av[name]['datasource'] = ''
-        else: av[name]['datasource'] = 'OSU'
-        av[name]['model'] = 'MEDUSA'
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 1
-
     if 'GlobalExportRatio' in analysisKeys:
 
         def calcExportRatio(nc, keys):
@@ -2424,42 +1524,6 @@ def analysis_timeseries(
         av[name]['modelgrid'] = 'eORCA1'
         av[name]['gridFile'] = paths.orcaGridfn
         av[name]['dimensions'] = 2
-
-    if 'Iron' in analysisKeys:
-
-        name = 'Iron'
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'ptrc_T',
-                                                    paths.ModelFolder_pref,
-                                                    annual)
-
-        av[name][
-            'dataFile'] = paths.icFold + "/UKESM_fields_1860_eORCA1_small.nc"
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = icCoords
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': [
-                'FER',
-            ],
-            'convert': ukp.mul1000,
-            'units': 'umolFe/m3'
-        }
-        av[name]['datadetails'] = {
-            'name': name,
-            'vars': [
-                'FER',
-            ],
-            'convert': ukp.mul1000,
-            'units': 'umolFe/m3'
-        }
-        av[name]['layers'] = layerList
-        av[name]['regions'] = regionList
-        av[name]['metrics'] = metricList
-        av[name]['datasource'] = 'InititialCondition'
-        av[name]['model'] = 'MEDUSA'
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 3
 
 
     if 'GlobalMeanTemperature_700' in analysisKeys:
@@ -2936,80 +2000,6 @@ def analysis_timeseries(
             'gridFile'] = '/group_workspaces/jasmin4/esmeval/example_data/bgc/ERSST.v4/ERSST_sst_grid.nc'
         av[name]['dimensions'] = 2
 
-    if 'GlobalMeanSalinity' in analysisKeys:
-        name = 'GlobalMeanSalinity'
-        if jobID == 'u-as462monthly':
-            av[name]['modelFiles'] = sorted(
-                glob(
-                    '/group_workspaces/jasmin2/ukesm/BGC_data/u-as462/monthly/*.nc'
-                ))
-        elif jobID == 'u-ar977monthly':
-            av[name]['modelFiles'] = sorted(
-                glob(
-                    '/group_workspaces/jasmin2/ukesm/BGC_data/u-ar977/monthly/*.nc'
-                ))
-        else:
-            av[name]['modelFiles'] = listModelDataFiles(
-                jobID, 'grid_T', paths.ModelFolder_pref, annual)
-
-        #av[name]['modelFiles']  = listModelDataFiles(jobID, 'grid_T', paths.ModelFolder_pref, annual)
-        av[name]['dataFile'] = ''
-
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = woaCoords
-
-        nc = dataset(paths.orcaGridfn, 'r')
-        try:
-            pvol = nc.variables['pvol'][:]
-            gmstmask = nc.variables['tmask'][:]
-        except:
-            gmstmask = nc.variables['tmask'][:]
-            area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
-            pvol = nc.variables['e3t'][:] * area
-            pvol = np.ma.masked_where(gmstmask == 0, pvol)
-        nc.close()
-
-        def sumMeanLandMask(nc, keys):
-            #### works like no change, but applies a mask.
-            sal = np.ma.array(nc.variables[keys[0]][:].squeeze())
-            sal = np.ma.masked_where((gmstmask == 0) + (sal.mask), sal)
-            try:
-                vol = np.ma.masked_where(
-                    sal.mask,
-                    nc('thkcello')[:].squeeze() *
-                    nc('area')[:])  # preferentially use in file volume.
-            except:
-                vol = np.ma.masked_where(sal.mask, pvol)
-            return (sal * vol).sum() / (vol.sum())
-
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': [
-                ukesmkeys['sal3d'],
-            ],
-            'convert': sumMeanLandMask,
-            'units': 'PSU'
-        }
-        av[name]['datadetails'] = {'name': '', 'units': ''}
-        #av[name]['datadetails']  	globalVolumeMean= {'name': name, 'vars':['t_an',], 'convert': ukp.NoChange,'units':'degrees C'}
-
-        av[name]['layers'] = [
-            'layerless',
-        ]
-        av[name]['regions'] = [
-            'regionless',
-        ]
-        av[name]['metrics'] = [
-            'metricless',
-        ]
-
-        av[name]['datasource'] = ''
-        av[name]['model'] = 'NEMO'
-
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 1
-
     if 'IcelessMeanSST' in analysisKeys:
         name = 'IcelessMeanSST'
         av[name]['modelFiles'] = listModelDataFiles(jobID, 'grid_T',
@@ -3125,55 +2115,6 @@ def analysis_timeseries(
             av[name]['gridFile'] = paths.orcaGridfn
             av[name]['dimensions'] = 1
 
-
-    if 'Salinity' in analysisKeys:
-        name = 'Salinity'
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'grid_T',
-                                                    paths.ModelFolder_pref,
-                                                    annual)
-        if annual:
-            #av[name]['modelFiles']  	= sorted(glob(paths.ModelFolder_pref+jobID+"/"+jobID+"o_1y_*_grid_T.nc"))
-            av[name]['dataFile'] = WOAFolder + 'woa13_decav_s00_01v2.nc'
-        else:
-            #av[name]['modelFiles']  	= sorted(glob(paths.ModelFolder_pref+jobID+"/"+jobID+"o_1m_*_grid_T.nc"))
-            av[name]['dataFile'] = WOAFolder + 'salinity_monthly_1deg.nc'
-
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = woaCoords
-
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': [
-                ukesmkeys['sal3d'],
-            ],
-            'convert': applyLandMask,
-            'units': 'PSU'
-        }
-        av[name]['datadetails'] = {
-            'name': name,
-            'vars': [
-                's_an',
-            ],
-            'convert': ukp.NoChange,
-            'units': 'PSU'
-        }
-
-        #salregions = [
-        #    'Global', 'ignoreInlandSeas', 'Equator10', 'AtlanticSOcean',
-        #    'SouthernOcean', 'ArcticOcean', 'Remainder',
-        #    'NorthernSubpolarAtlantic', 'NorthernSubpolarPacific', 'WeddelSea'
-        #]
-        #salregions.extend(PierceRegions)
-        av[name]['layers'] = layerList
-        av[name]['regions'] = regionList
-        av[name]['metrics'] = metricList
-
-        av[name]['datasource'] = 'WOA'
-        av[name]['model'] = 'NEMO'
-
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 3
 
     if 'ZonalCurrent' in analysisKeys:
         name = 'ZonalCurrent'
@@ -3343,7 +2284,7 @@ def analysis_timeseries(
         av[name]['model'] = 'NEMO'
 
         av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = os.path.join(paths.bgcval2_repo, 'bgcval2/data/eORCA1_gridU_mesh.nc')
+        av[name]['gridFile'] = os.path.join(paths.bgcval2_repo, 'bgcval2./data/eORCA1_gridU_mesh.nc')
         av[name]['dimensions'] = 2
 
     #####
@@ -3540,78 +2481,6 @@ def analysis_timeseries(
         av[name]['gridFile'] = paths.orcaGridfn
         av[name]['dimensions'] = 2
 
-    if 'MLD' in analysisKeys:
-
-        def mldapplymask(nc, keys):
-            mld = np.ma.array(nc.variables[keys[0]][:])
-            return np.ma.masked_where(
-                (nc.variables[keys[1]][:] == 0.) + mld.mask + (mld == 1.E9),
-                mld)
-#eturn np.ma.masked_where((np.tile(nc.variables[keys[1]][:],(12,1,1))==0.)+mld.mask+(mld==1.E9),mld)
-
-#nc = dataset(paths.orcaGridfn,'r')
-#depth = nc.variables['nav_lev'][:]#
-#nc.close()
-#def calcMLD(nc,keys):
-#	temp = nc.variables[keys[0]][:,:,:,:]
-#	f_out = interp1d(depth[7:9],temp[7:9], axis=1)
-#	tcrit = 0.2
-#	t10m =  f_out(10.)
-#	t10m = np.ma.masked_where(t10m>1E20, t10m) - tcrit
-#	# linear regression to extrapolate below this level to find the first?
-#	f_out = interp1d(temp, depth, axis=1)
-#	#t_out = f_out(newdepth)
-
-        name = 'MLD'
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'grid_T',
-                                                    paths.ModelFolder_pref,
-                                                    annual)
-        #av[name]['modelFiles']  	= sorted(glob(paths.ModelFolder_pref+jobID+"/"+jobID+"o_1y_*_grid_T.nc"))
-        av[name][
-            'dataFile'] = paths.MLDFolder + "mld_DT02_c1m_reg2.0-annual.nc"  #mld_DT02_c1m_reg2.0.nc"
-        #MLD_DT02 = depth where (T = T_10m +/- 0.2 degC)
-
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = mldCoords
-
-        av[name]['modeldetails'] = {
-            'name': 'mld',
-            'vars': [ ukesmkeys['MLD'],],
-            'convert': applySurfaceMask,
-            'units': 'm'
-        }
-        #av[name]['modeldetails'] 	= {'name': 'mld', 'vars':[ukesmkeys['temp3d'],],   'convert': calcMLD,'units':'m'}
-        av[name]['datadetails'] = {
-            'name': 'mld',
-            'vars': [
-                'mld',
-                'mask',
-            ],
-            'convert': mldapplymask,
-            'units': 'm'
-        }
-
-        av[name]['layers'] = [
-            'layerless',
-        ]  #'Surface - 1000m','Surface - 300m',]#'depthint'
-
-        mldregions = [
-            'Global', 'ignoreInlandSeas', 'Equator10', 'AtlanticSOcean',
-            'SouthernOcean', 'ArcticOcean', 'Remainder',
-            'NorthernSubpolarAtlantic', 'NorthernSubpolarPacific', 'WeddelSea'
-        ]
-        mldregions.extend(PierceRegions)
-
-        av[name]['regions'] = mldregions
-        av[name]['metrics'] = metricList
-
-        av[name]['datasource'] = 'IFREMER'
-        av[name]['model'] = 'NEMO'
-
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 2
-
     if 'MaxMonthlyMLD' in analysisKeys or 'MinMonthlyMLD' in analysisKeys:
 
         #/group_workspaces/jasmin2/ukesm/BGC_data/u-ad371/monthlyMLD/MetOffice_data_licence.325210916
@@ -3713,542 +2582,6 @@ def analysis_timeseries(
         else:
             print("No monthly MLD files found")
 
-    icekeys = [
-        'NorthernTotalIceArea', 'SouthernTotalIceArea', 'WeddelTotalIceArea',
-        'TotalIceArea', 'NorthernTotalIceExtent', 'WeddelIceExent',
-        'SouthernTotalIceExtent', 'TotalIceExtent', 'NorthernMIZArea',
-        'SouthernMIZArea', 'TotalMIZArea', 'NorthernMIZfraction',
-        'SouthernMIZfraction', 'TotalMIZfraction'
-    ]
-    if len(set(icekeys).intersection(set(analysisKeys))):
-        for name in icekeys:
-            if name not in analysisKeys: continue
-
-            nc = dataset(paths.orcaGridfn, 'r')
-            area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
-            tmask = nc.variables['tmask'][0, :, :]
-            lat = nc.variables['nav_lat'][:, :]
-            lon = nc.variables['nav_lon'][:, :]
-            nc.close()
-
-            def calcTotalIceArea(nc, keys):  #Global
-                arr = nc.variables[keys[0]][:].squeeze() * area
-                return np.ma.masked_where(tmask == 0, arr).sum() / 1E12
-
-            def calcTotalIceAreaN(nc, keys):  # North
-                arr = nc.variables[keys[0]][:].squeeze() * area
-                return np.ma.masked_where(
-                    (tmask == 0) + (lat < 0.), arr).sum() / 1E12
-
-            def calcTotalIceAreaS(nc, keys):  # South
-                arr = nc.variables[keys[0]][:].squeeze() * area
-                return np.ma.masked_where(
-                    (tmask == 0) + (lat > 0.), arr).sum() / 1E12
-
-            def calcTotalIceAreaWS(nc, keys):
-                arr = nc.variables[keys[0]][:].squeeze() * area
-                return np.ma.masked_where(
-                    (tmask == 0) + weddelmask, arr).sum() / 1E12
-
-            def calcMIZArea(nc, keys):  #Global
-                arr = nc.variables[keys[0]][:].squeeze()
-                return np.ma.masked_where(
-                    tmask == 0 + (arr < 0.15) +
-                    (arr > 0.80), arr * area).sum() / 1E12
-
-            def calcMIZAreaN(nc, keys):  # North
-                arr = nc.variables[keys[0]][:].squeeze()
-                return np.ma.masked_where(
-                    (tmask == 0) + (lat < 0.) + (arr < 0.15) +
-                    (arr > 0.80), arr * area).sum() / 1E12
-
-            def calcMIZAreaS(nc, keys):  # South
-                arr = nc.variables[keys[0]][:].squeeze()
-                return np.ma.masked_where(
-                    (tmask == 0) + (lat > 0.) + (arr < 0.15) +
-                    (arr > 0.80), arr * area).sum() / 1E12
-
-            def calcMIZfraction(nc, keys):  #Global
-                ice = nc.variables[keys[0]][:].squeeze()
-                new_area = nc.variables['area'][:].squeeze()
-                miz_area = np.ma.masked_where(
-                    (ice < 0.15) + (ice > 0.8) + ice.mask, new_area)
-                total_area = np.ma.masked_where((ice < 0.15) + ice.mask,
-                                                new_area)
-                return miz_area.sum() / total_area.sum()
-
-            def calcMIZfractionN(nc, keys):  # North
-                ice = nc.variables[keys[0]][:].squeeze()
-                new_area = nc.variables['area'][:].squeeze()
-                miz_area = np.ma.masked_where(
-                    (lat < 0.) + (ice < 0.15) + (ice > 0.8) + ice.mask,
-                    new_area)
-                total_area = np.ma.masked_where(
-                    (lat < 0.) + (ice < 0.15) + ice.mask, new_area)
-                return miz_area.sum() / total_area.sum()
-
-            def calcMIZfractionS(nc, keys):  # South
-                ice = nc.variables[keys[0]][:].squeeze()
-                new_area = nc.variables['area'][:].squeeze()
-                miz_area = np.ma.masked_where(
-                    (lat > 0.) + (ice < 0.15) + (ice > 0.8) + ice.mask,
-                    new_area)
-                total_area = np.ma.masked_where(
-                    (lat > 0.) + (ice < 0.15) + ice.mask, new_area)
-                return miz_area.sum() / total_area.sum()
-
-            def calcTotalIceExtent(nc, keys):  #Global
-                return np.ma.masked_where(
-                    (tmask == 0) + (nc.variables[keys[0]][:].squeeze() < 0.15),
-                    area).sum() / 1E12
-
-            def calcTotalIceExtentN(nc, keys):  # North
-                return np.ma.masked_where(
-                    (tmask == 0) +
-                    (nc.variables[keys[0]][:].squeeze() < 0.15) +
-                    (lat < 0.), area).sum() / 1E12
-
-            def calcTotalIceExtentS(nc, keys):  # South
-                return np.ma.masked_where(
-                    (tmask == 0) +
-                    (nc.variables[keys[0]][:].squeeze() < 0.15) +
-                    (lat > 0.), area).sum() / 1E12
-
-            weddelmask = (lat < -80.) + (lat > -65.) + (lon < -60.) + (lon >
-                                                                       -20.)
-
-            def calcTotalIceExtentWS(nc, keys):  # South
-                return np.ma.masked_where(
-                    (tmask == 0) +
-                    (nc.variables[keys[0]][:].squeeze() < 0.15) + weddelmask,
-                    area).sum() / 1E12
-
-            if jobID == 'u-as462monthly':
-                av[name]['modelFiles'] = sorted(
-                    glob(
-                        '/group_workspaces/jasmin2/ukesm/BGC_data/u-as462/monthly/*.nc'
-                    ))
-            elif jobID == 'u-ar977monthly':
-                av[name]['modelFiles'] = sorted(
-                    glob(
-                        '/group_workspaces/jasmin2/ukesm/BGC_data/u-ar977/monthly/*.nc'
-                    ))
-            else:
-                av[name]['modelFiles'] = listModelDataFiles(
-                    jobID, 'grid_T', paths.ModelFolder_pref, annual)
-            av[name]['dataFile'] = ''
-
-            av[name]['modelcoords'] = medusaCoords
-            av[name]['datacoords'] = medusaCoords
-
-            if name in [
-                    'NorthernTotalIceArea',
-            ]:
-                av[name]['modeldetails'] = {
-                    'name': name,
-                    'vars': [
-                        'soicecov',
-                    ],
-                    'convert': calcTotalIceAreaN,
-                    'units': '1E6 km^2'
-                }
-    #	av[name]['regions'] 		=  ['NorthHemisphere',]
-
-            if name in [
-                    'SouthernTotalIceArea',
-            ]:
-                av[name]['modeldetails'] = {
-                    'name': name,
-                    'vars': [
-                        'soicecov',
-                    ],
-                    'convert': calcTotalIceAreaS,
-                    'units': '1E6 km^2'
-                }
-
-            if name in [
-                    'WeddelTotalIceArea',
-            ]:
-                av[name]['modeldetails'] = {
-                    'name': name,
-                    'vars': [
-                        'soicecov',
-                    ],
-                    'convert': calcTotalIceAreaWS,
-                    'units': '1E6 km^2'
-                }
-
-            if name in [
-                    'TotalIceArea',
-            ]:
-                av[name]['modeldetails'] = {
-                    'name': name,
-                    'vars': [
-                        'soicecov',
-                    ],
-                    'convert': calcTotalIceArea,
-                    'units': '1E6 km^2'
-                }
-    #	av[name]['regions'] 		=  ['Global',]
-
-            if name in [
-                    'NorthernTotalIceExtent',
-            ]:
-                av[name]['modeldetails'] = {
-                    'name': name,
-                    'vars': [
-                        'soicecov',
-                    ],
-                    'convert': calcTotalIceExtentN,
-                    'units': '1E6 km^2'
-                }
-    #	av[name]['regions'] 		=  ['NorthHemisphere',]
-
-            if name in [
-                    'SouthernTotalIceExtent',
-            ]:
-                av[name]['modeldetails'] = {
-                    'name': name,
-                    'vars': [
-                        'soicecov',
-                    ],
-                    'convert': calcTotalIceExtentS,
-                    'units': '1E6 km^2'
-                }
-    #	av[name]['regions'] 		=  ['SouthHemisphere',]
-
-            if name in [
-                    'WeddelIceExent',
-            ]:
-                av[name]['modeldetails'] = {
-                    'name': name,
-                    'vars': [
-                        'soicecov',
-                    ],
-                    'convert': calcTotalIceExtentWS,
-                    'units': '1E6 km^2'
-                }
-    #	av[name]['regions'] 		=  ['SouthHemisphere',]
-
-            if name in [
-                    'TotalIceExtent',
-            ]:
-                av[name]['modeldetails'] = {
-                    'name': name,
-                    'vars': [
-                        'soicecov',
-                    ],
-                    'convert': calcTotalIceExtent,
-                    'units': '1E6 km^2'
-                }
-    #	av[name]['regions'] 		=  ['Global',]
-
-            if name in [
-                    'NorthernMIZArea',
-            ]:
-                av[name]['modeldetails'] = {
-                    'name': name,
-                    'vars': [
-                        'soicecov',
-                    ],
-                    'convert': calcMIZAreaN,
-                    'units': '1E6 km^2'
-                }
-
-            if name in [
-                    'SouthernMIZArea',
-            ]:
-                av[name]['modeldetails'] = {
-                    'name': name,
-                    'vars': [
-                        'soicecov',
-                    ],
-                    'convert': calcMIZAreaS,
-                    'units': '1E6 km^2'
-                }
-
-            if name in [
-                    'TotalMIZArea',
-            ]:
-                av[name]['modeldetails'] = {
-                    'name': name,
-                    'vars': [
-                        'soicecov',
-                    ],
-                    'convert': calcMIZArea,
-                    'units': '1E6 km^2'
-                }
-
-            if name in [
-                    'NorthernMIZfraction',
-            ]:
-                av[name]['modeldetails'] = {
-                    'name': name,
-                    'vars': [
-                        'soicecov',
-                    ],
-                    'convert': calcMIZfractionN,
-                    'units': ''
-                }
-
-            if name in [
-                    'SouthernMIZfraction',
-            ]:
-                av[name]['modeldetails'] = {
-                    'name': name,
-                    'vars': [
-                        'soicecov',
-                    ],
-                    'convert': calcMIZfractionS,
-                    'units': ''
-                }
-
-            if name in [
-                    'TotalMIZfraction',
-            ]:
-                av[name]['modeldetails'] = {
-                    'name': name,
-                    'vars': [
-                        'soicecov',
-                    ],
-                    'convert': calcMIZfraction,
-                    'units': ''
-                }
-
-            av[name]['regions'] = [
-                'regionless',
-            ]
-
-            av[name]['datadetails'] = {
-                'name': '',
-                'units': '',
-            }
-            #av[name]['layers'] 		=  ['Surface',]
-            av[name]['layers'] = [
-                'layerless',
-            ]
-            av[name]['metrics'] = [
-                'metricless',
-            ]
-            av[name]['datasource'] = ''
-            av[name]['model'] = 'CICE'
-            av[name]['modelgrid'] = 'eORCA1'
-            av[name]['gridFile'] = paths.orcaGridfn
-            av[name]['dimensions'] = 1
-
-    if 'DrakePassageTransport' in analysisKeys:
-        name = 'DrakePassageTransport'
-        ####
-        # Note that this will only work with the eORCAgrid.
-
-        # coordinates of Drake Passage
-        LON = 219
-        LAT0 = 79
-        LAT1 = 109
-
-        nc = dataset(paths.orcaGridfn, 'r')
-        e2u = nc.variables['e2u'][LAT0:LAT1, LON]
-        umask = nc.variables['umask'][:, LAT0:LAT1, LON]
-        nc.close()
-
-        def drake(nc, keys):
-            e3u = nc.variables[ukesmkeys['e3u']][0, :, LAT0:LAT1, LON]
-            velo = nc.variables[ukesmkeys['u3d']][0, :, LAT0:LAT1, LON]
-            return np.sum(velo * e3u * e2u * umask) * 1.e-6
-
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'grid_U',
-                                                    paths.ModelFolder_pref,
-                                                    annual)
-        av[name]['dataFile'] = ''
-
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = medusaCoords
-
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': [
-                ukesmkeys['e3u'],
-                ukesmkeys['u3d'],
-            ],
-            'convert': drake,
-            'units': 'Sv'
-        }
-
-        av[name]['regions'] = [
-            'regionless',
-        ]
-        av[name]['datadetails'] = {
-            'name': '',
-            'units': '',
-        }
-        av[name]['layers'] = [
-            'layerless',
-        ]
-        av[name]['metrics'] = [
-            'metricless',
-        ]
-        av[name]['datasource'] = ''
-        av[name]['model'] = 'NEMO'
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 1
-
-    if 'AMOC_26N' in analysisKeys or 'AMOC_32S' in analysisKeys or 'ADRC_26N' in analysisKeys or 'AMOC_26N_nomexico' in analysisKeys:
-        # Note that this will only work with the eORCAgrid.
-        latslice26N = slice(227, 228)
-        latslice26Nnm = slice(228, 229)
-        latslice32S = slice(137, 138)
-        e3v, e1v, tmask, alttmask = {}, {}, {}, {}
-        for name in ['AMOC_26N', 'AMOC_32S', 'ADRC_26N', 'AMOC_26N_nomexico']:
-            if name not in analysisKeys: continue
-
-            ####
-            if name in ['AMOC_26N', 'ADRC_26N']: latslice = latslice26N
-            if name == 'AMOC_32S': latslice = latslice32S
-            if name in [
-                    'AMOC_26N_nomexico',
-            ]:
-                latslice = latslice26Nnm
-            # Load grid data
-            nc = dataset(paths.orcaGridfn, 'r')
-            e3v[name] = nc.variables['e3v'][:,
-                                            latslice, :]  # z level height 3D
-            e1v[name] = nc.variables['e1v'][latslice, :]  #
-            tmask[name] = nc.variables['tmask'][:, latslice, :]
-            nc.close()
-
-            # load basin mask
-            nc = dataset(os.path.join(paths.bgcval2_repo, 'bgcval2/data/basinlandmask_eORCA1.nc'), 'r')
-            alttmask[name] = nc.variables['tmaskatl'][
-                latslice, :]  # 2D Atlantic mask
-            if name == [
-                    'AMOC_26N_nomexico',
-            ]:
-                alttmask[name][228, 180:208] = 0.
-            nc.close()
-
-        def calc_amoc32S(nc, keys):
-            name = 'AMOC_32S'
-            zv = np.ma.array(
-                nc.variables[ukesmkeys['v3d']][..., latslice32S, :])  # m/s
-            atlmoc = np.array(np.zeros_like(zv[0, :, :, 0]))
-            e2vshape = e3v[name].shape
-            for la in range(e2vshape[1]):  #ji, y
-                for lo in range(e2vshape[2]):  #jj , x,
-                    if int(alttmask[name][la, lo]) == 0: continue
-                    for z in range(e2vshape[0]):  # jk
-                        if int(tmask[name][z, la, lo]) == 0: continue
-                        if np.ma.is_masked(zv[0, z, la, lo]): continue
-                        atlmoc[z,
-                               la] = atlmoc[z, la] - e1v[name][la, lo] * e3v[
-                                   name][z, la, lo] * zv[0, z, la, lo] / 1.E06
-
-####
-# Cumulative sum from the bottom up.
-            for z in range(73, 1, -1):
-                atlmoc[z, :] = atlmoc[z + 1, :] + atlmoc[z, :]
-            return np.ma.max(atlmoc)
-
-        def amoc26N_array(nc, keys, amocname='AMOC_26N'):
-            zv = np.ma.array(
-                nc.variables[ukesmkeys['v3d']][..., latslice26N, :])  # m/s
-            atlmoc = np.array(np.zeros_like(zv[0, :, :, 0]))
-            e2vshape = e3v[amocname].shape
-            for la in range(e2vshape[1]):  #ji, y
-                for lo in range(e2vshape[2]):  #jj , x,
-                    if int(alttmask[amocname][la, lo]) == 0: continue
-                    for z in range(e2vshape[0]):  # jk
-                        if int(tmask[amocname][z, la, lo]) == 0: continue
-                        if np.ma.is_masked(zv[0, z, la, lo]): continue
-                        atlmoc[z, la] = atlmoc[z, la] - e1v[amocname][
-                            la, lo] * e3v[amocname][z, la, lo] * zv[0, z, la,
-                                                                    lo] / 1.E06
-
-####
-# Cumulative sum from the bottom up.
-            for z in range(73, 1, -1):
-                atlmoc[z, :] = atlmoc[z + 1, :] + atlmoc[z, :]
-            #return np.ma.max(atlmoc)
-            return atlmoc
-
-        def calc_amoc26N(nc, keys):
-            return np.ma.max(amoc26N_array(nc, keys, amocname='AMOC_26N'))
-
-        def calc_amoc26Nnm(nc, keys):
-            return np.ma.max(
-                amoc26N_array(nc, keys, amocname='AMOC_26N_nomexico'))
-
-        def calc_min_amoc26N(nc, keys):
-            return np.ma.min(amoc26N_array(nc, keys, amocname='ADRC_26N'))
-
-        for name in ['AMOC_26N', 'AMOC_32S', 'ADRC_26N', 'AMOC_26N_nomexico']:
-            if name not in analysisKeys: continue
-
-            av[name]['modelFiles'] = listModelDataFiles(
-                jobID, 'grid_V', paths.ModelFolder_pref, annual)
-            av[name]['dataFile'] = ''
-
-            av[name]['modelcoords'] = medusaCoords
-            av[name]['datacoords'] = medusaCoords
-
-            if name == 'AMOC_26N':
-                av[name]['modeldetails'] = {
-                    'name': name,
-                    'vars': [
-                        ukesmkeys['v3d'],
-                    ],
-                    'convert': calc_amoc26N,
-                    'units': 'Sv'
-                }
-            if name in [
-                    'AMOC_26N_nomexico',
-            ]:
-                av[name]['modeldetails'] = {
-                    'name': name,
-                    'vars': [
-                        ukesmkeys['v3d'],
-                    ],
-                    'convert': calc_amoc26Nnm,
-                    'units': 'Sv'
-                }
-            if name == 'ADRC_26N':
-                av[name]['modeldetails'] = {
-                    'name': name,
-                    'vars': [
-                        ukesmkeys['v3d'],
-                    ],
-                    'convert': calc_min_amoc26N,
-                    'units': 'Sv'
-                }
-            if name == 'AMOC_32S':
-                av[name]['modeldetails'] = {
-                    'name': name,
-                    'vars': [
-                        ukesmkeys['v3d'],
-                    ],
-                    'convert': calc_amoc32S,
-                    'units': 'Sv'
-                }
-
-            av[name]['datadetails'] = {
-                'name': '',
-                'units': '',
-            }
-            av[name]['layers'] = [
-                'layerless',
-            ]
-            av[name]['regions'] = [
-                'regionless',
-            ]
-            av[name]['metrics'] = [
-                'metricless',
-            ]
-            av[name]['datasource'] = ''
-            av[name]['model'] = 'NEMO'
-            av[name]['modelgrid'] = 'eORCA1'
-            av[name]['gridFile'] = paths.orcaGridfn
-            av[name]['dimensions'] = 1
-
     if 'DMS_ARAN' in analysisKeys:
         name = 'DMS'
         av[name]['modelFiles'] = listModelDataFiles(jobID, 'diad_T',
@@ -4335,204 +2668,6 @@ def analysis_timeseries(
         av[name]['gridFile'] = paths.orcaGridfn
         av[name]['dimensions'] = 2
 
-    if 'Dust' in analysisKeys:
-        name = 'Dust'
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'diad_T',
-                                                    paths.ModelFolder_pref,
-                                                    annual)[:]
-        av[name]['dataFile'] = paths.Dustdir + 'mahowald.orca100_annual.nc'
-
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = medusaCoords
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': [
-                'AEOLIAN',
-            ],
-            'convert': ukp.NoChange,
-            'units': 'mmol Fe/m2/d'
-        }
-
-        def mahodatadust(nc, keys):
-            #factors are:
-            # 0.035: iron as a fraction of total dust
-            # 1e6: convert from kmol -> mmol
-            # 0.00532: solubility factor or iron
-            # 55.845: atmoic mass of iron (g>mol conversion)
-            # (24.*60.*60.): per second to per day
-            dust = nc.variables[keys[0]][:]
-            dust[0, 0, 194:256, 295:348] = 0.
-            dust[0, 0, 194:208, 285:295] = 0.
-            dust[0, 0, 188:216, 290:304] = 0.
-            return dust * 0.035 * 1.e6 * 0.00532 * (24. * 60. * 60.) / 55.845
-
-        av[name]['datadetails'] = {
-            'name': name,
-            'vars': [
-                'dust_ann',
-            ],
-            'convert': mahodatadust,
-            'units': 'mmol Fe/m2/d'
-        }
-
-        av[name]['layers'] = [
-            'layerless',
-        ]
-        av[name]['regions'] = regionList
-        av[name]['metrics'] = metricList
-
-        av[name]['datasource'] = 'Mahowald'
-        av[name]['model'] = 'MEDUSA'
-
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 2
-
-    if 'TotalDust' in analysisKeys:
-        name = 'TotalDust'
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'diad_T',
-                                                    paths.ModelFolder_pref,
-                                                    annual)[:]
-        av[name]['dataFile'] = paths.Dustdir + 'mahowald.orca100_annual.nc'
-
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = medusaCoords
-
-        nc = dataset(paths.orcaGridfn, 'r')
-        masked_area = nc.variables['e2t'][:] * nc.variables[
-            'e1t'][:] * nc.variables['tmask'][0]
-        nc.close()
-
-        def datadustsum(nc, keys):
-            #factors are:
-            # 0.035: iron as a fraction of total dust
-            # 1e6: convert from kmol -> mmol
-            # 1e-12: convert from mol to Gmol
-            # 0.00532: solubility factor for iron
-            # 55.845: atmoic mass of iron (g>mol conversion)
-            # (24.*60.*60.*365.25): per second to per year
-
-            dust = nc.variables[keys[0]][:]
-            dust[:, :, 234:296, 295:348] = 0.
-            dust[:, :, 234:248, 285:295] = 0.
-            dust[:, :, 228:256, 290:304] = 0.
-            return (masked_area *
-                    dust).sum() * 0.035 * 1.e6 * 1.e-12 * 0.00532 * (
-                        24. * 60. * 60. * 365.25) / 55.845
-
-        def modeldustsum(nc, keys):
-            dust = nc.variables[keys[0]][:]
-            dust[:, 234:296, 295:348] = 0.
-            dust[:, 234:248, 285:295] = 0.
-            dust[:, 228:256, 290:304] = 0.
-            return (masked_area * dust).sum() * 1.E-12 * 365.25
-
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': [
-                'AEOLIAN',
-            ],
-            'convert': modeldustsum,
-            'units': 'Gmol Fe/yr'
-        }
-        av[name]['datadetails'] = {
-            'name': name,
-            'vars': [
-                'dust_ann',
-            ],
-            'convert': datadustsum,
-            'units': 'Gmol Fe/yr'
-        }
-
-        av[name]['layers'] = [
-            'layerless',
-        ]
-        av[name]['regions'] = [
-            'regionless',
-        ]
-        av[name]['metrics'] = [
-            'metricless',
-        ]
-
-        av[name]['datasource'] = 'Mahowald'
-        av[name]['model'] = 'MEDUSA'
-
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 1
-
-    if 'TotalDust_nomask' in analysisKeys:
-        name = 'TotalDust_nomask'
-        av[name]['modelFiles'] = listModelDataFiles(jobID, 'diad_T',
-                                                    paths.ModelFolder_pref,
-                                                    annual)[:]
-        av[name]['dataFile'] = paths.Dustdir + 'mahowald.orca100_annual.nc'
-
-        av[name]['modelcoords'] = medusaCoords
-        av[name]['datacoords'] = medusaCoords
-
-        nc = dataset(paths.orcaGridfn, 'r')
-        masked_area = nc.variables['e2t'][:] * nc.variables[
-            'e1t'][:] * nc.variables['tmask'][0]
-        nc.close()
-
-        def datadustsum(nc, keys):
-            #factors are:
-            # 0.035: iron as a fraction of total dust
-            # 1e6: convert from kmol -> mmol
-            # 1e-12: convert from mol to Gmol
-            # 0.00532: solubility factor for iron
-            # 55.845: atmoic mass of iron (g>mol conversion)
-            # (24.*60.*60.*365.25): per second to per year
-
-            dust = nc.variables[keys[0]][:]
-            #dust[194:256,295:348] = 0.
-            #dust[194:208,285:295] = 0.
-            #dust[188:216,290:304] = 0.
-            return (masked_area *
-                    dust).sum() * 0.035 * 1.e6 * 1.e-12 * 0.00532 * (
-                        24. * 60. * 60. * 365.25) / 55.845
-
-        def modeldustsum(nc, keys):
-            dust = nc.variables[keys[0]][:]
-            #dust[:,194:256,295:348] = 0.
-            #dust[:,194:208,285:295] = 0.
-            #dust[:,188:216,290:304] = 0.
-            return (masked_area * dust).sum() * 1.E-12 * 365.25
-
-        av[name]['modeldetails'] = {
-            'name': name,
-            'vars': [
-                'AEOLIAN',
-            ],
-            'convert': modeldustsum,
-            'units': 'Gmol Fe/yr'
-        }
-        av[name]['datadetails'] = {
-            'name': name,
-            'vars': [
-                'dust_ann',
-            ],
-            'convert': datadustsum,
-            'units': 'Gmol Fe/yr'
-        }
-
-        av[name]['layers'] = [
-            'layerless',
-        ]
-        av[name]['regions'] = [
-            'regionless',
-        ]
-        av[name]['metrics'] = [
-            'metricless',
-        ]
-
-        av[name]['datasource'] = 'Mahowald'
-        av[name]['model'] = 'MEDUSA'
-
-        av[name]['modelgrid'] = 'eORCA1'
-        av[name]['gridFile'] = paths.orcaGridfn
-        av[name]['dimensions'] = 1
 
 
     #####
@@ -4571,14 +2706,14 @@ def analysis_timeseries(
             if strictFileCheck:
                 raise FileNotFoundError(f'Model files are provided but not found for {name} : {missing_files}')
 
-        if 'dataFile' in av[name].keys():
+        if 'dataFile' in av[name]:
             print(name, 'dataFile', av[name]['dataFile'])
             if not os.path.exists(av[name]['dataFile']):
                 print(
                     "analysis_timeseries:\tWARNING:\tdata file is not found:",
                     av[name]['dataFile'])
                 if strictFileCheck:
-                    raise FileNotFoundError(f'Obs data files are provided but not found for {name} : {missing_files}')
+                    raise FileNotFoundError(f'Obs data files are provided but not found for {name} : {av[name]["dataFile"]}')
 
         tsa = timeseriesAnalysis(
             av[name]['modelFiles'],

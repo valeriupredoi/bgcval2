@@ -51,6 +51,14 @@ analysis_compare -h
 which should print the module information and instructions on how to run the tool.
 
 
+On the jasmin computational system, members of the esmeval working group should be able to run the debug analysis script:
+```
+analysis_compare -y input_yml/debug.yml
+```
+This script performs an analysis of two small physics-only UKESM development jobIDs,
+using the debug suite.
+
+
 ### Available executables
 
 Executable name | What it does | Command
@@ -142,6 +150,16 @@ These values are:
 A sample yaml exists in `input_yml/comparison_analysis_template.yml`,
 which can be adapted to additional analyses.
 
+Once the comparison suite has been run, members of the esmeval group workspace on JASMIN
+can copy the html report to a web-visible directory, using the script:
+
+```
+./rsync_to_esmeval.sh
+```
+
+then the report will appear on the [JASMIN public facing page](https://gws-access.jasmin.ac.uk/public/esmeval/CompareReports/bgcval2/),
+which is public facing but password protected.
+
 
 Downloading data using MASS
 ===========================
@@ -149,9 +167,9 @@ Downloading data using MASS
 Data can be downloaded and prepared for analysis using the `download_from_mass` bgcval2 tool,
 with the command:
 ```
-download_from_mass -j jobID
+download_from_mass -j jobIDs
 ```
-where `jobID` is one or more jobIDs.
+where `jobIDs` is one or more jobIDs.
 
 This script will only work on JASMIN's `mass-cli1` machine,
 which is set up to interact with the Met Office Storate System MASS.
@@ -222,6 +240,7 @@ Suite  | What it is | Description
 `kmf` | Key Metrics First | A short and quick list of the most important metrics.
 `physics` | Physics | A comprehensive list of physical metrics.
 `bgc` | Biogeochemistry | A comprehensive list of biogeochemical metrics.
+`alkalinity` | Alkalininty & CO2 | A list of alkalininty, pH, DIC, and pCO2 metrics.
 `level1` | Level 1 | A comprehensive list of physical and biogeochemical metrics.
 `debug` | Debug | A very short list of a couple keys to test code changes.
 `fast` | UKESM1-fast  | A list of metrics tailored to the UKESM1-Fast model.
@@ -237,6 +256,7 @@ much have an associated yaml file in the `key_files` directory.
 These files define how bgcval2 locates and interacts with model and
 observational data.
 The values in these files depend on the analysis but includes:
+
 ```
 ---
 name: Analysis_Name
@@ -252,21 +272,11 @@ gridFile        : $PATHS_GRIDFILE
 
 # model details
 model: Model_name
-model_t         : time_centered         # model time dimension
-model_cal       : 360_day               # model calendar
-model_z         : deptht                # model depth dimension
-model_lat       : nav_lat               # model latitude dimension
-model_lon       : nav_lon               # model latitude dimension
 model_vars      : thetao_con
 model_convert   : NoChange
 
 # Observational Data coordinates names
 datasource      : WOA
-data_t          : time
-data_cal        : standard
-data_z          : depth
-data_lat        : lat
-data_lon        : lon
 data_vars       : t_an
 data_convert    : NoChange
 data_tdict      : ZeroToZero
@@ -282,9 +292,30 @@ These fields include:
   - `$MODEL`
 
 In addition, some paths from the `Paths.py` can also be used:
-  - `basedir_model`
-  - `basedir_obs`
-  - `PATHS_GRIDFILE`
+  - `basedir_model`: The path to the model base directory, defined in Paths.paths
+  - `basedir_obs`: he path to the observations base directory, defined in Paths.paths
+  - `PATHS_GRIDFILE`: The path to the gridfile, defined in Paths.paths
+  - `PATHs_BGCVAL2`: the path to the bgcval2 repository directory.
+  
+A `convert`  dictionary can be given to each model or observation data in the yml:
+
+```
+model_convert:
+    function: custom_function
+    path: path/to/custom/function.py
+    kwarg_1: 5.
+    kawrg_2: yellow
+```
+
+For instance, this example applies the function `custom_function` which is in the
+`path/to/custom/function.py` file, and gives it two key word arguments.
+Several example functions exists in `bgcval2/functions` which may be useful 
+for how to write your own.
+
+Simiarly, the `bgcval2/functions/standard_functions.py` contains several 
+basic functions such as multiply by or add to, or `noChange`, which can all be 
+called without providing the `path`, and which may have their own key word
+arguments.
 
 
 Point to point analysis

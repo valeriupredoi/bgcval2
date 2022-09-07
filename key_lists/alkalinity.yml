@@ -1,0 +1,11 @@
+---
+keys:
+    pH: True
+    Alkalinity: True
+    RIVALK : True # alk flux added, 
+    totalshelfalk: True # total alkalinity added (because we want to know how much is added in total)
+    atmospco2: True # atmospheric pCO2
+    DIC: True                        # Globap dissolved inorganic carbon
+    AirSeaFluxCO2: True              # Air Sea Flux of CO2
+    TotalAirSeaFluxCO2: True         # Total global air sea flux
+

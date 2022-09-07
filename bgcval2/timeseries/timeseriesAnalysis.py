@@ -38,11 +38,12 @@ import errno
 
 
 #Specific local code:
-from .. import UKESMpython as ukp
-from ..bgcvaltools.pftnames import getLongName
-from ..bgcvaltools.dataset import dataset
-from . import timeseriesTools as tst
-from . import timeseriesPlots as tsp
+from bgcval2 import UKESMpython as ukp
+from bgcval2.bgcvaltools.pftnames import getLongName
+from bgcval2.bgcvaltools.dataset import dataset
+from bgcval2.timeseries import timeseriesTools as tst
+from bgcval2.timeseries import timeseriesPlots as tsp
+
 #getTimes, loadData
 
 
@@ -269,7 +270,7 @@ class timeseriesAnalysis:
             print("timeseriesAnalysis:\tloadModel:\tloading new file:",
                   fn,
                   end=' ')
-            nc = dataset(fn, 'r')
+            nc = dataset(fn, 'r', skip_option='delete')
             ts = tst.getTimes(nc, self.modelcoords)
             meantime = np.mean(ts)
             print("\ttime:", meantime)
@@ -501,8 +502,15 @@ class timeseriesAnalysis:
             self.weightsDict[(False, False)] = 1.
             return
 
-        lats = nc.variables[self.modelcoords['lat']][:]
-        lons = nc.variables[self.modelcoords['lon']][:]
+        
+        grid_coords = {k: self.modelcoords[k] for k in ['lat', 'lon']}
+        
+        if grid_coords['lat'] not in nc.variables.keys() or grid_coords['lon'] not in nc.variables.keys():
+            # guess new coordinate:
+            grid_coords = ukp.load_coords_from_netcdf(nc.filename)
+         
+        lats = nc.variables[grid_coords['lat']][:]
+        lons = nc.variables[grid_coords['lon']][:]
         nc.close()
 
         if lats.ndim == 2:

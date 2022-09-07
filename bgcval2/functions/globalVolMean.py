@@ -33,6 +33,8 @@ import numpy as np
 from bgcval2.bgcvaltools.dataset import dataset
 import os, sys
 import errno
+from bgcval2.functions.get_kwarg_file import get_kwarg_file
+from bgcval2.functions.standard_functions import choose_best_var 
 
 
 # Globals - to prevent re-loading from disk every time.
@@ -68,31 +70,17 @@ def globalVolumeMean(nc, keys, **kwargs):
     """
     Calculate the global volume mean.
     """
-    try:
-        areafile = kwargs['areafile']
-        print('globalVolumeMean:', areafile, kwargs)
-    except:
-        raise KeyError(f"globalVolumeMean:\tNeeds an `areafile` in kwargs: {kwargs}")
-
-    if isinstance(areafile, list) and len(areafile)==1:
-        areafile = areafile[0]
+    areafile = get_kwarg_file(kwargs, 'areafile')
 
     # To add a constant value to the data (usually Kelvin to Celcius)
-    try:
-        addvalue = float(kwargs['addvalue'])
-    except:
-        addvalue = 0.
-
+    addvalue = kwargs.get('addvalue', 0.)
+    multiplyBy = kwargs.get('multiplyBy', 1.)
     # Multiply the data by some factor (ie to change units)
-    try:
-        multiplyBy = float(kwargs['multiplyBy'])
-    except:
-        multiplyBy = 1.
 
     if not loaded_volume:
          loadDataMask(areafile)
 
-    temp = np.ma.array(nc.variables[keys[0]][:].squeeze())
+    temp = choose_best_var(nc, keys).squeeze()
     temp = np.ma.masked_where((tmask==0) + (temp.mask), temp)
 
     temp = temp * multiplyBy + addvalue

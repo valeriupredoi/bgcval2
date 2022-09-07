@@ -1,0 +1,25 @@
+---
+name            : TotalDust
+units           : Gmol Fe/yr
+#datasource      : Initial Conditions
+dimensions      : 1
+
+#; The filenames
+modelFiles      : $BASEDIR_MODEL/$JOBID/medusa*_1y_*diad-T.nc
+#modelFile_p2p   : $BASEDIR_MODEL/$JOBID/medusa*_1y_*$YEAR????_diad-T.nc
+#dataFile        : $BASEDIR_OBS/MahowaldDust/mahowald.orca100_annual.nc
+
+model_vars      : AEOLIAN
+model_convert   :
+    path: bgcval2/functions/dust.py
+    function: modeldustsum
+    areafile: $PATHS_GRIDFILE
+#; Data coordinates names
+#data_vars       : dust_ann
+#data_tdict      : ZeroToZero
+#data_convert    : functions/dust.py:datadustsum
+#data_convert_areafile : /data/euryale7/scratch/ledm/UKESM/MEDUSA/mesh_mask_eORCA1_wrk.nc
+layers          : layerless
+regions         : regionless
+
+

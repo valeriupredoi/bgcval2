@@ -1,0 +1,13 @@
+---
+name            : RiverineAlkalinity 
+units           : meq/m2/d
+model           : MEDUSA
+modelgrid       : eORCA1
+dimensions      : 2
+modelFiles      : $BASEDIR_MODEL/$JOBID/medusa*$JOBIDo_1y_*_diad-T.nc
+model_vars      : RIV_ALK
+model_convert   : NoChange
+layers          : layerless
+regions         : Global #gnoreInlandSeas SouthernOcean ArcticOcean Equator10 Remainder NorthernSubpolarAtlantic NorthernSubpolarPacific
+
+
