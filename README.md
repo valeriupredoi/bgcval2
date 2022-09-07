@@ -150,6 +150,16 @@ These values are:
 A sample yaml exists in `input_yml/comparison_analysis_template.yml`,
 which can be adapted to additional analyses.
 
+Once the comparison suite has been run, members of the esmeval group workspace on JASMIN
+can copy the html report to a web-visible directory, using the script:
+
+```
+./rsync_to_esmeval.sh
+```
+
+then the report will appear on the [JASMIN public facing page](https://gws-access.jasmin.ac.uk/public/esmeval/CompareReports/bgcval2/),
+which is public facing but password protected.
+
 
 Downloading data using MASS
 ===========================
@@ -157,9 +167,9 @@ Downloading data using MASS
 Data can be downloaded and prepared for analysis using the `download_from_mass` bgcval2 tool,
 with the command:
 ```
-download_from_mass -j jobID
+download_from_mass -j jobIDs
 ```
-where `jobID` is one or more jobIDs.
+where `jobIDs` is one or more jobIDs.
 
 This script will only work on JASMIN's `mass-cli1` machine,
 which is set up to interact with the Met Office Storate System MASS.
@@ -230,6 +240,7 @@ Suite  | What it is | Description
 `kmf` | Key Metrics First | A short and quick list of the most important metrics.
 `physics` | Physics | A comprehensive list of physical metrics.
 `bgc` | Biogeochemistry | A comprehensive list of biogeochemical metrics.
+`alkalinity` | Alkalininty & CO2 | A list of alkalininty, pH, DIC, and pCO2 metrics.
 `level1` | Level 1 | A comprehensive list of physical and biogeochemical metrics.
 `debug` | Debug | A very short list of a couple keys to test code changes.
 `fast` | UKESM1-fast  | A list of metrics tailored to the UKESM1-Fast model.

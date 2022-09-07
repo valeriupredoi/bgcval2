@@ -148,6 +148,18 @@ def convertkgToM3(nc,keys):
     return nc.variables[keys[0]][:] * 1.027
 
 
+def choose_best_var(nc, keys):
+    """
+    Takes the list of keys and chooses the first one that exists in the input file.
+    Useful if fields change for no reason.
+    """
+    for key in keys:
+        if key not in nc.variables.keys():
+            continue
+        return nc.variables[key][:]
+    raise KeyError(f'choose_best_var: unable to find any variable in {keys} in {nc.filename}')    
+
+
 #####
 # kwargs functions:
 def multiplyBy(nc,keys, **kwargs):
@@ -155,7 +167,7 @@ def multiplyBy(nc,keys, **kwargs):
     Loads keys[0] from the netcdf, but multiplies by the field in kwargs , "factor".
     """
     if 'factor' not in kwargs:
-        raise KeyError(f"std_functions:\tmultiplyBy:\t Did not get key word argument, 'factor' in kwargs {str(kwargs)}")
+        raise KeyError(f"std_functions: multiplyBy: Did not get key word argument, 'factor' in kwargs: {kwargs}")
     return nc.variables[keys[0]][:] * float(kwargs['factor'])
 
 
@@ -166,8 +178,6 @@ def addValue(nc,keys, **kwargs):
     if 'value' not in list(kwargs.keys()):
         raise KeyError(f"std_functions:\taddValue:\t Did not get key word argument, 'value' in kwargs {str(kwargs)}")
     return nc.variables[keys[0]][:] + float(kwargs['value'])
-
-
 
 
 #####
@@ -187,7 +197,7 @@ std_functions['oxconvert'] = oxconvert
 std_functions['convertkgToM3'] = convertkgToM3
 std_functions['multiplyBy'] = multiplyBy
 std_functions['addValue'] = addValue
-
+std_functions['choose_best_var'] = choose_best_var
 #####
 # Add lower case, upper, Title, etc...
 for key in list(std_functions.keys()):

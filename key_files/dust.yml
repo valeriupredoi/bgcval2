@@ -1,0 +1,14 @@
+---
+name            : TotalDust
+units           : Gmol Fe/yr
+dimensions      : 2
+
+modelFiles      : $BASEDIR_MODEL/$JOBID/medusa*$JOBIDo_1y_*diad-T.nc
+
+model_vars      : AEOLIAN
+model_convert:
+    function: NoChange
+layers          : layerless
+regions         : Global 
+
+

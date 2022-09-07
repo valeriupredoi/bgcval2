@@ -32,7 +32,7 @@
 import numpy as np
 from bgcval2.bgcvaltools.dataset import dataset
 from bgcval2.functions.get_kwarg_file import get_kwarg_file
-
+from bgcval2.functions.standard_functions import choose_best_var
 
 tmask = {}
 
@@ -40,29 +40,33 @@ tmask = {}
 def loadDataMask(areafile, maskname):
     global tmask
     nc = dataset(areafile, 'r')        
-    tmask[(areafile, maskname)] = nc.variables[maskname][:].squeeze()
+    tmask[(areafile, maskname)] = np.array(nc.variables[maskname][:].squeeze(), dtype=np.bool)
     nc.close()
     return tmask[(areafile, maskname)]
 
 
-def applyLandMask2D(nc, keys, **kwargs):
+def applyLandMask(nc, keys, **kwargs):
     """
     Useful for when the mask is 3D, but the field is only 2D,
     so you want to apply the surface layer of the mask.
     """
-    areafile = get_kwarg_file(kwargs, filekey)
+    areafile = get_kwarg_file(kwargs, 'areafile')
     maskname = kwargs.get('maskname', 'tmask')
-    mask = tmask.get(((areafile, maskname), loadDataMask(areafile, maskname))
-
-    for key in keys:
-        if key not in nc.variables.keys():
-            print(f'key {key} not in file {nc.filename}')
-            print('Available keys:options:', nc.variables.keys())
-            raise KeyError(f'applyLandMask: key {key} not in file {nc.filename}.')
-
-    arr = np.ma.array(nc.variables[keys[0]][:]).squeeze()
-    m  = np.ma.masked_where(mask + arr.mask, arr)
-    m += np.ma.masked_invalid(arr).mask
-    return np.ma.masked_where(m, arr)
+    mask = tmask.get((areafile, maskname), loadDataMask(areafile, maskname))
+        
+    #for key in keys:
+    #    if key not in nc.variables.keys():
+    #        print(f'key {key} not in file {nc.filename}')
+    #        print('Available keys:options:', nc.variables.keys())
+    #        raise KeyError(f'applyLandMask: key {key} not in file {nc.filename}.')
+    
+    print(f"loading variable {keys[0]} from file {nc.filename}")
+    arr = choose_best_var(nc, keys).squeeze()
+    new_mask = np.ma.masked_invalid(arr).mask + arr.mask
+    if arr.ndim == 2 and mask.ndim == 3:
+        new_mask += mask[0]
+    else:
+        new_mask += mask
+    return np.ma.masked_where(new_mask, arr)
 
 

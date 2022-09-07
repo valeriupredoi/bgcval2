@@ -1,0 +1,24 @@
+---
+name            : Oxygen
+units           : mmol O2/m^3
+datasource      : WOA
+dimensions      : 3
+
+# The filenames
+modelFiles      : $BASEDIR_MODEL/$JOBID/medusa*_1y_*_ptrc-T.nc
+modelFile_p2p   : $BASEDIR_MODEL/$JOBID/medusa*_1y_*$YEAR????_ptrc-T.nc
+dataFile        : $BASEDIR_OBS/WOA/annual/woa13_all_o00_01.nc
+
+# Model coordinates/dimension names
+model_vars      : OXY
+model_convert   : NoChange
+
+# Data coordinates names
+data_vars       : o_an
+data_tdict      : ZeroToZero
+data_convert    : multiplyBy
+data_convert_factor : 44.661
+
+layers          : Surface 100m 500m
+regions         : Global #gnoreInlandSeas SouthernOcean ArcticOcean Equator10 Remainder NorthernSubpolarAtlantic NorthernSubpolarPacific
+
