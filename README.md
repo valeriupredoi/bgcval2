@@ -24,11 +24,20 @@ To install locally:
 git clone https://github.com/valeriupredoi/bgcval2.git
 ```
 
-- then grab [miniconda3](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html), install `mamba` in the `base` environment:
+- then grab [miniconda3](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html).
+- This can be installed using (bearing in mind that your file name may differ), and follow the on screen instructions:
+```
+  bash Miniconda3-py39_4.12.0-Linux-x86_64.sh
+```
+
+- Once you have a local version of miniconda3 installed, install `mamba` in the `base` environment:
 
 ```
 conda install -c conda-forge mamba
 ```
+
+- mamba is a replacement for conda that is faster, but works exactly the same way. Ie the command “conda env” -> becomes “mamba env”. However, this step is somewhat optional. If you can’t install mamba, but have conda working, just replace “mamba” with “conda” below.
+
 
 - then create the `bgcval2` environment and activate it:
 
