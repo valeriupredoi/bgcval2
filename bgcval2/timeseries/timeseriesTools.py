@@ -34,7 +34,7 @@ from bgcval2.netcdf_manipulation import convertToOneDNC
 from bgcval2.bgcvaltools.dataset import dataset
 from bgcval2.bgcvaltools.makeMask import makeMask
 from bgcval2.functions.standard_functions import extractData as std_extractData
-from bgcval2.functions.standard_functions import choose_best_var
+#from bgcval2.functions.standard_functions import choose_best_var
 
 """
 .. module:: timeseriesTools
@@ -42,6 +42,21 @@ from bgcval2.functions.standard_functions import choose_best_var
    :synopsis: A swiss army knife set of tools for the time series analysis.
 .. moduleauthor:: Lee de Mora <ledm@pml.ac.uk>
 """
+
+def choose_best_ncvar(nc, keys):
+    """
+    Takes the list of keys and chooses the first one that exists in the input file.
+    Useful if fields change for no reason.
+    
+    Unlike standard_functions.choose_best_var, this function returns the netcdf.variable
+    not the data. 
+
+    """
+    for key in keys:
+        if key not in nc.variables.keys():
+            continue
+        return nc.variables[key]
+    raise KeyError(f'choose_best_ncvar: unable to find {keys} in {nc.filename}')
 
 
 def getTimes(nc, coords):
@@ -434,7 +449,7 @@ class DataLoader:
 
             lat = np.zeros_like(dat)
             lon = np.zeros_like(dat)
-            dims = choose_best_var(self.nc, self.details['vars']).dimensions
+            dims = choose_best_ncvar(self.nc, self.details['vars']).dimensions
             #dims = self.nc.variables[self.details['vars'][0]].dimensions
 
         else:
@@ -443,7 +458,7 @@ class DataLoader:
             lat = self.nc.variables[self.coords['lat']][:]
             lon = ukp.makeLonSafeArr(self.nc.variables[self.coords['lon']]
                                      [:])  # makes sure it's between +/-180
-            dims = choose_best_var(self.nc, self.details['vars']).dimensions
+            dims = choose_best_ncvar(self.nc, self.details['vars']).dimensions
             #dims = self.nc.variables[self.details['vars'][0]].dimensions
             dat = self.__getlayerDat__(layer)
         if dat.ndim == 2: dat = dat[None, :, :]

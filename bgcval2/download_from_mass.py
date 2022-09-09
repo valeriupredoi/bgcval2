@@ -244,8 +244,8 @@ def downloadField(jobID,
     outputFold = folder(paths.ModelFolder_pref + "/" + jobID + "/" + name)
     ####
     # ensure that permissions are : drwxrwsr-x+
-    os.chmod(paths.ModelFolder_pref + "/" + jobID, 0o2775)
-    os.chmod(outputFold, 0o2775)
+    #os.chmod(paths.ModelFolder_pref + "/" + jobID, 0o2775)
+    #os.chmod(outputFold, 0o2775)
 
     print("downloadField:", name, jobID, keys, timeslice, 'being saved to:',
           outputFold)
@@ -401,7 +401,7 @@ def download_from_mass(jobID, doMoo=True):
             os.makedirs(outputFold)
     ####
     # ensure that permissions are : drwxrwsr-x+
-        os.chmod(outputFold, 0o2775)
+    #    os.chmod(outputFold, 0o2775)
 
     if machine.find('monsoon') > -1:
         knownmachine = True
