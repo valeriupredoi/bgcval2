@@ -1,0 +1,64 @@
+---
+# GC5 N96 ORCA1 spinup analysis
+name: ukesm_celos_ssp370
+
+# Run the single job analysis
+do_analysis_timeseries: True 
+# Download from mass:
+do_mass_download: False
+
+# master analysis suite
+master_suites: kmf bgc alkalinity physics
+
+clean: True
+
+
+jobs:
+    u-bc370:
+       description: Historical Standard CMIP6 run
+       colour: blue 
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf bgc alkalinity physics
+    u-ce417:
+       description: SSP370 Standard CMIP6 run
+       colour: darkblue
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf bgc alkalinity physics
+
+    u-cj198:
+       description: Historical: Ozone Depleting Substances (ODS) fixed at 1950 = no ozone hole
+       colour: orange
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf bgc alkalinity physics
+    u-cj881:
+       description: SSP370 ODS fixed at 1950
+       colour: darkorange
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf bgc alkalinity physics
+
+    u-cj200:
+       description: Historical ODS fixed at 1990 (continuous ozone hole)
+       colour: red 
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf bgc alkalinity physics
+    u-cj504:
+       description: SSP370 ODS fixed at 1990
+       colour: darkred 
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf bgc alkalinity physics
+
+
+
+
