@@ -67,6 +67,8 @@ class dataset:
                     print("This file can not be skipped, exiting, " \
                           "please check the file!")
                     sys.exit(1)
+            elif oserr.errno == -51:
+                raise OSError(f"Unknown file format - not netCDF: {filename}")
                
             
 

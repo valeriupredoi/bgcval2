@@ -109,7 +109,13 @@ def list_input_files(files_path, key_dict, paths):
     for flag, flag_value in zip(flags, flag_values):
         files_path = findReplaceFlag(files_path, flag, flag_value)
 
+    basedir = os.path.dirname(files_path)
+    if not os.path.exists(basedir):
+        raise OSError(f"Base {basedir} is not a valid directory.")
     input_files = sorted(glob(files_path))
+    if not input_files:
+        raise FileNotFoundError(f"Data dir {basedir} does not contain and file "
+                                f"that matches pattern {files_path}, {flag}")
     return input_files
 
 
