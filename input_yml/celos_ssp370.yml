@@ -20,14 +20,14 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: kmf bgc alkalinity physics
+       suite: kmf bgc  physics # alkalinity
     u-ce417:
        description: "SSP370 Standard CMIP6 run"
        colour: darkblue
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: kmf bgc alkalinity physics
+       suite: kmf bgc physics # alkalinity
 
     u-cj198:
        description: "Historical: Ozone Depleting Substances (ODS) fixed at 1950 = no ozone hole"
