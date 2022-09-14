@@ -15,14 +15,14 @@ clean: True
 
 jobs:
     u-bc370:
-       description: Historical Standard CMIP6 run
+       description: "Historical Standard CMIP6 run"
        colour: blue 
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
        suite: kmf bgc alkalinity physics
     u-ce417:
-       description: SSP370 Standard CMIP6 run
+       description: "SSP370 Standard CMIP6 run"
        colour: darkblue
        thickness: 1.7
        linestyle: '-'
@@ -30,14 +30,14 @@ jobs:
        suite: kmf bgc alkalinity physics
 
     u-cj198:
-       description: Historical: Ozone Depleting Substances (ODS) fixed at 1950 = no ozone hole
+       description: "Historical: Ozone Depleting Substances (ODS) fixed at 1950 = no ozone hole"
        colour: orange
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
        suite: kmf bgc alkalinity physics
     u-cj881:
-       description: SSP370 ODS fixed at 1950
+       description: "SSP370 ODS fixed at 1950"
        colour: darkorange
        thickness: 1.7
        linestyle: '-'
@@ -45,14 +45,14 @@ jobs:
        suite: kmf bgc alkalinity physics
 
     u-cj200:
-       description: Historical ODS fixed at 1990 (continuous ozone hole)
+       description: "Historical ODS fixed at 1990 (continuous ozone hole)"
        colour: red 
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
        suite: kmf bgc alkalinity physics
     u-cj504:
-       description: SSP370 ODS fixed at 1990
+       description: "SSP370 ODS fixed at 1990"
        colour: darkred 
        thickness: 1.7
        linestyle: '-'
