@@ -1581,13 +1581,15 @@ def timeseries_compare(jobs,
             'Alkalinity', 'pH'
     ]:
         if name not in list(av.keys()): continue
-        for region in vmtregionList:
-            for layer in [
-                    'Surface',
-                    '500m',
-                    '1000m',
-                    'layerless',
-            ]:
+        regions = av[name]['regions']
+        layers = av[name]['layers']
+        for region in regions: #ist:
+            for layer in layers:
+#                    'Surface',
+#                    '500m',
+#                    '1000m',
+#                    'layerless',
+#            ]:
                 timesD = {}
                 arrD = {}
 

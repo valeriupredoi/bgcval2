@@ -29,10 +29,13 @@
 """
 import numpy as np
 from calendar import month_name
+from shelve import open as shOpen
+import os
+from bgcval2.Paths.paths import paths
 
-from .dataset import dataset
-from ..UKESMpython import makeLonSafeArr
-
+from bgcval2.bgcvaltools.dataset import dataset
+#from bgcval2.UKESMpython import makeLonSafeArr, folDer, 
+import bgcval2.UKESMpython as ukp
 ####
 
 
@@ -212,15 +215,15 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
     if newSlice == 'ignoreExtraArtics':
         return np.ma.masked_outside(xy, -50., 50.).mask
     if newSlice == 'NorthAtlanticOcean':
-        return np.ma.masked_outside(makeLonSafeArr(xx), -80.,
+        return np.ma.masked_outside(ukp.makeLonSafeArr(xx), -80.,
                                     0.).mask + np.ma.masked_outside(
                                         xy, 10., 60.).mask
     if newSlice == 'SouthAtlanticOcean':
-        return np.ma.masked_outside(makeLonSafeArr(xx), -65.,
+        return np.ma.masked_outside(ukp.makeLonSafeArr(xx), -65.,
                                     20.).mask + np.ma.masked_outside(
                                         xy, -50., -10.).mask
     if newSlice == 'EquatorialAtlanticOcean':
-        return np.ma.masked_outside(makeLonSafeArr(xx), -65.,
+        return np.ma.masked_outside(ukp.makeLonSafeArr(xx), -65.,
                                     20.).mask + np.ma.masked_outside(
                                         xy, -15., 15.).mask
 
@@ -439,12 +442,12 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
             'OffShelf',
     ]:
         #bathync = ncdfView("data/ORCA1bathy.nc",Quiet=True)
-        bathync = dataset("data/ORCA1bathy.nc", 'r')
+        bathync = dataset(os.path.join(paths.bgcval2_repo, "bgcval2/data/ORCA1bathy.nc"), 'r')
         bathy = abs(bathync.variables["bathymetry"][:])
         latcc, loncc = bathync.variables["lat"][:], bathync.variables["lon"][:]
         bathync.close()
-        shelfDepth = 500.
-        shelveFn = folder("shelves/MatchingMasks/") + "diag_maskMask.shelve"
+        shelfDepth = 250.
+        shelveFn = ukp.folder(os.path.join(paths.shelvedir, "MatchingMasks/"))+ "diag_maskMask.shelve"
         try:
             s = shOpen(shelveFn)
             lldict = s['lldict']
@@ -459,7 +462,7 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
             try:
                 la, lo = lldict[(xy[i], xx[i])]
             except:
-                la, lo = getOrcaIndexCC(xy[i],
+                la, lo = ukp.getOrcaIndexCC(xy[i],
                                         xx[i],
                                         latcc,
                                         loncc,
@@ -469,21 +472,25 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
                 print("Corner case:", la, lo, bathy[la, lo])
                 nmask[i] = 1
             if newSlice == "maskBelowBathy":
-                if (bathy[la, lo] - 10.) > abs(z): nmask[i] = 1
+                if (bathy[la, lo] - 10.) > abs(z): 
+                    nmask[i] = 1
             if newSlice == "OnShelf":
-                if bathy[la, lo] >= shelfDepth: nmask[i] = 1
+                if bathy[la, lo] >= shelfDepth: 
+                    nmask[i] = 1
             if newSlice == "OffShelf":
-                if bathy[la, lo] < shelfDepth: nmask[i] = 1
+                if bathy[la, lo] < shelfDepth: 
+                    nmask[i] = 1
 
             if i % 100000 == 0:  # or i==(len(xz)+1):
-                try:
+#                try:
+                    print('saving shelve for bathy:',shelveFn, i) 
                     s = shOpen(shelveFn)
                     s['lldict'] = lldict
                     s.close()
-                except:
-                    print(
-                        "makeMask:\tWARNING:\tUnable to save lldict at this time"
-                    )
+#                except:
+#                    print(
+#                        "makeMask:\tWARNING:\tUnable to save lldict at this time", newSlice
+#                    )
         if i > 0:
             try:
                 s = shOpen(shelveFn)
