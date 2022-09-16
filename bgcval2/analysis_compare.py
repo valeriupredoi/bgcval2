@@ -52,6 +52,7 @@ from getpass import getuser
 from collections import defaultdict
 import yaml
 import random
+import itertools
 
 
 #####
@@ -1575,211 +1576,47 @@ def timeseries_compare(jobs,
         print("Model Data D:", k)
 
     ####
-    for name in [
-            'Temperature', 'Salinity', 'MLD', 'FreshwaterFlux',
-            'AirSeaFluxCO2', 'AirSeaFlux', 'Chlorophyll', 'Nitrate',
-            'Alkalinity', 'pH'
-    ]:
-        if name not in list(av.keys()): continue
+    for name in av.keys():
+#   for name in [
+#           'Temperature', 'Salinity', 'MLD', 'FreshwaterFlux',
+#           'AirSeaFluxCO2', 'AirSeaFlux', 'Chlorophyll', 'Nitrate',
+#           'Alkalinity', 'pH'
+#   ]:
+#       if name not in list(av.keys()): continue
         regions = av[name]['regions']
         layers = av[name]['layers']
-        for region in regions: #ist:
-            for layer in layers:
-                timesD = {}
-                arrD = {}
-
-                for jobID in jobs:
-                    try:
-                        mdata = modeldataD[(jobID, name)][(region, layer,
-                                                           'mean')]
-                    except:
-                        continue
-                    title = titleify([region, layer, 'Mean', name])
+        metrics = av[name]['metrics']
+        for region, layer, metric  in itertools.product(regions, layers, metrics):
+            timesD = {}
+            arrD = {}
+            for jobID in jobs:
+                try:
+                    mdata = modeldataD[(jobID, name)][(region, layer, metric)]
+                except:
+                    continue
+                title = titleify([region, layer, metric, name])
 
                     #timesD[jobID] 	= sorted(mdata.keys())
                     #arrD[jobID]	= [mdata[t] for t in timesD[jobID]]
-                    times, datas = apply_shifttimes(mdata, jobID, shifttimes)
-                    timesD[jobID] = times  #mdata.keys())
-                    arrD[jobID] = datas  #t] for t in timesD[jobID]]
+                times, datas = apply_shifttimes(mdata, jobID, shifttimes)
+                timesD[jobID] = times  #mdata.keys())
+                arrD[jobID] = datas  #t] for t in timesD[jobID]]
 
-                    if jobID == 'u-aj588':
-                        arrD[jobID] = np.ma.masked_where(
-                            arrD[jobID] == 0., arrD[jobID])
+            timesD, arrD = build_ensemble(timesD, arrD, ensembles)
 
-                timesD, arrD = build_ensemble(timesD, arrD, ensembles)
+            if len(list(arrD.keys())) == 0: 
+                continue
+            units = av[name]['modeldetails']['units']
 
-                if len(list(arrD.keys())) == 0: continue
-                units = av[name]['modeldetails']['units']
-
-                for ts in [
-                        'Together',
-                ]:
-                    if name == 'FreshwaterFlux': ls = 'movingav30years'
-                    else: ls = 'DataOnly'
-                    tsp.multitimeseries(
-                        timesD,  # model times (in floats)
-                        arrD,  # model time series
-                        data=-999,  # in situ data distribution
-                        title=title,
-                        filename=ukp.folder(imageFolder) +
-                        '_'.join([name, region, layer, ts, ls + '.png']),
-                        units=units,
-                        plotStyle=ts,
-                        lineStyle=ls,
-                        colours=colours,
-                        thicknesses=lineThicknesses,
-                        linestyles=linestyles,
-                    )
-
-
-#		assert 0
-
-####
-# Standard surface:
-    for name in list(av.keys()):
-        timesD = {}
-        arrD = {}
-        units = av[name]['modeldetails']['units']
-        title = ''
-        for jobID in jobs:
-            # TODO: This should be automated using shelve lists.
-
-            if name in [
-                    'Iron', 'Nitrate', 'Silicate', 'Oxygen', 'Temperature',
-                    'Salinity', 'O2', 'Alkalinity', 'DIC', 'CHD', 'CHN',
-                    'DiaFrac', 'CHL', 'Chlorophyll', 'pH', 'ZonalCurrent',
-                    'MeridionalCurrent', 'VerticalCurrent', 
-            ]:
-                mdata = modeldataD[(jobID, name)][('Global', 'Surface',
-                                                   'mean')]
-                title = ' '.join(
-                    ['Global', 'Surface', 'Mean',
-                     getLongName(name)])
-            elif name in [
-                    'OMZThickness',
-                    'OMZMeanDepth',
-                    'DMS',
-                    'DMS_ARAN',
-                    'Dust',
-                    'MaxMonthlyMLD',
-                    'MinMonthlyMLD',
-                    'MLD',
-                    'RIVALK',
-                    'totalshelfalk', 'atmospco2',  
-            ]:
-                try:
-                    mdata = modeldataD[(jobID, name)][('Global', 'layerless',
-                                                       'mean')]
-                    title = ' '.join(['Global', getLongName(name)])
-                except:
-                    continue
-            elif name in [
-                    'DTC',
-            ]:
-                mdata = modeldataD[(jobID, name)][('Global', '3000m', 'mean')]
-                title = ' '.join(
-                    ['Global', '3000m', 'Mean',
-                     getLongName(name)])
-            elif name in [
-                    'AirSeaFlux',
-                    'AirSeaFluxCO2',
-                    'Alk',
-                    'Alkalinity',
-            ]:
-                try:
-                    mdata = modeldataD[(jobID, name)][('ignoreInlandSeas',
-                                                       'Surface', 'mean')]
-                    title = ' '.join([
-                        'ignoreInlandSeas', 'Surface', 'Mean',
-                        getLongName(name)
-                    ])
-                except:
-                    continue
-            elif name in [
-                    'NoCaspianAirSeaFluxCO2',
-            ]:
-                try:
-                    mdata = modeldataD[(jobID, name)][('ignoreCaspian',
-                                                       'layerless', 'sum')]
-                    title = ' '.join(
-                        ['Total', getLongName(name), '(No Caspian)'])
-                except:
-                    continue
-            elif name in [
-                    'VolumeMeanTemperature',
-                    'VolumeMeanSalinity',
-                    'VolumeMeanOxygen',
-            ]:
-                try:
-                    mdata = modeldataD[(jobID, name)][('Global', 'layerless',
-                                                       'wcvweighted')]
-                    title = ' '.join([
-                        'Global',
-                        getLongName(name),
-                    ])
-                except:
-                    continue
-
-            elif name in [
-                    'sowaflup', 'sohefldo', 'sofmflup', 'sosfldow', 'sossheig',
-                    'soicecov', 'FreshwaterFlux', 'HeatFlux'
-            ]:
-
-                try:
-                    mdata = modeldataD[(jobID, name)][('Global', 'layerless',
-                                                       'mean')]
-                except:
-                    continue
-                title = ' '.join(['Global mean', getLongName(name)])
-
-            #####
-            # Special hack for these guys.
-            #nasregionList	= ['NordicSea', 'LabradorSea', 'NorwegianSea'	]
-            #mdata = modeldataD[(jobID,name )][('regionless', 'layerless', 'mean')]
-            #title = getLongName(name)
-            else:
-                try:
-                    mdata = modeldataD[(jobID,
-                                        name)][('regionless', 'layerless',
-                                                'metricless')]
-                except:
-                    continue
-
-                title = getLongName(name)
-
-            times, datas = apply_shifttimes(mdata, jobID, shifttimes)
-            timesD[jobID] = times
-            arrD[jobID] = datas
-        timesD, arrD = build_ensemble(timesD, arrD, ensembles)
-
-        if name in [
-                'DMS',
-        ]:
-            for j in list(arrD.keys()):
-                if j in [
-                        'u-ag914',
-                ]:
-                    for i, (t, d) in enumerate(zip(timesD[jobID],
-                                                   arrD[jobID])):
-                        if float(t) < 1600.: continue
-                        arrD[j][i] = d / 1000000.
-
-        for ts in [
-                'Together',
-        ]:  
-            for ls in [
-                    'DataOnly',
-            ]:  
-                if ls == '' and name not in level3: 
-                    continue
-
+            ts = 'Together'
+            for ls in ['DataOnly', 'movingav30years']:
                 tsp.multitimeseries(
                     timesD,  # model times (in floats)
                     arrD,  # model time series
                     data=-999,  # in situ data distribution
                     title=title,
-                    filename=ukp.folder(imageFolder) + name + '_' + ts + '_' +
-                    ls + '.png',
+                    filename=ukp.folder(imageFolder) +
+                        '_'.join([name, region, layer, ts, ls + '.png']),
                     units=units,
                     plotStyle=ts,
                     lineStyle=ls,
@@ -1788,408 +1625,7 @@ def timeseries_compare(jobs,
                     linestyles=linestyles,
                 )
 
-                if name in [
-                        'NoCaspianAirSeaFluxCO2',
-                        'AMOC_26N',
-                        'ADRC_26N',
-                        'AMOC_32S',
-                        'TotalAirSeaFluxCO2',
-                ]:
-                    targetdict = {
-                        'NoCaspianAirSeaFluxCO2': 0.,
-                        'AMOC_26N': 17.,
-                        'ADRC_26N': -999,
-                        'AMOC_32S': -999,
-                        'TotalAirSeaFluxCO2': 0.,
-                    }
-                    for ls in ['movingav30years', 'movingav100years']:
-                        tsp.multitimeseries(
-                            timesD,  # model times (in floats)
-                            arrD,  # model time series
-                            data=targetdict[name],  # in situ gata distribution
-                            dataname='Target',
-                            title=title,
-                            filename=ukp.folder(imageFolder) + name + '_' +
-                            ts + '_' + ls + '.png',
-                            units=units,
-                            plotStyle=ts,
-                            lineStyle=ls,
-                            colours=colours,
-                            thicknesses=lineThicknesses,
-                            linestyles=linestyles,
-                        )
-
-    ####
-    # Oxygen at Depth:
-    regionList = [ # generate from file.
-        'Global',
-        'ignoreInlandSeas',
-        'SouthernOcean',
-        'ArcticOcean',
-        'AtlanticSOcean',
-        'Equator10',
-        'Remainder',
-        'NorthernSubpolarAtlantic',
-        'NorthernSubpolarPacific',
-    ]
-    for name in [
-            'Oxygen',
-            'O2',
-    ]:
-        if name not in list(av.keys()): continue
-        for region in regionList:
-            for layer in ['Surface', '500m', '1000m']:
-                timesD = {}
-                arrD = {}
-
-                for jobID in jobs:
-                    try:
-                        mdata = modeldataD[(jobID, name)][(region, layer,
-                                                           'mean')]
-                    except:
-                        continue
-                    title = ' '.join(
-                        [region, layer, 'Mean',
-                         getLongName(name)])
-                    times, datas = apply_shifttimes(mdata, jobID, shifttimes)
-                    timesD[jobID] = times
-                    arrD[jobID] = datas
-
-                timesD, arrD = build_ensemble(timesD, arrD, ensembles)
-                units = av[name]['modeldetails']['units']
-
-                for ts in [
-                        'Together',
-                ]:  #'Separate']:
-                    for ls in [
-                            'DataOnly',
-                    ]:  #'','Both',]:
-                        tsp.multitimeseries(
-                            timesD,  # model times (in floats)
-                            arrD,  # model time series
-                            data=-999,  # in situ data distribution
-                            title=title,
-                            filename=ukp.folder(imageFolder + '/Oxygen') +
-                            '_'.join([name, region, layer, ts, ls + '.png']),
-                            units=units,
-                            plotStyle=ts,
-                            lineStyle=ls,
-                            colours=colours,
-                            thicknesses=lineThicknesses,
-                            linestyles=linestyles,
-                        )
-    wcvwRegions = vmtregionList[:]
-    wcvwRegions.extend(OMZRegions)
-    for name in [
-            'VolumeMeanTemperature',
-            'VolumeMeanSalinity',
-            'VolumeMeanOxygen',
-    ]:
-        if name not in list(av.keys()): continue
-        for region in wcvwRegions:
-            for layer in [
-                    'layerless',
-            ]:
-                timesD = {}
-                arrD = {}
-
-                for jobID in jobs:
-                    try:
-                        mdata = modeldataD[(jobID, name)][(region, layer,
-                                                           'wcvweighted')]
-                    except:
-                        continue
-                    title = ' '.join([region, layer, getLongName(name)])
-                    times, datas = apply_shifttimes(mdata, jobID, shifttimes)
-                    timesD[jobID] = times
-                    arrD[jobID] = datas
-                if len(list(arrD.keys())) == 0: continue
-                timesD, arrD = build_ensemble(timesD, arrD, ensembles)
-                units = av[name]['modeldetails']['units']
-                for ts in [
-                        'Together',
-                ]:  #'Separate']:
-                    for ls in [
-                            'DataOnly',
-                    ]:  #'','Both',]:
-                        tsp.multitimeseries(
-                            timesD,  # model times (in floats)
-                            arrD,  # model time series
-                            data=-999,  # in situ data distribution
-                            title=title,
-                            filename=ukp.folder(imageFolder) +
-                            '_'.join([name, region, layer, ts, ls + '.png']),
-                            units=units,
-                            plotStyle=ts,
-                            lineStyle=ls,
-                            colours=colours,
-                            thicknesses=lineThicknesses,
-                            linestyles=linestyles,
-                        )
-
-    for name in [
-            'DiaFrac',
-            'CHD',
-            'CHN',
-            'CHL',
-            'N',
-            'Si',
-            'Iron',
-            'Alk',
-            'DIC',
-            'Chlorophyll',
-            'pH',
-            'DMS',
-            'Nitrate',
-            'Salinity',
-            'Silicate',
-            'MaxMonthlyMLD',
-            'MinMonthlyMLD',
-            'Dust',
-    ]:
-        if name not in list(av.keys()): continue
-
-        for region in regionList:
-            for layer in [
-                    'Surface',
-                    '100m',
-                    '200m',
-                    'layerless',
-            ]:
-
-                timesD = {}
-                arrD = {}
-
-                for jobID in jobs:
-                    try:
-                        mdata = modeldataD[(jobID, name)][(region, layer,
-                                                           'mean')]
-                    except:
-                        continue
-                    title = ' '.join(
-                        [region, layer, 'Mean',
-                         getLongName(name)])
-                    times, datas = apply_shifttimes(mdata, jobID, shifttimes)
-                    timesD[jobID] = times
-                    arrD[jobID] = datas
-
-                timesD, arrD = build_ensemble(timesD, arrD, ensembles)
-                units = av[name]['modeldetails']['units']
-
-                for ts in [
-                        'Together',
-                ]:  #'Separate']:
-                    for ls in [
-                            'DataOnly',
-                    ]:  #'','Both',]:
-                        tsp.multitimeseries(
-                            timesD,  # model times (in floats)
-                            arrD,  # model time series
-                            data=-999,  # in situ data distribution
-                            title=title,
-                            filename=ukp.folder(imageFolder + '/BGC') +
-                            '_'.join([name, region, layer, ts, ls + '.png']),
-                            units=units,
-                            plotStyle=ts,
-                            lineStyle=ls,
-                            colours=colours,
-                            thicknesses=lineThicknesses,
-                            linestyles=linestyles,
-                        )
-
-    for name in [
-            'HeatFlux',
-            'AirSeaFlux',
-    ]:
-        if name not in list(av.keys()): continue
-        for region in vmtregionList:
-            for layer in [
-                    'layerless',
-            ]:
-                timesD = {}
-                arrD = {}
-                for jobID in jobs:
-                    try:
-                        mdata = modeldataD[(jobID, name)][(region, layer,
-                                                           'mean')]
-                    except:
-                        continue
-                    title = ' '.join(
-                        [region, layer, 'Mean',
-                         getLongName(name)])
-                    times, datas = apply_shifttimes(mdata, jobID, shifttimes)
-                    timesD[jobID] = times
-                    arrD[jobID] = datas
-                timesD, arrD = build_ensemble(timesD, arrD, ensembles)
-                units = av[name]['modeldetails']['units']
-                for ts in [
-                        'Together',
-                ]:  #'Separate']:
-                    for ls in [
-                            'DataOnly',
-                    ]:  #'','Both',]:
-                        tsp.multitimeseries(
-                            timesD,  # model times (in floats)
-                            arrD,  # model time series
-                            data=-999,  # in situ data distribution
-                            title=title,
-                            filename=ukp.folder(imageFolder) +
-                            '_'.join([name, region, layer, ts, ls + '.png']),
-                            units=units,
-                            plotStyle=ts,
-                            lineStyle=ls,
-                            colours=colours,
-                            thicknesses=lineThicknesses,
-                            linestyles=linestyles,
-                        )
-
-    for name in [
-            'scalarHeatContent',
-    ]:
-        if name not in list(av.keys()): continue
-        region = 'regionless'
-        layer = 'layerless'
-        metric = 'metricless'
-        timesD = {}
-        arrD = {}
-        for jobID in jobs:
-            try:
-                mdata = modeldataD[(jobID, name)][(region, layer, metric)]
-            except:
-                continue
-            title = ' '.join(['Year to year change in ', getLongName(name)])
-            times, datas = apply_shifttimes(mdata, jobID, shifttimes)
-            if len(times) < 3: continue
-            dtimes, ddatas = [], []
-
-            for i, t in enumerate(times[:-1]):
-                tdiff = times[i + 1] - t  # time difference in years
-                dtimes.append((times[i + 1] + t) / 2.)  # midpoint
-                ddatas.append((datas[i + 1] - datas[i]) / tdiff)
-            timesD[jobID] = dtimes
-            arrD[jobID] = ddatas
-        timesD, arrD = build_ensemble(timesD, arrD, ensembles)
-
-        units = r'$\Delta$ ' + av[name]['modeldetails'][
-            'units'] + ' y' + r'$^{-1}$'
-        for ts in [
-                'Together',
-        ]:  #'Separate']:
-            for ls in ['DataOnly', 'movingav30years']:  #'','Both',]:
-                tsp.multitimeseries(
-                    timesD,  # model times (in floats)
-                    arrD,  # model time series
-                    data=0.,  # in situ data distribution
-                    dataname='Zero',
-                    title=title,
-                    filename=ukp.folder(imageFolder) + '_'.join(
-                        ['Change_in', name, region, layer, ts, ls + '.png']),
-                    units=units,
-                    plotStyle=ts,
-                    lineStyle=ls,
-                    colours=colours,
-                    thicknesses=lineThicknesses,
-                    linestyles=linestyles,
-                )
-
-    for name in [
-            'MaxMonthlyMLD',
-            'MinMonthlyMLD',
-    ]:
-        if name not in list(av.keys()): continue
-        for region in vmtregionList:
-            for layer in [
-                    'layerless',
-            ]:
-
-                timesD = {}
-                arrD = {}
-
-                for jobID in jobs:
-                    try:
-                        mdata = modeldataD[(jobID, name)][(region, layer,
-                                                           'mean')]
-                    except:
-                        continue
-                    title = ' '.join(
-                        [region, layer, 'Mean',
-                         getLongName(name)])
-                    times, datas = apply_shifttimes(mdata, jobID, shifttimes)
-                    timesD[jobID] = times
-                    arrD[jobID] = datas
-
-                units = av[name]['modeldetails']['units']
-                timesD, arrD = build_ensemble(timesD, arrD, ensembles)
-                for ts in [
-                        'Together',
-                ]:  #'Separate']:
-                    for ls in [
-                            'DataOnly',
-                    ]:  #'','Both',]:
-                        tsp.multitimeseries(
-                            timesD,  # model times (in floats)
-                            arrD,  # model time series
-                            data=-999,  # in situ data distribution
-                            title=title,
-                            filename=ukp.folder(imageFolder + '/MLD') +
-                            '_'.join([name, region, layer, ts, ls + '.png']),
-                            units=units,
-                            plotStyle=ts,
-                            lineStyle=ls,
-                            colours=colours,
-                            thicknesses=lineThicknesses,
-                            linestyles=linestyles,
-                        )
-
-    for name in [
-            'DMS',
-    ]:
-        continue
-        if name not in list(av.keys()): continue
-        for region in regionList:
-            for layer in [
-                    'Surface',
-                    '100m',
-                    '200m',
-            ]:
-
-                timesD = {}
-                arrD = {}
-
-                for jobID in jobs:
-                    try:
-                        mdata = modeldataD[(jobID, name)][(region, layer,
-                                                           'mean')]
-                    except:
-                        continue
-                    title = ' '.join(
-                        [region, layer, 'Mean',
-                         getLongName(name)])
-
-                    timesD[jobID] = sorted(mdata.keys())
-                    arrD[jobID] = [mdata[t] for t in timesD[jobID]]
-                units = av[name]['modeldetails']['units']
-                for ts in [
-                        'Together',
-                ]:  #'Separate']:
-                    for ls in [
-                            'DataOnly',
-                    ]:  #'','Both',]:
-                        tsp.multitimeseries(
-                            timesD,  # model times (in floats)
-                            arrD,  # model time series
-                            data=-999,  # in situ data distribution
-                            title=title,
-                            filename=ukp.folder(imageFolder + '/DMS') +
-                            '_'.join([name, region, layer, ts, ls + '.png']),
-                            units=units,
-                            plotStyle=ts,
-                            lineStyle=ls,
-                            colours=colours,
-                            thicknesses=lineThicknesses,
-                            linestyles=linestyles,
-                        )
-    #
+    # Generate a list of comparison images:
     method_images = 'oswalk'
     AllImages = []
     if method_images == 'glob':
@@ -2201,9 +1637,10 @@ def timeseries_compare(jobs,
                 AllImages.append(os.path.join(root, filename))
                 print('AllImages:','fors', root, dirnames, filenames, filename)
 
-
     if ensembles != {}:
         jobs = list(ensembles.keys())
+
+    # Senmd everything to the comparison maker:
     comparehtml5Maker(
         jobIDs=jobs,
         reportdir=ukp.folder('CompareReports2/' + analysisname),
