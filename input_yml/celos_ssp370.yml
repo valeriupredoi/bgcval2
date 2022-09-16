@@ -35,14 +35,14 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: kmf bgc alkalinity physics
+       suite: kmf bgc physics
     u-cj881:
        description: "SSP370 ODS fixed at 1950"
        colour: darkorange
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: kmf bgc alkalinity physics
+       suite: kmf bgc physics
 
     u-cj200:
        description: "Historical ODS fixed at 1990 (continuous ozone hole)"
@@ -50,14 +50,14 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: kmf bgc alkalinity physics
+       suite: kmf bgc physics
     u-cj504:
        description: "SSP370 ODS fixed at 1990"
        colour: darkred 
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: kmf bgc alkalinity physics
+       suite: kmf bgc physics
 
 
 

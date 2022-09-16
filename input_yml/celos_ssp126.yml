@@ -33,28 +33,28 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: kmf bgc alkalinity physics
+       suite: kmf bgc physics
     u-cj880:
        description: "SSP126 : Ozone Depleting Substances (ODS) fixed at 1950 = no ozone hole"
        colour: darkorange
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: kmf bgc alkalinity physics
+       suite: kmf bgc physics
     u-cj200:
        description: "Historical ODS fixed at 1990 (continuous ozone hole)"
        colour: red 
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: kmf bgc alkalinity physics
+       suite: kmf bgc physics
     u-cj484:
        description: "SSP126 ODS fixed at 1990 (continuous ozone hole)"
        colour: darkred 
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: kmf bgc alkalinity physics
+       suite: kmf bgc physics
 
 
 
