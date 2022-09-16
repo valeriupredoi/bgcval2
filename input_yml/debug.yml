@@ -1,6 +1,6 @@
 ---
 # GC5 N96 ORCA1 spinup analysis
-name: debug_testing
+name: debug_testing_onshelf
 
 # Run the single job analysis
 do_analysis_timeseries: True 

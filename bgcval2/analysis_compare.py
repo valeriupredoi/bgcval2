@@ -1585,11 +1585,6 @@ def timeseries_compare(jobs,
         layers = av[name]['layers']
         for region in regions: #ist:
             for layer in layers:
-#                    'Surface',
-#                    '500m',
-#                    '1000m',
-#                    'layerless',
-#            ]:
                 timesD = {}
                 arrD = {}
 
@@ -1756,15 +1751,6 @@ def timeseries_compare(jobs,
             timesD[jobID] = times
             arrD[jobID] = datas
         timesD, arrD = build_ensemble(timesD, arrD, ensembles)
-        #####
-        # To account for changing units.
-        if name in ['TotalAirSeaFluxCO2', 'TotalAirSeaFlux']:
-            for j in list(arrD.keys()):
-                if j in [
-                        'u-ad980', 'u-af123', 'u-af725', 'u-ae742', 'u-af139',
-                        'u-af578', 'u-af728'
-                ]:
-                    arrD[j] = np.ma.array(arrD[j]) * 5.09369e-7
 
         if name in [
                 'DMS',
@@ -1780,11 +1766,12 @@ def timeseries_compare(jobs,
 
         for ts in [
                 'Together',
-        ]:  #'Separate']:
+        ]:  
             for ls in [
                     'DataOnly',
-            ]:  #'','Both',]:
-                if ls == '' and name not in level3: continue
+            ]:  
+                if ls == '' and name not in level3: 
+                    continue
 
                 tsp.multitimeseries(
                     timesD,  # model times (in floats)
