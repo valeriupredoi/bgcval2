@@ -14,4 +14,4 @@ model_vars      : PH3
 model_convert   : NoChange
 
 layers          : Surface #50m #;100m 200m 500m 1000m 2000m
-regions         : Global #ignoreInlandSeas #;SouthernOcean ArcticOcean Equator10 Remainder NorthernSubpolarAtlantic NorthernSubpolarPacific
+regions         : Global OnShelf OffShelf ignoreInlandSeas SouthernOcean ArcticOcean Equator10 Remainder NorthernSubpolarAtlantic NorthernSubpolarPacific 

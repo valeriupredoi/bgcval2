@@ -5,7 +5,13 @@ keys:
     RIVALK : True # alk flux added, 
     totalshelfalk: True # total alkalinity added (because we want to know how much is added in total)
     atmospco2: True # atmospheric pCO2
+    atmosxco2: True # atmospheric xCO2
     DIC: True                        # Globap dissolved inorganic carbon
     AirSeaFluxCO2: True              # Air Sea Flux of CO2
     TotalAirSeaFluxCO2: True         # Total global air sea flux
+    caco3_production: True # CaCO3 production
+    Surface_omega_aragonite: True # Surface omega aragonite
+    Seafloor_omega_aragonite: True
+    Surface_omega_calcite: True
+    Seafloor_omega_calcite: True
 

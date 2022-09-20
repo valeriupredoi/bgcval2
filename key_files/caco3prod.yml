@@ -1,14 +1,13 @@
 ---
-name            : AirSeaFluxCO2
-units           : mmolC/m2/d
+name            : Calcium_carbonate_production
+units           : mmol C / m2 / d
 model           : MEDUSA
 modelgrid       : eORCA1
 dimensions      : 2
 modelFiles      : $BASEDIR_MODEL/$JOBID/medusa*$JOBIDo_1y_*_diad-T.nc
-model_vars      : CO2FLUX
+model_vars      : FASTCA
 model_convert   : NoChange
 layers          : layerless
 regions         : Global OnShelf OffShelf ignoreInlandSeas SouthernOcean ArcticOcean Equator10 Remainder NorthernSubpolarAtlantic NorthernSubpolarPacific
-
 
 

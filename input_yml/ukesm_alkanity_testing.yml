@@ -14,41 +14,41 @@ clean: True
 
 # Job ID's suites as named by Rose/Cylc
 # •     u-co094 - no alk added
-# •     u-cp800 - alk add at surface
+# •     u-cp800 - alk added at surface
 # •     u-cp799 - alk added at bathy - or 100m (if bathy deeper)
 # •     u-cn857 - alk added at bathy - or 200m (if bathy deeper)
 #
 jobs:
-#    u-co094:
-#        description: 'no alk added'
-#        colour: purple
-#        thickness: 0.7
-#        linestyle: '-'
-#        shifttime: 0.
-#        suite: bgc #alkalinity
+    u-co094:
+        description: 'no alk added'
+        colour: black
+        thickness: 0.7
+        linestyle: '-'
+        shifttime: 0.
+        suite: kmf bgc alkalinity physics
     u-cp800:
-       description: 'alk add at surface'
-       colour: blue 
-       thickness: 1.7
+       description: 'alk added at 0m'
+       colour: red 
+       thickness: 2.0
        linestyle: '-'
        shifttime: 0.
        suite: kmf bgc alkalinity physics
 #
     u-cp799:
-       description: 'alk added at bathy - or 100m (if bathy deeper)'
+       description: 'alk added at 100m (or bathymetry)'
        colour: green
-       thickness: 1.7
+       thickness: 2.0
        linestyle: '-'
        shifttime: 0.
        suite: kmf bgc alkalinity physics
 
-#    u-cp857:
-#       description: 'alk added at bathy - or 200m (if bathy deeper)'
-#       colour: green
-#       thickness: 0.7
-#       linestyle: '-'
-#       shifttime: 0.
-#       suite: bgc #alkalinity
+    u-cn857:
+       description: 'alk added at 200m (or bathymetry)'
+       colour: blue
+       thickness: 2.0
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf bgc alkalinity physics
 
 
 
