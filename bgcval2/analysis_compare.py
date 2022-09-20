@@ -1609,7 +1609,7 @@ def timeseries_compare(jobs,
             units = av[name]['modeldetails']['units']
 
             ts = 'Together'
-            for ls in ['DataOnly', 'movingav30years']:
+            for ls in ['DataOnly', ]: #  'movingav30years']
                 tsp.multitimeseries(
                     timesD,  # model times (in floats)
                     arrD,  # model time series
