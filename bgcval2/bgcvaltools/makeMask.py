@@ -34,7 +34,6 @@ import os
 from bgcval2.Paths.paths import paths
 
 from bgcval2.bgcvaltools.dataset import dataset
-#from bgcval2.UKESMpython import makeLonSafeArr, folDer, 
 import bgcval2.UKESMpython as ukp
 ####
 
