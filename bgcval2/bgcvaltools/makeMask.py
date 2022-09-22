@@ -486,10 +486,6 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
                     s = shOpen(shelveFn)
                     s['lldict'] = lldict
                     s.close()
-#                except:
-#                    print(
-#                        "makeMask:\tWARNING:\tUnable to save lldict at this time", newSlice
-#                    )
         if i > 0:
             try:
                 s = shOpen(shelveFn)
