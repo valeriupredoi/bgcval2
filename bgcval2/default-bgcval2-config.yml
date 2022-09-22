@@ -13,6 +13,7 @@ standard-paths:
       imagedir: "bgcval2/images"
       ModelFolder_pref: "BGC_data"
       orcaGridfn: "/gws/nopw/j04/esmeval/bgc-val/mesh_mask_eORCA1_wrk.nc"
+      orca1bathy: "/gws/nopw/j04/esmeval/bgc-val/ORCA1bathy.nc"
       ObsFolder: "/gws/nopw/j04/esmeval/example_data/bgc"
     data-files:
       Dustdir: "MahowaldDust/"

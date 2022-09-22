@@ -45,6 +45,8 @@ def paths_setter(paths_dict):
     paths.imagedir = paths_dict["general"]["imagedir"]
     paths.ModelFolder_pref = paths_dict["general"]["ModelFolder_pref"]
     paths.orcaGridfn = paths_dict["general"]["orcaGridfn"]
+    paths.orca1bathy = paths_dict["general"]["orca1bathy"]
+
     paths.ObsFolder = paths_dict["general"]["ObsFolder"]
     #paths.bgcval2data = paths_dict["general"]["bgcval2data"]
 

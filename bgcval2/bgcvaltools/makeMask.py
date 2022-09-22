@@ -440,8 +440,7 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
             'OnShelf',
             'OffShelf',
     ]:
-        #bathync = ncdfView("data/ORCA1bathy.nc",Quiet=True)
-        bathync = dataset(os.path.join(paths.bgcval2_repo, "bgcval2/data/ORCA1bathy.nc"), 'r')
+        bathync = dataset(paths.orca1bathy, 'r')
         bathy = abs(bathync.variables["bathymetry"][:])
         latcc, loncc = bathync.variables["lat"][:], bathync.variables["lon"][:]
         bathync.close()
