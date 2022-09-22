@@ -390,7 +390,7 @@ def medusaMonthlyexport(jobID, dryrun=False, config_user=None):
 def download_from_mass(
         jobID, 
         doMoo=True, 
-        mass_shared_path=True,
+        auto_download=True,
         config_user=None
     ):
     """
@@ -475,7 +475,7 @@ def download_from_mass(
     outfile.write(download_script_txt)
     outfile.close()
 
-    if mass_shared_path:
+    if auto_download:
         shared_file_path = os.path.join(paths.shared_mass_scripts, os.path.basename(download_script_path))
         print('writing file in shared path', shared_file_path)
         shutil.copy(download_script_path, shared_file_path)
@@ -612,7 +612,7 @@ def pop_keys(keys, remove_keys):
    return keys
 
 
-def perform_download(jobID, keys, doMoo, config_user=None):
+def perform_download(jobID, keys, doMoo, auto_download=True, config_user=None):
     """
     Single model download.
     """
@@ -697,8 +697,13 @@ def get_args():
                         help='User configuration file (for paths).',
                         required=False)
 
-    args = parser.parse_args()
+    parser.add_argument('-a',
+                        '--auto-download',
+                        default=True,
+                        help='Automatic download on mass-cli1 (default: True), annual data only',
+                        required=False)
 
+    args = parser.parse_args()
     return args
 
 
@@ -710,7 +715,9 @@ def main():
     keys = args.keys
     dryrun = args.dry_run
     doMoo = not dryrun
+
     config_user = args.config_file
+    auto_download = args.auto_download
 
     if keys in [None, '', [],]:
         keys = []
@@ -720,7 +727,7 @@ def main():
     print(f"Running with job_ids: {jobIDs} and keys {keys}")
 
     for jobID in jobIDs:
-        perform_download(jobID, keys, doMoo, config_user=config_user)
+        perform_download(jobID, keys, doMoo, auto_download=auto_download, config_user=config_user)
 
 
 if __name__ == "__main__":
