@@ -1771,7 +1771,7 @@ def load_yml_and_run(compare_yml, config_user):
         # even if you don't want to download, we run this
         # as it clears up the path and ensures recently downloed data is
         # correctly symlinked.
-        download_from_mass(jobID, doMoo=do_mass_download)
+        download_from_mass(jobID, doMoo=do_mass_download, config_user=config_user)
 
     if do_analysis_timeseries:
         for jobID in jobs:
