@@ -28,7 +28,6 @@
 """
 
 from socket import gethostname
-#import UKESMpython as ukp
 from getpass import getuser
 import os
 
@@ -73,6 +72,8 @@ ModelFolder_pref = folder(root_dir + "/bgcval2_data/")
 # eORCA1 grid
 basedir = os.path.dirname(__file__)
 orcaGridfn = os.path.join(basedir, "../data/eORCA_masks.nc")
+
+orca1bathy = os.path.join(basedir, "../data/ORCA1bathy.nc")
 
 #####
 # Location of data files.
