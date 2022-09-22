@@ -27,7 +27,7 @@ REQUIREMENTS = {
         'basemap',
         'cartopy',
         'matplotlib',
-        'netcdf4',
+        'netcdf4!=1.6.1',  # https://github.com/ESMValGroup/ESMValCore/pull/1724
         'numpy',
         'pip!=21.3',
         'pyyaml',
