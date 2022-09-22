@@ -35,13 +35,15 @@ import argparse
 from sys import stdout
 import subprocess
 from socket import gethostname
+import shutil
 import os
 from glob import glob
 from re import findall
 
 #####
 # Load specific local code:
-from .Paths import paths
+from bgcval2._runtime_config import get_run_configuration
+from bgcval2.Paths.paths import paths_setter
 
 
 """
@@ -82,6 +84,15 @@ def mnStr(month):
     mn = '%02d' % month
     return mn
 
+def get_paths(config_user):
+    # get runtime configuration
+    if config_user:
+        paths_dict, config_user = get_run_configuration(config_user)
+    else:
+        paths_dict, config_user = get_run_configuration("defaults")
+    # filter paths dict into an object that's usable below
+    paths = paths_setter(paths_dict)
+    return paths
 
 def getYearFromFile(fn):
     """
@@ -148,15 +159,7 @@ def findLastFinishedYear(jobID, dividby=1, numberfiles=6):
 	"""
     if jobID == '': return
 
-    machine = gethostname()
-    if machine.find('jasmin') > -1:
-        #		outputFold = "/group_workspaces/jasmin2/ukesm/BGC_data/"+jobID+'/'
-        outputFold = "/gws/nopw/j04/ukesm/BGC_data/" + jobID + '/'
-    if machine.find('monsoon') > -1:
-        outputFold = "/projects/ukesm/ldmora/UKESM/" + jobID + '/'
-
-    if gethostname().find('pmpc') > -1:
-        outputFold = "/data/euryale7/scratch/ledm/UKESM/MEDUSA/" + jobID + '/'
+    outputFold = folder([paths.ModelFolder_pref,  jobID,] )
 
     fnDict = {}
     files = sorted(glob(outputFold + jobID + 'o_1y_*_????_?.nc'))
@@ -192,7 +195,6 @@ def findLastFinishedYear(jobID, dividby=1, numberfiles=6):
     print(
         "No correct year, there's probably a problem here findLastFinishedYear(",
         jobID, ")")
-    print("Machine", machine)
     print("outputFold:", outputFold)
     return False
     #assert 0
@@ -206,7 +208,8 @@ def downloadField(jobID,
                   timerange='*',
                   dryrun=False,
                   starttime=0,
-                  stoptime=1E20):
+                  stoptime=1E20,
+                  config_user=None):
     """
 	:param jobID: The job ID
 	:param keys: a list of fields as they are saved in the Netcdf. (can also be a single string)
@@ -241,7 +244,8 @@ def downloadField(jobID,
 
     #####
     # Verify output folder:
-    outputFold = folder(paths.ModelFolder_pref + "/" + jobID + "/" + name)
+    paths = get_paths(config_user)
+    outputFold = folder([paths.ModelFolder_pref, jobID, name])
     ####
     # ensure that permissions are : drwxrwsr-x+
     #os.chmod(paths.ModelFolder_pref + "/" + jobID, 0o2775)
@@ -275,11 +279,13 @@ def downloadField(jobID,
 
     ######
     # print files
-    bashCommand = "moo ls " + massfp
-    print("running the command:", bashCommand)
-    process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-    output = process.communicate()[0]
-    print("output", output)
+    do_ls = False
+    if do_ls:
+        bashCommand = "moo ls " + massfp
+        print("running the command:", bashCommand)
+        process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+        output = process.communicate()[0]
+        print("output", output)
 
     #####
     # create a bash command to download the files:
@@ -325,17 +331,18 @@ def downloadField(jobID,
 
 ######
 # Some spefici wrappers for the downloadField
-def nemoMonthlyIce(jobID, dryrun=False):
+def nemoMonthlyIce(jobID, dryrun=False, config_user=None):
     downloadField(jobID, [
         'soicecov',
     ],
                   extension='grid[-_]T',
                   timeslice='m',
                   name='monthlyIce',
-                  dryrun=dryrun)
+                  dryrun=dryrun, 
+                  config_user=config_user)  
 
 
-def nemoMonthlyMLD(jobID, starttime=0, stoptime=1E20, dryrun=False):
+def nemoMonthlyMLD(jobID, starttime=0, stoptime=1E20, dryrun=False, config_user=None):
     downloadField(jobID, [
         'somxl010',
     ],
@@ -344,10 +351,11 @@ def nemoMonthlyMLD(jobID, starttime=0, stoptime=1E20, dryrun=False):
                   name='monthlyMLD',
                   dryrun=dryrun,
                   starttime=starttime,
-                  stoptime=stoptime)
+                  stoptime=stoptime,
+                  config_user=config_user)
 
 
-def monthlyChl(jobID, months=['01', '02', '06', '07', '08', '12'], dryrun=False):
+def monthlyChl(jobID, months=['01', '02', '06', '07', '08', '12'], dryrun=False, config_user=None):
     for month in months:  #['01','02','06','07','08','12']: # They want JJA and DJF
         ts = '????' + month + '01-??????01'
         downloadField(jobID, ['CHD', 'CHN'],
@@ -355,10 +363,11 @@ def monthlyChl(jobID, months=['01', '02', '06', '07', '08', '12'], dryrun=False)
                       timeslice='m',
                       timerange=ts,
                       name='monthlyCHL',
-                      dryrun=dryrun)
+                      dryrun=dryrun,
+                      config_user=config_user)
 
 
-def medusaMonthlyexport(jobID, dryrun=False):
+def medusaMonthlyexport(jobID, dryrun=False, config_user=None):
     downloadField(jobID, [
         'SDT__100',
         'FDT__100',
@@ -374,10 +383,16 @@ def medusaMonthlyexport(jobID, dryrun=False):
                   extension='diad[-_]T',
                   timeslice='m',
                   name='monthlyExport',
-                  dryrun=dryrun)
+                  dryrun=dryrun,
+                  config_user=config_user)
 
 
-def download_from_mass(jobID, doMoo=True):
+def download_from_mass(
+        jobID, 
+        doMoo=True, 
+        mass_shared_path=True,
+        config_user=None
+    ):
     """
 	:param jobID: The job ID
 
@@ -389,38 +404,8 @@ def download_from_mass(jobID, doMoo=True):
 	"""
     if jobID == '': return
 
-    machine = gethostname()
-    knownmachine = False
-    if machine.find('jasmin') > -1:
-        knownmachine = True
-        # outputFold = "/group_workspaces/jasmin2/ukesm/BGC_data/"+jobID
-        outputFold = "/gws/nopw/j04/ukesm/BGC_data/" + jobID + '/'
-
-        if not os.path.exists(outputFold):
-            print("Making ", outputFold)
-            os.makedirs(outputFold)
-    ####
-    # ensure that permissions are : drwxrwsr-x+
-    #    os.chmod(outputFold, 0o2775)
-
-    if machine.find('monsoon') > -1:
-        knownmachine = True
-        outputFold = "/projects/ukesm/ldmora/UKESM/" + jobID
-
-        if not os.path.exists(outputFold):
-            print("Making ", outputFold)
-            os.makedirs(outputFold)
-
-    if not knownmachine:
-        print("Are you running this on the correct machine?")
-        print(
-            "\tYou should be on mass-cli1.ceda.ac.uk at jasmin or on monsoon at the MO"
-        )
-        print("\tBut you're at", machine)
-        print(
-            "\tTo skip this warning, use the \"anymachine\" option at the command line"
-        )
-        return
+    paths = get_paths(config_user)
+    outputFold = folder([paths.ModelFolder_pref,  jobID,] )
 
     deleteBadLinksAndZeroSize(outputFold, jobID)
 
@@ -436,17 +421,21 @@ def download_from_mass(jobID, doMoo=True):
     download_script_txt = ''.join(header_lines)
 
     # moo ls:
-    bashCommand = "moo ls moose:/crum/" + jobID + "/ony.nc.file/*.nc"
-    download_script_txt = ''.join([download_script_txt, bashCommand, '\n'])
+    do_ls=False
+    if do_ls:
+        bashCommand = "moo ls moose:/crum/" + jobID + "/ony.nc.file/*.nc"
+        download_script_txt = ''.join([download_script_txt, bashCommand, '\n'])
 
-    if not doMoo:
-        print("download_from_mass:\tthe command is (dry-run): \n", bashCommand)
-        output = ''
+        if not doMoo:
+            print("download_from_mass:\tthe command is (dry-run): \n", bashCommand)
+            output = ''
+        else:
+            print("download_from_mass:\trunning the command:", bashCommand)
+            stdout.flush()
+            process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
+            output = process.communicate()[0]
     else:
-        print("download_from_mass:\trunning the command:", bashCommand)
-        stdout.flush()
-        process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-        output = process.communicate()[0]
+        output=''
 
     # moo get:
     if len(output.split('\n')) > 6000:
@@ -485,6 +474,11 @@ def download_from_mass(jobID, doMoo=True):
     outfile = open(download_script_path, 'w')
     outfile.write(download_script_txt)
     outfile.close()
+
+    if mass_shared_path:
+        shared_file_path = os.path.join(paths.shared_mass_scripts, os.path.basename(download_script_path))
+        print('writing file in shared path', shared_file_path)
+        shutil.copy(download_script_path, shared_file_path)
 
     fixFilePaths(outputFold, jobID, debug=False,)
     deleteBadLinksAndZeroSize(outputFold, jobID, debug=False,)
@@ -618,27 +612,27 @@ def pop_keys(keys, remove_keys):
    return keys
 
 
-def perform_download(jobID, keys, doMoo):
+def perform_download(jobID, keys, doMoo, config_user=None):
     """
     Single model download.
     """
     #####
     # Default behaviour is to download annual files
     if not keys or 'annual' in keys:
-        download_from_mass(jobID, doMoo=doMoo)
+        download_from_mass(jobID, doMoo=doMoo, config_user=config_user)
         keys = pop_keys(keys, ['annual', ])
 
     dryrun = not doMoo
     #####
     # Monthly Ice files
     if 'ice' in keys or 'soicecov' in keys:
-        nemoMonthlyIce(jobID, dryrun=dryrun)
+        nemoMonthlyIce(jobID, dryrun=dryrun, config_user=config_user)
         keys = pop_keys(keys, ['ice', 'soicecov'])
 
     #####
     # Monthly MLD
     if 'mld' in keys  or 'MLD' in keys:
-        nemoMonthlyMLD(jobID, starttime=0, stoptime=5000,dryrun=dryrun)
+        nemoMonthlyMLD(jobID, starttime=0, stoptime=5000,dryrun=dryrun, config_user=config_user)
         keys = pop_keys(keys, ['mld', 'MLD'])
 
     #####
@@ -662,13 +656,13 @@ def perform_download(jobID, keys, doMoo):
         keys = pop_keys(keys, ['chl', 'CHL'])
 
     if 'export' in keys:
-        medusaMonthlyexport(jobID, dryrun=dryrun)
+        medusaMonthlyexport(jobID, dryrun=dryrun, config_user=config_user)
         keys = pop_keys(keys, ['export',])
 
     #####
     # Other specific monthly files.
     if keys:
-        downloadField(jobID, keys, timeslice='m', dryrun=dryrun)
+        downloadField(jobID, keys, timeslice='m', dryrun=dryrun, config_user=config_user)
 
 
 def get_args():
@@ -696,6 +690,13 @@ def get_args():
                         help='Dry run: Do not download any files.',
                         )
 
+    parser.add_argument('-c',
+                        '--config-file',
+                        default=os.path.join(os.path.dirname(os.path.realpath(__file__)),
+                                             'default-bgcval2-config.yml'),
+                        help='User configuration file (for paths).',
+                        required=False)
+
     args = parser.parse_args()
 
     return args
@@ -709,6 +710,7 @@ def main():
     keys = args.keys
     dryrun = args.dry_run
     doMoo = not dryrun
+    config_user = args.config_file
 
     if keys in [None, '', [],]:
         keys = []
@@ -718,7 +720,7 @@ def main():
     print(f"Running with job_ids: {jobIDs} and keys {keys}")
 
     for jobID in jobIDs:
-        perform_download(jobID, keys, doMoo)
+        perform_download(jobID, keys, doMoo, config_user=config_user)
 
 
 if __name__ == "__main__":
