@@ -351,6 +351,36 @@ called without providing the `path`, and which may have their own key word
 arguments.
 
 
+
+Clearing the Cache
+------------------
+
+In order to produce a comparison report, bgcval2 first generates the comparison images, 
+then populates the report using all images in the reports path. 
+This means that older images may appear in new reports, even if they were removed from the 
+input yamls. If you want to "clear the cache", these images need to be deleted.
+
+The key place to clear is set by default on jasmin to be:
+```
+/gws/nopw/j04/ukesm/BGC_data/$USER/bgcval2/images/TimeseriesCompare/$NAME
+```
+where `$USER` is your jasmin user name and `$NAME` is the name given to this analysis 
+in your `input_yml` file.
+This is where the comparison plots are stored.
+
+From there, these plots are copied to
+```
+CompareReports2/$NAME
+```
+This is where the report is generated.
+
+The third place that these plots are kept is on the public facing jasmin directory:
+```
+/gws/nopw/j04/esmeval/public/CompareReports/bgcval2/$USER/$NAME
+```
+This is where the report is hosted.
+
+
 Point to point analysis
 -----------------------
 
