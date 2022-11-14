@@ -1,0 +1,21 @@
+---
+name            : AMM7_Mean_pH
+units           : None
+dimensions      : 1
+model           : NEMO
+modelFiles      : /data/proteus1/scratch/gle/dare_baseline/198*/*/*_1m_*grid_T.nc
+gridFile        : /users/modellers/ledm/workspace/coast/AMM7_grid/mesh_mask.nc
+model_vars      : thetao thetao_con votemper
+model_convert   :
+    path: bgcval2/functions/globalVolMean.py
+    function: globalVolumeMean
+    addvalue: 0.
+    multiplyBy: 1.
+    areafile: /users/modellers/ledm/workspace/coast/AMM7_grid/mesh_mask.nc
+layers          : layerless
+regions         : regionless
+
+# changes from original:
+#   add --- at start
+#   remove [name]
+#   add bgcval2 berfore functions

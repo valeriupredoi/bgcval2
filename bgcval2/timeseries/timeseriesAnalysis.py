@@ -481,12 +481,12 @@ class timeseriesAnalysis:
         nc = dataset(self.gridFile, 'r')
         tmask = nc.variables['tmask'][:]
         try:
-            area = nc.variables['area'][:]
+            area = nc.variables['area'][:].squeeze()
         except:
             area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
         if tmask.ndim == 3: area = np.ma.masked_where(tmask[0] == 0, area)
         if tmask.ndim == 2: area = np.ma.masked_where(tmask == 0, area)
-
+        area = area.squeeze()
         #if 'layerless' in self.layers:
         #try:
         #	pvol  = nc.variables['pvol' ][:]
@@ -514,6 +514,7 @@ class timeseriesAnalysis:
         nc.close()
 
         if lats.ndim == 2:
+            print(area.shape) 
             for (i, j), a in np.ndenumerate(area):
                 #if np.ma.is_masked(a):continue
                 self.weightsDict[(lats[i, j], lons[i, j])] = a

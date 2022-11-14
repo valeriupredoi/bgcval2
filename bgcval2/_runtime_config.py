@@ -131,21 +131,22 @@ def _set_pml_paths(paths_dict):
     shelves_dir = ukp.folder(pml_paths["general"]["shelvedir"])
     data_dir = pml_paths["general"]["ModelFolder_pref"]
     pml_paths["general"]["shelvedir"] = os.path.join(
-        root_dir,
-        data_dir,
-        user,
+#        root_dir,
+#        data_dir,
+#        user,
         shelves_dir
     )
     p2p_dir = pml_paths["general"]["p2p_ppDir"]
     pml_paths["general"]["p2p_ppDir"] = os.path.join(
-        root_dir,
-        data_dir,
+#        root_dir,
+#        data_dir,
+#        user,
         p2p_dir
     )
     images_dir = ukp.folder(pml_paths["general"]["imagedir"])
     pml_paths["general"]["imagedir"] = os.path.join(
-        root_dir,
-        data_dir, user,
+#        root_dir,
+#        data_dir, user,
         images_dir
     )
     pml_paths["general"]["ModelFolder_pref"] = os.path.join(

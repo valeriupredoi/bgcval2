@@ -60,16 +60,18 @@ standard-paths:
       OSUDir: "OSU/"
       CCIDir: "CCI/"
       # icFold: "InitialConditions/"
+
   pml:
     general:
       machinelocation: "PML"
-      root_dir: "/data/euryale7/scratch"
+      root_dir: "/data/proteus1/scratch/"
       shelvedir: "shelves"
-      p2p_ppDir: "ukesm_postProcessed"
+      p2p_ppDir: "bgcval2_postProcessed"
       imagedir: "images"
-      ModelFolder_pref: "UKESM/MEDUSA/"
-      orcaGridfn: "/data/euryale7/scratch/ledm/UKESM/MEDUSA/mesh_mask_eORCA1_wrk.nc"
-      ObsFolder: "/data/euryale7/backup/ledm/Observations/"
+      ModelFolder_pref: "gle/dare_baseline"
+      orcaGridfn: "/users/modellers/ledm/workspace/coast/AMM7_grid/mesh_mask.nc"
+      amm7Gridfn: "/users/modellers/ledm/workspace/coast/AMM7_grid/mesh_mask.nc"  
+      ObsFolder: "/data/sthenno1/scratch/ledm/Observations/"
     data-files:
       Dustdir: "MahowaldDust/"
       WOAFolder_annual: "WOA/annual/"
@@ -85,4 +87,4 @@ standard-paths:
       GLODAPv2Dir: "GLODAPv2/GLODAPv2_Mapped_Climatologies/"
       OSUDir: "OSU/"
       CCIDir: "CCI/"
-      icFold: "/data/euryale7/backup/ledm/UKESM/InitialConditions/"
+        #icFold: "/data/euryale7/backup/ledm/UKESM/InitialConditions/"

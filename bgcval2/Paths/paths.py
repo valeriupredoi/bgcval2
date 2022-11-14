@@ -44,8 +44,9 @@ def paths_setter(paths_dict):
     paths.p2p_ppDir = paths_dict["general"]["p2p_ppDir"]
     paths.imagedir = paths_dict["general"]["imagedir"]
     paths.ModelFolder_pref = paths_dict["general"]["ModelFolder_pref"]
-    paths.orcaGridfn = paths_dict["general"]["orcaGridfn"]
-    paths.orca1bathy = paths_dict["general"]["orca1bathy"]
+    paths.orcaGridfn = paths_dict["general"].get("orcaGridfn", None)
+    paths.amm7Gridfn = paths_dict["general"].get("amm7Gridfn", None)
+    paths.orca1bathy = paths_dict["general"].get("orca1bathy", None)
 
     paths.ObsFolder = paths_dict["general"]["ObsFolder"]
     #paths.bgcval2data = paths_dict["general"]["bgcval2data"]

@@ -110,7 +110,7 @@ def list_input_files(files_path, key_dict, paths):
         files_path = findReplaceFlag(files_path, flag, flag_value)
 
     basedir = os.path.dirname(files_path)
-    if not os.path.exists(basedir):
+    if not glob(basedir):
         raise OSError(f"Base {basedir} is not a valid directory.")
     input_files = sorted(glob(files_path))
     if not input_files:
@@ -2808,7 +2808,7 @@ def singleTimeSeries(
 
 def get_args():
     """Parse command line arguments. """
-    accepted_keys = ['kmf', 'physics','bgc', 'debug', 'spinup', 'salinity', 'fast', 'level1', 'level3', ]
+    accepted_keys = ['kmf', 'physics','bgc', 'debug', 'spinup', 'salinity', 'fast', 'level1', 'level3', 'nowmaps']
 
     parser = argparse.ArgumentParser(
         description=__doc__,
@@ -2852,7 +2852,7 @@ def main():
     keys = args.keys
     print('Running analysis_imerseries.\tjobID:', jobIDs, '\tkeys:', keys)
 
-    accepted_keys = ['kmf', 'physics','bgc', 'debug', 'spinup', 'salinity', 'fast', 'level1', 'level3', ]
+    accepted_keys = ['kmf', 'physics','bgc', 'debug', 'spinup', 'salinity', 'fast', 'level1', 'level3', 'nowmaps']
     good_keys = True
     for key in keys:
         if key not in accepted_keys:
