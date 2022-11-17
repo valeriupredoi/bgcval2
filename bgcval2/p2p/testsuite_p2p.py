@@ -245,7 +245,7 @@ def testsuite_p2p(
                                   year=year,
                                   workingDir=ukp.folder(workingDir + name),
                                   depthLevel=depthLevel,
-                                  grid=grid,
+                                  grid=av[name].get('modelgrid', None),
                                   gridFile=gridFile)
 
             #####
@@ -272,7 +272,7 @@ def testsuite_p2p(
                           b.MatchedModelFile,
                           name,
                           newSlices=nplottingSlices,
-                          model=av[name].get('model', None),     
+                          model=av[name].get('model', None),
                           datasource=av[name].get('datasource', None),
                           jobID=jobID,
                           depthLevel=depthLevel,
