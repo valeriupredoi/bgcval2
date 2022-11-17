@@ -131,7 +131,7 @@ def build_list_of_suite_keys(suites, debug=True):
     print(f'analysis_timeseries: Directory where keys are stored: {key_lists_dir}')
     analysis_keys = {}
     for suite in suites:
-        if not suite or suite in [' ', ',']: 
+        if not suite or suite in [' ', ',']:
             continue
 
         # look for a list in keys_list directory:
@@ -2808,7 +2808,7 @@ def singleTimeSeries(
 
 def get_args():
     """Parse command line arguments. """
-    accepted_keys = ['kmf', 'physics','bgc', 'debug', 'spinup', 'salinity', 'fast', 'level1', 'level3', 'nowmaps']
+    accepted_keys = [os.path.splitext(os.path.basename(fn))[0] for fn in glob('input_keys/*.yml')]
 
     parser = argparse.ArgumentParser(
         description=__doc__,
@@ -2852,7 +2852,8 @@ def main():
     keys = args.keys
     print('Running analysis_imerseries.\tjobID:', jobIDs, '\tkeys:', keys)
 
-    accepted_keys = ['kmf', 'physics','bgc', 'debug', 'spinup', 'salinity', 'fast', 'level1', 'level3', 'nowmaps']
+    accepted_keys = [os.path.splitext(os.path.basename(fn))[0] for fn in glob('input_keys/*.yml')]
+
     good_keys = True
     for key in keys:
         if key not in accepted_keys:
