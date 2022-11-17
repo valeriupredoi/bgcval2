@@ -32,11 +32,10 @@
 
 #####
 #Standard Python modules:
-from sys import argv, exit
-from os.path import exists
-from calendar import month_name
-from socket import gethostname
-from getpass import getuser
+import matplotlib as mpl
+mpl.use('Agg')
+import argparse
+import os
 from glob import glob
 from netCDF4 import Dataset
 import numpy as np
@@ -46,16 +45,17 @@ import sys
 #Specific local code:
 from bgcval2._runtime_config import get_run_configuration
 from bgcval2 import UKESMpython as ukp
-from bgcval2.p2p import makePatternStatsPlots, testsuite_p2p
+#from bgcval2.p2p import makePatternStatsPlots, testsuite_p2p
+from bgcval2.p2p.testsuite_p2p import testsuite_p2p
 from bgcval2.p2p.summaryTargets import summaryTargets
-from bgcval2.p2p.patternAnalyses import InterAnnualPatterns, BGCvsPhysics
+#from bgcval2.p2p.patternAnalyses import InterAnnualPatterns, BGCvsPhysics
 from bgcval2.bgcvaltools.pftnames import months
-from bgcval2.p2p.shelveToDictionary import shelveToDictionary
+#from bgcval2.p2p.shelveToDictionary import shelveToDictionary
 from bgcval2.analysis_timeseries import build_list_of_suite_keys, load_key_file
 
 #####
 # User defined set of paths pointing towards the datasets.
-#from bgcval2.Paths import paths as paths
+from bgcval2.Paths.paths import paths_setter
 
 
 def analysis_p2p(
@@ -64,7 +64,7 @@ def analysis_p2p(
     modelGrid='eORCA1',
     annual=True,
     noPlots=False,
-    analysisSuite='default',
+    suites='default',
     noTargets=True,
     config_user=None
 ):
@@ -92,24 +92,15 @@ def analysis_p2p(
     analysisKeys = build_list_of_suite_keys(suites, debug=True)
     print('analysisKeys', analysisKeys)
 
-    if annual:
-        WOAFolder = paths.WOAFolder_annual
-        ModelFolder_pref = paths.ModelFolder_pref
-    else:
-        WOAFolder = paths.WOAFolder
-        ModelFolder_pref = paths.ModelFolder_pref + "/" + jobID + "_postProc/"
-
-    imgDir = paths.imagedir
-
-    if annual: WOAFolder = paths.WOAFolder_annual
-    else: WOAFolder = paths.WOAFolder
-
+    ModelFolder_pref = paths.ModelFolder_pref
 
     # NEW STYLE keys from file:
     av = ukp.AutoVivification()
     for key in analysisKeys:
+        print('Loading:', key)
         av[key] = load_key_file(key, paths, jobID)
 
+    print(analysisKeys, av)
     # def listModelDataFiles(jobID, filekey, datafolder, annual, yr):
     #     print("listing model data files:", jobID, filekey, datafolder, annual)
     #     if annual:
@@ -1244,15 +1235,21 @@ def analysis_p2p(
         if annual:
             ModelFolder = ModelFolder_pref + jobID + "/"
         else:
-            ModelFolder = ModelFolder_pref + year + '/'
-            
-        workingDir = ukp.folder(paths.p2p_ppDir + '/' + '-' +
-                                jobID + '-' + year)
-        imageFolder = ukp.folder(imgDir + '/' + jobID)
+            ModelFolder = ModelFolder_pref + str(int(year)) + '/'
+        
+        workingDir = ''.join([paths.p2p_ppDir, '/', jobID, '-', str(int(year))])
+        imageFolder = ''.join([paths.imagedir, '/', jobID])
+
+        print('P2P working dir:', workingDir)
+        print('P2P image dir:', imageFolder)
+
+        # Attempt to make the directories:
+        workingDir = ukp.folder(workingDir)
+        imageFolder = ukp.folder(imageFolder)
 
         shelvesAV.extend(
             testsuite_p2p(
-                model=model,
+                #model='NEMO',
                 jobID=jobID,
                 year=year,
                 av=av,
@@ -1276,8 +1273,9 @@ def analysis_p2p(
 
 def get_args():
     """Parse command line arguments. """
-    accepted_keys = ['kmf', 'physics','bgc', 'debug', 'spinup', 'salinity', 'fast', 'level1', 'level3', 'nowmaps']
+    #accepted_keys = ['kmf', 'physics','bgc', 'debug', 'spinup', 'salinity', 'fast', 'level1', 'level3', 'nowmaps']
 
+    accepted_keys = [os.path.splitext(os.path.basename(fn))[0] for fn in glob('key_lists/*.yml')]
     parser = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -1329,7 +1327,8 @@ def run():
     years = args.years
 
     # Note that these may not all work, as p2p will be different
-    accepted_keys = ['physics','bgc', 'debug', 'spinup', 'salinity', 'fast', 'level1', 'level3', 'nowmaps']
+    accepted_keys = [os.path.splitext(os.path.basename(fn))[0] for fn in glob('key_lists/*.yml')]
+
     good_keys = True
     for key in keys:
         if key not in accepted_keys:
@@ -1357,6 +1356,6 @@ def run():
             modelGrid='eORCA1',
             annual=True,
             noPlots=False,
-            analysisSuite=keys,
+            suites=keys,
             config_user=config_user,
             )

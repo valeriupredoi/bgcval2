@@ -1,0 +1,6 @@
+
+---
+# Physics_p2p:
+# # A list of physical keys for point to point analysis.
+keys:
+  AMM7_SST: True

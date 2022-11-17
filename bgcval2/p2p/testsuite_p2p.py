@@ -75,14 +75,14 @@ def testsuite_p2p(
 			av['chl']['ERSEM']['File'] 	= Model_Filename_path_.netcdf
 			av['chl']['ERSEM']['Vars'] 	= ['chl',]
 			av['chl']['ERSEM']['grid']	= 'ORCA1'				
-			av['chl']['depthlevels'] 	= ['',]
+			av['chl']['layers'] 	= ['',]
 		where: 
 			'File' is the file path
 			'Vars' is the variable as it is call in the netcdf.
 			'grid' is the model grid name. These grids are linked to a grid mesh file for calculating cell volume, surface area and land masks.
-			'depthlevels' a list of depth levels. This is needed because some WOA files are huges and desktop computers may run the p2p analysis of that data.
-				depthlevels options are ['', 'Surface','100m','200m','500m',]
-				depthlevels = ['',] indicates look at no depth slicing. (Not recommended for big (>500,000 points) datasets! Don't say I didn't warn you.)
+			'layers' a list of depth levels. This is needed because some WOA files are huges and desktop computers may run the p2p analysis of that data.
+				layers options are ['', 'Surface','100m','200m','500m',]
+				layers = ['',] indicates look at no depth slicing. (Not recommended for big (>500,000 points) datasets! Don't say I didn't warn you.)
 
 	    plottingSlices:
 		plottingSlices is a list of regional, temporal, or statistical slices to be given to the analysis for plotting.
@@ -118,7 +118,7 @@ def testsuite_p2p(
 
     print("#############################")
     print("testsuite_p2p:  ")
-    print("models:        ", model)
+#    print("models:        ", model)
     print("year:          ", year)
     print("jobID:         ", jobID)
     print("av keys:	      ", sorted(av.keys()))
@@ -132,14 +132,13 @@ def testsuite_p2p(
 
     # Location of processing files
     if len(workingDir) == 0:
-        workingDir = ukp.folder("WorkingFiles/" + model + '-' + jobID + '-' +
-                                year)
+        workingDir = ukp.folder(''.join(["WorkingFiles/", jobID, '-', year]))
         print("No working directory provided, creating default:", workingDir)
 
     # Location of image Output files
     if noPlots is False:
         if len(imageFolder) == 0:
-            imageFolder = ukp.folder('images/' + jobID)
+            imageFolder = ukp.folder(''.joib(['images/', jobID]))
             print("No image directory provided, creating default:",
                   imageFolder)
 
@@ -148,88 +147,88 @@ def testsuite_p2p(
     shelvesAV = []  #AutoVivification()
 
     for name in sorted(av.keys()):
-        #####
-        # Start with some tests of the av.
-
-        #####
-        # Testing av for presence of model keyword
-        print("testsuite_p2p: \t", model, jobID, year,
-              name)  #, av[name][model]
-        try:
-            if not isinstance(av[name][model], dict):
-                print("testsuite_p2p: \tWARNING:", model, ' not in av',
-                      list(av[name].keys()))
-                continue
-            if len(list(av[name][model].keys())) == 0:
-                print("testsuite_p2p: \tWARNING:", model, ' not in av',
-                      list(av[name].keys()))
-                continue
-        except KeyError:
-            print("testsuite_p2p: \tWARNING:\tNo ", name, 'in ', model)
-            continue
+#       #####
+#       # Start with some tests of the av.
+#
+#       #####
+#       # Testing av for presence of model keyword
+#       print("testsuite_p2p: \t", model, jobID, year,
+#             name)  #, av[name][model]
+#       try:
+#           if not isinstance(av[name][model], dict):
+#               print("testsuite_p2p: \tWARNING:", model, ' not in av',
+#                     list(av[name].keys()))
+#               continue
+#           if len(list(av[name][model].keys())) == 0:
+#               print("testsuite_p2p: \tWARNING:", model, ' not in av',
+#                     list(av[name].keys()))
+#               continue
+#       except KeyError:
+#           print("testsuite_p2p: \tWARNING:\tNo ", name, 'in ', model)
+#           continue
 
     #####
     # Testing av for presence of data keyword
-        try:
-            if not isinstance(av[name]['Data'], dict):
-                print("testsuite_p2p: \tWARNING:", 'Data', ' not in av',
-                      list(av[name].keys()))
-                continue
-            if len(list(av[name]['Data'].keys())) == 0:
-                print("testsuite_p2p: \tWARNING:", 'Data', ' not in av',
-                      list(av[name].keys()))
-                continue
-        except KeyError:
-            print("testsuite_p2p: \tWARNING:\tNo ", 'Data', 'in ', model)
-            continue
+#        try:
+#            if not isinstance(av[name]['Data'], dict):
+#                print("testsuite_p2p: \tWARNING:", 'Data', ' not in av',
+#                      list(av[name].keys()))
+#                continue
+#            if len(list(av[name]['Data'].keys())) == 0:
+#                print("testsuite_p2p: \tWARNING:", 'Data', ' not in av',
+#                      list(av[name].keys()))
+#                continue
+#        except KeyError:
+#            print("testsuite_p2p: \tWARNING:\tNo ", 'Data', 'in ', jobID)
+#            continue
 
     #####
-    # Testing av for presence of data/obs files.
-        try:
-            if not exists(av[name]['Data']['File']):
-                print("testsuite_p2p.py:\tWARNING:\tFile does not exist",
-                      av[name]['Data']['File'])
-                continue
-        except:
-            print(
-                "testsuite_p2p.py:\tWARNING:\tDict entry does not exist\tav[",
-                name, "][", model, '][File]')
-            continue
-        try:
-            if not exists(av[name][model]['File']):
-                print("testsuite_p2p.py:\tWARNING:\tFile does not exist",
-                      av[name][model]['File'])
-                continue
-        except:
-            print(
-                "testsuite_p2p.py:\tWARNING:\tDict entry does not exist:\tav[",
-                name, "][", model, '][File] :', av[name][model]['File'])
-            continue
+#    # Testing av for presence of data/obs files.
+#        try:
+#            if not exists(av[name]['Data']['File']):
+#                print("testsuite_p2p.py:\tWARNING:\tFile does not exist",
+#                      av[name]['Data']['File'])
+#                continue
+#        except:
+#            print(
+#                "testsuite_p2p.py:\tWARNING:\tDict entry does not exist\tav[",
+#                name, "][", jobID, '][File]')
+#            continue
+#        try:
+#            if not exists(av[name][jobID]['File']):
+#                print("testsuite_p2p.py:\tWARNING:\tFile does not exist",
+#                      av[name][jobID]['File'])
+#                continue
+#        except:
+#            print(
+#                "testsuite_p2p.py:\tWARNING:\tDict entry does not exist:\tav[",
+#                name, "][", jobID, '][File] :', av[name][jobID]['File'])
+#            continue
 
         #####
     # Testing av for presence of grid
-        grid = av[name][model]['grid']
-        if grid in ['', [], {}, None]:
-            print("testsuite_p2p.py:\tERROR:\tgrid not found:\tav[", name,
-                  "][", model, '][grid]: ', grid)
-            assert False
-
-        #####
-    # Testing av for presence of depthLevels
-        if len(av[name]['depthLevels']) == 0:
-            av[name]['depthLevels'] = [
-                '',
-            ]
-            print(
-                "testsuite_p2p: \tWARNING: no 'depthLevels' provided in av, using defaults: ['',]"
-            )
+#        grid = av[name][model]['grid']
+#        if grid in ['', [], {}, None]:
+#            print("testsuite_p2p.py:\tERROR:\tgrid not found:\tav[", name,
+#                  "][", model, '][grid]: ', grid)
+#            assert False
+#
+#        #####
+#    # Testing av for presence of layers
+#        if len(av[name]['layers']) == 0:
+#            av[name]['layers'] = [
+#                '',
+#            ]
+#            print(
+#                "testsuite_p2p: \tWARNING: no 'layers' provided in av, using defaults: ['',]"
+#            )
 
     #####
     # Made it though the initial tests. Time to start the analysis.
         print(
             "\n\n\ntestsuite_p2p.py:\tINFO:\tMade it though initial tests. Running:",
-            model, jobID, year, name, av[name]['depthLevels'])
-        for depthLevel in av[name]['depthLevels']:
+            jobID, year, name, av[name]['layers'])
+        for depthLevel in av[name]['layers']:
             depthLevel = str(depthLevel)
 
             #####
@@ -422,9 +421,9 @@ def testsuite_p2p(
                 'BGCVal',
             ]  #'NorthHemisphereMonths':[],'SouthHemisphereMonths':[]}
         for g in groups:
-            if len(av[name]['depthLevels']) <= 1: continue
+            if len(av[name]['layers']) <= 1: continue
             outShelves = {}
-            for dl in av[name]['depthLevels']:
+            for dl in av[name]['layers']:
                 outShelves[dl] = ukp.reducesShelves(shelvesAV,
                                                     models=[
                                                         model,
