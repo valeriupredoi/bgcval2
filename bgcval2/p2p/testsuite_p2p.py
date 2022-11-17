@@ -196,14 +196,14 @@ def testsuite_p2p(
                 name, "][", model, '][File]')
             continue
         try:
-            if not exists(av[name][model]['File']):
+            if not exists(av[name]['modelFiles']):
                 print("testsuite_p2p.py:\tWARNING:\tFile does not exist",
-                      av[name][model]['File'])
+                      av[name]['modelFiles'])
                 continue
         except:
             print(
                 "testsuite_p2p.py:\tWARNING:\tDict entry does not exist:\tav[",
-                name, "][", model, '][File] :', av[name][model]['File'])
+                name, "][", model, '][File] :', av[name]['modelFiles'])
             continue
 
         #####
@@ -237,7 +237,7 @@ def testsuite_p2p(
             # Match observations and model.
             # Does not produce and plots.
             b = matchDataAndModel(av[name]['dataFiles'],
-                                  av[name][model]['File'],
+                                  av[name]['modelFiles'],
                                   dataType=name,
                                   modelcoords=av[name][model]['coords'],
                                   modeldetails=av[name][model]['details'],
