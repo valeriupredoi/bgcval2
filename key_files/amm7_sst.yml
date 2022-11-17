@@ -1,0 +1,19 @@
+---
+name            : AMM7_SST
+units           : degrees C
+dimensions      : 1
+model           : NEMO
+modelFiles      : /data/proteus1/scratch/gle/dare_baseline/2000/*/*_1m_*grid_T.nc
+gridFile        : /users/modellers/ledm/workspace/coast/AMM7_grid/mesh_mask.nc
+model_vars      : thetao thetao_con votemper
+model_convert   : NoChange
+dataFile        : $BASEDIR_OBS/WOA/annual/woa13_decav_t00_01v2.nc
+data_vars       : t_an
+data_convert    : NoChange
+layers          : surface
+regions         : regionless
+
+# changes from original:
+#   add --- at start
+#   remove [name]
+#   add bgcval2 berfore functions

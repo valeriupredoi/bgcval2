@@ -3,7 +3,7 @@
 # A short list of key metrics to run first to get a very quick idea
 # of how a model is working.
 keys:
-    GlobalMeanTemperature_amm7: True
+    AMM7_GlobalMeanTemperature: True
     AMM7_GlobalMeanpH: True
       #DrakePassageTransport: True
       #AMOC_26N: True
