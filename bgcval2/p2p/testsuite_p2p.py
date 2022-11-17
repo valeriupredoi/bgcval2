@@ -32,11 +32,13 @@ from os.path import exists
 from calendar import month_name
 
 #Specific local code:
-from .. import UKESMpython as ukp
-from . import matchDataAndModel, makeTargets, makePatternStatsPlots
-from .p2pPlots import makePlots
-from .slicesDict import populateSlicesList, slicesDict
-from ..bgcvaltools.pftnames import MaredatTypes, WOATypes, Ocean_names, OceanMonth_names, months, Seasons, Hemispheres, HemispheresMonths, OceanSeason_names
+from bgcval2 import UKESMpython as ukp
+from bgcval2.p2p.matchDataAndModel import matchDataAndModel
+from bgcval2.p2p.makeTargets import makeTargets
+from bgcval2.p2p.makePatternStatsPlots import makePatternStatsPlots
+from bgcval2.p2p.p2pPlots import makePlots
+from bgcval2.p2p.slicesDict import populateSlicesList, slicesDict
+from bgcval2.bgcvaltools.pftnames import MaredatTypes, WOATypes, Ocean_names, OceanMonth_names, months, Seasons, Hemispheres, HemispheresMonths, OceanSeason_names
 
 ###	Potential problems?
 ###		Reliance on ORCA1 grid
@@ -239,8 +241,8 @@ def testsuite_p2p(
                                   modeldetails=av[name]['modeldetails'],
                                   datacoords=av[name].get('datacoords', None),
                                   datadetails=av[name].get('datadetails', None),
-                                  datasource=av[name].get('datasource', None),
-                                  model=av[name].get('model', None),
+                                  datasource=av[name].get('datasource', 'obs'),
+                                  model=av[name].get('model', 'model'),
                                   jobID=jobID,
                                   year=year,
                                   workingDir=ukp.folder(workingDir + name),

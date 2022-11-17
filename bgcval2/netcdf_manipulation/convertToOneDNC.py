@@ -163,11 +163,10 @@ class convertToOneDNC:
         self.run()
 
     def run(self):
-        if not exists(self.fni):
-            print('convertToOneDNC:\tERROR:\tinputfile name does not exists:',
-                  self.fni)
-            assert False
-            return
+#        if not exists(self.fni):
+#            print('convertToOneDNC:\tERROR:\tinputfile name does not exists:',
+#                  self.fni)
+#            raise FileNotFoundError('File not found:', self.fni)
 
         nci = Dataset(self.fni, 'r')
 
@@ -176,10 +175,11 @@ class convertToOneDNC:
 
         #check that there are some overlap between input vars and nci:
         for v in self.vars:
-            if v in list(nci.variables.keys()): continue
-            print('convertToOneDNC:\tERROR:\tvariable,', v, ', not found in ',
-                  self.fni)
-            return
+            #if v in list(nci.variables.keys()): continue
+            print('convertToOneDNC:\tINFO:\tvariable,', v, 'found:', nci.variables[v])
+#           print('convertToOneDNC:\tERROR:\tvariable,', v, ', not found in ',
+#                 self.fni)
+#           raise FileNotFoundError('File not found:', self.fni)
 
         #create dataset and header.
         if self.debug:
@@ -214,7 +214,7 @@ class convertToOneDNC:
 
         print("convertToOneDNC:\tinfo:\tCoordsToKeep:",
               save)  #, self.dictToKeep
-
+        assert 0
         # create dimensions:
         nco.createDimension('index', None)
 
@@ -297,8 +297,8 @@ class convertToOneDNC:
             return a[1][0]
 
         sorted_Coords = sorted(iter(CoordsToKeep.items()), key=itemsgetter)
-        print("convertToOneDNC:\tINFO:\tsorted_Coords:", sorted_Coords[0],
-              sorted_Coords[-1])
+
+        print("convertToOneDNC:\tINFO:\tsorted_Coords:", sorted_Coords)
         data = {}
         if self.debug:
             print('convertToOneDNC:\tINFO:\tCopying index  ...',
@@ -350,12 +350,12 @@ class convertToOneDNC:
             if self.debug:
                 print('convertToOneDNC:\tINFO:\tCopying index x ...')
             #tempArr = []
-            #for a in sorted_Coords:
-            #	print a[0]
+            for a in sorted_Coords:
+            	print('sorted_coords, a', a)
             #	tempArr.append(a[0][2])
 
-            nco.variables['index_x'][:] = array(
-                [a[0][2] for a in sorted_Coords])
+#            nco.variables['index_x'][:] = array(
+#                [a[0][2] for a in sorted_Coords])
             nco.sync()
         errorScript = "If it is failing here, then you need to check that your dimensions are names correctly in netcdf_manip/alwaysInclude.py:timeNames, depthNames, lonnames and latnames"
 
@@ -363,6 +363,8 @@ class convertToOneDNC:
             if self.debug:
                 print('convertToOneDNC:\tINFO:\tCopying ', var, ' ...')
             arr = nci.variables[var][:]
+             
+
             if len(arr) == 0:
                 print('convertToOneDNC:\tWarning:\tIt looks like the netcdf ',
                       self.fni, 'does not contain the variable', var)
@@ -422,18 +424,22 @@ class convertToOneDNC:
                 #if var.lower() in depthNames:		d = 1
                 if var.lower() in latnames: d = 1
                 if var.lower() in lonnames: d = 2
+                
+                try:
+                    print(var, d)
+                except:
+                    print(var, "not found")
+
                 #for c in (CoordsToKeep.keys()):
                 print(var, 'convertToOneDNC:\tINFO:\tndim: (1-3)', arr.ndim,
                       var, sorted_Coords[0][0], d)
                 for c in sorted_Coords:
-                    try:
+#                    try:
+                        print('sorted_coords:', d, c, var, c[0], len(arr), arr.shape, arr.ndim)
                         outarr.append(arr[c[0][d]])
-                    except:
-                        raise AssertionError(errorScript)
-                try:
-                    print(var, d)
-                except:
-                    var, "not found"
+#                    except:
+                        #print('ERROR: can not find:', var.lower(), d, c , arr[c[0]])
+                        #raise AssertionError(errorScript)
 
             elif arr.ndim == 2:
                 if var.lower() in ['nav_lat', 'nav_lon']:

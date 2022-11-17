@@ -1249,7 +1249,7 @@ def analysis_p2p(
 
         shelvesAV.extend(
             testsuite_p2p(
-                #model='NEMO',
+                model='NEMO',
                 jobID=jobID,
                 year=year,
                 av=av,

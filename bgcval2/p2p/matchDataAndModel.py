@@ -47,7 +47,7 @@ from ..bgcvaltools.pftnames import CMIP5models
 #####
 # These are availalble in the module:
 #	https://gitlab.ecosystem-modelling.pml.ac.uk/ledm/netcdf_manip
-from ..netcdf_manipulation.pruneNC import pruneNC
+#from ..netcdf_manipulation.pruneNC import pruneNC
 from ..netcdf_manipulation.convertToOneDNC import convertToOneDNC
 from ..netcdf_manipulation.mergeNC import mergeNC
 from ..netcdf_manipulation.changeNC import changeNC, AutoVivification
@@ -110,7 +110,7 @@ class matchDataAndModel:
         self.datasource = datasource
         self.model = model
         self.jobID = jobID
-        self.year = year
+        self.year = str(int(year))
         self.depthLevel = depthLevel
         self.debug = debug
 
@@ -120,7 +120,7 @@ class matchDataAndModel:
             print("matchDataAndModel:\tINFO:\t", self.dataType, '\tModelfile:',
                   self.ModelFile)
 
-        self.compType = 'MaredatMatched-' + self.model + '-' + self.jobID + '-' + self.year
+        self.compType = '-'.join([str(t) for t in ['MaredatMatched', self.model, self.jobID, self.year]])
 
         if workingDir == '':
             self.workingDir = ukp.folder(
@@ -144,14 +144,14 @@ class matchDataAndModel:
         ) + self.model + '-' + self.jobID + '_' + self.year + '_' + '_' + self.dataType + '_' + self.depthLevel + '_matches.shelve'
 
         self.workingDirTmp = ukp.folder(self.workingDir + 'tmp')
-        self.DataFilePruned = self.workingDirTmp + 'Data_' + self.dataType + '_' + self.depthLevel + '_' + self.model + '-' + self.jobID + '-' + self.year + '_pruned.nc'
-        self.ModelFilePruned = self.workingDirTmp + 'Model_' + self.dataType + '_' + self.depthLevel + '_' + self.model + '-' + self.jobID + '-' + self.year + '_pruned.nc'
+        self.DataFile1D = self.workingDirTmp + 'Data_' + self.dataType + '_' + self.depthLevel + '_' + self.model + '-' + self.jobID + '-' + self.year + '_1D.nc'
+        self.Model1D = self.workingDirTmp + 'Model_' + self.dataType + '_' + self.depthLevel + '_' + self.model + '-' + self.jobID + '-' + self.year + '_1D.nc'
 
-        self.DataFile1D = self.workingDirTmp + basename(
-            self.DataFilePruned).replace('pruned.nc', '1D.nc')
+#        self.DataFile1D = self.workingDirTmp + basename(
+#            self.DataFilePruned).replace('pruned.nc', '1D.nc')
         self.maskedData1D = self.workingDir + basename(self.DataFile1D)
-        self.Model1D = self.workingDir + basename(
-            self.ModelFilePruned).replace('pruned.nc', '1D.nc')
+#        self.Model1D = self.workingDir + basename(
+#            self.ModelFilePruned).replace('pruned.nc', '1D.nc')
 
         self.MatchedModelFile = self.Model1D
         self.MatchedDataFile = self.maskedData1D
@@ -170,44 +170,45 @@ class matchDataAndModel:
                   self.maskedData1D, '\n\t\t\tand\t', self.Model1D)
             return
 
-        self._pruneModelAndData_()
+#        self._pruneModelAndData_()
         self._convertDataTo1D_()
         self._matchModelToData_()
         self._convertModelToOneD_()
         self._applyMaskToData_()
 
-    def _pruneModelAndData_(self, ):
-        """ This routine reduces the full 3d netcdfs by pruning the unwanted fields.
-  	"""
-
-        if ukp.shouldIMakeFile(self.ModelFile,
-                               self.ModelFilePruned,
-                               debug=False):
-            print(
-                "matchDataAndModel:\tpruneModelAndData:\tMaking ModelFilePruned:",
-                self.ModelFilePruned)
-            p = pruneNC(self.ModelFile,
-                        self.ModelFilePruned,
-                        self.ModelVars,
-                        debug=self.debug)
-        else:
-            print(
-                "matchDataAndModel:\tpruneModelAndData:\tModelFilePruned already exists:",
-                self.ModelFilePruned)
-
-        if ukp.shouldIMakeFile(self.DataFile, self.DataFilePruned,
-                               debug=False):
-            print(
-                "matchDataAndModel:\tpruneModelAndData:\tMaking DataFilePruned:",
-                self.DataFilePruned)
-            p = pruneNC(self.DataFile,
-                        self.DataFilePruned,
-                        self.DataVars,
-                        debug=self.debug)
-        else:
-            print(
-                "matchDataAndModel:\tpruneModelAndData:\tDataFilePruned already exists:",
-                self.DataFilePruned)
+#    def _pruneModelAndData_(self, ):
+#        """ This routine reduces the full 3d netcdfs by pruning the unwanted fields.
+#  	"""
+#
+#        if ukp.shouldIMakeFile(self.ModelFile,
+#                               self.ModelFilePruned,
+#                               debug=False):
+#            print(
+#                "matchDataAndModel:\tpruneModelAndData:\tMaking ModelFilePruned:",
+#                self.ModelFilePruned)
+#            p = pruneNC(self.ModelFile,
+#                        self.ModelFilePruned,
+#                        self.ModelVars,
+#                        debug=self.debug)
+#
+#        else:
+#            print(
+#                "matchDataAndModel:\tpruneModelAndData:\tModelFilePruned already exists:",
+#                self.ModelFilePruned)
+#
+#        if ukp.shouldIMakeFile(self.DataFile, self.DataFilePruned,
+#                               debug=False):
+#            print(
+#                "matchDataAndModel:\tpruneModelAndData:\tMaking DataFilePruned:",
+##                self.DataFilePruned)
+# #           p = pruneNC(self.DataFile,
+#                        self.DataFilePruned,
+#                        self.DataVars,
+#                        debug=self.debug)
+#        else:
+#            print(
+#                "matchDataAndModel:\tpruneModelAndData:\tDataFilePruned already exists:",
+#                self.DataFilePruned)
 
     def _convertDataTo1D_(self, ):
         """ 
@@ -215,29 +216,28 @@ class matchDataAndModel:
   	"""
 
         if not ukp.shouldIMakeFile(
-                self.DataFilePruned, self.DataFile1D, debug=False):
+                self.ModelFile, self.DataFile1D, debug=False):
             print(
                 "matchDataAndModel:\tconvertDataTo1D:\talready exists: (DataFile1D):\t",
                 self.DataFile1D)
             return
 
         print(
-            "matchDataAndModel:\tconvertDataTo1D:\topening DataFilePruned:\t",
-            self.DataFilePruned)
+            "matchDataAndModel:\tconvertDataTo1D:\topening DataFile:\t",
+            self.DataFile)
 
-        nc = Dataset(self.DataFilePruned, 'r')
-
+        nc = Dataset(self.DataFile, 'r')
         if self.depthLevel == '':
             print(
                 'matchDataAndModel:\tconvertDataTo1D:\tNo depth level cut or requirement',
-                self.DataFilePruned, '-->', self.DataFile1D)
+                self.DataFile, '-->', self.DataFile1D)
             if len(self.DataVars):
-                convertToOneDNC(self.DataFilePruned,
+                convertToOneDNC(self.DataFile,
                                 self.DataFile1D,
                                 debug=True,
                                 variables=self.DataVars)
             else:
-                convertToOneDNC(self.DataFilePruned,
+                convertToOneDNC(self.DataFile,
                                 self.DataFile1D,
                                 debug=True)
             nc.close()
@@ -404,19 +404,19 @@ class matchDataAndModel:
                       self.depthLevel, '\tMaking mask shape:', mmask.shape)
                 assert 0
 
-        if mmask.min() == 1:
-            print('matchDataAndModel:\tERROR:\tconvertDataTo1D:\t',
-                  self.depthLevel, '\tNo data in here.')
-            return
+#       if mmask.min() == 1:
+#           print('matchDataAndModel:\tERROR:\tconvertDataTo1D:\t',
+#                 self.depthLevel, '\tNo data in here.')
+#           return
 
         mmask += nc.variables[self.DataVars[0]][:].mask
         print('matchDataAndModel:\tconvertDataTo1D:\t', self.depthLevel,
               '\tMaking mask shape:', mmask.shape)
         print('matchDataAndModel:\tconvertDataTo1D:\t', self.depthLevel,
-              '\tMaking flat array:', self.DataFilePruned, '-->',
+              '\tMaking flat array:', self.DataFile, '-->',
               self.DataFile1D)
 
-        convertToOneDNC(self.DataFilePruned,
+        convertToOneDNC(self.DataFile,
                         self.DataFile1D,
                         newMask=mmask,
                         variables=self.DataVars,
@@ -678,15 +678,28 @@ class matchDataAndModel:
 
     def _convertModelToOneD_(self, ):
         if not ukp.shouldIMakeFile(
-                self.ModelFilePruned, self.Model1D, debug=True):
+                self.ModelFile, self.Model1D, debug=True):
             print("convertModelToOneD:\tconvertModelToOneD:\talready exists:",
                   self.Model1D)
             return
 
         print(
             "convertModelToOneD:\tconvertModelToOneD:\tMaking 1D Model file:",
-            self.ModelFilePruned, '-->', self.Model1D)
-        convertToOneDNC(self.ModelFilePruned,
+            self.ModelFile, '-->', self.Model1D)
+
+        if isinstance(self.ModelFile, (tuple, list)):
+            mod1dfiles = []
+            for i, modfn in enumerate(self.ModelFile):
+                mod1d = self.Model1D.replace('.nc', str(i)+'.nc')
+                mod1dfiles.append(mod1d)
+                convertToOneDNC(modfn,
+                        mod1d,
+                        newMask='',
+                        debug=self.debug,
+                        dictToKeep=self.matches)
+            mergeNC(mod1dfiles, self.Model1D,)
+        else:
+            convertToOneDNC(self.ModelFile,
                         self.Model1D,
                         newMask='',
                         debug=self.debug,
@@ -699,7 +712,7 @@ class matchDataAndModel:
   	"""
 
         if not ukp.shouldIMakeFile(
-                self.ModelFilePruned, self.maskedData1D, debug=True):
+                self.ModelFile, self.maskedData1D, debug=True):
             print("applyMaskToData:\tapplyMaskToData:\t", "already exists:",
                   self.maskedData1D)
             return
