@@ -239,6 +239,7 @@ class matchDataAndModel:
             else:
                 convertToOneDNC(self.DataFile,
                                 self.DataFile1D,
+                                variables=self.DataVars,
                                 debug=True)
             nc.close()
             return
@@ -695,6 +696,7 @@ class matchDataAndModel:
                 convertToOneDNC(modfn,
                         mod1d,
                         newMask='',
+                        variables=self.ModelVars,
                         debug=self.debug,
                         dictToKeep=self.matches)
             mergeNC(mod1dfiles, self.Model1D,)
@@ -702,6 +704,7 @@ class matchDataAndModel:
             convertToOneDNC(self.ModelFile,
                         self.Model1D,
                         newMask='',
+                        variables=self.ModelVars,
                         debug=self.debug,
                         dictToKeep=self.matches)
 

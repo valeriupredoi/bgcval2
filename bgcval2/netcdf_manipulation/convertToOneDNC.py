@@ -171,6 +171,7 @@ class convertToOneDNC:
         nci = Dataset(self.fni, 'r')
 
         if not self.vars:
+            assert 0 
             self.vars = list(nci.variables.keys())  # save all
 
         #check that there are some overlap between input vars and nci:
