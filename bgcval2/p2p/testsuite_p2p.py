@@ -57,21 +57,21 @@ def testsuite_p2p(
 ):
     """
 	This analysis package performs the point to point analysis for a single model, for one year, for one job ID.
-	
+
 	Arguments:
 	    model: Model name
-	    
+
 	    year: year (4 digit string), doesn't need to be exact. For climatologies, we typically use 2525 or something absurd.
-	    
-	    jobID: 5 letter jobID as used on monsoon. 
-	    
+
+	    jobID: 5 letter jobID as used on monsoon.
+
 	    av:
 		The AutoVivification (av) is crucial. It controls the analysis. It locates the files. It identifies the field names in the netcdf.
-	
+
 		The av has a few very specific requiments in terms of structure and key words.
 		Here is an example, of ERSEM chlorophyll:
-			av['chl']['Data']['File'] 	= Observation_Filename_path_.netcdf	
-			av['chl']['Data']['Vars'] 	= ['Chlorophylla',]		
+			av['chl']['dataFiles'] 	= Observation_Filename_path_.netcdf
+			av['chl']['Data']['Vars'] 	= ['Chlorophylla',]
 			av['chl']['ERSEM']['File'] 	= Model_Filename_path_.netcdf
 			av['chl']['ERSEM']['Vars'] 	= ['chl',]
 			av['chl']['ERSEM']['grid']	= 'ORCA1'				
@@ -94,25 +94,25 @@ def testsuite_p2p(
 			plottingSlices can be made automatically with UKESMpthon.populateSlicesList()
 			plottingSlices can also be added to the av:
 				av[name]['plottingSlices'] = a list of slices
-	    workingDir: 
-	    	workingDir is a location for the working files that are produced during the analysis. 
+	    workingDir:
+	    	workingDir is a location for the working files that are produced during the analysis.
 	    	if no working directory is provided, the default is: ~/WorkingFiles/model-jobID-yyear
-	    		
-	    imageFolder: 
-	    	imageFolder is a location for all the images  that are produced during the analysis. 
-	    	if no working directory is provided, the default is: ~/images/model-jobID  	
+
+	    imageFolder:
+	    	imageFolder is a location for all the images  that are produced during the analysis.
+	    	if no working directory is provided, the default is: ~/images/model-jobID
 
 	    noPlots:
 	    	noPlots is a boolean value to turn off the production of images.
 	    	This can streamline the analysis routine, if plots are not needed.
-	    	
+
 	Returns:
 		shelvesAV:
 		another AutoVivification with the following structure:
 		shelvesAV[model][name][depthLevel][newSlice][xkey] = shelvePath
-	
-	testsuite_p2p is not the place for intercomparisons of models, years, or jobID. 
-	This can be done after calling testsuite_p2p.py, and by using the 
+
+	testsuite_p2p is not the place for intercomparisons of models, years, or jobID.
+	This can be done after calling testsuite_p2p.py, and by using the
 
 	"""
 
@@ -182,7 +182,6 @@ def testsuite_p2p(
 #            print("testsuite_p2p: \tWARNING:\tNo ", 'Data', 'in ', jobID)
 #            continue
 
-    #####
 #    # Testing av for presence of data/obs files.
 #        try:
 #            if not exists(av[name]['Data']['File']):
@@ -204,8 +203,6 @@ def testsuite_p2p(
 #                "testsuite_p2p.py:\tWARNING:\tDict entry does not exist:\tav[",
 #                name, "][", jobID, '][File] :', av[name][jobID]['File'])
 #            continue
-
-        #####
     # Testing av for presence of grid
 #        grid = av[name][model]['grid']
 #        if grid in ['', [], {}, None]:
@@ -235,7 +232,7 @@ def testsuite_p2p(
             # matchDataAndModel:
             # Match observations and model.
             # Does not produce and plots.
-            b = matchDataAndModel(av[name]['Data']['File'],
+            b = matchDataAndModel(av[name]['dataFiles'],
                                   av[name][model]['File'],
                                   dataType=name,
                                   modelcoords=av[name][model]['coords'],
@@ -380,7 +377,7 @@ def testsuite_p2p(
                     },  # {legend, shelves}
                     name + ' ' + g,  #xkeysname
                     slicesDict[xkeys],  #xkeysLabels=
-                    filenamebase,  # filename base	
+                    filenamebase,  # filename base
                     grid=grid,
                     gridFile=gridFile)
             if not annual:
@@ -399,7 +396,7 @@ def testsuite_p2p(
                     },  # {legend, shelves}
                     name + ' Months',  #xkeysname
                     slicesDict['Months'],  #xkeysLabels=
-                    filenamebase,  # filename base	
+                    filenamebase,  # filename base
                     grid=grid,
                     gridFile=gridFile)
 
