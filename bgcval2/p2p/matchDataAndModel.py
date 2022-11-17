@@ -57,8 +57,8 @@ from ..netcdf_manipulation.changeNC import changeNC, AutoVivification
 
 
 class matchDataAndModel:
-    """	matchDataAndModel: 
-  	This code takes the real data from in situ  measurments in netcdf format and the Model data and created two 1D matched netcdfs. 
+    """	matchDataAndModel:
+  	This code takes the real data from in situ  measurments in netcdf format and the Model data and created two 1D matched netcdfs.
 	The 1D matched netcdfs are then used to make plots and perform statistical analysis (not in this code).
 	The first step is to produce lightweight "pruned" versions of the files, which have the unused fields stripped out.
 	Some of the datasets are too large to run this code on desktop machine, so in those cases we request a specific depthLevel, ie "Surface".
@@ -211,7 +211,7 @@ class matchDataAndModel:
 #                self.DataFilePruned)
 
     def _convertDataTo1D_(self, ):
-        """ 
+        """
    		This routine reduces the In Situ data into a 1D array of data with its lat,lon,depth and time components.
   	"""
 
@@ -706,7 +706,7 @@ class matchDataAndModel:
                         dictToKeep=self.matches)
 
     def _applyMaskToData_(self, ):
-        """ This routine applies the mask of the model to the data. 
+        """ This routine applies the mask of the model to the data.
   	    It is needed because there are some points where two WOA grid cells fall into the same ORCA1 grid, these excess points should be meaned/medianed.
   	    Similarly, some data points fall into a masked grid cell in the model and need to be masked in the data.
   	"""
@@ -742,7 +742,7 @@ class matchDataAndModel:
             for m in sorted(maremaskDict.keys()):
                 out.append(np.median([arr[i] for i in maremaskDict[m]]))
             arr = np.array(out).squeeze()
-            print(arr.shape)
+            #print(arr.shape)
             return arr
 
         def getMeanVal(arr):
@@ -756,7 +756,7 @@ class matchDataAndModel:
             for m in sorted(maremaskDict.keys()):
                 out.append(np.mean([arr[i] for i in maremaskDict[m]]))
             arr = np.array(out).squeeze()
-            print(arr.shape)
+            #print(arr.shape)
             return arr
 
         def getFirstVal(arr):
@@ -771,7 +771,7 @@ class matchDataAndModel:
                 out.append(arr[maremaskDict[m]][0])
 
             arr = np.array(out).squeeze()
-            print(arr.shape)
+            #print(arr.shape)
             return arr
 
         def applyMask(arr):
@@ -781,7 +781,7 @@ class matchDataAndModel:
                 if not m: continue
                 out.append(arr[i])
             arr = np.array(out).squeeze()
-            print(arr.shape)
+            #print(arr.shape)
             return arr
 
         ncIS = Dataset(self.DataFile1D, 'r')
@@ -889,7 +889,7 @@ class matchDataAndModel:
 		d = myhaversine(self.loncc[la_ind,lo_ind],self.latcc[la_ind,lo_ind],lon,lat)
 		print "getOrcaIndexCC:\t",i,"\tERROR:\tDISTANCE IS VERY FAR:",[self.latcc[la_ind,lo_ind],'-->',  lat,], [self.loncc[la_ind,lo_ind], '-->', lon],'distance:',d
 		if d>350.:
-			print "getOrcaIndexCC:\t",i,"\tdistance too great:",d, 
+			print "getOrcaIndexCC:\t",i,"\tdistance too great:",d,
 			#assert False
 			return -1,-1
 	"""
@@ -904,7 +904,7 @@ class matchDataAndModel:
 # Coords and Depth:
 def myhaversine(lon1, lat1, lon2, lat2):
     """
-	    Calculate the great circle distance between two points 
+	    Calculate the great circle distance between two points
 	    on the earth (specified in decimal degrees)
 	"""
     # convert decimal degrees to radians
@@ -920,7 +920,7 @@ def myhaversine(lon1, lat1, lon2, lat2):
 
 def myhaversineArr(lon1, lat1, lonarr, latarr):
     """
-	    Calculate the great circle distance between a point and an array 
+	    Calculate the great circle distance between a point and an array
 	    on the earth (specified in decimal degrees)
 	"""
     kms = np.zeros(lonarr.shape) + 100000.  #larger than earths circumference.
@@ -943,7 +943,7 @@ def myhaversineArr(lon1, lat1, lonarr, latarr):
 
 def quadraticDistance(lon1, lat1, lon2, lat2):
     """
-	    Calculate the flat quadratic diatance in degrees. Its a rough approximation. But the maps don't include the poles, so it's okay. 
+	    Calculate the flat quadratic diatance in degrees. Its a rough approximation. But the maps don't include the poles, so it's okay.
 	"""
     dlon = lon2 - lon1
     dlat = lat2 - lat1

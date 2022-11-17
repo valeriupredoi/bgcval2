@@ -67,7 +67,7 @@ def getCoordsToKeep_new(nc, variables, newMask='', debug=False):
         nzdims = len(arr)
         for i, a in enumerate(arr[0]):
             coords = tuple([arr[j][i] for j in range(nzdims)])
-            print(coords, nzdims)
+            #print(coords, nzdims)
             try:
                 if i in CoordsToKeep[coords]: pass
             except:
@@ -129,7 +129,7 @@ def getCoordsToKeep(nc, variables, newMask='', debug=False):
                         ]
             else:
                 coords = tuple([nz[j][i] for j in range(nzdims)])
-                print(coords)
+                #print(coords)
                 try:
                     if i in CoordsToKeep[coords]: pass
                 except:
@@ -363,7 +363,7 @@ class convertToOneDNC:
             if self.debug:
                 print('convertToOneDNC:\tINFO:\tCopying ', var, ' ...')
             arr = nci.variables[var][:]
-             
+
 
             if len(arr) == 0:
                 print('convertToOneDNC:\tWarning:\tIt looks like the netcdf ',
@@ -424,7 +424,7 @@ class convertToOneDNC:
                 #if var.lower() in depthNames:		d = 1
                 if var.lower() in latnames: d = 1
                 if var.lower() in lonnames: d = 2
-                
+
                 try:
                     print(var, d)
                 except:
