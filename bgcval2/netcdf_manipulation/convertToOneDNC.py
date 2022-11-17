@@ -171,6 +171,8 @@ class convertToOneDNC:
         nci = Dataset(self.fni, 'r')
 
         if not self.vars:
+            assert 0
+        if self.vars == 'all':
             self.vars = list(nci.variables.keys())  # save all
 
         #check that there are some overlap between input vars and nci:
@@ -202,6 +204,7 @@ class convertToOneDNC:
 
         save = list(set(nci.variables.keys()).intersection(set(alwaysInclude)))
         save = sorted(list(set(sorted(save + self.vars))))
+        save = find_vars_in_nc(nci, save)
 
         # test to find out which coordinates should be saved.
         if not self.dictToKeep:
@@ -504,3 +507,17 @@ class convertToOneDNC:
         #print lon.min(), lon.max()
         #if self.fno.find('Model')>-1:	assert 0
         return
+
+
+def find_vars_in_nc(nc, keys):
+    """
+    Takes the list of keys and chooses the first one that exists in the input file.
+    Useful if fields change for no reason.
+    """
+    outlist=[]
+    for key in keys:
+        if key not in nc.variables.keys():
+            continue
+        outlist.append(keys)
+    if outlist: return outlist
+    raise KeyError(f'find_vars_in_nc: unable to find any variable in {keys} in {nc.filename}')
