@@ -81,6 +81,7 @@ class matchDataAndModel:
         model='',
         jobID='',
         year='',
+        annualMean=True,
         depthLevel='',
         grid='ORCA1',
         gridFile='',
@@ -111,6 +112,7 @@ class matchDataAndModel:
         self.model = model
         self.jobID = jobID
         self.year = str(int(year))
+        self.annual = annualMean
         self.depthLevel = depthLevel
         self.debug = debug
 
@@ -150,6 +152,8 @@ class matchDataAndModel:
 #        self.DataFile1D = self.workingDirTmp + basename(
 #            self.DataFilePruned).replace('pruned.nc', '1D.nc')
         self.maskedData1D = self.workingDir + basename(self.DataFile1D)
+        self.ModelFileMerged = self.Model1D.replace('.nc', '_merged.nc')
+
 #        self.Model1D = self.workingDir + basename(
 #            self.ModelFilePruned).replace('pruned.nc', '1D.nc')
 
@@ -170,45 +174,39 @@ class matchDataAndModel:
                   self.maskedData1D, '\n\t\t\tand\t', self.Model1D)
             return
 
-#        self._pruneModelAndData_()
+        self._pruneModelAndMerge_()
         self._convertDataTo1D_()
         self._matchModelToData_()
         self._convertModelToOneD_()
         self._applyMaskToData_()
 
-#    def _pruneModelAndData_(self, ):
-#        """ This routine reduces the full 3d netcdfs by pruning the unwanted fields.
-#  	"""
-#
-#        if ukp.shouldIMakeFile(self.ModelFile,
-#                               self.ModelFilePruned,
-#                               debug=False):
-#            print(
-#                "matchDataAndModel:\tpruneModelAndData:\tMaking ModelFilePruned:",
-#                self.ModelFilePruned)
-#            p = pruneNC(self.ModelFile,
-#                        self.ModelFilePruned,
-#                        self.ModelVars,
-#                        debug=self.debug)
-#
-#        else:
-#            print(
-#                "matchDataAndModel:\tpruneModelAndData:\tModelFilePruned already exists:",
-#                self.ModelFilePruned)
-#
-#        if ukp.shouldIMakeFile(self.DataFile, self.DataFilePruned,
-#                               debug=False):
-#            print(
-#                "matchDataAndModel:\tpruneModelAndData:\tMaking DataFilePruned:",
-##                self.DataFilePruned)
-# #           p = pruneNC(self.DataFile,
-#                        self.DataFilePruned,
-#                        self.DataVars,
-#                        debug=self.debug)
-#        else:
-#            print(
-#                "matchDataAndModel:\tpruneModelAndData:\tDataFilePruned already exists:",
-#                self.DataFilePruned)
+    def _pruneModelAndMerge_(self, ):
+        """ This routine reduces the full 3d netcdfs by pruning the unwanted fields.
+  	"""
+
+        if ukp.shouldIMakeFile(self.ModelFile,
+                               self.ModelFileMerged,
+                               debug=False):
+
+#            if isinstance(self.ModelFile, (tuple, list)):
+#                mod1d = self.Model1D.replace('.nc', '_merged.nc')
+                # merge first
+            if self.annual:
+                timeAverage=True
+            else: timeAverage=False
+
+            mergeNC(
+                self.ModelFile, 
+                self.ModelFileMerged,
+                variables=self.ModelVars,
+                timeAverage=timeAverage, 
+                debug=True)
+            
+        else:
+            print(
+                "matchDataAndModel:\tpruneModelAndData:\tModelFilePruned already exists:",
+                self.ModelFileMerged)
+
 
     def _convertDataTo1D_(self, ):
         """
@@ -231,22 +229,20 @@ class matchDataAndModel:
             print(
                 'matchDataAndModel:\tconvertDataTo1D:\tNo depth level cut or requirement',
                 self.DataFile, '-->', self.DataFile1D)
-            if len(self.DataVars):
-                convertToOneDNC(self.DataFile,
-                                self.DataFile1D,
-                                debug=True,
-                                variables=self.DataVars)
-            else:
-                convertToOneDNC(self.DataFile,
-                                self.DataFile1D,
-                                variables=self.DataVars,
-                                debug=True)
+            if not len(self.DataVars):
+                raise ValueError('datavars: missing')
+            convertToOneDNC(self.DataFile,
+                            self.DataFile1D,
+                            debug=True,
+                            variables=self.DataVars)
+            assert 0
             nc.close()
             return
 
         mmask = np.ones(nc.variables[self.DataVars[0]].shape)
         if self.depthLevel in [
                 'Surface',
+                '50m',
                 '100m',
                 '200m',
                 '500m',
@@ -257,6 +253,7 @@ class matchDataAndModel:
                 'matchDataAndModel:\tconvertDataTo1D:\tSlicing along depth direction.'
             )
             if self.depthLevel == 'Surface': z = 0.
+            if self.depthLevel == '50m': z = 50.
             if self.depthLevel == '100m': z = 100.
             if self.depthLevel == '200m': z = 200.
             if self.depthLevel == '500m': z = 500.
@@ -267,8 +264,9 @@ class matchDataAndModel:
                 k = ukp.getORCAdepth(
                     np.abs(z),
                     np.abs(nc.variables[self.datacoords['z']][:]),
-                    debug=True)
+                    debug=False,)
                 mmask[:, k, :, :] = 0
+                print('applying mask to data:', k)
             else:
                 ####
                 # Depth field is the wrong number of dimensions.
@@ -404,7 +402,8 @@ class matchDataAndModel:
                 print('matchDataAndModel:\tERROR:\tconvertDataTo1D:\t',
                       self.depthLevel, '\tMaking mask shape:', mmask.shape)
                 assert 0
-
+        else:
+            raise ValueError('depthlevel not recognised:', self.depthLevel) 
 #       if mmask.min() == 1:
 #           print('matchDataAndModel:\tERROR:\tconvertDataTo1D:\t',
 #                 self.depthLevel, '\tNo data in here.')
@@ -422,17 +421,18 @@ class matchDataAndModel:
                         newMask=mmask,
                         variables=self.DataVars,
                         debug=True)
-
         nc.close()
 
     def _matchModelToData_(self, ):
-        print("matchModelToData:\tOpened MAREDAT netcdf:", self.DataFile1D)
+        print("matchModelToData:\tOpened DATA netcdf:", self.DataFile1D)
 
         ncIS = Dataset(self.DataFile1D, 'r')
+        print('opened 1D data:', self.DataFile1D)
         #ncIS = ncdfView(self.DataFile1D,Quiet=True)
         is_i = ncIS.variables['index'][:]
 
         try:
+            assert 0
             s = shOpen(self.matchedShelve)
             maxIndex = s['maxIndex']
             self.maremask = s['maremask']
@@ -456,6 +456,7 @@ class matchDataAndModel:
             print("matchModelToData:\tCreating shelve:", self.matchedShelve)
 
         try:
+            assert 0
             s = shOpen(self.matchesShelve)
             lldict = s['lldict']
             s.close()
@@ -498,14 +499,18 @@ class matchDataAndModel:
                 maxIndex + 1, "\tfinished:", len(self.matches))
             return
 
-#if maxIndex+1 <len(is_i):
         zdict = {}
         tdict = {}
         is_t = ncIS.variables[self.datacoords['t']][:]
         is_z = ncIS.variables[self.datacoords['z']][:]
         is_la = ncIS.variables[self.datacoords['lat']][:]
         is_lo = ncIS.variables[self.datacoords['lon']][:]
-        tdict = self.datacoords['tdict']
+        print('is_la', (is_la.min(),is_la.max(), ),'is_lo', (is_lo.min(), is_lo.max()))
+        if self.annual:
+            tdict = {0:0, 1:0, 6:0, 7:0}
+        else:
+            tdict = self.datacoords['tdict']
+
         #tdict   = {i:i for i in xrange(12)}
         ncIS.close()
 
@@ -538,7 +543,8 @@ class matchDataAndModel:
             is_z = np.ma.zeros(len(is_t))[:]
             zdict = {0: 0, 0.: 0}
 
-        if not self._meshLoaded_: self.loadMesh()
+        if not self._meshLoaded_: 
+            self.loadMesh()
 
         for i, ii in enumerate(is_i[maxIndex:]):
             i += maxIndex
@@ -546,24 +552,50 @@ class matchDataAndModel:
             wz = is_z[i]
             wla = is_la[i]
             wlo = is_lo[i]
+            print('looking for', i, ii, wt, wz, wla, wlo)
 
             #####
             # Match Latitude and Longitude
             try:
+                assert 0
                 la, lo = lldict[(wla, wlo)]
             except:
-                la, lo = self.getOrcaIndexCC(wla, wlo, i=i, debug=False)
+                la, lo = self.getClosestPoint(wla, wlo, i=i, debug=False)
                 if la == lo == -1:
-                    print("STRICT ERROR: Could not find, ", wla, wlo)
+                    #print(i, ii, "WARNING: Could not find, ", (wla, wlo), (la, lo))
+                    assert 0
                     continue
+                    
+#               lldict[(wla, wlo)] = la, lo
+#               finds += 1
+#                print('found:', finds, i, ii, maxIndex, self.latcc[la, lo], self.loncc[la, lo], )
+                #assert 0
+                if abs(self.latcc[la, lo] - wla) > 2.:
+                    #print('No match, too far:', (la, lo), (wla, wlo), np.abs(self.latcc[la, lo] - wla))
+                    continue
+                if abs(self.loncc[la, lo] - wlo) > 2.:
+                    #print('No match, too far:', (la, lo), (wla,wlo), np.abs(self.loncc[la, lo] -wlo))
+                    continue
+                print('found:', finds, i, ii, maxIndex, self.latcc[la, lo], self.loncc[la, lo])
                 lldict[(wla, wlo)] = la, lo
                 finds += 1
 
-                if self.debug and i % 10000 == 0:
+
+                if self.debug: # and i % 1 == 0:
                     print("matchModelToData:\t", i, 'New match:\tlon:',
                           [wlo, self.loncc[la, lo]], '\tlat:',
                           [wla, self.latcc[la, lo]],
+                          (self.latcc[la, lo], self.loncc[la, lo]),
+                          (wla, wlo),
                           [finds, len(lldict)])
+
+#               if abs(self.latcc[la, lo] - wla) > 3.:
+#                    print('No match, too far:',self.latcc[la, lo], wla)
+#                   continue
+#               if abs(self.loncc[la, lo] - wlo) > 3.:
+#                    print('No match, too far:',self.loncc[la, lo], wlo)
+#                   continue
+
 
                 if abs(self.latcc[la, lo] - wla) > 90.:
                     print("Come again? this should never happen:",
@@ -573,17 +605,22 @@ class matchDataAndModel:
                           [wla, self.latcc[la, lo]],
                           [finds, len(lldict)])
                     assert False
+#           continue
+#           assert 0
 
             #####
             #Match Depth
-            try:
-                z = zdict[wz]
-            except:
-                z = ukp.getORCAdepth(wz, self.depthcc, debug=True)
-                zdict[wz] = z
-                if self.debug:
-                    print("matchModelToData:\t", i, 'Found new depth:', wz,
-                          'm-->', self.depthcc[z], ['z=', z])
+            if self.depthcc.ndim ==1:
+                z = zdict.get(wz, None)
+                if z == None:
+                    z = ukp.getORCAdepth(wz, self.depthcc, debug=0)
+                    zdict[wz] = z
+            else:
+                z = ukp.getORCAdepth(wz, self.depthcc[:, la, lo], debug=0) 
+                #zdict[wz] = z
+#            if self.debug:
+#                print("matchModelToData:\t", i, 'Found new depth:', wz,
+#                      'm-->', self.depthcc[z], ['z=', z])
 
             #####
             #Match Time
@@ -616,9 +653,7 @@ class matchDataAndModel:
                 # if this location in the model grid (t,z,la,lo) has not yet been found,
                 # self.matches gets a list of all the in situ points that match that location.
                 # Conversely, self.maremask's i-th value location of the first time it was found.
-                self.matches[(t, z, la, lo)] = [
-                    i,
-                ]
+                self.matches[(t, z, la, lo)] = [i, ]
                 self.imatches[i] = (t, z, la, lo)
                 self.maremask[i] = i
                 #if self.debug: print "matchModelToData:\tfirst match:",i,[wt,wz,wla,wlo], '-->',(t,z,la,lo)
@@ -626,10 +661,16 @@ class matchDataAndModel:
             #####
             # test match up:
             fail = 0
-            if abs(wz - self.depthcc[z]) > 500.:
-                print('depth DOESNT MATCH:', wz, self.depthcc(z))
-                fail += 1
-            # These tests are already done in getOrcaIndexCC. No need to be done twice.
+            if self.depthcc.ndim ==1:
+                if abs(wz - self.depthcc[z]) > 500.:
+                    print('depth DOESNT MATCH:', wz, self.depthcc(z))
+                    fail += 1
+            else:
+                if abs(wz - self.depthcc[z, la, lo]) > 500.:
+                    print('depth DOESNT MATCH:', wz, self.depthcc(z, la ,lo))
+                    fail += 1
+
+            # These tests are already done in getClosestPoint. No need to be done twice.
             #if abs(wla-self.latcc[la,lo]) >2.:
             #	print 'Latitude DOESNT MATCH:',wla, self.latcc[la,lo]
             #	fail+=1
@@ -641,13 +682,13 @@ class matchDataAndModel:
             #####
             #increment by 1 to save/ end, as it has finished, but i is used as a starting point.
             i += 1
-            if i % 10000 == 0:
+            if i: # % 10000 == 0:
                 if self.debug:
                     print("matchModelToData:\t", i, ii, self.dataType,
                           self.depthLevel, ':\t', [wt, wz, wla, wlo], '--->',
                           [t, z, la, lo])
 
-            if i > 1 and i % 50000000 == 0:
+            if i > 1 and i % 5000000 == 0:
                 if self.debug:
                     print("matchModelToData:\tSaving Shelve: ",
                           self.matchedShelve)
@@ -657,11 +698,12 @@ class matchDataAndModel:
                 s['maremask'] = self.maremask
                 s['imatches'] = self.imatches
                 s.close()
+
                 s = shOpen(self.matchesShelve)
                 s['lldict'] = lldict
                 s.close()
+
         maxIndex = i
-        #assert False
 
         print("matchDataAndModel:\tSaving Shelve", self.matchedShelve)
         s = shOpen(self.matchedShelve)
@@ -674,8 +716,14 @@ class matchDataAndModel:
         s = shOpen(self.matchesShelve)
         s['lldict'] = lldict
         s.close()
+
         print("matchModelToData:\tFinsished with ", maxIndex + 1,
               "\tfinished:", len(self.matches))  #, "Mask:",self.maremask.sum()
+
+        #print('self.matches', self.matches.keys())
+        #assert 0
+#        for (t, z, la, lo) in self.matches.keys():
+#            print(k, (self.latcc[la,lo], self.loncc[la,lo]),  
 
     def _convertModelToOneD_(self, ):
         if not ukp.shouldIMakeFile(
@@ -686,27 +734,36 @@ class matchDataAndModel:
 
         print(
             "convertModelToOneD:\tconvertModelToOneD:\tMaking 1D Model file:",
-            self.ModelFile, '-->', self.Model1D)
+            self.ModelFile, '-->',self.ModelFileMerged, '--->', self.Model1D)
 
-        if isinstance(self.ModelFile, (tuple, list)):
-            mod1dfiles = []
-            for i, modfn in enumerate(self.ModelFile):
-                mod1d = self.Model1D.replace('.nc', str(i)+'.nc')
-                mod1dfiles.append(mod1d)
-                convertToOneDNC(modfn,
-                        mod1d,
-                        newMask='',
-                        variables=self.ModelVars,
-                        debug=self.debug,
-                        dictToKeep=self.matches)
-            mergeNC(mod1dfiles, self.Model1D,)
-        else:
-            convertToOneDNC(self.ModelFile,
-                        self.Model1D,
-                        newMask='',
-                        variables=self.ModelVars,
-                        debug=self.debug,
-                        dictToKeep=self.matches)
+            # then convert to 1d:
+        convertToOneDNC(
+                self.ModelFileMerged,
+                self.Model1D,
+                newMask='',
+                variables=self.ModelVars,
+                debug=self.debug,
+                dictToKeep=self.matches)
+
+#            mod1dfiles = []
+#            for i, modfn in enumerate(self.ModelFile):
+#                mod1d = self.Model1D.replace('.nc', str(i)+'.nc')
+#                mod1dfiles.append(mod1d)
+#                if exists(mod1d): continue
+#                convertToOneDNC(modfn,
+#                        mod1d,
+#                        newMask='',
+#                        variables=self.ModelVars,
+#                        debug=self.debug,
+#                        dictToKeep=self.matches)
+#            if not exists(self.Model1D):
+#                annual=True 
+#                if annual: 
+#                    timeAverage=True
+#                else: timeAverage=False
+#                mergeNC(mod1dfiles, self.Model1D,variables=self.ModelVars,timeAverage=timeAverage, debug=True)
+#                        debug=self.debug,
+#                        dictToKeep=self.matches)
 
     def _applyMaskToData_(self, ):
         """ This routine applies the mask of the model to the data.
@@ -821,8 +878,6 @@ class matchDataAndModel:
         c = changeNC(self.DataFile1D, self.maskedData1D, av, debug=self.debug)
 
     def loadMesh(self, ):
-        # This won't work unless its the 1 degree grid.
-        #f self.ORCA == "ORCA1":
         print("matchModelToData:\tOpened Model netcdf mesh.", self.grid, '(',
               self.gridFile, ')')
         ncER = Dataset(self.gridFile, 'r')
@@ -859,43 +914,57 @@ class matchDataAndModel:
               self.latcc.shape, 'lon:', self.loncc.shape, 'depth:',
               self.depthcc.shape)
         self._meshLoaded_ = 1
+        for i, j in zip(['lat', 'lon', 'depth'],[self.latcc, self.loncc, self.depthcc]):
+            print("matchModelToData: INFO", i, (j.min(), '-->', j.max()), 
+                'shape:', j.shape)
 
-    def getOrcaIndexCC(self,
+    def getClosestPoint(self,
                        lat,
                        lon,
                        debug=True,
                        slowMethod=False,
-                       i=''):  #llrange=5.):
+                       i='',
+                       llrange=5.):
         """ takes a lat and long coordinate, an returns the position of the closest coordinate in the NemoERSEM grid.
 	    uses the bathymetry file.
 	"""
         km = 10.E20
         la_ind, lo_ind = -1, -1
-        latrangeCutoff = 2.
-        lonrangeCutoff = 5.
+#        latrangeCutoff = 2.
+#        lonrangeCutoff = 5.
+#        print('lat:', lat, 'lon:', lon)
+
         lat = ukp.makeLatSafe(lat)
         lon = ukp.makeLonSafe(lon)
 
-        if not self._meshLoaded_: self.loadMesh()
-        #if abs(lat) <70.:
+        if not self._meshLoaded_:
+            self.loadMesh()
+        #rint('lat:', lat, 'lon:', lon)
+
         c = (self.latcc - lat)**2 + (self.loncc - lon)**2
-        #else:   c =  myhaversineArr(lon,lat,self.loncc,self.latcc)
+        #rint('argmin', c.argmin(), c.shape, self.latcc.shape, self.loncc.shape)
 
         (la_ind, lo_ind) = np.unravel_index(c.argmin(), c.shape)
-
-        #km2 = abs(haversine((lon, lat), (locc,lacc)))
+        new_lat = self.latcc[la_ind, lo_ind]
+        new_lon = self.loncc[la_ind, lo_ind]
+        print('getClosestPoint', 'looking for: ',(lat,lon), 
+                'index:', (la_ind, lo_ind), 
+                'which is', (new_lat, new_lon),
+                'distance:', c.min())
+        if np.sqrt(np.abs(c.min())) > llrange:
+            print('Not close enough!', i, np.sqrt(np.abs(c.min())), c.argmin(),  llrange, c.argmin(), c.shape)
+            assert 0
+            return -1, -1
+        if np.abs(lat - new_lat) > llrange or np.abs(lon - new_lon) > llrange:
+               print('Very strange:', (lat, lon), (new_lat, new_lon))
+               raise ValueError('Not found!', la_ind, lo_ind)
         if debug:
             print('location ', [la_ind, lo_ind], '(', self.latcc[la_ind,
                                                                  lo_ind],
                   self.loncc[la_ind, lo_ind], ') is closest to:', [lat, lon])
-        """if abs(self.latcc[la_ind,lo_ind] -lat ) > latrangeCutoff or abs(self.loncc[la_ind,lo_ind] -lon ) > lonrangeCutoff:
-		d = myhaversine(self.loncc[la_ind,lo_ind],self.latcc[la_ind,lo_ind],lon,lat)
-		print "getOrcaIndexCC:\t",i,"\tERROR:\tDISTANCE IS VERY FAR:",[self.latcc[la_ind,lo_ind],'-->',  lat,], [self.loncc[la_ind,lo_ind], '-->', lon],'distance:',d
-		if d>350.:
-			print "getOrcaIndexCC:\t",i,"\tdistance too great:",d,
-			#assert False
-			return -1,-1
-	"""
+        if la_ind == lo_ind == -1:
+            raise ValueError('Not found!', la_ind, lo_ind)
+
         return la_ind, lo_ind
 
 

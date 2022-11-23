@@ -1253,8 +1253,6 @@ def analysis_p2p(
                 jobID=jobID,
                 year=year,
                 av=av,
-                plottingSlices=
-                [],  # set this so that testsuite_p2p reads the slice list from the av.
                 workingDir=workingDir,
                 imageFolder=imageFolder,
                 noPlots=

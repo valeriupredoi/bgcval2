@@ -4,7 +4,8 @@
 # of how a model is working.
 keys:
     AMM7_GlobalMeanTemperature: True
-    AMM7_GlobalMeanpH: True
+      #    AMM7_GlobalMeanpH: True
+    AMM7_O3c : True  
       #DrakePassageTransport: True
       #AMOC_26N: True
       #TotalAirSeaFluxCO2: True

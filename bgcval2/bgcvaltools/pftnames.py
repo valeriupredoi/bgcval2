@@ -293,6 +293,7 @@ def makeLongNameDict():
     lnd['SouthernTotalIceExtent'] = 'Southern Hemisphere Ice Extent'
     lnd['WeddelIceExent'] = 'Weddel Sea Ice Extent'
     lnd['TotalIceExtent'] = 'Total Ice Extent'
+    lnd['AMM'] = 'Atlantic Margins'
 
     lnd['NorthernTotalIceArea'] = 'Northern Hemisphere Ice Area'
     lnd['SouthernTotalIceArea'] = 'Southern Hemisphere Ice Area'

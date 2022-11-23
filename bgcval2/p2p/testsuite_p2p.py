@@ -49,7 +49,7 @@ def testsuite_p2p(
     year='1997',
     jobID='xhonc',
     av={},
-    plottingSlices=[],
+    regions=[],
     workingDir='',
     imageFolder='',
     noPlots=False,
@@ -86,16 +86,16 @@ def testsuite_p2p(
 				layers options are ['', 'Surface','100m','200m','500m',]
 				layers = ['',] indicates look at no depth slicing. (Not recommended for big (>500,000 points) datasets! Don't say I didn't warn you.)
 
-	    plottingSlices:
-		plottingSlices is a list of regional, temporal, or statistical slices to be given to the analysis for plotting.
-		ie:	plottingSlices = ['All', 				# plots everything,
+	    regions:
+		regions is a list of regional, temporal, or statistical slices to be given to the analysis for plotting.
+		ie:	regions = ['All', 				# plots everything,
 					  'NorthAtlantic', 			# plots North Atlantic
 					  'February',				# plots February
 					  ('NorthAtlantic', 'February'),	# plots North Atlantic in February
 					  ]
-			plottingSlices can be made automatically with UKESMpthon.populateSlicesList()
-			plottingSlices can also be added to the av:
-				av[name]['plottingSlices'] = a list of slices
+			regions can be made automatically with UKESMpthon.populateSlicesList()
+			regions can also be added to the av:
+				av[name]['regions'] = a list of slices
 	    workingDir:
 	    	workingDir is a location for the working files that are produced during the analysis.
 	    	if no working directory is provided, the default is: ~/WorkingFiles/model-jobID-yyear
@@ -118,6 +118,7 @@ def testsuite_p2p(
 
 	"""
 
+    year = str(int(year))
     print("#############################")
     print("testsuite_p2p:  ")
 #    print("models:        ", model)
@@ -234,6 +235,7 @@ def testsuite_p2p(
             # matchDataAndModel:
             # Match observations and model.
             # Does not produce and plots.
+            #annual = True
             b = matchDataAndModel(av[name]['dataFiles'],
                                   av[name]['modelFiles'],
                                   dataType=name,
@@ -241,10 +243,11 @@ def testsuite_p2p(
                                   modeldetails=av[name]['modeldetails'],
                                   datacoords=av[name].get('datacoords', None),
                                   datadetails=av[name].get('datadetails', None),
-                                  datasource=av[name].get('datasource', 'obs'),
+                                  datasource=av[name].get('data_source', 'obs'),
                                   model=av[name].get('model', 'model'),
                                   jobID=jobID,
                                   year=year,
+#                                  annualMean=annual,
                                   workingDir=ukp.folder(workingDir + name),
                                   depthLevel=depthLevel,
                                   grid=av[name].get('modelgrid', None),
@@ -256,26 +259,26 @@ def testsuite_p2p(
             # MakePlot runs a series of analysis, comparing every pair in DataVars and ModelVars
             #	 under a range of different masks. For instance, only data from Antarctic Ocean, or only data from January.
             # The makePlot produces a shelve file in workingDir containing all results of the analysis.
-            if len(plottingSlices) == 0:
-                if len(av[name]['plottingSlices']) == 0:
-                    nplottingSlices = populateSlicesList()
+            if len(regions) == 0:
+                if len(av[name]['regions']) == 0:
+                    nregions = populateSlicesList()
                     print("No plotting slices provided, using defaults",
-                          nplottingSlices)
+                          nregions)
                 else:
 
-                    nplottingSlices = av[name]['plottingSlices']
-                    print("Plotting slices provided, using ", nplottingSlices)
+                    nregions = av[name]['regions']
+                    print("Plotting slices provided, using ", nregions)
             else:
-                nplottingSlices = plottingSlices
+                nregions = regions
 
             imageDir = ukp.folder(imageFolder + 'P2Pplots/' + year + '/' +
                                   name + depthLevel)
             m = makePlots(b.MatchedDataFile,
                           b.MatchedModelFile,
                           name,
-                          newSlices=nplottingSlices,
-                          model=av[name].get('model', None),
-                          datasource=av[name].get('datasource', None),
+                          newSlices=nregions,
+                          model=av[name].get('model', 'model'),
+                          datasource=av[name].get('data_source', 'obs'),
                           jobID=jobID,
                           depthLevel=depthLevel,
                           year=year,

@@ -315,9 +315,12 @@ def load_key_file(key, paths, jobID):
             raise KeyError(f'What are you trying to analyse: model_vars {md_vars} is empty in yml_file: {key_yml_path}')
 
         md_vars = parse_list_from_string(md_vars)
+        
         md_convert = key_dict[''.join([model_or_data, '_convert'])]
         convert_func, kwargs = load_function(md_convert)
-
+        # source:
+        source = key_dict.get(''.join([model_or_data, '_source']), model_or_data)
+        output_dict[''.join([model_or_data, '_source'])] = source
         output_dict[''.join([model_or_data, 'details'])] = {
             'name': key_dict['name'],
             'vars': md_vars ,
@@ -349,10 +352,10 @@ def load_key_file(key, paths, jobID):
             }
         for coord, value in coords.items():
             # Coordinate names are guessed, but can be over-written in the yaml.
-
             coord_in_yml = ''.join([model_or_data, '_', coord])
             if  coord_in_yml in key_dict:
                 value = key_dict[coord_in_yml]
+                print('loading coord coord_in_yml:',coord_in_yml, value)
             output_dict[''.join([model_or_data, 'coords'])][coord] = value
     return output_dict
 
@@ -2808,7 +2811,7 @@ def singleTimeSeries(
 
 def get_args():
     """Parse command line arguments. """
-    accepted_keys = [os.path.splitext(os.path.basename(fn))[0] for fn in glob('input_keys/*.yml')]
+    accepted_keys = [os.path.splitext(os.path.basename(fn))[0] for fn in glob('key_lists/*.yml')]
 
     parser = argparse.ArgumentParser(
         description=__doc__,
@@ -2851,8 +2854,7 @@ def main():
     jobIDs = args.jobID
     keys = args.keys
     print('Running analysis_imerseries.\tjobID:', jobIDs, '\tkeys:', keys)
-
-    accepted_keys = [os.path.splitext(os.path.basename(fn))[0] for fn in glob('input_keys/*.yml')]
+    accepted_keys = [os.path.splitext(os.path.basename(fn))[0] for fn in glob('key_lists/*.yml')]
 
     good_keys = True
     for key in keys:

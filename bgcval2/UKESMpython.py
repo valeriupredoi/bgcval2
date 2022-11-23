@@ -36,15 +36,12 @@ from glob import glob
 from itertools import product
 import numpy as np
 from matplotlib import pyplot
-from mpl_toolkits.basemap import Basemap
+#from mpl_toolkits.basemap import Basemap
 from matplotlib.ticker import FormatStrFormatter
 from matplotlib.colors import LogNorm
-try:
-    import cartopy.crs as ccrs
-    import cartopy.io.shapereader as shapereader
-    from cartopy import img_transform, feature as cfeature
-except:
-    print("Unable to load Cartopy")
+import cartopy.crs as ccrs
+import cartopy.io.shapereader as shapereader
+from cartopy import img_transform, feature as cfeature
 from scipy.stats.mstats import scoreatpercentile
 from scipy.stats import linregress, mode as scimode
 from calendar import month_name
@@ -473,8 +470,8 @@ def load_coords_from_netcdf(mdfile):
     coord_candidates = {
         't': ['time_centered','time', 'index_t', 'time_counter'],
         'z':  ['depth', 'deptht', 'depthu', 'nav_lev', 'index_z', 'level'],
-        'lat': ['lat', 'lattitude', 'nav_lat', 'nav_lat_grid_T'],
-        'lon': ['lat', 'lattitude', 'nav_lat', 'nav_lon_grid_T'],
+        'lat': ['lat', 'latitude', 'nav_lat', 'nav_lat_grid_T'],
+        'lon': ['lon', 'longitude', 'nav_lon', 'nav_lon_grid_T'],
         }
     # Exntend with capitalization:
     for coord, coord_candidate_list in coord_candidates.items():
@@ -715,7 +712,6 @@ def robinPlotPair(
     drawCbar=True,
     cbarlabel='',
     doLog=False,
-    scatter=True,
     dpi=100,
 ):  #**kwargs):
     """
@@ -757,7 +753,7 @@ def robinPlotPair(
                              c=np.log10(data1),
                              marker="s",
                              alpha=0.9,
-                             linewidth='0',
+                             linewidth=0,
                              **kwargs)
         else:
             im1 = m1.scatter(x1,
@@ -765,7 +761,7 @@ def robinPlotPair(
                              c=data1,
                              marker="s",
                              alpha=0.9,
-                             linewidth='0',
+                             linewidth=0,
                              **kwargs)
 
     else:
@@ -810,7 +806,7 @@ def robinPlotPair(
                              c=np.log10(data2),
                              marker="s",
                              alpha=0.9,
-                             linewidth='0',
+                             linewidth=0,
                              **kwargs)  #vmin=vmin,vmax=vmax)
         else:
             im2 = m2.scatter(x2,
@@ -818,7 +814,7 @@ def robinPlotPair(
                              c=data2,
                              marker="s",
                              alpha=0.9,
-                             linewidth='0',
+                             linewidth=0,
                              **kwargs)  #vmin=vmin,vmax=vmax)
     else:
         xi2, yi2, di2 = mapIrregularGrid(m2,
@@ -862,10 +858,14 @@ def robinPlotQuad(lons,
                   dpi=100,
                   vmin='',
                   vmax='',
-                  maptype='Basemap'):  #,**kwargs):
+                  zoom = False,
+                  maptype='Cartopy'):  #,**kwargs):
     """
 	takes a pair of lat lon, data, and title, and filename and then makes a quad of maps (data 1, data 2, difference and quotient), then saves the figure.
 	"""
+    if maptype=='Basemap':
+        raise FileNotFound('Basemap not longer supported')
+
     fig = pyplot.figure()
     fig.set_size_inches(10, 6)
 
@@ -940,112 +940,26 @@ def robinPlotQuad(lons,
         ]:
             cmap = pyplot.cm.RdBu_r
 
-        if maptype == 'Basemap':
-            axs.append(fig.add_subplot(spl))
-            bms.append(Basemap(projection='robin', lon_0=lon0,
-                               resolution='c'))  #lon_0=-106.,
-            x1, y1 = bms[i](lons, lats)
-            bms[i].drawcoastlines(linewidth=0.5)
-            if marble: bms[i].bluemarble()
-            else:
-                bms[i].drawmapboundary(fill_color='1.')
-                bms[i].fillcontinents(color=(255 / 255., 255 / 255.,
-                                             255 / 255., 1))
-            bms[i].drawparallels(np.arange(-90., 120., 30.))
-            bms[i].drawmeridians(np.arange(0., 420., 60.))
-
-            if doLogs[i]:
-                rbmi = np.int(np.log10(rbmi))
-                rbma = np.log10(rbma)
-                if rbma > np.int(rbma): rbma += 1
-                rbma = np.int(rbma)
-
-            if scatter:
-                if doLogs[i]:
-                    if len(cbarlabel) > 0:
-                        cbarlabel = 'log$_{10}$(' + cbarlabel + ')'
-                    ims.append(bms[i].scatter(
-                        x1,
-                        y1,
-                        c=np.log10(data),
-                        cmap=cmap,
-                        marker="s",
-                        alpha=0.9,
-                        linewidth='0',
-                        vmin=rbmi,
-                        vmax=rbma,
-                    ))  # **kwargs))
-                else:
-                    ims.append(bms[i].scatter(
-                        x1,
-                        y1,
-                        c=data,
-                        cmap=cmap,
-                        marker="s",
-                        alpha=0.9,
-                        linewidth='0',
-                        vmin=rbmi,
-                        vmax=rbma,
-                    ))  # **kwargs))
-            else:
-                xi1, yi1, di1 = mapIrregularGrid(bms[i],
-                                                 axs[i],
-                                                 lons,
-                                                 lats,
-                                                 data,
-                                                 lon0,
-                                                 xres=360,
-                                                 yres=180)
-                if doLogs[i]:
-                    ims.append(bms[i].pcolormesh(xi1,
-                                                 yi1,
-                                                 di1,
-                                                 cmap=cmap,
-                                                 norm=LogNorm()))
-                else:
-                    ims.append(bms[i].pcolormesh(xi1, yi1, di1, cmap=cmap))
-            if drawCbar:
-                if spl in [221, 222, 223]:
-                    if doLogs[i]:
-                        cbs.append(
-                            fig.colorbar(ims[i],
-                                         pad=0.05,
-                                         shrink=0.5,
-                                         ticks=np.linspace(
-                                             rbmi, rbma, rbma - rbmi + 1)))
-                    else:
-                        cbs.append(fig.colorbar(
-                            ims[i],
-                            pad=0.05,
-                            shrink=0.5,
-                        ))
-                if spl in [
-                        224,
-                ]:
-                    cbs.append(fig.colorbar(
-                        ims[i],
-                        pad=0.05,
-                        shrink=0.5,
-                    ))
-                    cbs[i].set_ticks([-1, 0, 1])
-                    cbs[i].set_ticklabels(['0.1', '1.', '10.'])
-
         if maptype == 'Cartopy':
             #axs.append(fig.add_subplot(spl))
-            bms.append(pyplot.subplot(spl, projection=ccrs.Robinson()))
-            bms[i].set_global()
-
-            if marble: bms[i].stock_img()
+            ax = pyplot.subplot(spl, projection=ccrs.Robinson())
+            bms.append(ax)
+            if zoom:
+                ax.set_extent((lons.min(), lons.max(), lats.min(), lats.max()), ccrs.PlateCarree())
             else:
-                # Because Cartopy is hard wired to download the shapes files from a website that doesn't exist anymore:
+                ax.set_global()
+            ax.coastlines()
+            ax.add_feature(cfeature.LAND)
 
-                bms[i].add_geometries(list(
-                    shapereader.Reader(
-                        'data/ne_110m_coastline.shp').geometries()),
-                                      ccrs.PlateCarree(),
-                                      color='k',
-                                      facecolor='none',
-                                      linewidth=0.5)
+
+
+#            bms[i].add_geometries(list(
+#                shapereader.Reader(
+#                    'data/ne_110m_coastline.shp').geometries()),
+#                                  ccrs.PlateCarree(),
+#                                  color='k',
+#                                  facecolor='none',
+#                                  linewidth=0.5)
 
             if scatter:
                 if doLogs[i] and spl in [221, 222]:
@@ -1062,7 +976,7 @@ def robinPlotQuad(lons,
                         cmap=cmap,
                         marker="s",
                         alpha=0.9,
-                        linewidth='0',
+                        linewidth=0,
                         vmin=rbmi,
                         vmax=rbma,
                         transform=ccrs.PlateCarree(),
@@ -1075,7 +989,7 @@ def robinPlotQuad(lons,
                         cmap=cmap,
                         marker="s",
                         alpha=0.9,
-                        linewidth='0',
+                        linewidth=0,
                         vmin=rbmi,
                         vmax=rbma,
                         transform=ccrs.PlateCarree(),
@@ -1129,9 +1043,9 @@ def robinPlotQuad(lons,
                                                  cmap=cmap,
                                                  vmin=rbmi,
                                                  vmax=rbma))
-                bms[i].coastlines()  #doesn't work.
+#               bms[i].coastlines()  #doesn't work.
                 #bms[i].fillcontinents(color=(255/255.,255/255.,255/255.,1))
-                bms[i].add_feature(cfeature.LAND, facecolor='1.')
+#               bms[i].add_feature(cfeature.LAND, facecolor='1.')
                 if drawCbar:
                     if spl in [221, 222, 223]:
                         if doLogs[i]:
@@ -1166,7 +1080,7 @@ def robinPlotQuad(lons,
             #pyplot.colorbar(ims[i],cmap=defcmap,values=[rbmi,rbma])#boundaries=[rbmi,rbma])
             #cbs.append(fig.colorbar(ims[i],pad=0.05,shrink=0.5))#,ticks=ticks))
 
-            cbs[i].set_clim(rbmi, rbma)
+#            cbs[i].set_clim(rbmi, rbma)
 
             if len(cbarlabel) > 0 and spl in [
                     221,
@@ -1186,13 +1100,9 @@ def robinPlotQuad(lons,
                  title,
                  horizontalalignment='center',
                  verticalalignment='top')
-    pyplot.tight_layout()
+    #pyplot.tight_layout()
     print("UKESMpython:\trobinPlotQuad: \tSaving:", filename)
-
-    try:
-        pyplot.savefig(filename, dpi=dpi)
-    except:
-        print("Unable to save image.")
+    pyplot.savefig(filename, dpi=dpi)
     pyplot.close()
 
 
@@ -1327,7 +1237,7 @@ def HovPlotQuad(
                         cmap=cmap,
                         marker="s",
                         alpha=0.9,
-                        linewidth='0',
+                        linewidth=0,
                         vmin=rbmi,
                         vmax=rbma,
                     ))
@@ -1340,7 +1250,7 @@ def HovPlotQuad(
                         cmap=cmap,
                         marker="s",
                         alpha=0.9,
-                        linewidth='0',
+                        linewidth=0,
                         vmin=rbmi,
                         vmax=rbma,
                     ))
@@ -1401,7 +1311,7 @@ def HovPlotQuad(
                 cbs[i].set_ticks([0.1, 1., 10.])
                 cbs[i].set_ticklabels(['0.1', '1.', '10.'])
 
-            cbs[i].set_clim(rbmi, rbma)
+            #cbs[i].set_clim(rbmi, rbma)
             if doLogs[i] and len(cbarlabel) > 0:
                 cbarlabel = 'log$_{10}$(' + cbarlabel + ')'
 
@@ -1594,7 +1504,7 @@ def ArcticTransectPlotQuad(
                         cmap=cmap,
                         marker="s",
                         alpha=0.9,
-                        linewidth='0',
+                        linewidth=0,
                         vmin=rbmi,
                         vmax=rbma,
                     ))
@@ -1607,7 +1517,7 @@ def ArcticTransectPlotQuad(
                         cmap=cmap,
                         marker="s",
                         alpha=0.9,
-                        linewidth='0',
+                        linewidth=0,
                         vmin=rbmi,
                         vmax=rbma,
                     ))
@@ -1686,7 +1596,7 @@ def ArcticTransectPlotQuad(
                 cbs[i].set_ticks([0.1, 1., 10.])
                 cbs[i].set_ticklabels(['0.1', '1.', '10.'])
 
-            cbs[i].set_clim(rbmi, rbma)
+#            cbs[i].set_clim(rbmi, rbma)
             if doLogs[i] and len(cbarlabel) > 0:
                 cbarlabel = 'log$_{10}$(' + cbarlabel + ')'
 
@@ -2420,9 +2330,10 @@ def getORCAdepth(z, depth_arr, debug=True):
     d = 1000.
     best = -1
     depth_arr = np.array(depth_arr)
-    print("getORCAdepth:", z, depth_arr)
+    if debug: 
+        print("getORCAdepth:", z, depth_arr)
     if len(depth_arr) == 1: return 0
-
+    best = np.argmin(np.abs(np.abs(depth_arr) - abs(z)))
     for i, zz in enumerate(depth_arr.squeeze()):
         d2 = abs(abs(z) - abs(zz))
         if d2 < d:

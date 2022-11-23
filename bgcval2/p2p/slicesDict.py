@@ -121,6 +121,7 @@ def getSlicesDict():
         'NorthernSubpolarPacific',
         'SouthernOcean',
         'Remainder',
+        'AMM',
     ]
 
     OceanMonths = {o: [(o, m) for m in months] for o in Oceans}
@@ -179,9 +180,7 @@ def getSlicesDict():
         slicesDict[om + 'Months'] = keys
     for om, keys in list(HemispheresSeasons.items()):
         slicesDict[om + 'Seasons'] = keys
-
     return slicesDict
-
 
 slicesDict = getSlicesDict()
 

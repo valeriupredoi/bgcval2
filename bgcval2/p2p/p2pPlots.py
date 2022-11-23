@@ -126,7 +126,7 @@ class makePlots:
 
         self.model = model
         self.jobID = jobID
-        self.year = year
+        self.year = str(int(year))
         self.shelveDir = shelveDir
         self.compareCoords = compareCoords
         self.months = {month_name[i + 1]: i for i in range(0, 12)}
@@ -182,6 +182,7 @@ class makePlots:
 
     def run(self, ):
 
+        print('Loading:', self.xfn, '\nand:', self.yfn) 
         self.xnc = Dataset(self.xfn, 'r')
         self.ync = Dataset(self.yfn, 'r')
 
@@ -518,6 +519,7 @@ class makePlots:
                 if ukp.shouldIMakeFile([self.xfn, self.yfn],
                                        robfnquad,
                                        debug=False):
+                    print('making:', robfnquad)
                     ti1 = getLongName(self.xtype)
                     ti2 = getLongName(self.ytype)
                     cbarlabel = xunits
@@ -543,6 +545,7 @@ class makePlots:
                         doLog=doLog,
                         vmin=dmin,
                         vmax=dmax,
+                        zoom = True,
                     )
 
             # Robinson projection plots - Cartopy
@@ -858,20 +861,34 @@ class makePlots:
             if not ukp.shouldIMakeFile(
                 [self.xfn, self.yfn], filename, debug=False):
                 continue
+            print("CompareCoords:\tMaking:", filename)
             print("CompareCoords:\tx:", xkey, "\ty:", ykey)
             if xkey not in list(self.xnc.variables.keys()):
-                print(xkey, "not in xnc")
-                assert False
-            if ykey not in list(self.ync.variables.keys()):
-                print(ykey, "not in ync")
-                assert False
+                raise ValueError(xkey, "not in xnc")
 
-            mask = np.ma.array(self.xnc.variables[xkey][:]).mask + np.ma.array(
-                self.ync.variables[ykey][:]).mask
+            if ykey not in list(self.ync.variables.keys()):
+                raise ValueError(ykey, "not in ync")
+
+            xdata = self.xnc.variables[xkey][:]
+            ydata = self.ync.variables[ykey][:]
+            mask = np.array(xdata.mask + ydata.mask)
+            if np.ma.is_masked(xdata.min()) or np.ma.is_masked(ydata.max()):
+                print('All data is masked')
+                continue
+            if xdata.shape != ydata.shape:
+            #if xdata.shape != mask.shape or ydata.shape != mask.shape:
+                print(xkey, 'vs', ykey, 'failed:', xdata.shape, ydata.shape)
+                for i in np.arange(np.min([len(xdata), len(ydata)])):
+                    print('debug', i, xkey, xdata[i], ykey,ydata[i], 'diff:', xdata[i] - ydata[i])
+
+                continue #assert 0
+
             dx = np.ma.masked_where(
                 mask, np.ma.array(self.xnc.variables[xkey][:])).compressed()
             dy = np.ma.masked_where(
                 mask, np.ma.array(self.ync.variables[ykey][:])).compressed()
+            if not len(dx) or not len(dy):
+                raise ValueError('dx and dy are missing: {dx}, {dy}',dx, dy)
 
             print("CompareCoords:\t", xkey, ':', len(dx), "\t:", ykey, ':',
                   len(dy), dx.min(), dx.max(), dy.min(), dy.max())
@@ -883,7 +900,7 @@ class makePlots:
             rects1 = pyplot.hist((dx, dy),
                                  label=[xkey, ykey],
                                  histtype='bar',
-                                 bins=72 / 2)  #,alpha=0.2)
+                                 bins=36 )#2)  #,alpha=0.2)
             pyplot.legend()
             ax.set_yscale('log')
 
@@ -931,28 +948,23 @@ class makePlots:
 
         file_suffix = '_' + self.xtype + '_' + self.year + '.png'
 
-        for dictkey, dictlist in list(slicesDict.items()):
-            if dictkey == 'AllSlices': continue
-            if newSlice not in dictlist: continue
-            if type(newSlice) in [type([
-                    'a',
-                    'b',
-            ]), type((
-                    'a',
-                    'b',
-            ))]:
-                newSlice = list(newSlice)
-                for i, n in enumerate(newSlice):
-                    if n in slicesDict['Months']:
-                        newSlice[i] = ukp.mnStr(self.months[n] + 1) + n
-                newSlice = ''.join(newSlice)
-            if newSlice in slicesDict['Months']:
-                newSlice = ukp.mnStr(self.months[newSlice] + 1) + newSlice
-            if dictkey == 'Default': dictkey = ''
-        filename = ukp.folder(
-            [file_prefix, dictkey]
-        ) + self.name + self.depthLevel + '_' + newSlice + '_' + xkey + 'vs' + ykey + file_suffix
+        out_dir = 'p2p'
+        if isinstance(newSlice, (list, tuple)):
+             out_dir = new_list[0]
+             newSlice = ''.join(newSlice)
+        if newSlice in slicesDict['Months']:
+             newSlice = ukp.mnStr(self.months[newSlice] + 1) + newSlice
 
+        for dictkey, dictlist in list(slicesDict.items()):
+            #print('getFileName', dictkey, dictlist)
+            if newSlice in dictlist: 
+                out_dir = dictkey
+
+        filename = ukp.folder(
+            [file_prefix, out_dir]
+        ) + self.name + self.depthLevel + '_' + newSlice + '_' + xkey + 'vs' + ykey + file_suffix
+        #print(filename)
+        #assert 0
         return filename
 
 

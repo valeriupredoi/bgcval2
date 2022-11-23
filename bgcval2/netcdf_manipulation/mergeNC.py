@@ -31,7 +31,7 @@ from datetime import date
 from getpass import getuser
 from os.path import exists
 from numpy.ma import array, masked_all
-from numpy import append, mean, int32, int16
+from numpy import append, mean, int32, int16, int64
 import numpy as np
 from glob import glob
 from .alwaysInclude import alwaysInclude as alwaysIncludList, timeNames
@@ -67,9 +67,8 @@ class mergeNC:
             self.fnsi = glob(self.fnsi)
 
         if not exists(self.fnsi[0]):
-            print('mergeNC:\tERROR:\tinputfile name does not exists:',
+            raise FileNotFoundError('mergeNC:\tERROR:\tinputfile name does not exists:',
                   self.fnsi[0])
-            return
         if self.debug:
             print('mergeNC:\tINFO:\topening dataset:\t', self.fnsi[0])
         nci = Dataset(self.fnsi[0], 'r')  #Quiet =True)
@@ -77,7 +76,6 @@ class mergeNC:
         if self.timeAverage:
             print('mergeNC:\tWARNING:\ttimeAverage is not yet debugged. '
                   )  # are no use:', self.vars
-            #return
         if not self.vars:
             if self.debug:
                 print(
@@ -97,11 +95,12 @@ class mergeNC:
                       self.cal)
 
         #check that there are some overlap between input vars and nci:
+        self.vars = find_vars_in_nc(nci, self.vars)
+
         for v in self.vars:
             if v in list(nci.variables.keys()): continue
-            print('mergeNC:\tERROR:\tvariable,', v, ', not found in ',
+            raise ValueError('mergeNC:\tERROR:\tvariable,', v, ', not found in ',
                   self.fnsi[0])
-            return
 
         #create dataset and header.
         if self.debug:
@@ -217,6 +216,7 @@ class mergeNC:
                     int32([
                         5,
                     ]).dtype,
+                    int32, int64,
             ]: dfkey = 'i8'
             elif dt in [
                     int16([
@@ -390,3 +390,20 @@ def todaystr():
 
 def intersection(list1, list2):
     return list(set(list1).intersection(set(list2)))
+
+
+def find_vars_in_nc(nc, keys):
+    """
+    Takes the list of keys and chooses the first one that exists in the input file.
+    Useful if fields change for no reason.
+    """
+    outlist=[]
+    for key in keys:
+        if key not in nc.variables.keys():
+            continue
+        outlist.append(key)
+    if outlist:
+        print('find_vars_in_nc: found these keys:',outlist)
+        return outlist
+    raise KeyError(f'find_vars_in_nc: unable to find any variable in {keys} in {nc.filename}')
+

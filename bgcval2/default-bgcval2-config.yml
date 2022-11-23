@@ -66,7 +66,7 @@ standard-paths:
       machinelocation: "PML"
       root_dir: "/data/proteus1/scratch/"
       shelvedir: "shelves"
-      p2p_ppDir: "/data/proteus1/scratch/ledm/bgcval2_postProcessed"
+      p2p_ppDir: "/local1/data/scratch/ledm/bgcval2_postProcessed"
       imagedir: "images"
       ModelFolder_pref: "gle/dare_baseline"
       orcaGridfn: "/users/modellers/ledm/workspace/coast/AMM7_grid/mesh_mask.nc"

@@ -200,6 +200,10 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
         if newSlice == 'IndianOcean':
             return np.ma.masked_where(mx + my, nmask).mask
 
+    if newSlice == 'AMM':
+        return np.ma.masked_outside(ukp.makeLonSafeArr(xx), -20., 13.).mask + np.ma.masked_outside(xy, 40., 65.).mask
+
+
     if newSlice == 'SouthernOcean':
         return np.ma.masked_where(xy > -40., nmask).mask
     if newSlice == 'AntarcticOcean':
