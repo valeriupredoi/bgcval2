@@ -2,15 +2,37 @@
 name: bgcval2
 channels:
   - conda-forge
+  - nodefaults
 
 dependencies:
-  # basic list of dependencies to be extended as we require packages
   - basemap
   - cartopy
   - matplotlib
-  - netcdf4!=1.6.1  # https://github.com/ESMValGroup/ESMValCore/pull/1724
+  - netcdf4
   - numpy
   - pip!=21.3
   - python>=3.8,<3.10  # basemap is no longer supported past 3.9
   - pyyaml
   - scipy
+  # Python packages - dependencies for testing
+  - flake8
+  - pytest>=3.9,!=6.0.0rc1,!=6.0.0
+  - pytest-cov>=2.10.1
+  - pytest-env
+  - pytest-html!=2.1.0
+  - pytest-metadata>=1.5.1
+  - pytest-mypy
+  - pytest-mock
+  - pytest-xdist
+  # Python packages - dependencies for documentation building
+  - autodocsumm>=0.2.2
+  - sphinx>=5
+  - sphinx_rtd_theme
+  # Python packages needed for installing in development mode
+  - codespell
+  - docformatter
+  - isort
+  - pre-commit
+  - prospector!=1.1.6.3,!=1.1.6.4
+  - yamllint
+  - yapf
