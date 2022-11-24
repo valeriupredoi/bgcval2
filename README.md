@@ -307,7 +307,7 @@ In addition, some paths from the `Paths.py` can also be used:
   - `basedir_obs`: he path to the observations base directory, defined in Paths.paths
   - `PATHS_GRIDFILE`: The path to the gridfile, defined in Paths.paths
   - `PATHs_BGCVAL2`: the path to the bgcval2 repository directory.
-  
+
 A `convert`  dictionary can be given to each model or observation data in the yml:
 
 ```
@@ -320,11 +320,11 @@ model_convert:
 
 For instance, this example applies the function `custom_function` which is in the
 `path/to/custom/function.py` file, and gives it two key word arguments.
-Several example functions exists in `bgcval2/functions` which may be useful 
+Several example functions exists in `bgcval2/functions` which may be useful
 for how to write your own.
 
-Simiarly, the `bgcval2/functions/standard_functions.py` contains several 
-basic functions such as multiply by or add to, or `noChange`, which can all be 
+Simiarly, the `bgcval2/functions/standard_functions.py` contains several
+basic functions such as multiply by or add to, or `noChange`, which can all be
 called without providing the `path`, and which may have their own key word
 arguments.
 
@@ -332,24 +332,19 @@ arguments.
 Point to point analysis
 -----------------------
 
-WORK IN PROGRESS.
-
 This is an analysis that compares a specific year of the model
 against several climatological datasets, and produces comparison
 maps, histograms and scatter plots.
 
 
-The command to run it is `analysisp2p jobID YEAR key`, where jobID is a mass
-job id, such a `u-ab123`, `YEAR` is the single year to investigate
+The command to run it is `analysis_p2p -j JOBID -y YEAR -k key_list`,
+where jobID is a unique model run identifier, such a `u-ab123`.
+The  `YEAR` is the single year to investigate
 and the key is a pre-defined key, which generates a list of variables.
 
 Key | What it is | Description
 :--------------:|:------------:|:------------:
-`physics` | Physics | A comprehensive list of physical metrics.
-`level2` | Level 2 | A comprehensive list of physical and biogeochemical metrics.
-`debug` | Debug | A very short list of a couple keys to test code changes.
-
-Note that there may be some overlap between the contents of these keys.
+`physics_p2p` | Physics | A short list of physical metrics for p2p analysis.
 
 
 Single Model report
