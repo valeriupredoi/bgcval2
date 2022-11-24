@@ -12,9 +12,4 @@ data_vars       : t_an
 data_convert    : NoChange
 data_source     : WOA13
 layers          : Surface 50m 100m
-regions         : AMM 
-
-# changes from original:
-#   add --- at start
-#   remove [name]
-#   add bgcval2 berfore functions
+regions         : AMM
