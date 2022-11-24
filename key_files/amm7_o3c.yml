@@ -1,0 +1,16 @@
+---
+name            : AMM7_o3c 
+units           : None
+dimensions      : 1
+model           : NEMO
+modelFiles      : /data/proteus1/scratch/gle/dare_baseline/198*/*/*_1m_*ptrc_T*part2.nc
+gridFile        : /users/modellers/ledm/workspace/coast/AMM7_grid/mesh_mask.nc
+model_vars      : O3_c_e3t
+model_convert   : NoChange
+layers          : Surface
+regions         : AMM
+
+# changes from original:
+#   add --- at start
+#   remove [name]
+#   add bgcval2 berfore functions
