@@ -951,16 +951,6 @@ def robinPlotQuad(lons,
             ax.coastlines()
             ax.add_feature(cfeature.LAND)
 
-
-
-#            bms[i].add_geometries(list(
-#                shapereader.Reader(
-#                    'data/ne_110m_coastline.shp').geometries()),
-#                                  ccrs.PlateCarree(),
-#                                  color='k',
-#                                  facecolor='none',
-#                                  linewidth=0.5)
-
             if scatter:
                 if doLogs[i] and spl in [221, 222]:
                     rbmi = np.int(np.log10(rbmi))
@@ -972,13 +962,15 @@ def robinPlotQuad(lons,
                     ims.append(bms[i].scatter(
                         lons,
                         lats,
-                        c=np.log10(data),
+                        c=data,
+                        norm=LogNorm(vmin=rbmi, vmax=rbma),
+                        #c=np.log10(data),
                         cmap=cmap,
                         marker="s",
                         alpha=0.9,
                         linewidth=0,
-                        vmin=rbmi,
-                        vmax=rbma,
+                        #vmin=rbmi,
+                        #vmax=rbma,
                         transform=ccrs.PlateCarree(),
                     ))
                 else:
@@ -1000,7 +992,7 @@ def robinPlotQuad(lons,
                             cbs.append(
                                 fig.colorbar(ims[i],
                                              pad=0.05,
-                                             shrink=0.5,
+                                             shrink=0.75,
                                              ticks=np.linspace(
                                                  rbmi, rbma, rbma - rbmi + 1)))
                         else:
@@ -1008,7 +1000,7 @@ def robinPlotQuad(lons,
                                 fig.colorbar(
                                     ims[i],
                                     pad=0.05,
-                                    shrink=0.5,
+                                    shrink=0.75,
                                 ))
                     if spl in [
                             224,
@@ -1016,10 +1008,11 @@ def robinPlotQuad(lons,
                         cbs.append(fig.colorbar(
                             ims[i],
                             pad=0.05,
-                            shrink=0.5,
+                            shrink=0.75,
                         ))
-                        cbs[i].set_ticks([-1, 0, 1])
-                        cbs[i].set_ticklabels(['0.1', '1.', '10.'])
+                        cbs[i].set_ticks([0.1, 1., 10.])
+#                        cbs[i].set_ticks([-1, 0, 1])
+#                        cbs[i].set_ticklabels(['0.1', '1.', '10.'])
 
             else:
                 crojp2, newData, newLon, newLat = regrid(
@@ -2217,24 +2210,14 @@ def scatterPlot(datax,
     plotrange = [xmin, xmax, ymin, ymax]
     print("UKESMpython:\tscatterPlot:\trange:", plotrange)
 
-    #if xmin*xmax <= 0. or ymin*ymax <=.0:
-    #		logx=False
-    #		logy=False
-    #		print "UKESMpython:\tscatterPlot:\tx value below zero, can not run log scale.", '\t',labelx,'(x):', xmin, '\t',labely,'(y):', ymin
-
     if logx: ax.set_xscale('log')
     if logy: ax.set_yscale('log')
 
-    #gridsize = 50
     if hexPlot:
         colours = 'gist_yarg'  # 'Greens'
-
-        #if logx:bins = 10**linspace(np.log10(xmin), np.log10(xmax))
-        #else:
         bins = 'log'
 
         if logx and logy:
-
             h = pyplot.hexbin(datax,
                               datay,
                               xscale='log',
@@ -2252,25 +2235,26 @@ def scatterPlot(datax,
                               extent=plotrange,
                               cmap=pyplot.get_cmap(colours),
                               mincnt=0)
-        cb = pyplot.colorbar(ticks=[
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-        ], )
+        cb = pyplot.colorbar() 
+#       ticks=[
+#           0,
+#           1,
+#            2,
+#            3,
+#            4,
+#            5,
+#            6,
+#        ], )
 
-        cb.set_ticklabels([
-            r'$10^0$',
-            r'$10^1$',
-            r'$10^2$',
-            r'$10^3$',
-            r'$10^4$',
-            r'$10^5$',
-            r'$10^6$',
-        ])
+#        cb.set_ticklabels([
+#            r'$10^0$',
+#            r'$10^1$',
+#            r'$10^2$',
+#            r'$10^3$',
+#            r'$10^4$',
+#            r'$10^5$',
+#            r'$10^6$',
+#        ])
         #cb.set_label('np.log10(N)')
 
     else:

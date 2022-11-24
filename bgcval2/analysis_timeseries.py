@@ -319,7 +319,10 @@ def load_key_file(key, paths, jobID):
         md_convert = key_dict[''.join([model_or_data, '_convert'])]
         convert_func, kwargs = load_function(md_convert)
         # source:
+        model_or_data_name = key_dict.get(model_or_data, model_or_data)
         source = key_dict.get(''.join([model_or_data, '_source']), model_or_data)
+        output_dict[model_or_data] = model_or_data_name
+
         output_dict[''.join([model_or_data, '_source'])] = source
         output_dict[''.join([model_or_data, 'details'])] = {
             'name': key_dict['name'],

@@ -2,7 +2,7 @@
 name            : AMM7_SSS
 units           : PSU
 dimensions      : 1
-model           : NEMO
+model           : NEMO-ERSEM
 modelFiles      : /data/proteus1/scratch/gle/dare_baseline/2000/*/*_1m_*grid_T.nc
 gridFile        : /users/modellers/ledm/workspace/coast/AMM7_grid/mesh_mask.nc
 model_vars      : so_abs so vosaline

@@ -493,11 +493,9 @@ class makePlots:
         labely = getLongName(self.ytype) + ' ' + getLongName(
             self.name) + ', ' + yunits
 
-        try:
-            title = getLongName(newSlice) + ' ' + getLongName(
-                self.name + self.depthLevel)  #+getLongName(self.name)
-        except:
-            title = newSlice + ' ' + xkey + ' vs ' + ykey
+        title = ' '.join([getLongName(newSlice),  getLongName(self.name), getLongName(self.depthLevel)])  
+        title = title.replace('_', ' ')
+        #title = newSlice + ' ' + xkey + ' vs ' + ykey
 
         scatterfn = filename.replace('.png', '_scatter.png')
         robfnxy = filename.replace('.png', '_xyrobin.png')
@@ -514,22 +512,20 @@ class makePlots:
         else:
             #####
             # Robinson projection plots - Basemap
-            mptbasemap = True  # Don't need both.
-            if mptbasemap:
-                if ukp.shouldIMakeFile([self.xfn, self.yfn],
-                                       robfnquad,
-                                       debug=False):
-                    print('making:', robfnquad)
-                    ti1 = getLongName(self.xtype)
-                    ti2 = getLongName(self.ytype)
-                    cbarlabel = xunits
-                    if self.name in noXYLogs or dmin * dmax <= 0.:
-                        doLog = False
-                    else:
-                        doLog = True
-                    print("plotWithSlices:\tROBIN QUAD:", [ti1, ti2], False,
-                          dmin, dmax)
-                    ukp.robinPlotQuad(
+            if ukp.shouldIMakeFile([self.xfn, self.yfn],
+                                   robfnquad,
+                                   debug=False):
+                print('making:', robfnquad)
+                ti1 = getLongName(self.xtype)
+                ti2 = getLongName(self.ytype)
+                cbarlabel = xunits
+                if self.name in noXYLogs or dmin * dmax <= 0.:
+                    doLog = False
+                else:
+                    doLog = True
+                print("plotWithSlices:\tROBIN QUAD:", [ti1, ti2], False,
+                      dmin, dmax)
+                ukp.robinPlotQuad(
                         nmxx,
                         nmxy,
                         datax,
