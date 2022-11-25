@@ -38,6 +38,7 @@ from math import radians, cos, sin, asin, sqrt
 from netCDF4 import num2date, Dataset
 from datetime import datetime
 import numpy as np
+import nctoolkit
 
 ######
 # local imports
@@ -184,28 +185,30 @@ class matchDataAndModel:
         """ This routine reduces the full 3d netcdfs by pruning the unwanted fields.
   	"""
 
-        if ukp.shouldIMakeFile(self.ModelFile,
+        if not ukp.shouldIMakeFile(self.ModelFile,
                                self.ModelFileMerged,
                                debug=False):
-
-#            if isinstance(self.ModelFile, (tuple, list)):
-#                mod1d = self.Model1D.replace('.nc', '_merged.nc')
-                # merge first
-            if self.annual:
-                timeAverage=True
-            else: timeAverage=False
-
-            mergeNC(
-                self.ModelFile, 
-                self.ModelFileMerged,
-                variables=self.ModelVars,
-                timeAverage=timeAverage, 
-                debug=True)
-            
-        else:
             print(
                 "matchDataAndModel:\tpruneModelAndData:\tModelFilePruned already exists:",
                 self.ModelFileMerged)
+            return
+        method = 'nctoolkit' # 'netcdf_manip'
+        if method == 'netcdf_manip':
+            mergeNC(
+                self.ModelFile,
+                self.ModelFileMerged,
+                variables=self.ModelVars,
+                timeAverage=self.annual,
+                debug=True)
+
+        if method == 'nctoolkit':
+            ds = nctoolkit.open_data(self.ModelFile)
+            ds.subset(years = self.year)
+            ds.subset(variables = self.ModelVars)
+            if self.annual:
+                ds.tmean(["year"])
+            ds.to_nc(self.ModelFileMerged)
+
 
 
     def _convertDataTo1D_(self, ):
@@ -403,7 +406,7 @@ class matchDataAndModel:
                       self.depthLevel, '\tMaking mask shape:', mmask.shape)
                 assert 0
         else:
-            raise ValueError('depthlevel not recognised:', self.depthLevel) 
+            raise ValueError('depthlevel not recognised:', self.depthLevel)
 #       if mmask.min() == 1:
 #           print('matchDataAndModel:\tERROR:\tconvertDataTo1D:\t',
 #                 self.depthLevel, '\tNo data in here.')
@@ -543,7 +546,7 @@ class matchDataAndModel:
             is_z = np.ma.zeros(len(is_t))[:]
             zdict = {0: 0, 0.: 0}
 
-        if not self._meshLoaded_: 
+        if not self._meshLoaded_:
             self.loadMesh()
 
         for i, ii in enumerate(is_i[maxIndex:]):
@@ -565,7 +568,7 @@ class matchDataAndModel:
                     #print(i, ii, "WARNING: Could not find, ", (wla, wlo), (la, lo))
                     assert 0
                     continue
-                    
+
 #               lldict[(wla, wlo)] = la, lo
 #               finds += 1
 #                print('found:', finds, i, ii, maxIndex, self.latcc[la, lo], self.loncc[la, lo], )
@@ -616,7 +619,7 @@ class matchDataAndModel:
                     z = ukp.getORCAdepth(wz, self.depthcc, debug=0)
                     zdict[wz] = z
             else:
-                z = ukp.getORCAdepth(wz, self.depthcc[:, la, lo], debug=0) 
+                z = ukp.getORCAdepth(wz, self.depthcc[:, la, lo], debug=0)
                 #zdict[wz] = z
 #            if self.debug:
 #                print("matchModelToData:\t", i, 'Found new depth:', wz,
@@ -723,7 +726,7 @@ class matchDataAndModel:
         #print('self.matches', self.matches.keys())
         #assert 0
 #        for (t, z, la, lo) in self.matches.keys():
-#            print(k, (self.latcc[la,lo], self.loncc[la,lo]),  
+#            print(k, (self.latcc[la,lo], self.loncc[la,lo]),
 
     def _convertModelToOneD_(self, ):
         if not ukp.shouldIMakeFile(
@@ -757,8 +760,8 @@ class matchDataAndModel:
 #                        debug=self.debug,
 #                        dictToKeep=self.matches)
 #            if not exists(self.Model1D):
-#                annual=True 
-#                if annual: 
+#                annual=True
+#                if annual:
 #                    timeAverage=True
 #                else: timeAverage=False
 #                mergeNC(mod1dfiles, self.Model1D,variables=self.ModelVars,timeAverage=timeAverage, debug=True)
@@ -915,7 +918,7 @@ class matchDataAndModel:
               self.depthcc.shape)
         self._meshLoaded_ = 1
         for i, j in zip(['lat', 'lon', 'depth'],[self.latcc, self.loncc, self.depthcc]):
-            print("matchModelToData: INFO", i, (j.min(), '-->', j.max()), 
+            print("matchModelToData: INFO", i, (j.min(), '-->', j.max()),
                 'shape:', j.shape)
 
     def getClosestPoint(self,
@@ -947,8 +950,8 @@ class matchDataAndModel:
         (la_ind, lo_ind) = np.unravel_index(c.argmin(), c.shape)
         new_lat = self.latcc[la_ind, lo_ind]
         new_lon = self.loncc[la_ind, lo_ind]
-        print('getClosestPoint', 'looking for: ',(lat,lon), 
-                'index:', (la_ind, lo_ind), 
+        print('getClosestPoint', 'looking for: ',(lat,lon),
+                'index:', (la_ind, lo_ind),
                 'which is', (new_lat, new_lon),
                 'distance:', c.min())
         if np.sqrt(np.abs(c.min())) > llrange:
