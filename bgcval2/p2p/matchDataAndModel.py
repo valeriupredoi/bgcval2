@@ -202,14 +202,16 @@ class matchDataAndModel:
                 debug=True)
 
         if method == 'nctoolkit':
+            print("matchDataAndModel:\tpruneModelAndData: opening files")
             ds = nctoolkit.open_data(self.ModelFile)
-            ds.subset(years = self.year)
+            print("matchDataAndModel:\tpruneModelAndData: subsetting", self.year, self.ModelVars)
+            ds.subset(years = int(self.year))
             ds.subset(variables = self.ModelVars)
             if self.annual:
+                print("matchDataAndModel:\tpruneModelAndData: Annual mean.")
                 ds.tmean(["year"])
+            print("matchDataAndModel:\tpruneModelAndData: Saving file: ", self.ModelFileMerged)
             ds.to_nc(self.ModelFileMerged)
-
-
 
     def _convertDataTo1D_(self, ):
         """
