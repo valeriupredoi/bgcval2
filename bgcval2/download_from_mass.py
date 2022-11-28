@@ -446,7 +446,7 @@ def download_from_mass(jobID, doMoo=True):
         print("download_from_mass:\trunning the command:", bashCommand)
         stdout.flush()
         process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-        output = process.communicate()[0]
+        output = str(process.communicate()[0])
 
     # moo get:
     if len(output.split('\n')) > 6000:
