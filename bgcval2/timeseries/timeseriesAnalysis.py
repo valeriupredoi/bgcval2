@@ -502,9 +502,7 @@ class timeseriesAnalysis:
             self.weightsDict[(False, False)] = 1.
             return
 
-        
         grid_coords = {k: self.modelcoords[k] for k in ['lat', 'lon']}
-        
         if grid_coords['lat'] not in nc.variables.keys() or grid_coords['lon'] not in nc.variables.keys():
             # guess new coordinate:
             grid_coords = ukp.load_coords_from_netcdf(nc.filename)
