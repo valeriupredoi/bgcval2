@@ -61,10 +61,10 @@ def _establish_hostname():
     elif gethostname().find('pmpc') > -1:
         hostname = "pml"
     elif gethostname().find('-az') > -1:
-        hostname = "github-actions"  # for testing on GA machine
+        hostname = "local-test-only"  # for testing on GA machine
     # FIXME local testing only
     elif gethostname().find('valeriu-PORTEGE-Z30-C') > -1:
-        hostname = "local-test-only"
+        hostname = "local-test-only"  # for testing on V's laptop
     else:
         host = gethostname()
         print(f"Got host name: {host}")
