@@ -101,9 +101,9 @@ def find_keys_in_nc(nc, keys):
     Find some keys in a netcdf.
     """
     intersection_keys = list(set(keys) & set(nc.variables.keys()))
-    if not len(intersection_keys):
+    if not intersection_keys:
         raise KeyError(f'Unable to find keys {keys} in {nc.filename}')
-    if len(intersection_keys)>1:
+    if len(intersection_keys) > 1:
         print('WARNING: found more than one key {intersection_keys} in {nc.filename}')
     return intersection_keys
 
