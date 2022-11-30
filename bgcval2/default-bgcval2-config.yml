@@ -12,6 +12,7 @@ standard-paths:
       p2p_ppDir: "bgcval2/ukesm_postProcessed"
       imagedir: "bgcval2/images"
       ModelFolder_pref: "BGC_data"
+      shared_mass_scripts: "/gws/nopw/j04/esmeval/bgcval2/shared_mass_scripts/"
       orcaGridfn: "/gws/nopw/j04/esmeval/bgc-val/mesh_mask_eORCA1_wrk.nc"
       orca1bathy: "/gws/nopw/j04/esmeval/bgc-val/ORCA1bathy.nc"
       ObsFolder: "/gws/nopw/j04/esmeval/example_data/bgc"

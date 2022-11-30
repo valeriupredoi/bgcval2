@@ -4,14 +4,22 @@
 
 ![bgcval2logo](https://github.com/valeriupredoi/bgcval2/blob/main/doc/figures/BGCVal2-logo-2-DARK-200x177.png)
 
-BGCVal
-======
+bgcval2
+=======
 
-This is the Python3 (Python 3.8 and 3.9) version of [BGCVal](https://gmd.copernicus.org/articles/11/4215/2018/).
 
-**This is a fully deployable Python3 package.**
+bgcval2 is the updated and modernised version of BGC-val.
+There are several updates over the previously published version of [BGCVal](https://gmd.copernicus.org/articles/11/4215/2018/).
+The primary improvements are to the user interface, the ease of use, ease of installation,
+and a general modernisation of the core approach, including the move to python3, 
+and using a conda enviroment.
 
-Suport for Python 3.10 is not yet enabled due to the current use of Basemap, that is obsolete, but still usable with Python 3.8-3.9.
+This work was funded through WP1 of the Terrafirma project.
+
+
+Current version notes:
+
+- Suport for Python 3.10 is not yet enabled due to the current use of Basemap, that is obsolete, but still usable with Python 3.8-3.9.
 
 Environment and installation
 ============================
@@ -104,6 +112,7 @@ name: <Analysis name string>
 do_analysis_timeseries: <bool>
 do_mass_download: <bool>
 master_suites: <str>
+auto_download: <bool>
 
 jobs:
    <jobID1>:
@@ -113,6 +122,8 @@ jobs:
       linestyle: '-'
       shifttime: 0.
       suite: physics
+      auto_download: False
+
    <jobID2>:
       description: <descrption of the second job>
       ...
@@ -133,6 +144,12 @@ These values are:
    - A list of the type of analysis report to produce.
    - Options are: `physics`, `bio`, `debug`.
    - Default is `['physics', 'bio',]`.
+ - `auto_download`: 
+   - If True, adds the jobID to a list of paths which will download automatically over night
+   - The script it renewed every time that the analysis\_compare is run.
+   - If the job is not run, older jobs are removed from the nightly download after some time.
+   - This boolean flag can be set at the top level or for individual jobs.
+   - Please set it to false if your job has completed and all relevant has been downloaded.
  - `jobs`:
    - A list of jobIDs, and some options on how they will appear in the final report.
    - The options are:
@@ -205,6 +222,11 @@ both to download, but also to run the monthly analysis is not currently tested.
 
 This tool downloads the data, but also includes several functions which create symbolic links
 in the data's directory in order to accomodate incompatible changes in NEMO's output formatting.
+
+Please consult the command help for more details:
+```
+download_from_mass -h
+```
 
 
 Running the tool for a single job
@@ -327,6 +349,36 @@ Simiarly, the `bgcval2/functions/standard_functions.py` contains several
 basic functions such as multiply by or add to, or `noChange`, which can all be 
 called without providing the `path`, and which may have their own key word
 arguments.
+
+
+
+Clearing the Cache
+------------------
+
+In order to produce a comparison report, bgcval2 first generates the comparison images, 
+then populates the report using all images in the reports path. 
+This means that older images may appear in new reports, even if they were removed from the 
+input yamls. If you want to "clear the cache", these images need to be deleted.
+
+The key place to clear is set by default on jasmin to be:
+```
+/gws/nopw/j04/ukesm/BGC_data/$USER/bgcval2/images/TimeseriesCompare/$NAME
+```
+where `$USER` is your jasmin user name and `$NAME` is the name given to this analysis 
+in your `input_yml` file.
+This is where the comparison plots are stored.
+
+From there, these plots are copied to
+```
+CompareReports2/$NAME
+```
+This is where the report is generated.
+
+The third place that these plots are kept is on the public facing jasmin directory:
+```
+/gws/nopw/j04/esmeval/public/CompareReports/bgcval2/$USER/$NAME
+```
+This is where the report is hosted.
 
 
 Point to point analysis
