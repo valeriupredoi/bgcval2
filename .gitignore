@@ -1,6 +1,5 @@
 *.pyc
 *.gz
-*.nc
 *.png
 .eggs/
 BGCVal2.egg-info/
