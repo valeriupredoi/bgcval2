@@ -12,7 +12,7 @@ import contextlib
 import functools
 import pytest
 import sys
-
+from . import  bgcval2_test_data
 import bgcval2
 
 from bgcval2.analysis_compare import main
@@ -37,9 +37,16 @@ def arguments(*args):
     sys.argv = backup
 
 
+@pytest.fixture(scope='session')
+def test_create_files():
+    bgcval2_test_data()
+
+
 @patch('bgcval2.analysis_compare.main', new=wrapper(bgcval2.analysis_compare.main))
+@pytest.mark.usefixtures('test_create_files')
 def test_run_analysis_compare():
     """Patch and run the whole thing."""
+    bgcval2_test_data()
     with pytest.raises(ValueError) as exc:
         with arguments('analysis_compare', '-y', 'input_yml/debug.yml'):
             main()
