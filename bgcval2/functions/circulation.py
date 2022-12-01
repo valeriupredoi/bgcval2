@@ -101,9 +101,9 @@ def find_keys_in_nc(nc, keys):
     Find some keys in a netcdf.
     """
     intersection_keys = list(set(keys) & set(nc.variables.keys()))
-    if not len(intersection_keys):
+    if not intersection_keys:
         raise KeyError(f'Unable to find keys {keys} in {nc.filename}')
-    if len(intersection_keys)>1:
+    if len(intersection_keys) > 1:
         print('WARNING: found more than one key {intersection_keys} in {nc.filename}')
     return intersection_keys
 
@@ -134,8 +134,7 @@ def drakePassage(nc, keys, **kwargs):
 
     all_velo_keys = ['uo', 'u3d']
     velo_keys = find_keys_in_nc(nc, all_velo_keys)
-    velo = nc.variables[velo_keys[0]][0, :, LAT0:LAT1, LON]    
-
+    velo = nc.variables[velo_keys[0]][0, :, LAT0:LAT1, LON]
     drake = np.sum(velo * e3u * e2u_drake * umask_drake) * 1.e-6
     return drake
 
@@ -162,7 +161,7 @@ def TwentySixNorth(nc,keys,**kwargs):
 
     if grid == 'eORCA1':
         latslice26Nnm = eORCA1_latslice26Nnm
-    
+
     zv = np.ma.array(nc.variables[keys[0]][..., latslice26Nnm, :]) # m/s
     atlmoc = np.array(np.zeros_like(zv[0, :, :, 0]))
 

@@ -61,7 +61,10 @@ def _establish_hostname():
     elif gethostname().find('pmpc') > -1:
         hostname = "pml"
     elif gethostname().find('-az') > -1:
-        hostname = "github-actions"  # for testing on GA machine
+        hostname = "local-test-only"  # for testing on GA machine
+    # FIXME local testing only
+    elif gethostname().find('valeriu-PORTEGE-Z30-C') > -1:
+        hostname = "local-test-only"  # for testing on V's laptop
     else:
         host = gethostname()
         print(f"Got host name: {host}")
@@ -106,6 +109,7 @@ def _set_jasmin_paths(paths_dict):
     )
         
     # normalize obs forlder in case user didnt specify abspath
+    # FIXME should normalize all paths just in case
     obs_folder = _normalize_path(jasmin_paths["general"]["ObsFolder"])
 
     for obsdir in jasmin_paths["data-files"]:
@@ -115,6 +119,20 @@ def _set_jasmin_paths(paths_dict):
         )
 
     return jasmin_paths
+
+
+def _set_local_test_paths(paths_dict):
+    """Set paths for a local test."""
+    jasmin_like_paths = _set_jasmin_paths(paths_dict)
+
+    # organize paths like for JASMIN; normalize all
+    for pth in jasmin_like_paths:
+        for k in jasmin_like_paths[pth]:
+            jasmin_like_paths[pth][k] = _normalize_path(
+                jasmin_like_paths[pth][k]
+            )
+
+    return jasmin_like_paths
 
 
 def _set_pml_paths(paths_dict):
@@ -277,6 +295,11 @@ def _expand_paths(paths_dict, hostname):
         runtime_paths = _set_monsoon_paths(paths_dict)
     elif hostname == "pml":
         runtime_paths = _set_pml_paths(paths_dict)
+    elif hostname == "local-test-only":
+        runtime_paths = _set_local_test_paths(paths_dict)
+    else:
+        raise ValueError(f"Hostname {hostname} does not yet have a "
+                         "method for configuring paths.")
 
     return runtime_paths
 
