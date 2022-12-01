@@ -1,1 +1,0 @@
-/home/valeriu/bgcval2/local_test/BGC_data/u-cp416debug/nemo_u-cp416debugo_1y_1990_grid-T.nc
