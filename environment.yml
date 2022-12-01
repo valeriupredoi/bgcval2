@@ -16,6 +16,7 @@ dependencies:
   - scipy
   # Python packages - dependencies for testing
   - flake8
+  - iris
   - pytest>=3.9,!=6.0.0rc1,!=6.0.0
   - pytest-cov>=2.10.1
   - pytest-env
