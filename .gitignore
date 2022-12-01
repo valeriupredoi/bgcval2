@@ -1,4 +1,5 @@
 *.pyc
+*.nc
 *.gz
 *.png
 .eggs/
