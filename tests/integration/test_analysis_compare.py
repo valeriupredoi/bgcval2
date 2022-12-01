@@ -34,5 +34,5 @@ def test_run_analysis_compare():
     with pytest.raises(ValueError) as exc:
         with arguments('analysis_compare', '-y', 'input_yml/debug.yml'):
             main()
-    expected_exc = "operands could not be broadcast together with shapes (3,0) (0,3)"
+    expected_exc = "operands could not be broadcast together with shapes (4,299,299) (3,) (4,299,299)"
     assert expected_exc in str(exc.value)
