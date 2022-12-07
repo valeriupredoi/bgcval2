@@ -42,17 +42,16 @@ import nctoolkit
 
 ######
 # local imports
-from .. import UKESMpython as ukp
-from ..bgcvaltools.pftnames import CMIP5models
-
+import bgcval2.UKESMpython as ukp
+from bgcval2.bgcvaltools.pftnames import CMIP5models
 #####
 # These are availalble in the module:
 #	https://gitlab.ecosystem-modelling.pml.ac.uk/ledm/netcdf_manip
 #from ..netcdf_manipulation.pruneNC import pruneNC
-from ..netcdf_manipulation.convertToOneDNC import convertToOneDNC
-from ..netcdf_manipulation.mergeNC import mergeNC
-from ..netcdf_manipulation.changeNC import changeNC, AutoVivification
-
+from bgcval2.netcdf_manipulation.convertToOneDNC import convertToOneDNC
+from bgcval2.netcdf_manipulation.mergeNC import mergeNC
+from bgcval2.netcdf_manipulation.changeNC import changeNC, AutoVivification
+from bgcval2.netcdf_manipulation.alwaysInclude import alwaysInclude, depthNames 
 #TO DO
 #	This still requires the netcdf_manip library, the ORCA1bathy file
 
@@ -204,13 +203,26 @@ class matchDataAndModel:
         if method == 'nctoolkit':
             print("matchDataAndModel:\tpruneModelAndData: opening files")
             ds = nctoolkit.open_data(self.ModelFile)
+            vars_to_keep = self.ModelVars + alwaysInclude
+
+            #print(vars_to_keep, ds.variables, ds.times, ds.contents)
+            #assert 0
             print("matchDataAndModel:\tpruneModelAndData: subsetting", self.year, self.ModelVars)
             ds.subset(years = int(self.year))
-            ds.subset(variables = self.ModelVars)
+            ds.subset(variables = vars_to_keep) #self.ModelVars)
+
+            print("matchDataAndModel:\tpruneModelAndData: monthly mean")
+            ds.tmean(["month"])
+            print("matchDataAndModel:\tpruneModelAndData: merging")
+            print(ds)
+            ds.merge("time")
             if self.annual:
                 print("matchDataAndModel:\tpruneModelAndData: Annual mean.")
                 ds.tmean(["year"])
             print("matchDataAndModel:\tpruneModelAndData: Saving file: ", self.ModelFileMerged)
+            print(ds)
+            #ds.zip()
+
             ds.to_nc(self.ModelFileMerged)
 
     def _convertDataTo1D_(self, ):
@@ -240,8 +252,13 @@ class matchDataAndModel:
                             self.DataFile1D,
                             debug=True,
                             variables=self.DataVars)
-            assert 0
             nc.close()
+            return
+        if nc.variables[self.DataVars[0]].ndim == 1:
+            print('matchDataAndModel:\tconvertDataTo1D:\tData already 1d')            
+            self.DataFile1D = self.DataFile
+
+            #self.datacoords['tdict'] = 
             return
 
         mmask = np.ones(nc.variables[self.DataVars[0]].shape)
@@ -435,6 +452,7 @@ class matchDataAndModel:
         print('opened 1D data:', self.DataFile1D)
         #ncIS = ncdfView(self.DataFile1D,Quiet=True)
         is_i = ncIS.variables['index'][:]
+        ncMO = Dataset(self.ModelFileMerged, 'r')
 
         try:
             assert 0
@@ -510,11 +528,14 @@ class matchDataAndModel:
         is_z = ncIS.variables[self.datacoords['z']][:]
         is_la = ncIS.variables[self.datacoords['lat']][:]
         is_lo = ncIS.variables[self.datacoords['lon']][:]
+        #is_dates = num2date(is_t, ncIS.variables[self.datacoords['t']].units, calendar=ncIS.variables[self.datacoords['t']].calendar)
+        is_dates = var_to_datetime(ncIS.variables[self.datacoords['t']])
+        print('is_dates', is_dates)
         print('is_la', (is_la.min(),is_la.max(), ),'is_lo', (is_lo.min(), is_lo.max()))
-        if self.annual:
-            tdict = {0:0, 1:0, 6:0, 7:0}
-        else:
-            tdict = self.datacoords['tdict']
+#        if self.annual:
+#            tdict = {0:0, 1:0, 6:0, 7:0}
+#        else:
+#            tdict = self.datacoords['tdict']
 
         #tdict   = {i:i for i in xrange(12)}
         ncIS.close()
@@ -549,7 +570,7 @@ class matchDataAndModel:
             zdict = {0: 0, 0.: 0}
 
         if not self._meshLoaded_:
-            self.loadMesh()
+            self.loadMesh(self.ModelFileMerged)
 
         for i, ii in enumerate(is_i[maxIndex:]):
             i += maxIndex
@@ -557,18 +578,15 @@ class matchDataAndModel:
             wz = is_z[i]
             wla = is_la[i]
             wlo = is_lo[i]
-            print('looking for', i, ii, wt, wz, wla, wlo)
+            print('looking for', 'i',i, 'ii',ii,'wt', wt, 'wz', wz, 'wla', wla, 'wlo', wlo)
 
             #####
             # Match Latitude and Longitude
-            try:
-                assert 0
-                la, lo = lldict[(wla, wlo)]
-            except:
+            la, lo = lldict.get((wla, wlo), (-1, -1))
+            if la == lo == -1:
                 la, lo = self.getClosestPoint(wla, wlo, i=i, debug=False)
                 if la == lo == -1:
-                    #print(i, ii, "WARNING: Could not find, ", (wla, wlo), (la, lo))
-                    assert 0
+                    print(i, ii, "WARNING: Could not find, ", (wla, wlo), (la, lo))
                     continue
 
 #               lldict[(wla, wlo)] = la, lo
@@ -581,18 +599,17 @@ class matchDataAndModel:
                 if abs(self.loncc[la, lo] - wlo) > 2.:
                     #print('No match, too far:', (la, lo), (wla,wlo), np.abs(self.loncc[la, lo] -wlo))
                     continue
-                print('found:', finds, i, ii, maxIndex, self.latcc[la, lo], self.loncc[la, lo])
+                #print('found:', finds, i, ii, maxIndex, self.latcc[la, lo], self.loncc[la, lo])
                 lldict[(wla, wlo)] = la, lo
                 finds += 1
 
-
-                if self.debug: # and i % 1 == 0:
-                    print("matchModelToData:\t", i, 'New match:\tlon:',
-                          [wlo, self.loncc[la, lo]], '\tlat:',
-                          [wla, self.latcc[la, lo]],
-                          (self.latcc[la, lo], self.loncc[la, lo]),
-                          (wla, wlo),
-                          [finds, len(lldict)])
+                #if self.debug: # and i % 1 == 0:
+                #    print("matchModelToData:\t", i, 'New match:\tlon:',
+                #          [wlo, self.loncc[la, lo]], '\tlat:',
+                #          [wla, self.latcc[la, lo]],
+                #          (self.latcc[la, lo], self.loncc[la, lo]),
+                #          (wla, wlo),
+                #          [finds, len(lldict)])
 
 #               if abs(self.latcc[la, lo] - wla) > 3.:
 #                    print('No match, too far:',self.latcc[la, lo], wla)
@@ -629,20 +646,31 @@ class matchDataAndModel:
 
             #####
             #Match Time
-            try:
-                t = tdict[wt]
-            except:
-                print(
-                    "matchModelToData:\tunable to find time match in pftnames, mt[",
-                    self.dataType, "]['tdict']", wt)
-                print("tdict:", tdict)
-                assert False
-
-                t = getMonthFromSecs(wt)
+            t = tdict.get(wt, 1E20)
+            if t == 1e20:
+                print('Failed to find time', t,(i, ii), is_dates[i])
+                # assume we're only matching month and day, not 
+                # match month and day?
+                t = self.getClosestdate(is_dates[i], i=i, clim_style=True)
+                print(t, is_dates.shape)
                 tdict[wt] = t
-                if self.debug:
-                    print("matchModelToData:\t", i, 'Found new month:', wt,
-                          '-->', t)
+
+
+
+#           try:
+#               t = tdict[wt]
+#           except:
+#               print(
+#                   "matchModelToData:\tunable to find time match in pftnames, mt[",
+#                   self.dataType, "]['tdict']", wt)
+#               print("tdict:", tdict)
+#               assert False
+#
+#               t = getMonthFromSecs(wt)
+#               tdict[wt] = t
+#               if self.debug:
+#                   print("matchModelToData:\t", i, 'Found new month:', wt,
+#                         '-->', t)
 
             #####
             # Add match into array
@@ -882,44 +910,37 @@ class matchDataAndModel:
 
         c = changeNC(self.DataFile1D, self.maskedData1D, av, debug=self.debug)
 
-    def loadMesh(self, ):
+    def loadMesh(self, modelfile=None):
+        if not modelfile: 
+            modelfile == self.gridFile
         print("matchModelToData:\tOpened Model netcdf mesh.", self.grid, '(',
-              self.gridFile, ')')
-        ncER = Dataset(self.gridFile, 'r')
-
-        #ncER = ncdfView("data/mesh_mask_ORCA1_75.nc",Quiet=True)
-        if 'nav_lat' in list(ncER.variables.keys()):
-            self.latcc = ncER.variables['nav_lat'][:].squeeze()
-        elif 'lat' in list(ncER.variables.keys()):
-            self.latcc = ncER.variables['lat'][:].squeeze()
-        else:
-            self.latcc = ncER.variables[self.modelcoords['lat']][:].squeeze()
-
-        if 'nav_lon' in list(ncER.variables.keys()):
-            self.loncc = ncER.variables['nav_lon'][:].squeeze()
-        elif 'lon' in list(ncER.variables.keys()):
-            self.loncc = ncER.variables['lon'][:].squeeze()
-        else:
-            self.loncc = ncER.variables[self.modelcoords['lon']][:].squeeze()
-
-        if 'deptht' in list(ncER.variables.keys()):
-            self.depthcc = ncER.variables['deptht'][:].squeeze()
-        elif 'gdept_0' in list(ncER.variables.keys()):
-            self.depthcc = ncER.variables['gdept_0'][:].squeeze()
-        elif 'lev' in list(ncER.variables.keys()):
-            self.depthcc = ncER.variables['lev'][:].squeeze()
-        else:
-            self.depthcc = ncER.variables[self.modelcoords['z']][:]
-
+                modelfile, ')', 'default:', self.gridFile)
+        ncER = Dataset(modelfile, 'r')
+        self.latcc = ncER.variables[self.modelcoords['lat']][:].squeeze()
+        self.loncc = ncER.variables[self.modelcoords['lon']][:].squeeze()
         if self.loncc.ndim == 1 and self.loncc.shape != self.latcc.shape:
             self.loncc, self.latcc = np.meshgrid(self.loncc, self.latcc)
 
+#        self.depthcc = choose_best_ncvar(ncER, depthNames)[:]
+#        if 'deptht' in list(ncER.variables.keys()):
+#            self.depthcc = ncER.variables['deptht'][:].squeeze()
+#        elif 'gdept_0' in list(ncER.variables.keys()):
+#            self.depthcc = ncER.variables['gdept_0'][:].squeeze()
+#        elif 'lev' in list(ncER.variables.keys()):
+#            self.depthcc = ncER.variables['lev'][:].squeeze()
+#        else:
+#        print(self.modelcoords['z'], ncER.variables.keys())
+        self.depthcc = ncER.variables[self.modelcoords['z']][:]
+
+#        self.depthcc = choose_best_ncvar(ncER, depthNames)[:]
+        self.datescc = var_to_datetime(ncER.variables[self.modelcoords['t']])
+
         ncER.close()
         print("matchModelToData:\tloaded mesh.", self.grid, 'lat:',
-              self.latcc.shape, 'lon:', self.loncc.shape, 'depth:',
-              self.depthcc.shape)
+              self.latcc.shape, 'lon:', self.loncc.shape)
+              
         self._meshLoaded_ = 1
-        for i, j in zip(['lat', 'lon', 'depth'],[self.latcc, self.loncc, self.depthcc]):
+        for i, j in zip(['lat', 'lon', 'z'],[self.latcc, self.loncc, self.depthcc]):
             print("matchModelToData: INFO", i, (j.min(), '-->', j.max()),
                 'shape:', j.shape)
 
@@ -935,34 +956,32 @@ class matchDataAndModel:
 	"""
         km = 10.E20
         la_ind, lo_ind = -1, -1
-#        latrangeCutoff = 2.
-#        lonrangeCutoff = 5.
-#        print('lat:', lat, 'lon:', lon)
 
         lat = ukp.makeLatSafe(lat)
         lon = ukp.makeLonSafe(lon)
 
         if not self._meshLoaded_:
-            self.loadMesh()
-        #rint('lat:', lat, 'lon:', lon)
+            self.loadMesh(modelfile=self.ModelFileMerged)
 
         c = (self.latcc - lat)**2 + (self.loncc - lon)**2
-        #rint('argmin', c.argmin(), c.shape, self.latcc.shape, self.loncc.shape)
 
         (la_ind, lo_ind) = np.unravel_index(c.argmin(), c.shape)
         new_lat = self.latcc[la_ind, lo_ind]
         new_lon = self.loncc[la_ind, lo_ind]
-        print('getClosestPoint', 'looking for: ',(lat,lon),
-                'index:', (la_ind, lo_ind),
-                'which is', (new_lat, new_lon),
-                'distance:', c.min())
+
+        print('getClosestPoint', 'looking for: ', (lat, lon),
+              'index:', (la_ind, lo_ind),
+              'which is', (new_lat, new_lon),
+              'distance:', c.min())
+
         if np.sqrt(np.abs(c.min())) > llrange:
-            print('Not close enough!', i, np.sqrt(np.abs(c.min())), c.argmin(),  llrange, c.argmin(), c.shape)
-            assert 0
+            print('Not close enough!', i, np.sqrt(np.abs(c.min())), c.argmin(), llrange, c.argmin(), c.shape)
             return -1, -1
+
         if np.abs(lat - new_lat) > llrange or np.abs(lon - new_lon) > llrange:
-               print('Very strange:', (lat, lon), (new_lat, new_lon))
-               raise ValueError('Not found!', la_ind, lo_ind)
+            print('Very strange:', (lat, lon), (new_lat, new_lon))
+            raise ValueError('Not found!', la_ind, lo_ind)
+
         if debug:
             print('location ', [la_ind, lo_ind], '(', self.latcc[la_ind,
                                                                  lo_ind],
@@ -971,6 +990,39 @@ class matchDataAndModel:
             raise ValueError('Not found!', la_ind, lo_ind)
 
         return la_ind, lo_ind
+
+    def getClosestdate(self,
+                       time,
+                       debug=True,
+                       i='',
+                       clim_style=True,
+                       llrange=5.):
+        """
+        finds the closest date time.
+        """
+        if not self._meshLoaded_:
+            self.loadMesh(modelfile=self.ModelFileMerged)
+
+        if len(self.datescc)==1:
+            return 0
+
+        deltas = np.array([t - time for t in self.datescc])
+       
+        if clim_style:
+            # only care about closest month/day, ignoring years
+            deltas = np.array([(t.month - time.month)/12. + (t.day - time.day)/365.25 for t in self.datescc])
+
+        else: 
+            # care about aboslute time difference
+            deltas = np.array([t - time for t in self.datescc])
+
+        time_index = np.unravel_index(deltas.argmin(), deltas.shape)
+        new_time = self.datescc[time_index]
+
+        print('getClosesttime', i, 'looking for: ', time,
+                'index:', time_index,
+                'which is', new_time)
+        return time_index
 
 
 #########################################
@@ -1055,6 +1107,25 @@ def getMonthFromSecs(secs):
     return int(day / 30.4)  #returns month between 0 and 11 ...
 
 
+def var_to_datetime(ncvar):
+    """
+    Takes a time variable 
+    Return an array of datetimes.
+    """
+    try:
+        calendar = ncvar.calendar
+    except:
+        calendar = 'Gregorian'
+    units = ncvar.units
+    print('var_to_datetime:', units, calendar, ncvar, ncvar[:])
+    
+    if units in ['months since 0000-01-01 00:00:00', ]:
+        units = 'months since 2000-01-01 00:00:00'
+        return num2date(ncvar[:], 'months since 2000-01-01 00:00:00', calendar='360_day') 
+
+    return num2date(ncvar[:], ncvar.units, calendar=calendar)
+
+
 def main():
     assert False
 
@@ -1115,6 +1186,7 @@ def main():
         #modelFile= "outNetCDF/Climatologies/"+jobID+"_clim_IntPP.nc"
         pco2vars = ["netPP", "IntPP"]
         b = matchDataAndModel(datafile, ModeldiagFile, pco2vars, key=key)
+
 
 
 if __name__ == "__main__":

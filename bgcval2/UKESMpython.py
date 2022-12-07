@@ -468,7 +468,7 @@ def load_coords_from_netcdf(mdfile):
     """
     # Set input coordinates:
     coord_candidates = {
-        't': ['time_centered','time', 'index_t', 'time_counter'],
+        't': ['time_counter', 'time_centered','time', 'index_t', ],
         'z':  ['depth', 'deptht', 'depthu', 'nav_lev', 'index_z', 'level'],
         'lat': ['lat', 'latitude', 'nav_lat', 'nav_lat_grid_T'],
         'lon': ['lon', 'longitude', 'nav_lon', 'nav_lon_grid_T'],
@@ -486,7 +486,9 @@ def load_coords_from_netcdf(mdfile):
     nckeys = set(nctmp.variables.keys())
 
     # Special cases to find coords:
-    special_cases = {('time_centered', 'time_counter'): ['time_centered',]}
+    #special_cases = {('time_centered', 'time_counter'): ['time_centered',]}
+    special_cases = {('time_centered', 'time_counter'): ['time_counter',]}
+
 
     output_coords = {}
     for coord, coord_candidate_list in coord_candidates.items():
@@ -502,7 +504,7 @@ def load_coords_from_netcdf(mdfile):
             raise KeyError(f'Several {coord} coordinates found: {intersection}')
 
     try:
-        calendar = nctmp.variables[output_coords.get('t')].calendar # might break.
+        calendar = nctmp.variables[output_coords.get('t', 'time')].calendar # might break.
     except AttributeError:
         calendar = 'standard'
 
@@ -2803,3 +2805,21 @@ def extractData(nc, details, key=[
     print("extractData:\t you may have a problem in your details dictionairy:",
           details, key)
     assert False
+
+
+def choose_best_ncvar(nc, keys):
+    """
+    Takes the list of keys and chooses the first one that exists in the input file.
+    Useful if fields change for no reason.
+    
+    Unlike standard_functions.choose_best_var, this function returns the netcdf.variable
+    not the data. 
+
+    """
+    for key in keys:
+        if key not in nc.variables.keys():
+            continue
+        return nc.variables[key]
+    raise KeyError(f'choose_best_ncvar: unable to find {keys} in {nc.filename}')
+
+    

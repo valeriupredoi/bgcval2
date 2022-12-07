@@ -1,11 +1,11 @@
 ---
-name            : AMM7_o3c
+name            : AMM7_talk
 units           : mmol C/m^3
 dimensions      : 1
 model           : NEMO-ERSEM
 modelFiles      : /data/proteus1/scratch/gle/dare_baseline/2000/*/*_1d_*ptrc_T.nc
 gridFile        : /users/modellers/ledm/workspace/coast/AMM7_grid/mesh_mask.nc
-model_vars      : O3_c
+model_vars      : O3_TA
 model_convert   : maskzeroes
   #dataFile        : /data/sthenno1/scratch/ledm/Observations/GLODAPv2/GLODAPv2.2021_AMM7.nc
 dataFile        : /data/sthenno1/scratch/ledm/Observations/GLODAPv2/GLODAPv2.2021_AMM7_v4_3d.nc

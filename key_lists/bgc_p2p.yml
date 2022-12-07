@@ -4,3 +4,4 @@
 # # A list of physical keys for point to point analysis.
 keys:
   AMM7_O3c: True
+  AMM7_talk : True  

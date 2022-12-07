@@ -851,6 +851,7 @@ class makePlots:
         ]
 
         for xkey, ykey in zip(xcoords, ycoords):
+            print('CompareCoords',  xkey, ykey)
             if xkey not in list(self.xnc.variables.keys()): continue
             if ykey not in list(self.ync.variables.keys()): continue
             filename = self.imageDir + 'CompareCoords' + self.name + xkey + 'vs' + ykey + '.png'
@@ -865,8 +866,17 @@ class makePlots:
             if ykey not in list(self.ync.variables.keys()):
                 raise ValueError(ykey, "not in ync")
 
-            xdata = self.xnc.variables[xkey][:]
-            ydata = self.ync.variables[ykey][:]
+
+            if xkey in ['t', 'time','time_counter']:
+                xdata = decimal_time(self.xnc, xkey)
+            else:
+                xdata = self.xnc.variables[xkey][:]
+
+            if ykey in ['t', 'time','time_counter']:
+                ydata = decimal_time(self.ync, ykey)
+            else:
+                ydata = self.ync.variables[ykey][:]
+             
             mask = np.array(xdata.mask + ydata.mask)
             if np.ma.is_masked(xdata.min()) or np.ma.is_masked(ydata.max()):
                 print('All data is masked')
@@ -879,10 +889,13 @@ class makePlots:
 
                 continue #assert 0
 
-            dx = np.ma.masked_where(
-                mask, np.ma.array(self.xnc.variables[xkey][:])).compressed()
-            dy = np.ma.masked_where(
-                mask, np.ma.array(self.ync.variables[ykey][:])).compressed()
+#            dx = np.ma.masked_where(
+#                mask, np.ma.array(self.xnc.variables[xkey][:])).compressed()
+#            dy = np.ma.masked_where(
+#                mask, np.ma.array(self.ync.variables[ykey][:])).compressed()
+            dx = np.ma.masked_where(mask, xdata).compressed()
+            dy = np.ma.masked_where(mask, ydata).compressed()
+            
             if not len(dx) or not len(dy):
                 raise ValueError('dx and dy are missing: {dx}, {dy}',dx, dy)
 
@@ -962,6 +975,22 @@ class makePlots:
         #print(filename)
         #assert 0
         return filename
+
+def decimal_time(nc, tkey):
+    """
+    Takesy netcdf and time keyu and returns an array of decimal times.
+    """
+    times = nc.variables[tkey]
+    units = nc.variables[tkey].units
+    try:
+        calendar = nc.variables[tkey].calendar
+    except: calendar='gregorian'
+    dates = num2date(times, units=units, calendar=calendar)
+    decimal_time = [dt.year+dt.month/12. + dt.day/365.25 for dt in dates]
+    print(tkey, decimal_time)
+    return np.ma.array(decimal_time)
+
+
 
 
 if __name__ == "__main__":
