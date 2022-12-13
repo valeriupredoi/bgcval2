@@ -123,6 +123,7 @@ def getSlicesDict():
         'Remainder',
         'AMM',
     ]
+    AMM = ['AMM',]
 
     OceanMonths = {o: [(o, m) for m in months] for o in Oceans}
     OceanSeasons = {o: [(o, m) for m in Seasons] for o in Oceans}
@@ -149,6 +150,8 @@ def getSlicesDict():
     newSlices.extend(Transects)
     newSlices.extend(Misc)
     newSlices.extend(BGCVal)
+    newSlices.extend('AMM')
+
     for om, keys in list(OceanMonths.items()):
         newSlices.extend(keys)
     for om, keys in list(OceanSeasons.items()):
@@ -172,6 +175,7 @@ def getSlicesDict():
     slicesDict['Transects'] = Transects
     slicesDict['Misc'] = Misc
     slicesDict['BGCVal'] = BGCVal
+    slicesDict['AMM'] = AMM
     for om, keys in list(OceanMonths.items()):
         slicesDict[om + 'Months'] = keys
     for om, keys in list(OceanSeasons.items()):

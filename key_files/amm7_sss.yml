@@ -3,14 +3,15 @@ name            : AMM7_SSS
 units           : PSU
 dimensions      : 1
 model           : NEMO-ERSEM
-modelFiles      : /data/proteus1/scratch/gle/dare_baseline/2000/*/*_1m_*grid_T.nc
+modelFiles      : /data/proteus1/scratch/gle/dare_baseline/*/*/*_1m_*grid_T.nc
 gridFile        : /users/modellers/ledm/workspace/coast/AMM7_grid/mesh_mask.nc
 model_vars      : so_abs so vosaline
-model_convert   : choose_best_var
+model_convert   : maskzeroes
 dataFile        : /data/sthenno1/scratch/ledm/Observations/WOA/annual/woa13_decav_s00_01v2_AMM.nc
 data_vars       : s_an
 data_convert    : NoChange
 data_source     : WOA13  
+metrics         : mean
 layers          : Surface 50m 100m
 regions         : AMM 
 

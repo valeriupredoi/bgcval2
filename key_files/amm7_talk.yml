@@ -3,7 +3,8 @@ name            : AMM7_talk
 units           : mmol C/m^3
 dimensions      : 1
 model           : NEMO-ERSEM
-modelFiles      : /data/proteus1/scratch/gle/dare_baseline/2000/*/*_1d_*ptrc_T.nc
+  #odelFiles      : /data/proteus1/scratch/gle/dare_baseline/*/*/*_1d_*ptrc_T.nc # daily
+modelFiles      : /data/proteus1/scratch/ledm/dare_baseline_talk/*/*/*_ptrc_T.nc # monthly
 gridFile        : /users/modellers/ledm/workspace/coast/AMM7_grid/mesh_mask.nc
 model_vars      : O3_TA
 model_convert   : maskzeroes
@@ -11,10 +12,10 @@ model_convert   : maskzeroes
 dataFile        : /data/sthenno1/scratch/ledm/Observations/GLODAPv2/GLODAPv2.2021_AMM7_v4_3d.nc
 data_vars       : tco2
 data_convert    : NoChange
-data_source     : WOA13
-
+data_source     : GLODAPv2
 layers          : Surface
 regions         : AMM
+metrics         : mean, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max
 
 
 # changes from original:

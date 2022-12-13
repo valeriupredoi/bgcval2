@@ -42,10 +42,10 @@ from collections import defaultdict
 
 #from statsmodels.nonparametric.smoothers_lowess import lowess
 
-from . import timeseriesTools as tst
-from ..bgcvaltools.viridis import viridis, discrete_viridis
-from .. import UKESMpython as ukp
-from ..bgcvaltools.pftnames import getLongName
+from bgcval2.timeseries import timeseriesTools as tst
+from bgcval2.bgcvaltools.viridis import viridis, discrete_viridis
+from bgcval2 import UKESMpython as ukp
+from bgcval2.bgcvaltools.pftnames import getLongName
 
 try:
     defcmap = pyplot.cm.jet
@@ -557,6 +557,7 @@ def simpletimeseries(
                 lw=2.,
                 label='Model 5yr moving average')
 
+    print('simple time series plot data:', times, arr)
     pyplot.xlim(xlims)
     pyplot.title(title)
     pyplot.ylabel(units)

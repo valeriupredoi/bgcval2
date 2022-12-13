@@ -641,8 +641,8 @@ longNameDict = makeLongNameDict()
 
 
 def getLongName(text, debug=False):
-
     if debug: print("Getting long name:", text)
+
 
     if type(text) in [type([
             'a',
@@ -653,6 +653,7 @@ def getLongName(text, debug=False):
     ))]:
         return ' '.join([getLongName(t) for t in text])
         #out = ''
+    if text in [None, '', ' ',]: return ''
 
     try:
         return longNameDict[text]

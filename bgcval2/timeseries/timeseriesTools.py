@@ -390,7 +390,6 @@ class DataLoader:
         print("DataLoader:\tLoaded empty", self.name, 'in', end=' ')
         print('{:<24} layer: {:<8}'.format(region, layer), end=' ')
         print('\tdata length:', len(self.load[(region, layer)]))  #,
-#print #, '\tmean:',np.ma.mean(self.load[(region,layer)])
 
     def __getlayerDat__(self, layer):
         """ Minimise quick load and save to minimise disk-reading time.

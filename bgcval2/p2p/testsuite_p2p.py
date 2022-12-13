@@ -30,6 +30,7 @@
 from sys import argv, exit
 from os.path import exists
 from calendar import month_name
+from itertools import product
 
 #Specific local code:
 from bgcval2 import UKESMpython as ukp
@@ -46,7 +47,7 @@ from bgcval2.bgcvaltools.pftnames import MaredatTypes, WOATypes, Ocean_names, Oc
 
 def testsuite_p2p(
     model='ERSEM',  #'MEDUSA','ERSEM','NEMO'],
-    year='1997',
+    years=['1997', ],
     jobID='xhonc',
     av={},
     regions=[],
@@ -118,11 +119,11 @@ def testsuite_p2p(
 
 	"""
 
-    year = str(int(year))
+    #ear = str(int(year))
     print("#############################")
     print("testsuite_p2p:  ")
-#    print("models:        ", model)
-    print("year:          ", year)
+    print("models:        ", model)
+    print("years:         ", years)
     print("jobID:         ", jobID)
     print("av keys:	      ", sorted(av.keys()))
     print("#############################")
@@ -135,7 +136,7 @@ def testsuite_p2p(
 
     # Location of processing files
     if len(workingDir) == 0:
-        workingDir = ukp.folder(''.join(["WorkingFiles/", jobID, '-', year]))
+        workingDir = ukp.folder(''.join(["WorkingFiles/", jobID]))
         print("No working directory provided, creating default:", workingDir)
 
     # Location of image Output files
@@ -147,84 +148,9 @@ def testsuite_p2p(
 
     #####
     # Start analysis here:
-    shelvesAV = []  #AutoVivification()
-
-    for name in sorted(av.keys()):
-#       #####
-#       # Start with some tests of the av.
-#
-#       #####
-#       # Testing av for presence of model keyword
-#       print("testsuite_p2p: \t", model, jobID, year,
-#             name)  #, av[name][model]
-#       try:
-#           if not isinstance(av[name][model], dict):
-#               print("testsuite_p2p: \tWARNING:", model, ' not in av',
-#                     list(av[name].keys()))
-#               continue
-#           if len(list(av[name][model].keys())) == 0:
-#               print("testsuite_p2p: \tWARNING:", model, ' not in av',
-#                     list(av[name].keys()))
-#               continue
-#       except KeyError:
-#           print("testsuite_p2p: \tWARNING:\tNo ", name, 'in ', model)
-#           continue
-
-    #####
-    # Testing av for presence of data keyword
-#        try:
-#            if not isinstance(av[name]['Data'], dict):
-#                print("testsuite_p2p: \tWARNING:", 'Data', ' not in av',
-#                      list(av[name].keys()))
-#                continue
-#            if len(list(av[name]['Data'].keys())) == 0:
-#                print("testsuite_p2p: \tWARNING:", 'Data', ' not in av',
-#                      list(av[name].keys()))
-#                continue
-#        except KeyError:
-#            print("testsuite_p2p: \tWARNING:\tNo ", 'Data', 'in ', jobID)
-#            continue
-
-#    # Testing av for presence of data/obs files.
-#        try:
-#            if not exists(av[name]['Data']['File']):
-#                print("testsuite_p2p.py:\tWARNING:\tFile does not exist",
-#                      av[name]['Data']['File'])
-#                continue
-#        except:
-#            print(
-#                "testsuite_p2p.py:\tWARNING:\tDict entry does not exist\tav[",
-#                name, "][", jobID, '][File]')
-#            continue
-#        try:
-#            if not exists(av[name][jobID]['File']):
-#                print("testsuite_p2p.py:\tWARNING:\tFile does not exist",
-#                      av[name][jobID]['File'])
-#                continue
-#        except:
-#            print(
-#                "testsuite_p2p.py:\tWARNING:\tDict entry does not exist:\tav[",
-#                name, "][", jobID, '][File] :', av[name][jobID]['File'])
-#            continue
-    # Testing av for presence of grid
-#        grid = av[name][model]['grid']
-#        if grid in ['', [], {}, None]:
-#            print("testsuite_p2p.py:\tERROR:\tgrid not found:\tav[", name,
-#                  "][", model, '][grid]: ', grid)
-#            assert False
-#
-#        #####
-#    # Testing av for presence of layers
-#        if len(av[name]['layers']) == 0:
-#            av[name]['layers'] = [
-#                '',
-#            ]
-#            print(
-#                "testsuite_p2p: \tWARNING: no 'layers' provided in av, using defaults: ['',]"
-#            )
-
-    #####
-    # Made it though the initial tests. Time to start the analysis.
+    shelvesAV = []  
+    for name, year  in product(sorted(av.keys()), years):
+        year = str(year)
         print(
             "\n\n\ntestsuite_p2p.py:\tINFO:\tMade it though initial tests. Running:",
             jobID, year, name, av[name]['layers'])
@@ -293,6 +219,7 @@ def testsuite_p2p(
             #shelvesAV[model][name][depthLevel] = m.shelvesAV
             shelvesAV.extend(m.shelvesAV)
 
+            print('m.shelkvesL:', m.shelvesAV)
             #####
             # no plots doesn't produce any plots, but does produce the list of shelves which can be used in Taylor/Target/Pattern diagrams.
             if noPlots: continue
@@ -305,24 +232,44 @@ def testsuite_p2p(
             #####
             # makeTargets:
             # Make a target diagram of all matches for this particular dataset.
-            #filename = ukp.folder(imageFolder+'/Targets/'+year+'/AllSlices')+model+'-'+jobID+'_'+year+'_'+name+depthLevel+'.png'
-            #t = makeTargets(	m.shelves,
-            #			filename,
-            #			#name=name,
-            #			legendKeys = ['newSlice','ykey',],
-            #			debug=True)
-            #			#imageDir='',
+            filename = ukp.folder(imageFolder+'/Targets/'+year+'/AllSlices')+model+'-'+jobID+'_'+year+'_'+name+depthLevel+'.png'
+            t = makeTargets(	m.shelves,
+            			filename,
+            			#name=name,
+            			legendKeys = ['newSlice','ykey',],
+            			debug=True)
+            			#imageDir='',
 
-            #####
-            # Produce a set of pattern and a target plots for each of the groups here.
-            if annual:
-                groups = {
+
+    if not len(shelvesAV): 
+        print('No Shelves provided')
+        assert 0
+
+    if noPlots or noTargets:
+        return shelvesAV
+
+    # everything target:
+    filename = ukp.folder(imageFolder+'/Targets/')+'everything.png'
+    everything = ukp.reducesShelves(shelvesAV)
+    print('shelvesAV:', shelvesAV, everything)
+    t = makeTargets(everything,
+                    filename,
+                    legendKeys=['newSlice', ],
+                    debug=True)
+
+    return shelvesAV
+
+    #####
+    # Produce a set of pattern and a target plots for each of the groups here.
+    if annual:
+        groups = {
                     'Oceans': [],
                     'depthRanges': [],
                     'BGCVal': [],
+                    'AMM':[],
                 }
-            else:
-                groups = {
+    else:
+        groups = {
                     'Oceans': [],
                     'Months': [],
                     'Seasons': [],
@@ -330,46 +277,42 @@ def testsuite_p2p(
                     'SouthHemisphereMonths': [],
                     'depthRanges': [],
                     'BGCVal': [],
+                    'AMM': [],
                 }
-            for g in groups:
-                groups[g] = ukp.reducesShelves(shelvesAV,
-                                               models=[
-                                                   model,
-                                               ],
-                                               depthLevels=[
-                                                   depthLevel,
-                                               ],
-                                               names=[
-                                                   name,
-                                               ],
-                                               sliceslist=slicesDict[g])
-                print(g, groups[g])
 
-                if len(groups[g]) == 0: continue
+    year='_'.join([str(yr) for yr in years])
+    for g in groups:
+        groups[g] = ukp.reducesShelves(shelvesAV,
+                                       depthLevels=[depthLevel, ],
+                                       names=[name, ] ,
+                                       sliceslist=slicesDict[g])
+        if len(groups[g]) == 0: 
+             print('Nothing here:', g, groups[g])
+             #assert 0
+             continue
+        #####
+        # makeTargets:
+        # Make a target diagram of the shelves of this group.
+        filename = ukp.folder('/'.join([imageFolder, 'Targets', year, name, depthLevel, g]))
+        filename = filename + '_'.join([model, jobID, year, name, depthLevel, g])+'.png'
+        print('attempting to make:', filename)
+        print('attempting to make:', g, groups[g])
 
-                #####
-                # makeTargets:
-                # Make a target diagram of the shelves of this group.
-                filename = ukp.folder(
-                    imageFolder + '/Targets/' + year + '/' + name +
-                    depthLevel + '/' + g
-                ) + model + '_' + jobID + '_' + year + '_' + name + depthLevel + '_' + g + '.png'
-                makeTargets(
-                    groups[g],
-                    filename,
-                    legendKeys=[
-                        'newSlice',
-                    ],
-                )
-                #####
-                # makePattern plots:
-                # Make a pattern  diagram of all matches for this particular dataset.
-                xkeys = ''
-                for o in ['Oceans', 'Months', 'depthRanges', 'BGCVal']:
-                    if g.find(o) >= 0: xkeys = o
-                if xkeys == '':
-                    print("Could no find x axis keys!", g, 'in',
-                          ['Oceans', 'Months', 'BGCVal'])
+        makeTargets(
+            groups[g],
+            filename,
+            legendKeys=['newSlice', ], 
+            )
+        #####
+        # makePattern plots:
+        # Make a pattern  diagram of all matches for this particular dataset.
+        xkeys = ''
+        for o in ['Oceans', 'Months', 'depthRanges', 'BGCVal', 'AMM',]:
+            if g.find(o) >= 0: 
+                xkeys = o
+            if xkeys == '':
+                print("Could no find x axis keys!", g, 'in',
+                      ['Oceans', 'Months', 'BGCVal'])
 
                 filenamebase = ukp.folder(
                     imageFolder + '/Patterns/' + year + '/' + name +
@@ -382,7 +325,7 @@ def testsuite_p2p(
                     name + ' ' + g,  #xkeysname
                     slicesDict[xkeys],  #xkeysLabels=
                     filenamebase,  # filename base
-                    grid=grid,
+                    grid=av[name].get('modelgrid', None),
                     gridFile=gridFile)
             if not annual:
                 #####
@@ -401,50 +344,43 @@ def testsuite_p2p(
                     name + ' Months',  #xkeysname
                     slicesDict['Months'],  #xkeysLabels=
                     filenamebase,  # filename base
-                    grid=grid,
+                    grid=av[name].get('modelgrid', None),
                     gridFile=gridFile)
 
-        if noPlots: continue
-        if noTargets: continue
-        #####
-        # And now by depth levels:
-        if annual: groups = [
-                'Oceans',
-                'depthRanges',
-                'BGCVal',
+    #####
+    # And now by depth levels:
+    groups = [
+            'Oceans',
+            'depthRanges',
+            'BGCVal',
+            'AMM',
         ]
-        else:
-            groups = [
-                'Oceans',
-                'Months',
-                'Seasons',
-                'depthRanges',
-                'BGCVal',
-            ]  #'NorthHemisphereMonths':[],'SouthHemisphereMonths':[]}
-        for g in groups:
-            if len(av[name]['layers']) <= 1: continue
-            outShelves = {}
-            for dl in av[name]['layers']:
-                outShelves[dl] = ukp.reducesShelves(shelvesAV,
-                                                    models=[
-                                                        model,
-                                                    ],
-                                                    depthLevels=[
-                                                        dl,
-                                                    ],
-                                                    names=[
-                                                        name,
-                                                    ],
-                                                    sliceslist=slicesDict[g])
+
+    if not annual:
+        groups.extend(['Months', 'Seasons']) 
+    # layers:
+    for g in groups:
+        print('master plots:', 'makePatternStatsPlots', g, slicesDict[g])
+        if len(av[name]['layers']) <= 1: continue
+        outShelves = {}
+        for dl in av[name]['layers']:
+            outShelves[dl] = ukp.reducesShelves(shelvesAV,
+                                       models=[],
+                                       depthLevels=[dl, ],
+                                       names=[name, ] ,
+                                       sliceslist=slicesDict[g])
+
             filenamebase = ukp.folder(
                 imageFolder + '/Patterns/' + year + '/' + name + 'AllDepths/'
             ) + 'AllDepths_' + g + '_' + model + '_' + jobID + '_' + year + '_' + name
+            print('outShelves', outShelves)
+            assert 0
             makePatternStatsPlots(outShelves,
                                   name + ' ' + g,
                                   slicesDict[g],
                                   filenamebase,
-                                  grid=grid,
-                                  gridFile=gridFile)
+                                  grid=av[name].get('modelgrid', None),
+                                  GridFile=gridFile)
 
     return shelvesAV
 

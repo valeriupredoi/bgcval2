@@ -65,7 +65,7 @@ def analysis_p2p(
     annual=True,
     noPlots=False,
     suites='default',
-    noTargets=True,
+    noTargets=False, #True,
     config_user=None
 ):
     """
@@ -101,66 +101,7 @@ def analysis_p2p(
         av[key] = load_key_file(key, paths, jobID)
 
     print(analysisKeys, av)
-    # def listModelDataFiles(jobID, filekey, datafolder, annual, yr):
-    #     print("listing model data files:", jobID, filekey, datafolder, annual)
-    #     if annual:
-    #         keystr = datafolder + jobID + "/" + jobID + "o_1y_*1201[-_]" + yr + '????_' + filekey + ".nc"
-    #         print("listModelDataFiles:", keystr)
-    #         return sorted(glob(keystr))[0]
-    #     else:
-    #         return sorted(
-    #             glob(datafolder + jobID + "/" + jobID + "o_1m_*" + yr +
-    #                  "????_" + filekey + ".nc"))[-1]
 
-#####
-# Because we can never be sure someone won't randomly rename the
-# time dimension without saying anything.
-# if jobID in ['u-am515','u-am927','u-am064','u-an326',]:
-
-    # print(jobID, 'grid_T', paths.ModelFolder_pref, annual)
-    # tmpModelFiles = listModelDataFiles(jobID, 'grid_T', paths.ModelFolder_pref,
-    #                                    annual, '*')
-    #
-    # try:
-    #     tmpModelFiles = listModelDataFiles(jobID, 'grid_T',
-    #                                        paths.ModelFolder_pref, annual, '*')
-    # except:
-    #     print(
-    #         "No grid_T Model files available to figure out what naming convention is used."
-    #     )
-    #     tmpModelFiles = []
-    # ukesmkeys = {}
-    # if len(tmpModelFiles):
-    #     print('test opening:', tmpModelFiles)
-    #     nctmp = Dataset(tmpModelFiles, 'r')
-    #     nctmpkeys = list(nctmp.variables.keys())
-    #     nctmp.close()
-    #     if 'votemper' in nctmpkeys:
-    #         ukesmkeys = {}
-    #         ukesmkeys['time'] = 'time_counter'
-    #         ukesmkeys['temp3d'] = 'votemper'
-    #         ukesmkeys['sst'] = ''
-    #         ukesmkeys['sal3d'] = 'vosaline'
-    #         ukesmkeys['sss'] = ''
-    #         ukesmkeys['v3d'] = 'vomecrty'
-    #         ukesmkeys['u3d'] = 'vozocrtx'
-    #         ukesmkeys['e3u'] = 'e3u'
-    #         ukesmkeys['w3d'] = 'vovecrtz'
-    #     else:
-    #         ukesmkeys['time'] = 'time_centered'
-    #         ukesmkeys['temp3d'] = 'thetao'
-    #         ukesmkeys['sst'] = 'tos'
-    #         ukesmkeys['sal3d'] = 'so'
-    #         ukesmkeys['sss'] = 'sos'
-    #         ukesmkeys['v3d'] = 'vo'
-    #         ukesmkeys['u3d'] = 'uo'
-    #         ukesmkeys['e3u'] = 'thkcello'
-    #         ukesmkeys['w3d'] = 'wo'
-    # else:
-    #     print("No grid_T files Found")
-    # print('ukesmkeys[sal3d]:', ukesmkeys['sal3d'])
-
-    #####
     # Set which spatial and temporal limitations to plot.
     transects = [
         'AtlanticTransect',
@@ -192,142 +133,42 @@ def analysis_p2p(
         'CanRusTransect',
     ]
 
-    # medusaCoords = {
-    #     't': 'index_t',
-    #     'z': 'deptht',
-    #     'lat': 'nav_lat',
-    #     'lon': 'nav_lon',
-    #     'cal': '360_day',
-    #     'tdict': ukp.tdicts['ZeroToZero']
-    # }  # model doesn't need time dict.
-    # medusaUCoords = {
-    #     't': 'index_t',
-    #     'z': 'depthu',
-    #     'lat': 'nav_lat',
-    #     'lon': 'nav_lon',
-    #     'cal': '360_day',
-    # }  # model doesn't need time dict.
-    # medusaVCoords = {
-    #     't': 'index_t',
-    #     'z': 'depthv',
-    #     'lat': 'nav_lat',
-    #     'lon': 'nav_lon',
-    #     'cal': '360_day',
-    # }  # model doesn't need time dict.
-    # medusaWCoords = {
-    #     't': 'index_t',
-    #     'z': 'depthw',
-    #     'lat': 'nav_lat',
-    #     'lon': 'nav_lon',
-    #     'cal': '360_day',
-    # }  # model doesn't need time dict.
-    #
-    # maredatCoords = {
-    #     't': 'index_t',
-    #     'z': 'DEPTH',
-    #     'lat': 'LATITUDE',
-    #     'lon': 'LONGITUDE',
-    #     'cal': 'standard',
-    #     'tdict': ukp.tdicts['ZeroToZero']
-    # }
-    # woaCoords = {
-    #     't': 'index_t',
-    #     'z': 'depth',
-    #     'lat': 'lat',
-    #     'lon': 'lon',
-    #     'cal': 'standard',
-    #     'tdict': ukp.tdicts['ZeroToZero']
-    # }
-    # cciCoords = {
-    #     't': 'index_t',
-    #     'z': 'index_z',
-    #     'lat': 'lat',
-    #     'lon': 'lon',
-    #     'cal': 'standard',
-    #     'tdict': ukp.tdicts['ZeroToZero']
-    # }
-    # glodapCoords = {
-    #     't': 'index_t',
-    #     'z': 'depth',
-    #     'lat': 'latitude',
-    #     'lon': 'longitude',
-    #     'cal': 'standard',
-    #     'tdict': ukp.tdicts['ZeroToZero']
-    # }
-    # osuCoords = {
-    #     't': 'index_t',
-    #     'z': 'index_z',
-    #     'lat': 'latitude',
-    #     'lon': 'longitude',
-    #     'cal': 'standard',
-    #     'tdict': ukp.tdicts['ZeroToZero']
-    # }
-    # glodapv2Coords = {
-    #     't': 'index_t',
-    #     'z': 'Pressure',
-    #     'lat': 'lat',
-    #     'lon': 'lon',
-    #     'cal': '',
-    #     'tdict': {
-    #         0: 0,
-    #     }
-    # }
-    # takahashiCoords = {
-    #     't': 'index_t',
-    #     'z': 'index_z',
-    #     'lat': 'LAT',
-    #     'lon': 'LON',
-    #     'cal': 'standard',
-    #     'tdict': ukp.tdicts['ZeroToZero']
-    # }
-    # godasCoords = {
-    #     't': 'index_t',
-    #     'z': 'level',
-    #     'lat': 'lat',
-    #     'lon': 'lon',
-    #     'cal': 'standard',
-    #     'tdict': ukp.tdicts['ZeroToZero']
-    # }
-
     shelvesAV = []
-    for year in years:
-        #####
-        # Location of model files.
-        if annual:
-            ModelFolder = ModelFolder_pref + jobID + "/"
-        else:
-            ModelFolder = ModelFolder_pref + str(int(year)) + '/'
-        
-        workingDir = ''.join([paths.p2p_ppDir, '/', jobID, '-', str(int(year))])
-        imageFolder = ''.join([paths.imagedir, '/', jobID])
+    #####
+    # Location of model files.
+    ModelFolder = ModelFolder_pref + jobID + "/"
+    workingDir = ''.join([paths.p2p_ppDir, '/', jobID, ])
+    imageFolder = ''.join([paths.imagedir, '/', jobID])
 
-        print('P2P working dir:', workingDir)
-        print('P2P image dir:', imageFolder)
+    print('P2P working dir:', workingDir)
+    print('P2P image dir:', imageFolder)
 
-        # Attempt to make the directories:
-        workingDir = ukp.folder(workingDir)
-        imageFolder = ukp.folder(imageFolder)
+    # Attempt to make the directories:
+    workingDir = ukp.folder(workingDir)
+    imageFolder = ukp.folder(imageFolder)
+    
+    print('p2p: av keys:', av.keys())
 
-        shelvesAV.extend(
-            testsuite_p2p(
-                model='NEMO',
-                jobID=jobID,
-                year=year,
-                av=av,
-                workingDir=workingDir,
-                imageFolder=imageFolder,
-                noPlots=
-                noPlots,  # turns off plot making to save space and compute time.
-                gridFile=paths.orcaGridfn,  # enforces custom gridfile.
-                annual=annual,
-                noTargets=noTargets,
-            ))
-        if len(list(av.keys())) == 1: return
-        if noTargets: return
-        ######
-        # Summary Target diagrams:
-        imageFold = ukp.folder(imageFolder + '/Targets/' + year + '/Summary')
-        summaryTargets(shelvesAV, imageFold, year)
+    shelvesAV.extend(
+        testsuite_p2p(
+            model='NEMO',
+            jobID=jobID,
+            years=years,
+            av=av,
+            workingDir=workingDir,
+            imageFolder=imageFolder,
+            noPlots=
+            noPlots,  # turns off plot making to save space and compute time.
+            gridFile=paths.orcaGridfn,  # enforces custom gridfile.
+            annual=annual,
+            noTargets=noTargets,
+        ))
+    if noTargets: return
+
+    ######
+    # Summary Target diagrams:
+    imageFold = ukp.folder(imageFolder + '/Targets/Summary')
+    summaryTargets(shelvesAV, imageFold, years)
 
 
 def get_args():

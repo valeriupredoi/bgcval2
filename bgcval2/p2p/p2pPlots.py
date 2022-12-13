@@ -985,6 +985,8 @@ def decimal_time(nc, tkey):
     try:
         calendar = nc.variables[tkey].calendar
     except: calendar='gregorian'
+    if units.lower().find('months since')>-1:
+        calendar = '360_day' 
     dates = num2date(times, units=units, calendar=calendar)
     decimal_time = [dt.year+dt.month/12. + dt.day/365.25 for dt in dates]
     print(tkey, decimal_time)

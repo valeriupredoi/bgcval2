@@ -3,7 +3,7 @@ name            : GlobalMeanTemperature
 units           : degrees C
 dimensions      : 1
 model           : NEMO
-modelFiles      : /data/proteus1/scratch/gle/dare_baseline/198*/*/*_1m_*grid_T.nc
+modelFiles      : /data/proteus1/scratch/gle/dare_baseline/*/*/*_1m_*grid_T.nc
 gridFile        : /users/modellers/ledm/workspace/coast/AMM7_grid/mesh_mask.nc
 model_vars      : thetao thetao_con votemper
 model_convert   :
@@ -14,7 +14,7 @@ model_convert   :
     areafile: /users/modellers/ledm/workspace/coast/AMM7_grid/mesh_mask.nc
 layers          : layerless
 regions         : regionless
-
+metrics         : metricless
 # changes from original:
 #   add --- at start
 #   remove [name]

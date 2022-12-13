@@ -409,6 +409,7 @@ class timeseriesAnalysis:
                     if 'mean' in self.metrics:
                         modeldataD[(r, l, 'mean')][meantime] = np.ma.average(
                             layerdata, weights=weights)
+                        #print('calc mean:', r,l, meantime, modeldataD[(r, l, 'mean')][meantime])
                     if 'sum' in self.metrics:
                         modeldataD[(r, l,
                                     'sum')][meantime] = np.ma.sum(layerdata)
@@ -422,6 +423,7 @@ class timeseriesAnalysis:
                         modeldataD[(
                             r, l,
                             'metricless')][meantime] = np.ma.sum(layerdata)
+                        #print('calc metricless::', r,l, meantime, modeldataD[(r, l, 'metricless')][meantime])
 
                     if 'wcvweighted' in self.metrics:
                         #print 'wcvweights', wcvweights.shape, wcvweights.min(), wcvweights.mean(),wcvweights.max()
@@ -444,7 +446,6 @@ class timeseriesAnalysis:
                     print("timeseriesAnalysis:\tloadModel\tLoaded metric:\t",
                           int(meantime), '\t', [(r, l, m)], '\t',
                           modeldataD[(r, l, m)][meantime])
-
             readFiles.append(fn)
             openedFiles += 1
 
@@ -955,10 +956,7 @@ class timeseriesAnalysis:
                             if np.ma.is_masked(v): modeldataDict[m].append(0.)
                             else: modeldataDict[m].append(v)
 
-                    title = ' '.join([
-                        getLongName(t)
-                        for t in [r, str(l), self.datasource, self.dataType]
-                    ])
+                    title = ' '.join([ getLongName(t) for t in [r, str(l), self.datasource, self.dataType] ])
                     for greyband in [
                             '10-90pc',
                     ]:  #'MinMax',
@@ -1020,9 +1018,11 @@ class timeseriesAnalysis:
                             debug=False):
                         continue
 
+
                     modeldataDict = self.modeldataD[(r, l, m)]
                     times = sorted(modeldataDict.keys())
                     modeldata = [modeldataDict[t] for t in times]
+                    print("timeseriesAnalysis:\t makePlots.\t",r,l,m,modeldata, modeldataDict)
                     title = ' '.join([
                         getLongName(t)
                         for t in [r, str(l), m, self.dataType]

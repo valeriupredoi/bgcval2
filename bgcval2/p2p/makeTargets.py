@@ -75,6 +75,10 @@ class makeTargets:
                  debug=True):  #name='', #imageDir='',
 
         self.matchedShelves = matchedShelves
+        if not len(matchedShelves):
+            print('makeTargets: No Shelves provided:', matchedShelves)
+            return
+
         #self.name = name
 
         self.filename = filename
@@ -91,8 +95,6 @@ class makeTargets:
             print("makeTargets:\tNo need to make Targets:", self.filename)
             return
 
-#self.imageDir = imageDir
-
         self.legendKeys = legendKeys
         self.determineLegend()
 
@@ -103,7 +105,10 @@ class makeTargets:
 
         if len(self.matchedShelves) > 0 and ukp.shouldIMakeFile(
                 self.matchedShelves, self.filename, debug=False):
+
             self.makeDiagram()
+        else:
+            print('skipping:', self.filename, (len(self.matchedShelves)))
 
     def determineLegend(self, ):
         #####
@@ -121,7 +126,7 @@ class makeTargets:
 
         for sh in self.matchedShelves:
             print("determineLegend:\tINFO:\tLOADING:", sh)
-            if not exists(sh):
+            if not glob(sh+'*'):
                 print("determineLegend:\tWARNING:\tDoes not exist:", sh)
                 continue
             s = shOpen(sh, flag='r')
@@ -153,7 +158,7 @@ class makeTargets:
 
         for sh in self.matchedShelves:
             print("loadShelves:\tINFO:\tLOADING:", sh)
-            if not exists(sh):
+            if not glob(sh+'*'):
                 print("loadShelves:\tWARNING:\tDoes not exist:", sh)
                 continue
             s = shOpen(sh, flag='r')
@@ -297,25 +302,24 @@ class makeTargets:
     def makeDiagram(self):
         title = self.makeTitle()
 
+        print('makeDiagram title:', title)
         filled_markers = ('o', 'v', '^', '<', '>', '8', 's', 'p', 'h', 'd'
                           )  #'*','H','D',
         markercycler = cycle(filled_markers)
 
-        #if self.imageDir=='':	self.imageDir = ukp.folder(['images',self.xtype.replace(', ','-'),'Targets'])
-        #else: 			self.imageDir = ukp.folder(self.imageDir)
-
         for t in self.diagramTypes:
-
+            print('makeDiagram: plottype:', t)
             filename = self.filename.replace('.png', '_' + t + '.png')
             if not ukp.shouldIMakeFile(
                     self.matchedShelves, filename, debug=False):
+                print('skipping:', filename)
                 continue
 
             if not self.dataLoaded: self.loadShelves()
 
             if not len(list(self.data.keys())):
-                continue
                 print('makeDiagram\t:No Plots to make')
+                continue
 
             fig = pyplot.figure()
             ax = pyplot.subplot(111, aspect='equal')

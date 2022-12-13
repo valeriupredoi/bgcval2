@@ -2615,11 +2615,12 @@ def reducesShelves(
 	"""
     emptySMDtype = type(shelveMetadata())
     outArray = []
+    print('reducesShelves: looking for:', models, names, years, depthLevels, sliceslist)
     for shelveMD in AllShelves:
         if type(shelveMD) != emptySMDtype:
             print("somewhere, this is not a shelveMD:", shelveMD)
             assert False
-
+        print('reducesShelves:', shelveMD,  shelveMD.model, shelveMD.name, shelveMD.year, shelveMD.depthLevel, shelveMD.newSlice)
         if len(models) and shelveMD.model not in models: continue
         if len(names) and shelveMD.name not in names: continue
         if len(years) and shelveMD.year not in years: continue
@@ -2627,6 +2628,7 @@ def reducesShelves(
             continue
         if len(sliceslist) and shelveMD.newSlice not in sliceslist: continue
         outArray.append(shelveMD.shelve)
+    print('outArray:', outArray)
     return outArray
 
 
