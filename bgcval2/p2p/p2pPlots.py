@@ -766,7 +766,7 @@ class makePlots:
         b1, b0, rValue, pValue, stdErr = linregress(datax, datay)
         print("plotWithSlices:\tlinear regression: \n\tb1:", b1, "\n\tb0:", b0,
               "\n\trValue:", rValue, "\n\tpValue:", pValue, "\n\tstdErr:",
-              stdErr)
+              stdErr, '\n\tN:',len(datax)) 
         s['b1'] = b1
         s['b0'] = b0
         s['rValue'] = rValue

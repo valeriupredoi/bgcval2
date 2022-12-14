@@ -11,9 +11,10 @@ dataFile        : /data/sthenno1/scratch/ledm/Observations/WOA/annual/woa13_deca
 data_vars       : s_an
 data_convert    : NoChange
 data_source     : WOA13  
-metrics         : mean
-layers          : Surface 50m 100m
-regions         : AMM 
+metrics         : mean, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max
+layers          : Surface # 50m 100m
+regions         : AMM AMM_Shelf AMM_OffShelf
+
 
 # changes from original:
 #   add --- at start

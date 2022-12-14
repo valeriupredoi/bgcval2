@@ -242,7 +242,7 @@ class matchDataAndModel:
             self.DataFile)
 
         nc = Dataset(self.DataFile, 'r')
-        if self.depthLevel == '':
+        if self.depthLevel in ['', 'layerless']:
             print(
                 'matchDataAndModel:\tconvertDataTo1D:\tNo depth level cut or requirement',
                 self.DataFile, '-->', self.DataFile1D)

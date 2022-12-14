@@ -12,6 +12,7 @@ data_vars       : t_an
 data_convert    : NoChange
 data_source     : WOA13
 layers          : Surface #50m 100m
-regions         : AMM
-metrics         : mean
+regions         : AMM AMM_Shelf AMM_OffShelf
+metrics         : mean, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max
+
 

@@ -99,7 +99,6 @@ class timeseriesAnalysis:
         self.clean = clean
         self.noNewFiles = noNewFiles
 
-
         # workingdir set else to match       shelvedir = ukp.folder(paths.shelvedir + "/timeseries/" + jobID)
 
         self.shelvefn = self.workingDir + '_'.join([
@@ -142,18 +141,20 @@ class timeseriesAnalysis:
         if self.debug: print("timeseriesAnalysis:\tloadModel.")
         ####
         # load and calculate the model info
-        #if os.path.exists(self.shelvefn):
-        #    sh = shOpen(self.shelvefn)
-        #    print('seems fine:', self.shelvefn)
-        #else:
-        #    print('Does not exist', self.shelvefn)
-        #    sh = shOpen(self.shelvefn)
-        #    print (sh.keys())
-        #    readFiles       = sh['readFiles']
-        #    modeldataD      = sh['modeldata']
-        #    print(readFiles)
-        readFiles = []
-        modeldataD = {}
+        if glob.glob(self.shelvefn):
+            sh = shOpen(self.shelvefn)
+            print('seems fine:', self.shelvefn)
+            sh = shOpen(self.shelvefn)
+            print (sh.keys())
+            readFiles       = sh['readFiles']
+            modeldataD      = sh['modeldata']
+            print(readFiles) 
+            sh.close()
+        else:
+            print('Does not exist', self.shelvefn)
+            readFiles = []
+            modeldataD = {}
+
         for r in self.regions:
             for l in self.layers:
                 for m in self.metrics:
@@ -711,6 +712,7 @@ class timeseriesAnalysis:
                     dataD[(r, l, 'area')] = np.ones_like(dataD[(r, l, 'lon')])
 
                 if not meandatad and not datadmask:  #np.ma.is_masked(dataD[(r,l)]):
+                    print('timeseriesAnalysis:\t masking everything in situ', r, l)
                     dataD[(r, l)] = np.ma.array([
                         -999,
                     ], mask=[
@@ -718,25 +720,19 @@ class timeseriesAnalysis:
                     ])
                     dataD[(r, l, 'lat')] = np.ma.array([
                         -999,
-                    ], mask=[
-                        True,
-                    ])
+                    ], mask=[ True, ] )
                     dataD[(r, l, 'lon')] = np.ma.array([
                         -999,
                     ], mask=[
-                        True,
-                    ])
+                        True,])
                     dataD[(r, l, 'area')] = np.ma.array([
                         -999,
-                    ],
-                                                        mask=[
-                                                            True,
-                                                        ])
-        #if meandatad and dataD[(r,l)]  == np.ma.array([-999,],mask=[True,]):
-        #	print "Massive failiure here:",meandatad, dataD[(r,l)] ,dl.load[(r,l,)]
-        #	assert 0
-                print("timeseriesAnalysis:\t loadData,\tloading ", (r, l),
-                      'mean:', meandatad)
+                    ], mask=[ True,])
+#        if meandatad and dataD[(r,l)]  == np.ma.array([-999,],mask=[True,]):
+#            print("Massive failiure here:",meandatad, dataD[(r,l)] ,dl.load[(r,l,)])
+#            assert 0
+#            print("timeseriesAnalysis:\t loadData,\tloading ", (r, l),
+#                       'mean:', meandatad)
 
         ###############
         # Savng shelve
@@ -760,7 +756,7 @@ class timeseriesAnalysis:
     def mapplotsRegionsLayers(self, ):
         """	
         Makes a map plot of model vs data for each string-named layer (not numbered layers). 
-  	"""
+        """
         newlayers = [
             l for l in self.layers
             if type(l) not in [type(0), type(0.)]
@@ -957,6 +953,7 @@ class timeseriesAnalysis:
                             else: modeldataDict[m].append(v)
 
                     title = ' '.join([ getLongName(t) for t in [r, str(l), self.datasource, self.dataType] ])
+                    title = title.replace('  ', ' ')
                     for greyband in [
                             '10-90pc',
                     ]:  #'MinMax',

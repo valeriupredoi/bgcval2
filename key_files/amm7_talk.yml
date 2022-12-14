@@ -1,6 +1,6 @@
 ---
 name            : AMM7_talk
-units           : mmol C/m^3
+units           : umol/kg
 dimensions      : 1
 model           : NEMO-ERSEM
   #odelFiles      : /data/proteus1/scratch/gle/dare_baseline/*/*/*_1d_*ptrc_T.nc # daily
@@ -10,11 +10,11 @@ model_vars      : O3_TA
 model_convert   : maskzeroes
   #dataFile        : /data/sthenno1/scratch/ledm/Observations/GLODAPv2/GLODAPv2.2021_AMM7.nc
 dataFile        : /data/sthenno1/scratch/ledm/Observations/GLODAPv2/GLODAPv2.2021_AMM7_v4_3d.nc
-data_vars       : tco2
+data_vars       : talk #talk_vol
 data_convert    : NoChange
 data_source     : GLODAPv2
-layers          : Surface
-regions         : AMM
+layers          : Surface # 50m layerless
+regions         : AMM AMM_Shelf AMM_OffShelf
 metrics         : mean, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max
 
 

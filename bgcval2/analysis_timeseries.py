@@ -657,7 +657,7 @@ def analysis_timeseries(
 #
 #	Note that the analysis can be run with just the model, it doesn't require a data file.
 #	If so, just set to data file to an empty string:
-#		av[name]['dataFile']  = ''
+#		av[name]['dataFiles']  = ''
 
     # NEW STYLE keys from file:
     av = ukp.AutoVivification()
@@ -700,18 +700,17 @@ def analysis_timeseries(
             if strictFileCheck:
                 raise FileNotFoundError(f'Model files are provided but not found for {name} : {missing_files}')
 
-        if 'dataFile' in av[name]:
-            print(name, 'dataFile', av[name]['dataFile'])
-            if not os.path.exists(av[name]['dataFile']):
+        if 'dataFiles' in av[name] or 'dataFiles' in av[name] :
+            print(name, 'dataFiles', av[name]['dataFiles'])
+            if not os.path.exists(av[name]['dataFiles']):
                 print(
                     "analysis_timeseries:\tWARNING:\tdata file is not found:",
-                    av[name]['dataFile'])
+                    av[name]['dataFiles'])
                 if strictFileCheck:
-                    raise FileNotFoundError(f'Obs data files are provided but not found for {name} : {av[name]["dataFile"]}')
-
+                    raise FileNotFoundError(f'Obs data files are provided but not found for {name} : {av[name]["dataFiles"]}')
         tsa = timeseriesAnalysis(
             av[name]['modelFiles'],
-            av[name].get('dataFile', None),
+            av[name].get('dataFiles', None),
             dataType=name,
             modelcoords=av[name]['modelcoords'],
             modeldetails=av[name]['modeldetails'],
@@ -736,7 +735,7 @@ def analysis_timeseries(
             continue
             profa = profileAnalysis(
                 av[name]['modelFiles'],
-                av[name]['dataFile'],
+                av[name]['dataFiles'],
                 dataType=name,
                 modelcoords=av[name]['modelcoords'],
                 modeldetails=av[name]['modeldetails'],
