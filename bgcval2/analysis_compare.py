@@ -140,6 +140,30 @@ def apply_shifttimes(mdata, jobID, shifttimes):
     return times, datas
 
 
+def apply_timerange(mdata, jobID, shifttimes):
+    """
+    Replaces .comparison.shifttimes loaded as shifttimes_legacy
+    which takes the model data, the jobID and the year0
+
+    This version takes the mdata, and shifttime value - a number to add to the time axis.
+    the value of the shift is provided in the yaml file.
+
+    Outputs two lists: dates & data.
+    """
+    times, datas = [], []
+    if not len(mdata.keys()):
+        return [], []
+
+    t0 = float(sorted(mdata.keys())[0])
+    for t in sorted(mdata.keys()):
+        t1 = t + float(shifttimes[jobID])
+        times.append(t1)
+        datas.append(mdata[t])
+    return times, datas
+
+
+
+
 
 def timeseries_compare(jobs,
                        colours,
