@@ -37,6 +37,7 @@ import subprocess
 from socket import gethostname
 import shutil
 import os
+import stat
 from glob import glob
 from re import findall
 
@@ -406,6 +407,9 @@ def download_from_mass(
 
     paths = get_paths(config_user)
     outputFold = folder([paths.ModelFolder_pref,  jobID,] )
+    # make this folder group writeable. 
+    st = os.stat(outputFold)
+    os.chmod(outputFold, st.st_mode | stat.S_IWGRP)
 
     deleteBadLinksAndZeroSize(outputFold, jobID)
 
@@ -418,6 +422,7 @@ def download_from_mass(
     header_lines.append('# from login1.jasmin.ac.uk, ssh to the mass machine:\n#     ssh -X  mass-cli\n')
     header_lines.append(''.join(['# run script with:\n# source ', os.path.abspath(download_script_path),'\n']))
     header_lines.append('# moo passwd -r # if mass password is expired\n')
+    header_lines.append('source /etc/bashrc\n') # make sure script can access moo tools.
     download_script_txt = ''.join(header_lines)
 
     # moo ls:
