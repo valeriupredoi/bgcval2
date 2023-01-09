@@ -1,6 +1,6 @@
 ---
 # GC5 N96 ORCA1 spinup analysis
-name: TerraFIRMA_overshoot_pi_2022
+name: TerraFIRMA_overshoot_pi_2022_debug
 
 # Run the single job analysis
 do_analysis_timeseries: True 
@@ -8,7 +8,7 @@ do_analysis_timeseries: True
 do_mass_download: False
 
 # master analysis suite
-master_suites: physics bgc #alkalinity physics kmf1
+master_suites: debug #alkalinity physics kmf1
 
 clean: True
 
@@ -24,6 +24,14 @@ clean: True
 #
 jobs:
 
+#    u-by230:
+#       description: 'UKESM1.1 piControl (abridged)'
+#       colour: 'black'
+#       thickness: 0.6
+#       linestyle: '-'
+#       shifttime: 0.
+#       timerange: [1900, 2000]
+#       suite: debug #alkalinity physics
 
 
     u-cs568:
@@ -32,32 +40,32 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: physics bgc #alkalinity physics
+       suite: debug #alkalinity physics
 
-    u-cp530: 
-       description: 'TF overshoot piControl variant #4 conc mode, interactive ice but fixed ice geometry'
-       colour: purple
-       thickness: 1.7
-       linestyle: '-'
-       shifttime: 0.
-       suite: physics bgc #alkalinity physics
+#   u-cp530: 
+#      description: 'TF overshoot piControl variant #4 conc mode, interactive ice but fixed ice geometry'
+#      colour: purple
+#      thickness: 1.7
+#      linestyle: '-'
+#      shifttime: 0.
+#      suite: debug #alkalinity physics
 
 
-    u-cp345:
-       description: 'TF overshoot piControl variant #2 CO2 conc mode, interactive ice and interactive (variable) ice geometry'
-       colour: blue
-       thickness: 1.7
-       linestyle: '-'
-       shifttime: 0.
-       suite: physics bgc #alkalinity physics
+#   u-cp345:
+#      description: 'TF overshoot piControl variant #2 CO2 conc mode, interactive ice and interactive (variable) ice geometry'
+#      colour: blue
+#      thickness: 1.7
+#      linestyle: '-'
+#      shifttime: 0.
+#      suite: debug #alkalinity physics
 
-    u-cs495:
-       description: 'TF overshoot piControl variant #3 CO2 emission mode, interactive ice but fixed ice geometry'
-       colour: green
-       thickness: 1.7
-       linestyle: '-'
-       shifttime: 0.
-       suite: physics  bgc #alkalinity physics kmf
+#   u-cs495:
+#      description: 'TF overshoot piControl variant #3 CO2 emission mode, interactive ice but fixed ice geometry'
+#      colour: green
+#      thickness: 1.7
+#      linestyle: '-'
+#      shifttime: 0.
+#      suite: debug #  bgc #alkalinity physics kmf
 
 
 
