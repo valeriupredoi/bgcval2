@@ -210,7 +210,7 @@ The crontab script is:
 /gws/nopw/j04/esmeval/bgcval2/shared_mass_cron.sh
 ```
 
-Note that cron executes this script with the ldemora username, so permissions may need to be changed
+Note that cron executes this script with the `ldemora` username, so permissions may need to be changed
 in some cases. The output log for this script is sent to the file:
 
 ```
