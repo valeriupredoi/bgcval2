@@ -137,6 +137,7 @@ def apply_shifttimes(mdata, jobID, shifttimes):
         t1 = t + float(shifttimes[jobID])
         times.append(t1)
         datas.append(mdata[t])
+        #print('apply_shifttimes:', jobID, t1, mdata[t])
     return times, datas
 
 
@@ -151,7 +152,7 @@ def apply_timerange(times, datas, jobID, timeranges):
     if 0 in [len(times), len(datas), ]:
        return times, datas
 
-    timerange = timesranges.get(jobID, None)
+    timerange = timeranges.get(jobID, None)
     if timerange is None: 
        return times, datas
 
