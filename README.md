@@ -192,7 +192,7 @@ which is public facing but password protected.
 Downloading data using MASS
 ===========================
 
-UKESM jobs on jasmin are automatically download data from Mass. 
+UKESM jobs on JASMIN automatically download data from Mass. 
 The `analysis_compare` tool creates a script in the `mass_scripts` directory.
 This script is copied to a shared directory in the shared ukesm/terrafirma diskspace:
 
