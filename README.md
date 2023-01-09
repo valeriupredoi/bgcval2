@@ -192,6 +192,32 @@ which is public facing but password protected.
 Downloading data using MASS
 ===========================
 
+UKESM jobs on JASMIN automatically download data from Mass. 
+The `analysis_compare` tool creates a script in the `mass_scripts` directory.
+This script is copied to a shared directory in the shared ukesm/terrafirma diskspace:
+
+```
+/gws/nopw/j04/esmeval/bgcval2/shared_mass_scripts
+```
+
+A crontab job is set up to execute these scripts overnight on mass-cli1,
+but only executes scripts that are younger than 30 days. 
+This prevents older jobs from being run after they are no longer needed.
+Very old scripts are automatically deleted. 
+The crontab script is:
+
+```
+/gws/nopw/j04/esmeval/bgcval2/shared_mass_cron.sh
+```
+
+Note that cron executes this script with the `ldemora` username, so permissions may need to be changed
+in some cases. The output log for this script is sent to the file:
+
+```
+/gws/nopw/j04/esmeval/bgcval2/shared_mass_cron.out
+```
+
+In the case that data is needed immediately, it's posiible to download manually as well.
 Data can be downloaded and prepared for analysis using the `download_from_mass` bgcval2 tool,
 with the command:
 ```
@@ -227,6 +253,7 @@ Please consult the command help for more details:
 ```
 download_from_mass -h
 ```
+
 
 
 Running the tool for a single job
