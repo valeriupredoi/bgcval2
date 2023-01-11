@@ -137,7 +137,6 @@ def apply_shifttimes(mdata, jobID, shifttimes):
         t1 = t + float(shifttimes[jobID])
         times.append(t1)
         datas.append(mdata[t])
-        #print('apply_shifttimes:', jobID, t1, mdata[t])
     return times, datas
 
 
@@ -152,10 +151,17 @@ def apply_timerange(times, datas, jobID, timeranges):
     if 0 in [len(times), len(datas), ]:
        return times, datas
 
+    print('apply_timerange', jobID, timeranges)
+
     timerange = timeranges.get(jobID, None)
+
+    print('apply_timerange', timerange)    
     if timerange is None: 
+       print('apply_timerange', timerange, 'is', None) 
        return times, datas
 
+    print(jobID, timerange, 'is not None', np.min(times), np.max(times))
+    
     n_times, n_datas = [], [] # to ensure they stay lists
     for ti, da in zip(times, datas):
         if ti < np.min(timerange):
@@ -164,7 +170,10 @@ def apply_timerange(times, datas, jobID, timeranges):
             continue
         n_times.append(ti)
         n_datas.append(da)
- 
+        print('apply_timerange:', jobID, ti, da)
+    if not len(n_times):
+        print('WARNING: No times made the cut?', len(times),'original times', [np.min(times), np.max(times)], 'timerange:', timerange)
+        assert 0
     return n_times, n_datas
 
 
@@ -1626,11 +1635,13 @@ def timeseries_compare(jobs,
 
                     #timesD[jobID] 	= sorted(mdata.keys())
                     #arrD[jobID]	= [mdata[t] for t in timesD[jobID]]
+                
                 times, datas = apply_shifttimes(mdata, jobID, shifttimes)
+                print('post apply_shifttimes:', len(times), len(datas))
                 times, datas = apply_timerange(times, datas, jobID, timeranges)
                 timesD[jobID] = times  #mdata.keys())
                 arrD[jobID] = datas  #t] for t in timesD[jobID]]
-
+                print(jobID, region, layer, metric, len(times), len(datas))
             timesD, arrD = build_ensemble(timesD, arrD, ensembles)
 
             if len(list(arrD.keys())) == 0: 

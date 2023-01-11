@@ -23,16 +23,14 @@ clean: True
 # •     u-cn857 - alk added at bathy - or 200m (if bathy deeper)
 #
 jobs:
-
     u-by230:
        description: 'UKESM1.1 piControl (abridged)'
        colour: 'black'
        thickness: 0.6
        linestyle: '-'
-       shifttime: 0.
+       shifttime: -1000.
        timerange: [1900, 2000]
        suite: physics bgc #alkalinity physics
-
 
     u-cs568:
        description: 'TF overshoot piControl variant #1'
