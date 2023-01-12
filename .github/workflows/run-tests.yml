@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - support_python310
   schedule:
     - cron: '0 0 * * *'  # nightly
 
