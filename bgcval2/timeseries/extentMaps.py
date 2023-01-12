@@ -38,7 +38,6 @@ from matplotlib.colors import LogNorm
 from matplotlib.colors import LinearSegmentedColormap
 
 import matplotlib.patches as mpatches
-from mpl_toolkits.basemap import Basemap
 import cartopy
 import cartopy.crs as ccrs
 import cartopy.io.shapereader as shapereader
