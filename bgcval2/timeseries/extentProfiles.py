@@ -37,7 +37,6 @@ import shutil
 from matplotlib import pyplot, gridspec
 from matplotlib.colors import LogNorm
 import matplotlib.patches as mpatches
-from mpl_toolkits.basemap import Basemap
 from matplotlib.ticker import Locator
 import cartopy
 import cartopy.crs as ccrs

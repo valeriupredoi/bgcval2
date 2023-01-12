@@ -24,7 +24,7 @@ REQUIREMENTS = {
     # Installation dependencies
     # Use with pip install . to install from source
     'install': [
-        'basemap',
+        'basemap>=1.3.6',
         'cartopy',
         'matplotlib',
         'netcdf4!=1.6.1',  # https://github.com/ESMValGroup/ESMValCore/pull/1724
