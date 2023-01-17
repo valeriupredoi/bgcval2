@@ -256,6 +256,9 @@ download_from_mass -h
 
 
 
+
+
+
 Running the tool for a single job
 =================================
 
@@ -443,6 +446,41 @@ bgcval2_make_report jobID year
 ```
 This  gnerated an HTML5 mobile-friendlyt report, summarising the output of a
 single model run.
+
+
+
+Running a job on batch system LOTUS
+===================================
+
+Instead of running these jobs interactively on the command line, 
+it is possible to submit them as batch jobs to jasmin's LOTUS machine.
+[See the LOTUS documentation here](https://help.jasmin.ac.uk/article/5004-lotus-overview).
+
+To submit a job, make a copy of the `lotus_bgcval2.sh` file:
+```
+rsync -av lotus_bgcval2.sh lotus_bgcval2_$USER.sh
+```
+From there, you'll need to edit your copy of the file `lotus_bgcval2_$USER.sh`.
+In this file, you'll need to check:
+
+1. your email address
+2. the bgcavl2 conda environment (default is bgcval2)
+3. the path to your bgcval2 directory (default is ~/bgcval2)
+4. Add your suite yml to the running section.
+
+Once that is done, the script is submitted to LOTUS with:
+```
+bsub <  lotus_bgcval2_$USER.sh
+```
+
+You can monitor your script in the queue with:
+```
+bjobs | grep $USER
+```
+
+You will also see a slurm file appear which will allow you to follow
+the output of the process.
+
 
 
 Documentation
