@@ -171,8 +171,11 @@ def apply_timerange(times, datas, jobID, timeranges):
         n_times.append(ti)
         n_datas.append(da)
         print('apply_timerange:', jobID, ti, da)
+
     if not len(n_times):
-        print('WARNING: No times made the cut?', len(times),'original times', [np.min(times), np.max(times)], 'timerange:', timerange)
+        print('apply_timerange: WARNING: No times made the cut?', len(times),
+              'original times', [np.min(times), np.max(times)], 
+              'timerange:', timerange)
         assert 0
     return n_times, n_datas
 
