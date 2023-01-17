@@ -11,15 +11,18 @@
 
 
 ######################
-# What to edit:
+# First make a copy of this file:
+# rysnc -av lotus_bgcval2.sh lotus_bgcval2_$USER.sh
+#
+# Then edit your new copy (lotus_bgcval2_$USER.sh):
 #  1. Change your email above (#BSUB -u email@email.com)
 #
-#  2. Check the name of your conda environment. 
+#  2. Check the name of your conda environment: CONDA_ENV 
 #     "bgcval2" is the default, but may have a different one.
 #
-#  3. Change the path to your bgcval2 directory.
+#  3. Change the path to your bgcval2 directory: BGCVAL2_PATH
 #
-#  4. Change the analyses to run below.
+#  4. Change the analyses to run: BGCVAL2_SUITE
 #     You can add several suites here if needed. 
 #
 #  5. Submit this script with with:
@@ -29,21 +32,36 @@
 #     bjobs | grep $USER
 #########################
 
+
+# Edit these bits:
+
+# Change this to your bgcval2 conda environment name
+CONDA_ENV=bgcval2
+# Change this to your bgcval2 directory - or wheever you wish to run.
+BGCVAL2_PATH=/home/users/$USER/bgcval2
+# Add one or more input_yml files here
+BGCVAL2_SUITE=input_yml/my_bgcval2_suite.yml
+#BGCVAL2_SUITE2=input_yml/my_bgcval2_suite2.yml
+
+
+##########################
+# script
+
 # load the conda program:
 module load jaspy
 
+# load your conda env:
+conda activate $CONDA_ENV
 
+# Change directory to your bgcval2 directory:
+cd $BGCVAL2_PATH
 
-# Change this to your bgcval2 directory - or wheever you wish to run.
-cd /home/users/$USER/bgcval2
-
-# Change this to your bgcval2 conda environment name
-conda activate bgcval2
 
 
 #########################
 # Add one or more input_yml files here 
-analysis_compare -y input_yml/my_bgcval2_suite.yml
+analysis_compare -y $BGCVAL2_SUITE
+#analysis_compare -y $BGCVAL2_SUITE2
 
 
 
