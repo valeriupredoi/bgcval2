@@ -73,6 +73,7 @@ standard-paths:
       orcaGridfn: "/users/modellers/ledm/workspace/coast/AMM7_grid/mesh_mask.nc"
       amm7Gridfn: "/users/modellers/ledm/workspace/coast/AMM7_grid/mesh_mask.nc"  
       ObsFolder: "/data/sthenno1/scratch/ledm/Observations/"
+      shared_mass_scripts: "local_test/shared_mass_scripts/"
     data-files:
       Dustdir: "MahowaldDust/"
       WOAFolder_annual: "WOA/annual/"
@@ -88,7 +89,7 @@ standard-paths:
       GLODAPv2Dir: "GLODAPv2/GLODAPv2_Mapped_Climatologies/"
       OSUDir: "OSU/"
       CCIDir: "CCI/"
-      icFold: "/data/euryale7/backup/ledm/UKESM/InitialConditions/"
+        #icFold: "/data/euryale7/backup/ledm/UKESM/InitialConditions/"
   # to be used only for local automated tests only
   local-test-only:
     general:
@@ -117,4 +118,4 @@ standard-paths:
       GLODAPv2Dir: "GLODAPv2/GLODAPv2_Mapped_Climatologies/"
       OSUDir: "OSU/"
       CCIDir: "CCI/"
-      icFold: "InitialConditions/"
+        #icFold: "InitialConditions/"

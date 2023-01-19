@@ -1,0 +1,16 @@
+---
+name            : MA_SST
+units           : degrees C
+dimensions      : 1
+model           : NEMO025-ERSEM
+modelFiles      : /data/proteus2/scratch/ledm/MissionAtlantic/SENEMO/SENEMO_S1_1m_1976*grid_T*.nc
+gridFile        : /data/proteus2/scratch/ledm/MissionAtlantic/SENEMO/domain_cfg.nc
+model_vars      : thetao thetao_con votemper
+model_convert   : NoChange
+dataFile        : /data/sthenno1/scratch/ledm/Observations/WOA/annual/woa13_decav_t00_01v2_AMM.nc
+data_vars       : t_an
+data_convert    : NoChange
+data_source     : WOA13
+layers          : Surface #50m 100m
+regions         : Global NorthAtlanticOcean SouthAtlanticOcean EquatorialAtlanticOcean
+metrics         : mean, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max

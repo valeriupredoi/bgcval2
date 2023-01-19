@@ -1,0 +1,6 @@
+---
+# Key metrics first - KMF
+# A short list of key metrics to run first to get a very quick idea
+# of how a model is working.
+keys:
+  MA_SST: True
