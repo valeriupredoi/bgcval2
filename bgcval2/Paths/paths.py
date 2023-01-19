@@ -42,6 +42,7 @@ def paths_setter(paths_dict):
     paths.root_dir = paths_dict["general"]["root_dir"]
     paths.shelvedir = paths_dict["general"]["shelvedir"]
     paths.p2p_ppDir = paths_dict["general"]["p2p_ppDir"]
+    paths.shared_mass_scripts = paths_dict["general"]["shared_mass_scripts"]
     paths.imagedir = paths_dict["general"]["imagedir"]
     paths.ModelFolder_pref = paths_dict["general"]["ModelFolder_pref"]
     paths.orcaGridfn = paths_dict["general"].get("orcaGridfn", None)

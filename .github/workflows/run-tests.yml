@@ -13,7 +13,7 @@ jobs:
     runs-on: "ubuntu-latest"
     strategy:
       matrix:
-        python-version: ["3.8", "3.9"]  # basemap no longer supported in 3.10
+        python-version: ["3.8", "3.9", "3.10"]
       fail-fast: false
     name: Linux Python ${{ matrix.python-version }}
     steps:
@@ -42,9 +42,10 @@ jobs:
           analysis_p2p --help
           analysis_timeseries --help
           bgcval2_make_report --help
-          bgcval --help           
+          bgcval --help
+          download_from_mass --help
       - shell: bash -l {0}
-        run: pytest -n 2
+        run: pytest
       - shell: bash -l {0}
         run: sphinx-build -Ea doc doc/build
 

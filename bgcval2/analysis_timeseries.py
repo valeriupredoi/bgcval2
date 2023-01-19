@@ -114,7 +114,7 @@ def list_input_files(files_path, key_dict, paths):
         raise OSError(f"Base {basedir} is not a valid directory.")
     input_files = sorted(glob(files_path))
     if not input_files:
-        raise FileNotFoundError(f"Data dir {basedir} does not contain and file "
+        raise FileNotFoundError(f"Data dir {basedir} does not contain any file "
                                 f"that matches pattern {files_path}, {flag}")
     return input_files
 

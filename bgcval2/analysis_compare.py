@@ -1672,16 +1672,16 @@ def load_comparison_yml(master_compare_yml_fn):
         Details dict.
     """
     with open(master_compare_yml_fn, 'r') as openfile:
-        dictionary = yaml.safe_load(openfile)
+        input_yml_dict = yaml.safe_load(openfile)
 
-    if not dictionary or not isinstance(dictionary, dict):
+    if not input_yml_dict or not isinstance(input_yml_dict, dict):
         print(f"Configuration file {master_compare_yml_fn} "
               "is either empty or corrupt, please check its contents")
         sys.exit(1)
 
     details = {}
-    details['name'] = dictionary.get('name', False)
-    details['jobs'] = dictionary.get('jobs', False)
+    details['name'] = input_yml_dict.get('name', False)
+    details['jobs'] = input_yml_dict.get('jobs', False)
 
     if not details['name']:
         print('Please provide a name for your analysis. In your yaml, this is:')
@@ -1698,10 +1698,13 @@ def load_comparison_yml(master_compare_yml_fn):
         print('        shifttime: 0.')
         sys.exit(0)
 
-    details['do_analysis_timeseries'] = dictionary.get('do_analysis_timeseries', False)
-    details['do_mass_download'] = dictionary.get('do_mass_download', False)
+    details['do_analysis_timeseries'] = input_yml_dict.get('do_analysis_timeseries', False)
+    details['do_mass_download'] = input_yml_dict.get('do_mass_download', False)
+    details['master_suites'] = input_yml_dict.get('master_suites', [])
 
-    details['master_suites'] = dictionary.get('master_suites', [])
+    # auto download, can differ for each job.
+    auto_download = input_yml_dict.get('auto_download', True)
+    auto_download_dict = {jobID: auto_download for jobID in details['jobs'].keys()}
 
     default_thickness = 0.7
     default_linestyle = 'solid'
@@ -1726,6 +1729,7 @@ def load_comparison_yml(master_compare_yml_fn):
         linestyles[jobID] = job_dict.get('linestyle', default_linestyle)
         shifttimes[jobID] = float(job_dict.get('shifttime', 0.))
         suites[jobID] = job_dict.get('suite', default_suite)
+        auto_download_dict[jobID] = job_dict.get('auto_download', auto_download_dict[jobID]) 
 
     details['colours'] = colours
     details['descriptions'] = descriptions
@@ -1733,6 +1737,7 @@ def load_comparison_yml(master_compare_yml_fn):
     details['linestyles'] = linestyles
     details['shifttimes'] = shifttimes
     details['suites'] = suites
+    details['auto_download'] = auto_download_dict
     return details
 
 
@@ -1756,6 +1761,7 @@ def load_yml_and_run(compare_yml, config_user):
     descriptions = details['descriptions']
     shifttimes = details['shifttimes']
     suites = details['suites']
+    auto_download = details['auto_download']
 
     print('---------------------')
     print('timeseries_compare:',  analysis_name)
@@ -1766,12 +1772,13 @@ def load_yml_and_run(compare_yml, config_user):
         print(jobID, 'line thickness & style:',thicknesses[jobID], linestyles[jobID])
         print(jobID, 'Shift time by', shifttimes[jobID])
         print(jobID, 'suite:', suites[jobID])
+        print(jobID, 'auto_download', auto_download[jobID])
 
     for jobID in jobs:
         # even if you don't want to download, we run this
         # as it clears up the path and ensures recently downloed data is
         # correctly symlinked.
-        download_from_mass(jobID, doMoo=do_mass_download)
+        download_from_mass(jobID, doMoo=do_mass_download, auto_download=auto_download[jobID], config_user=config_user)
 
     if do_analysis_timeseries:
         for jobID in jobs:

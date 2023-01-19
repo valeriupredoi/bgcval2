@@ -33,7 +33,6 @@ from matplotlib import pyplot, gridspec
 
 from matplotlib.colors import LogNorm
 import matplotlib.patches as mpatches
-from mpl_toolkits.basemap import Basemap
 import cartopy
 import numpy as np
 from numpy import hanning, hamming, bartlett, blackman
