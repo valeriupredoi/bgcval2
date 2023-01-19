@@ -1,4 +1,3 @@
-
 #!/bin/bash
 #SBATCH --job-name=bgcval2
 #SBATCH --partition=short-serial
@@ -38,7 +37,7 @@
 CONDA_ENV=bgcval2
 
 # Change this to your bgcval2 directory - or wheever you wish to run.
-BGCVAL2_PATH=/home/users/$USER//bgcval2
+BGCVAL2_PATH=/home/users/$USER/bgcval2
 
 # Add one or more input_yml files here
 BGCVAL2_SUITE2=input_yml/my_bgcval2_suite2.yml
@@ -67,6 +66,8 @@ pwd
 # Add one or more input_yml files here
 echo analysis_compare -y $BGCVAL2_SUITE
 analysis_compare -y $BGCVAL2_SUITE
+# analysis_compare -y input_yml/my_other_bgcval2_suite2.yml
+
 
 #########################
 # Rsync report to web facing directory:
