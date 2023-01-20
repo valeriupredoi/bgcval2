@@ -449,8 +449,8 @@ single model run.
 
 
 
-Running a job on batch system LOTUS
-===================================
+Running a job on JASMIN's batch system, LOTUS
+=============================================
 
 Instead of running these jobs interactively on the command line, 
 it is possible to submit them as batch jobs to jasmin's LOTUS machine.
@@ -461,11 +461,16 @@ To submit a job, make a copy of the `lotus_bgcval2.sh` file:
 rsync -av lotus_bgcval2.sh lotus_bgcval2_$USER.sh
 ```
 From there, you'll need to edit your copy of the file `lotus_bgcval2_$USER.sh`.
-In this file, you'll need to check:
 
-1. the bgcavl2 conda environment (default is bgcval2)
-2. the path to your bgcval2 directory (default is ~/bgcval2)
-3. Add your suite yml to the running section.
+In this file, you'll need to edit the following bash objects:
+
+1. `CONDA_ENV`: The bgcavl2 conda environment (default is bgcval2)
+2. `BGCVAL2_PATH`: The path to your bgcval2 directory (default is ~/bgcval2)
+3. `BGCVAL2_SUITE`: Your yml comparison suite file. (no default)
+
+You may also need to edit the job time limit, at the top of the file.
+The default it set to 6 hours.
+
 
 Once that is done, the script is submitted to LOTUS with:
 ```
@@ -479,6 +484,12 @@ squeue | grep $USER
 
 You will also see a couple log files appear which will allow you to follow
 the output of the process.
+If you wish to send to to a specific path, you may edit the lineS at the top of 
+`lotus_bgcval2_$USER.sh`:
+```
+#SBATCH -o log_bgcval2_%J.out
+#SBATCH -e log_bgcval3_%J.err
+```
 
 
 
