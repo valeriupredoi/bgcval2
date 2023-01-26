@@ -89,6 +89,62 @@ Executable name | What it does | Command
 `analysis_compare` | runs comparison of multiple single jobs  | analysis_compare
 
 
+### Checking out development branches
+
+Should you want to work on several git development branches, you can switch between them, making sure they always
+stay up-to-date with the remote branch; right after you have checked out the `bgcval2` git repository (see above)
+you find yourself on the `main` branch (the main development branch); after a while, with new updates upstream (at remote),
+this branch (your local `main`) becomes out of date with remote, so you should always update it:
+```
+git pull origin main
+```
+
+After you have updated it, you can now check out a new branch `devel_branch` from upstream, some branch that was recently pushed and you need
+to test or contribute to:
+```
+git fetch -v
+git checkout devel_branch
+git pull origin devel_branch
+```
+
+### Updating an exiting environment
+
+Should you wish to update your `bgcval2` environment (e.g. when dependencies have changed), we recommend
+deleting the old environment, and creating a brand new one from scratch. To delete the old environment just remove
+it from the conda tree, after you have deactivated it first:
+```
+conda deactivate
+rm -r $USER/miniconda3/envs/bgcval2
+```
+
+Now you can follow the steps above to (re-)create the new environment, still called `bgcval2`, and
+installing the tool inside it:
+```
+mamba env create -n bgcval2 -f environment.yml
+conda activate bgcval2
+pip install -e .[develop]
+```
+
+### Creating multiple environments from different branches
+
+Should you need to have multiple environments, each with a different installation of bgcval2 (e.g when working
+with different development branches), you can simply create them like instructed above, with the only difference
+that the environments must have relevant and differing names. An example: you are working on a branch called
+`bgcval2_some-feature` and would like to test it in a bespoke environment, you can create it:
+```
+mamba env create -n bgcval2_some-feature -f environment.yml
+conda activate bgcval2_some-feature
+```
+
+then pip-install the tool there, and on you go with testing. This environment exists in parallel with the main feature `bgcval2`
+environment, and you can toggle between them with `conda deactivate` current env, then `conda activate` any other environment.
+
+.. note::
+  You don't need to create new environments in parallel if you just want to test a new branch;
+  after checking out the new branch you can test it immediately, while still in the `bgcval2` environment,
+  since `pip install .` is a local installation that uses the local `bgcval2/` repository (it doesn't move
+  installed scripts in such locations as `/opt` or `'/lib`)
+
 
 Running the tool to compare multiple jobs
 =========================================
