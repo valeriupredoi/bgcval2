@@ -484,7 +484,7 @@ squeue | grep $USER
 
 You will also see a couple log files appear which will allow you to follow
 the output of the process.
-If you wish to send to to a specific path, you may edit the lineS at the top of 
+If you wish to send to to a specific path, you may edit the lines at the top of 
 `lotus_bgcval2_$USER.sh`:
 ```
 #SBATCH -o log_bgcval2_%J.out
