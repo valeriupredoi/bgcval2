@@ -453,7 +453,7 @@ Running a job on JASMIN's batch system, LOTUS
 =============================================
 
 Instead of running these jobs interactively on the command line, 
-it is possible to submit them as batch jobs to jasmin's LOTUS machine.
+it is possible to submit them as batch jobs to JASMIN's LOTUS machine.
 [See the LOTUS documentation here](https://help.jasmin.ac.uk/article/5004-lotus-overview).
 
 To submit a job, make a copy of the `lotus_bgcval2.sh` file:
