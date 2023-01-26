@@ -114,7 +114,7 @@ deleting the old environment, and creating a brand new one from scratch. To dele
 it from the conda tree, after you have deactivated it first:
 ```
 conda deactivate
-rm -r $USER/miniconda3/envs/bgcval2
+rm -rf $USER/miniconda3/envs/bgcval2
 ```
 
 Now you can follow the steps above to (re-)create the new environment, still called `bgcval2`, and
@@ -143,7 +143,7 @@ environment, and you can toggle between them with `conda deactivate` current env
 > **_NOTE:_** You don't need to create new environments in parallel if you just want to test a new branch;
 after checking out the new branch you can test it immediately, while still in the `bgcval2` environment,
 since `pip install .` is a local installation that uses the local `bgcval2/` repository (it doesn't move
-installed scripts in such locations as `/opt` or `'/lib`)
+installed scripts in such locations as `/opt` or `/lib`)
 
 
 Running the tool to compare multiple jobs
