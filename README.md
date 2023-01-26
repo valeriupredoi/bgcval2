@@ -107,7 +107,7 @@ git checkout devel_branch
 git pull origin devel_branch
 ```
 
-### Updating an exiting environment
+### Updating an existing environment
 
 Should you wish to update your `bgcval2` environment (e.g. when dependencies have changed), we recommend
 deleting the old environment, and creating a brand new one from scratch. To delete the old environment just remove
@@ -139,11 +139,11 @@ conda activate bgcval2_some-feature
 then pip-install the tool there, and on you go with testing. This environment exists in parallel with the main feature `bgcval2`
 environment, and you can toggle between them with `conda deactivate` current env, then `conda activate` any other environment.
 
-.. note::
-  You don't need to create new environments in parallel if you just want to test a new branch;
-  after checking out the new branch you can test it immediately, while still in the `bgcval2` environment,
-  since `pip install .` is a local installation that uses the local `bgcval2/` repository (it doesn't move
-  installed scripts in such locations as `/opt` or `'/lib`)
+
+> **_NOTE:_** You don't need to create new environments in parallel if you just want to test a new branch;
+after checking out the new branch you can test it immediately, while still in the `bgcval2` environment,
+since `pip install .` is a local installation that uses the local `bgcval2/` repository (it doesn't move
+installed scripts in such locations as `/opt` or `'/lib`)
 
 
 Running the tool to compare multiple jobs
