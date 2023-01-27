@@ -1,13 +1,13 @@
 ---
-name            : MA_SST
-units           : degrees C
+name            : MA_SSS
+units           : PSU
 dimensions      : 1
 model           : NEMO025-ERSEM
 modelgrid       : eORCA025
 modelFiles      : $BASEDIR_MODEL/$JOBID/SENEMO_S1_1m_1976*grid_T*.nc
 gridFile        : /data/proteus2/scratch/ledm/MissionAtlantic/SENEMO/eORCA025_mesh_mask_mes_v2.nc
 model_vars      : thetao thetao_con votemper
-model_convert   : choose_best_var
+model_vars      : so_abs so
 dataFile        : /data/sthenno1/scratch/ledm/Observations/WOA/annual/woa13_decav_t00_01v2_AMM.nc
 data_vars       : t_an
 data_convert    : NoChange

@@ -506,6 +506,13 @@ def html5Maker(
                 glob(imagedir + '/' + jobID + '/timeseries/*/mean*' + key +
                      '*' + 'Global*mean.png'))
             vfiles.extend(
+                glob(imagedir + '/' + jobID + '/timeseries/*/min*' + key +
+                     '*' + 'Global*min.png'))
+            vfiles.extend(
+                glob(imagedir + '/' + jobID + '/timeseries/*/max*' + key +
+                     '*' + 'Global*max.png'))
+
+            vfiles.extend(
                 glob(imagedir + '/' + jobID + '/timeseries/*/*' + key + '*' +
                      'regionless*metricless.png'))
 
@@ -1452,6 +1459,11 @@ def comparehtml5Maker(
         'Salinty_Global_Surface',
         'FreshwaterFlux_Global',
         'TotalHeatFlux',
+        'MA_SST',
+        'MA_SSS',
+        'MA_Drake',
+        'MA_AMOC_26N',
+
     ]
 
     bgcKM = [
@@ -1468,6 +1480,8 @@ def comparehtml5Maker(
         'Alkalinity_Global_Surface',
         'Silicate_Global_Surface',
         'Iron_Global_Surface',
+        'MA_Nitrate_Global_Surface',
+
     ]
     categories = {
         'Physics Key Metrics': [],

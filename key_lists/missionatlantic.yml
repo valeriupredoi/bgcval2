@@ -3,4 +3,32 @@
 # A short list of key metrics to run first to get a very quick idea
 # of how a model is working.
 keys:
-  MA_SST: True
+  # DONE:
+  #MA_SST: True
+  #MA_SSS: True
+  #MA_Drake: True
+  #MA_AMOC_26N: True
+
+
+    # BGC
+  MA_Nitrate: True
+
+# what do we need here?
+# SST
+# SSS
+# Drake
+# AMOC
+# AEU ?
+# Total Air extent
+# Northen Ice Extent
+# Southern Ice Extent
+# Air Sea Flux of CO2
+# pH
+# N
+# P
+# Si
+# Fe
+# Chl
+# global total pprod
+# regional mean pprod
+#

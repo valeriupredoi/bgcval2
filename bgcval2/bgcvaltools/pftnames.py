@@ -302,10 +302,10 @@ def makeLongNameDict():
     lnd['AMM7_SST'] = 'Temperature'
     lnd['AMM7_SSS'] = 'Salinity'
 
-
-
-
-
+    lnd['MA_SST'] = 'Sea Surface Temperature'
+    lnd['MA_SSS'] = 'Sea Surface Salinty'
+    lnd['MA_DraKE'] = 'Drake Passage Current'
+    lnd['MA_AMOC_26N'] = 'AMOC at 26.5N' 
 
     lnd['NorthernTotalIceArea'] = 'Northern Hemisphere Ice Area'
     lnd['SouthernTotalIceArea'] = 'Southern Hemisphere Ice Area'

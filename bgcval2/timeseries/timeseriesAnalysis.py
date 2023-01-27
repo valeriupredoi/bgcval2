@@ -480,6 +480,7 @@ class timeseriesAnalysis:
         if not os.path.exists(self.gridFile):
             raise FileNotFoundError(
                 errno.ENOENT, os.strerror(errno.ENOENT), self.gridFile)
+        print('loadModelWeightsDict loading grid file:',self.gridFile)
         nc = dataset(self.gridFile, 'r')
         tmask = nc.variables['tmask'][:]
         try:
