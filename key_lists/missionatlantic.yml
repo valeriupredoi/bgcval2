@@ -8,6 +8,7 @@ keys:
   MA_SSS: True
   MA_Drake: True
   MA_AMOC_26N: True
+  MA_ZOS: True
 
   # BGC
   MA_Nitrate: True
@@ -28,7 +29,4 @@ keys:
 # Southern Ice Extent
 # Air Sea Flux of CO2
 # pH
-# Chl
-# global total pprod
-# regional mean pprod
-#
+# Global total npp/gpp

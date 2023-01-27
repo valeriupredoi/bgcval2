@@ -1,17 +1,16 @@
 ---
-name            : MA_SST
-units           : degrees C
+name            : MA_MLD_Sigma
+units           : m  
 dimensions      : 1
 model           : NEMO025-ERSEM
 modelgrid       : eORCA025
 modelFiles      : $BASEDIR_MODEL/$JOBID/SENEMO_S1_1m_*grid_T*.nc
 gridFile        : /data/proteus2/scratch/ledm/MissionAtlantic/SENEMO/eORCA025_mesh_mask_mes_v2.nc
-model_vars      : thetao thetao_con votemper
-model_convert   : choose_best_var
-dataFile        : /data/sthenno1/scratch/ledm/Observations/WOA/annual/woa13_decav_t00_01v2_AMM.nc
-data_vars       : t_an
-data_convert    : NoChange
-data_source     : WOA13
+model_vars      : mldr10_1 
+  #dataFile        : /data/sthenno1/scratch/ledm/Observations/WOA/annual/woa13_decav_t00_01v2_AMM.nc
+  #data_vars       : t_an
+  #data_convert    : NoChange
+  #data_source     : WOA13
 layers          : Surface #50m 100m
 regions         : Global NorthAtlanticOcean SouthAtlanticOcean EquatorialAtlanticOcean
 metrics         : mean #, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max
