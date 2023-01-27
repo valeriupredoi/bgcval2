@@ -267,6 +267,7 @@ def html5Maker(
             'ExportRatio',
             'TotalAirSeaFluxCO2',
             'Nitrate',
+            'Phosphate',
             'Silicate',
             'DIC',
             'Alkalinity',
@@ -286,7 +287,7 @@ def html5Maker(
         for field in fields:
             if physicsOnly and field not in physFields: continue
             if field in [
-                    'Nitrate', 'Silicate', 'DIC', 'Alkalinity', 'Temperature',
+                    'Nitrate', 'Phosphate', 'Silicate', 'DIC', 'Alkalinity', 'Temperature',
                     'Salinity'
             ]:
                 for (r, l, m) in [('Global', 'Surface', 'mean'),
@@ -409,6 +410,7 @@ def html5Maker(
             'ExportRatio',
             'AirSeaFluxCO2',
             'Nitrate',
+            'Phosphate',
             'DIC',
             'pH',
             'Alkalinity',
@@ -543,7 +545,7 @@ def html5Maker(
                 ####
                 # WOA fields that also produce transects, etc.
                 if key in [
-                        'Nitrate', 'Silicate', 'Temperature', 'Salinity',
+                        'Nitrate', 'Phosphate', 'Silicate', 'Temperature', 'Salinity',
                         'Oxygen', 'DIC', 'Alkalinity'
                 ] and fn.lower().find('surface') < 0:
                     continue
@@ -582,6 +584,7 @@ def html5Maker(
         regionalFields = [
             'AirSeaFluxCO2',
             'Nitrate',
+            'Phosphate',
             'Silicate',
             'Iron',
             'IntegratedPrimaryProduction_OSU',
@@ -713,6 +716,7 @@ def html5Maker(
 
             regionalFields = [
                 'Nitrate',
+                'Phosphate',
                 'Silicate',
                 'Iron',
                 'DIC',
@@ -812,6 +816,7 @@ def html5Maker(
     if level2Horizontal:
         l2Fields = [
             'Nitrate',
+            'Phosphate',
             'Silicate',
             'DIC',
             'pH',
@@ -1481,7 +1486,7 @@ def comparehtml5Maker(
         'Silicate_Global_Surface',
         'Iron_Global_Surface',
         'MA_Nitrate_Global_Surface',
-
+        'MA_Phosphate_Global_Surface',
     ]
     categories = {
         'Physics Key Metrics': [],
@@ -1592,6 +1597,7 @@ def comparehtml5Maker(
             'Chlorophyll',
             'MLD',
             'Nitrate',
+            'Phosphate',
             'Salinity',
             'Temperature',
             'Current',

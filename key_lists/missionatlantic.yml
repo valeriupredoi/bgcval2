@@ -4,30 +4,30 @@
 # of how a model is working.
 keys:
   # DONE:
-  #MA_SST: True
-  #MA_SSS: True
-  #MA_Drake: True
-  #MA_AMOC_26N: True
+  MA_SST: True
+  MA_SSS: True
+  MA_Drake: True
+  MA_AMOC_26N: True
 
-
-    # BGC
+  # BGC
   MA_Nitrate: True
+  MA_Phosphate: True
+  MA_Iron: True
+  MA_Silicate: True
+  MA_TotalChlorophyll: True
+  MA_TotalPhytoC: True
+  MA_TotalZooC: True
+  MA_NPP: True
+  MA_GPP: True
+    
 
 # what do we need here?
-# SST
-# SSS
-# Drake
-# AMOC
 # AEU ?
 # Total Air extent
 # Northen Ice Extent
 # Southern Ice Extent
 # Air Sea Flux of CO2
 # pH
-# N
-# P
-# Si
-# Fe
 # Chl
 # global total pprod
 # regional mean pprod

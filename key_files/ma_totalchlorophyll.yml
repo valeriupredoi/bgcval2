@@ -1,0 +1,18 @@
+---
+name            : MA_TotalChlorophyll
+units           : ""
+dimensions      : 1
+model           : NEMO025-ERSEM
+modelgrid       : eORCA025
+modelFiles      : $BASEDIR_MODEL/$JOBID/SENEMO_S1_1m_*diag_T*.nc
+gridFile        : /data/proteus2/scratch/ledm/MissionAtlantic/SENEMO/eORCA025_mesh_mask_mes_v2.nc
+model_vars      : Ptot_Chl_result
+model_convert   : NoChange
+#dataFile        : $BASEDIR_OBS/WOA/annual/woa13_all_p00_01.nc
+#data_vars       : p_an
+#data_convert    : NoChange
+#data_source     : WOA13
+layers          : Surface #50m 100m
+regions         : Global NorthAtlanticOcean SouthAtlanticOcean EquatorialAtlanticOcean
+metrics         : mean #, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max
+
