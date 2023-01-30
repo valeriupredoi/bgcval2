@@ -9,6 +9,8 @@ keys:
   MA_Drake: True
   MA_AMOC_26N: True
   MA_ZOS: True
+  MA_MLD: True
+  MA_MLD_Sigma: True
 
   # BGC
   MA_Nitrate: True
@@ -20,13 +22,16 @@ keys:
   MA_TotalZooC: True
   MA_NPP: True
   MA_GPP: True
-    
+  MA_pH: True
+  MA_O2: True    
 
 # what do we need here?
 # AEU ?
-# Total Air extent
+# Total ice extent
 # Northen Ice Extent
 # Southern Ice Extent
 # Air Sea Flux of CO2
-# pH
+# pH 
+# DIC 
+# Oxygen
 # Global total npp/gpp

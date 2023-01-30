@@ -192,6 +192,7 @@ def makeLongNameDict():
     lnd['Chlorophylla'] = 'Chlorophyll'
     lnd['Chlorophyll_cci'] = "Chlorophyll (CCI)"
     lnd['Chlorophyll_pig'] = "Chlorophyll (Pigments)"
+    lnd['TotalChlorophyll'] = 'Total Chlorophyll' 
     lnd['CHD'] = "Diatom Chlorophyll"
     lnd['CHN'] = "Non-Diatom Chlorophyll"
     lnd['DiatomChlorophyll'] = "Diatom Chlorophyll"
@@ -229,6 +230,7 @@ def makeLongNameDict():
 
     lnd['VolumeMeanTemperature'] = "Volume-weighted Mean Temperature"
     lnd['GlobalMeanSalinity'] = "Global Volume-weighted Mean Salinity"
+   
 
     lnd['TotalHeatFlux'] = "Global Total Heat Flux"
     lnd['HeatFlux'] = "Heat Flux"
@@ -304,10 +306,29 @@ def makeLongNameDict():
 
     lnd['MA_SST'] = 'Sea Surface Temperature'
     lnd['MA_SSS'] = 'Sea Surface Salinty'
+    lnd['SSS'] = 'Sea Surface Salinty'
+
     lnd['MA_DraKE'] = 'Drake Passage Current'
     lnd['MA_AMOC_26N'] = 'AMOC at 26.5N' 
+    lnd['MA_ZOS'] = 'Sea Surface Height'
+    lnd['MA_MLD'] = 'Mixed Layer Depth'
+    lnd['MA_MLD_Sigma'] = 'Mixed Layer Depth (Sigma)'
+    lnd['MA_Nitrate'] = 'Nitrate'
+    lnd['MA_Phosphate'] = 'Phosphate'
+    lnd['MA_Iron'] = 'Iron'
+    lnd['MA_Silicate'] = 'Silicate'
+    lnd['MA_TotalChlorophyll'] = 'Total Chlorophyll'
+    lnd['MA_TotalPhytoC'] = 'Total Phytoplankton Carbon'
+    lnd['MA_TotalZooC'] = 'Total Zooplankton Carbon'
+    lnd['MA_NPP'] = 'Net Primary Production'
+    lnd['MA_GPP'] = 'Gross Primary Production'
+    lnd['MA_pH'] = 'pH'
+    lnd['MA_O2'] = 'Oxygen'
+    lnd['MA_Oxygen'] = 'Oxygen'
 
-    lnd['NorthernTotalIceArea'] = 'Northern Hemisphere Ice Area'
+
+
+
     lnd['SouthernTotalIceArea'] = 'Southern Hemisphere Ice Area'
     lnd['TotalIceArea'] = 'Total Ice Area'
 
