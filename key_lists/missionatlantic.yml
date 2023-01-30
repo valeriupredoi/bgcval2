@@ -24,6 +24,7 @@ keys:
   MA_GPP: True
   MA_pH: True
   MA_O2: True    
+  MA_DIC: True
 
 # what do we need here?
 # AEU ?
@@ -31,7 +32,5 @@ keys:
 # Northen Ice Extent
 # Southern Ice Extent
 # Air Sea Flux of CO2
-# pH 
 # DIC 
-# Oxygen
 # Global total npp/gpp

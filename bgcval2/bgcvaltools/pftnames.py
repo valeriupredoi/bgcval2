@@ -325,6 +325,7 @@ def makeLongNameDict():
     lnd['MA_pH'] = 'pH'
     lnd['MA_O2'] = 'Oxygen'
     lnd['MA_Oxygen'] = 'Oxygen'
+    lnd['MA_DIC'] = 'Dissolved Inorganic Carbon'
 
 
 
