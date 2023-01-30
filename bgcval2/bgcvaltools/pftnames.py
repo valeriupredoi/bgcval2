@@ -326,9 +326,10 @@ def makeLongNameDict():
     lnd['MA_O2'] = 'Oxygen'
     lnd['MA_Oxygen'] = 'Oxygen'
     lnd['MA_DIC'] = 'Dissolved Inorganic Carbon'
-
-
-
+    
+    lnd['MA_SouthernTotalIceExtent'] = 'Southern Total Ice Extent'
+    lnd['MA_NorthernTotalIceExtent'] = 'Northern Total Ice Extent'
+    lnd['MA_TotalIceExtent'] = 'Total Ice Extent'
 
     lnd['SouthernTotalIceArea'] = 'Southern Hemisphere Ice Area'
     lnd['TotalIceArea'] = 'Total Ice Area'

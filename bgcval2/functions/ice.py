@@ -54,7 +54,7 @@ def load_area_and_mask(gridfn, maskname,):
     lat = nc.variables['nav_lat'][:]
     nc.close()
     loaded_area_and_mask = True
-    return area, tmask, lat
+    return area.copy(), tmask, lat.copy()
 
 
 def calculate_ice_extent(nc, keys, **kwargs):  
@@ -71,20 +71,26 @@ def calculate_ice_extent(nc, keys, **kwargs):
     areafile = get_kwarg_file(kwargs, 'areafile')
 
     maskname = kwargs.get('maskname', 'tmask')
-    if not loaded_area_and_mask:
+    if 'area' not in nc.variables.keys() and not loaded_area_and_mask:
         area, tmask, lat = load_area_and_mask(areafile, maskname)
+    else:
+        area = nc.variables['area'][:]
+        lat = nc.variables['nav_lat'][:]
+        tmask = nc.variables[keys[0]][:].squeeze().mask
 
+    print('tmask', tmask.min(), tmask.max(), tmask.sum())
     minIce = kwargs.get('minIce', 0.15)
     region = kwargs.get('region', 'Global')
     region = region.lower().replace('-', '').replace(' ', '').replace('_', '')
 
     # create mask:
-    new_mask = (tmask==0) + (nc.variables[keys[0]][:].squeeze()<minIce)
+    masked_area = np.ma.masked_where(tmask + (nc.variables[keys[0]][:].squeeze() < minIce), area)
+
     if region in ['n', 'north', 'northern', 'northhemisphere', 'northernhemisphere']:
-        new_mask += (lat<0.)
+        masked_area = np.ma.masked_where(masked_area.mask + (lat<0.), masked_area) 
     
     if region in ['s', 'south', 'southern', 'southhemisphere', 'southernhemisphere']:
-        new_mask += (lat>0.)
+        masked_area = np.ma.masked_where(masked_area.mask + (lat>0.), masked_area)
 
-    # calculate sum of unmasked area in km2. 
-    return np.ma.masked_where(new_mask, area).sum() / 1E12
+    return masked_area.sum()/1.E12
+

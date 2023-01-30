@@ -11,6 +11,9 @@ keys:
   MA_ZOS: True
   MA_MLD: True
   MA_MLD_Sigma: True
+  MA_SouthernTotalIceExtent: True
+  MA_NorthernTotalIceExtent: True
+  MA_TotalIceExtent: True
 
   # BGC
   MA_Nitrate: True
@@ -28,9 +31,5 @@ keys:
 
 # what do we need here?
 # AEU ?
-# Total ice extent
-# Northen Ice Extent
-# Southern Ice Extent
 # Air Sea Flux of CO2
-# DIC 
 # Global total npp/gpp

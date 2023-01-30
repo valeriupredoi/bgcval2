@@ -1,0 +1,16 @@
+---
+# TotalIceExtent
+name            : TotalIceExtent
+units           : 1E6 km^2
+dimensions      : 1
+model           : NEMO-ERSEM
+modelFiles      : $BASEDIR_MODEL/$JOBID/SENEMO_S1_1m_*grid_T*.nc   
+model_vars      : soicecov
+model_convert:
+    path: bgcval2/functions/ice.py
+    function: calculate_ice_extent
+    areafile : $PATHS_GRIDFILE
+    minIce: 0.15
+    region: global
+layers          : layerless
+regions         : regionless
