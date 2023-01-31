@@ -68,7 +68,7 @@ def getTimes(nc, coords):
     try:
         cal = nc.variables[coords['t']].calendar
     except:
-        cal = calendar = coords['cal']
+        cal = coords['cal']
 
     dtimes = num2date(nc.variables[coords['t']][:],
                       nc.variables[coords['t']].units,
