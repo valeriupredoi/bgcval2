@@ -140,12 +140,52 @@ def apply_shifttimes(mdata, jobID, shifttimes):
     return times, datas
 
 
+def apply_timerange(times, datas, jobID, timeranges):
+    """
+    This version takes the times and dataafter apply_shifttimes ,
+    and removes things outside the time range requested.
+    the value of the range is provided in the yaml file.
+
+    Outputs two lists: dates & data.
+    """
+    if 0 in [len(times), len(datas), ]:
+       return times, datas
+
+    print('apply_timerange', jobID, timeranges)
+
+    timerange = timeranges.get(jobID, None)
+
+    print('apply_timerange', timerange)    
+    if timerange is None: 
+       print('apply_timerange: timerange is', None) 
+       return times, datas
+
+    print(jobID, timerange, 'is not None', np.min(times), np.max(times))
+    
+    n_times, n_datas = [], [] # to ensure they stay lists
+    for ti, da in zip(times, datas):
+        if ti < np.min(timerange):
+            continue
+        if ti > np.max(timerange):
+            continue
+        n_times.append(ti)
+        n_datas.append(da)
+        print('apply_timerange:', jobID, ti, da)
+
+    if not len(n_times):
+        print('apply_timerange: WARNING: No times made the cut?', len(times),
+              'original times', [np.min(times), np.max(times)], 
+              'timerange:', timerange)
+        assert 0
+    return n_times, n_datas
+
 
 def timeseries_compare(jobs,
                        colours,
                        suites = [],
                        analysisname='',
                        shifttimes={},
+                       timeranges={},   
                        jobDescriptions={},
                        lineThicknesses=defaultdict(lambda: 1),
                        linestyles=defaultdict(lambda: '-'),
@@ -1598,10 +1638,13 @@ def timeseries_compare(jobs,
 
                     #timesD[jobID] 	= sorted(mdata.keys())
                     #arrD[jobID]	= [mdata[t] for t in timesD[jobID]]
+                
                 times, datas = apply_shifttimes(mdata, jobID, shifttimes)
+                print('post apply_shifttimes:', len(times), len(datas))
+                times, datas = apply_timerange(times, datas, jobID, timeranges)
                 timesD[jobID] = times  #mdata.keys())
                 arrD[jobID] = datas  #t] for t in timesD[jobID]]
-
+                print(jobID, region, layer, metric, len(times), len(datas))
             timesD, arrD = build_ensemble(timesD, arrD, ensembles)
 
             if len(list(arrD.keys())) == 0: 
@@ -1696,6 +1739,7 @@ def load_comparison_yml(master_compare_yml_fn):
         print('        thickness: 0.7')
         print("        linestyle: '-'")
         print('        shifttime: 0.')
+        print('        timerange: [1950, 2000]')
         sys.exit(0)
 
     details['do_analysis_timeseries'] = input_yml_dict.get('do_analysis_timeseries', False)
@@ -1716,6 +1760,7 @@ def load_comparison_yml(master_compare_yml_fn):
     suites = {}
     descriptions = {}
     shifttimes = {} # number of years to shift time axis.
+    timeranges = {}
 
     for jobID, job_dict in details['jobs'].items():
         if job_dict.get('colour', False):
@@ -1728,6 +1773,7 @@ def load_comparison_yml(master_compare_yml_fn):
         thicknesses[jobID] = job_dict.get('thickness', default_thickness)
         linestyles[jobID] = job_dict.get('linestyle', default_linestyle)
         shifttimes[jobID] = float(job_dict.get('shifttime', 0.))
+        timeranges[jobID] = job_dict.get('timerange', None)
         suites[jobID] = job_dict.get('suite', default_suite)
         auto_download_dict[jobID] = job_dict.get('auto_download', auto_download_dict[jobID]) 
 
@@ -1736,8 +1782,11 @@ def load_comparison_yml(master_compare_yml_fn):
     details['thicknesses'] = thicknesses
     details['linestyles'] = linestyles
     details['shifttimes'] = shifttimes
+    details['timeranges'] = timeranges
     details['suites'] = suites
     details['auto_download'] = auto_download_dict
+#    print(details)
+#    assert 0
     return details
 
 
@@ -1760,6 +1809,7 @@ def load_yml_and_run(compare_yml, config_user):
     linestyles = details['linestyles']
     descriptions = details['descriptions']
     shifttimes = details['shifttimes']
+    timeranges = details['timeranges']
     suites = details['suites']
     auto_download = details['auto_download']
 
@@ -1771,6 +1821,7 @@ def load_yml_and_run(compare_yml, config_user):
         print(jobID, 'colour:',colours[jobID])
         print(jobID, 'line thickness & style:',thicknesses[jobID], linestyles[jobID])
         print(jobID, 'Shift time by', shifttimes[jobID])
+        print(jobID, 'Time range (None means all):', timeranges.get(jobID, None))
         print(jobID, 'suite:', suites[jobID])
         print(jobID, 'auto_download', auto_download[jobID])
 
@@ -1806,6 +1857,7 @@ def load_yml_and_run(compare_yml, config_user):
         colours = colours,
         suites = master_suites,
         shifttimes=shifttimes,
+        timeranges=timeranges,
         jobDescriptions=descriptions,
         analysisname=analysis_name,
         lineThicknesses=thicknesses,
