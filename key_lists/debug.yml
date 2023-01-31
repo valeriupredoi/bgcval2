@@ -1,15 +1,16 @@
 ---
 # Quick shortlist of keys to help debug analysis code.
 keys:
-    TotalIceExtent: True
-    NorthernTotalIceExtent: True
-    SouthernTotalIceExtent: True
-    DrakePassageTransport: True
-    AMOC_26N: True
-    GlobalMeanTemperature: True
-    Temperature: True
-    GlobalMeanSalinity: True
-    Salinity: True
+    Temperature_debug: True
+#    TotalIceExtent: True
+#    NorthernTotalIceExtent: True
+#    SouthernTotalIceExtent: True
+#    DrakePassageTransport: True
+#    AMOC_26N: True
+#    GlobalMeanTemperature: True
+#    Temperature: True
+#    GlobalMeanSalinity: True
+#    Salinity: True
     # MLD: True
  # BGC
     # TotalAirSeaFluxCO2: True

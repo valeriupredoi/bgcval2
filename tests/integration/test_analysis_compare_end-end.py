@@ -47,8 +47,5 @@ def test_create_files():
 def test_run_analysis_compare():
     """Patch and run the whole thing."""
     bgcval2_test_data()
-    with pytest.raises(ValueError) as exc:
-        with arguments('analysis_compare', '-y', 'input_yml/debug.yml'):
-            main()
-    expected_exc = "operands could not be broadcast together with shapes (4,299,299) (3,) (4,299,299)"
-    assert expected_exc in str(exc.value)
+    with arguments('analysis_compare', '-y', 'input_yml/debug.yml'):
+        main()
