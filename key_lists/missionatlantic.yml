@@ -3,6 +3,7 @@
 # A short list of key metrics to run first to get a very quick idea
 # of how a model is working.
 keys:
+  MA_AEU: True
   # DONE:
   MA_SST: True
   MA_SSS: True
@@ -16,6 +17,8 @@ keys:
   MA_TotalIceExtent: True
 
   # BGC
+  MA_TotalIntGPP: True
+  MA_TotalIntNPP: True
   MA_Nitrate: True
   MA_Phosphate: True
   MA_Iron: True
@@ -29,7 +32,7 @@ keys:
   MA_O2: True    
   MA_DIC: True
 
+
 # what do we need here?
-# AEU ?
-# Air Sea Flux of CO2
-# Global total npp/gpp
+# Air Sea Flux of CO2 - need new data.
+# Global total npp/gpp - done - but not sure on units!

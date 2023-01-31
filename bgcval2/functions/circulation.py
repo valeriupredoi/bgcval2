@@ -44,6 +44,10 @@ eORCA025_drake_LON=875
 eORCA025_drake_LAT0=317
 eORCA025_drake_LAT1=436 
 
+eORCA025_AEU_LON=1057
+eORCA025_AEU_LAT0=664
+eORCA025_AEU_LAT1=704
+
 
 # AMOC:
 # Coordinates of AMOC calc: 
@@ -62,13 +66,15 @@ eORCA025_lonslice26Nnm = slice(841, 1105) # Bahamas (removes Florida Straight)
 
 umask_drake = 0
 e2u_drake = 0
+e2u_aeu = 0
+umask_aeu = 0
 e3v_AMOC26N = 0
 e1v_AMOC26N = 0
 tmask_AMOC26N = 0
 alttmask_AMOC26N = 0
 loadedArea = False
 loadedAltMask = False
-
+loaded_AEU = False
 
 def loadDataMask(gridfn, maskname, grid):
     """
@@ -115,6 +121,25 @@ def loadDataMask(gridfn, maskname, grid):
     print('e3v_AMOC26N:', e3v_AMOC26N, latslice26Nnm, e3v_AMOC26N.shape)
     nc.close()
     loadedArea = True
+
+
+def load_AEU_masks(gridfn, grid):
+    """
+    Loads the AEU cell lenght in the y (j, Meridional, North-South) direction. 
+    """
+    global e2u_aeu
+    global loaded_AEU
+    if grid == 'eORCA025':
+        LON = eORCA025_AEU_LON
+        LAT0 = eORCA025_AEU_LAT0
+        LAT1 = eORCA025_AEU_LAT1
+    else: assert 0
+ 
+    nc = dataset(gridfn, 'r')
+    e2u_aeu = nc.variables['e2u'][..., LAT0:LAT1, LON]
+    nc.close()
+    loaded_AEU=True
+    
 
 
 def loadAtlanticMask(altmaskfile, maskname='tmaskatl', grid = 'eORCA1'):
@@ -289,4 +314,45 @@ def AMOC26N(nc, keys, **kwargs):
     else:
         atlmoc = TwentySixNorth(nc, keys, **kwargs)
     return atlmoc.max()
+
+
+
+def AEU(nc, keys, **kwargs):
+    """
+    Calculate the Atlantic Equatorial Undercurrent
+    23 W, 5 south to 5 north
+    """
+    # Get cross section
+    grid = kwargs.get('grid', 'eORCA025')
+    gridfn = get_kwarg_file(kwargs, 'areafile')
+
+    if not loaded_AEU:
+        load_AEU_masks(gridfn, grid)
+
+    if grid == 'eORCA025':
+        AEU_LON=eORCA025_AEU_LON
+        lat_slice = slice(eORCA025_AEU_LAT0,eORCA025_AEU_LAT1)
+        AEU_LAT0=eORCA025_AEU_LAT0
+        AEU_LAT1=eORCA025_AEU_LAT1
+    else: assert 0
+    
+    max_depth = kwargs.get('max_depth', 500.)
+
+    thkcello = nc.variables['thkcello'][:, :, lat_slice, AEU_LON]
+    depth = np.ma.abs(np.cumsum(thkcello[:], axis=1))
+
+    # calculate cross section area
+    cross_section = e2u_aeu * thkcello
+
+    # Multiply current speed by area for total flux
+    uo = nc.variables[keys[0]][:,:,lat_slice, AEU_LON]
+
+    # mask deep water and Southbound current (below zero)
+    uo = np.ma.masked_where(uo.mask + (depth> max_depth) + (uo<0.), uo)
+
+    flux = uo * cross_section
+    flux = flux.sum() / 1.E06
+    #print('AEU', flux)
+    #assert 0
+    return flux
 

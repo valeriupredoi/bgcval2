@@ -320,12 +320,20 @@ def makeLongNameDict():
     lnd['MA_TotalChlorophyll'] = 'Total Chlorophyll'
     lnd['MA_TotalPhytoC'] = 'Total Phytoplankton Carbon'
     lnd['MA_TotalZooC'] = 'Total Zooplankton Carbon'
+    lnd['TotalChlorophyll'] = lnd['MA_TotalChlorophyll']
+    lnd['TotalPhytoC'] = lnd['MA_TotalPhytoC']
+    lnd['TotalZooC'] = lnd['MA_TotalZooC']
     lnd['MA_NPP'] = 'Net Primary Production'
     lnd['MA_GPP'] = 'Gross Primary Production'
+    lnd['MA_TotalIntNPP'] = 'Global Total Net Primary Production'
+    lnd['MA_TotalIntGPP'] = 'Global Total Gross Primary Production'
+    lnd['TotalIntNPP'] = lnd['MA_TotalIntNPP']
+    lnd['TotalIntGPP'] = lnd['MA_TotalIntGPP']
     lnd['MA_pH'] = 'pH'
     lnd['MA_O2'] = 'Oxygen'
     lnd['MA_Oxygen'] = 'Oxygen'
     lnd['MA_DIC'] = 'Dissolved Inorganic Carbon'
+    lnd['MA_AEU'] = 'Atlantic Equatorial Undercurrent'
     
     lnd['MA_SouthernTotalIceExtent'] = 'Southern Total Ice Extent'
     lnd['MA_NorthernTotalIceExtent'] = 'Northern Total Ice Extent'

@@ -1468,6 +1468,7 @@ def comparehtml5Maker(
         'MA_SSS',
         'MA_Drake',
         'MA_AMOC_26N',
+        'MA_AEU',
 
     ]
 
@@ -1487,6 +1488,10 @@ def comparehtml5Maker(
         'Iron_Global_Surface',
         'MA_Nitrate_Global_Surface',
         'MA_Phosphate_Global_Surface',
+        'MA_TotalIntNPP', 
+        'MA_TotalIntGPP',
+        'MA_TotalPhytoC_Global_Surface',
+        'MA_TotalZooC_Global_Surface',
     ]
     categories = {
         'Physics Key Metrics': [],

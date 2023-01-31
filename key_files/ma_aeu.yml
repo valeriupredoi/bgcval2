@@ -1,0 +1,16 @@
+---
+name: AEU #AtlanticEquatorialUndercurent
+units: Sv
+dimensions: 1
+model: NEMO
+modelFiles      : $BASEDIR_MODEL/$JOBID/SENEMO_S1_1m_*grid_U*.nc
+modelgrid       : eORCA025
+model_vars: uo
+model_convert:
+  path: bgcval2/functions/circulation.py
+  function: AEU    
+  areafile: $PATHS_GRIDFILE
+  grid: eORCA025 
+  max_depth: 500. 
+layers: layerless
+regions: regionless

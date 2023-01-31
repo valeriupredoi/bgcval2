@@ -58,7 +58,7 @@ def TotalIntPP(nc, keys, **kwargs):
     if not loadedArea:
         model_area = loadDataMask(areafile)
 
-    #    mmolN/m2/d        [mg C /m2/d]   [mgC/m2/yr] [gC/m2/yr]     Gt/m2/yr
+    #    mmolN/m2/d        [mg C /m2/d]   [mgC/m2/yr] [gC/m2/yr]     Gt/m2/yr # MEDUSA UNITS
     factor = 1.     * 6.625 * 12.011 * 365.       / 1000.   /     1E15
     arr = (nc.variables[keys[0]][:]+ nc.variables[keys[1]][:]).squeeze()*factor
     if arr.ndim ==3:
@@ -68,5 +68,25 @@ def TotalIntPP(nc, keys, **kwargs):
         arr = arr*model_area
     else:
         raise ValueError(f'TotalIntPP: arr shape not recognised, should be either 2 or 3, got value {arr.shape} in {nc.filename}')
+    return arr.sum()
+
+def MA_TotalIntPP(nc, keys, **kwargs):
+    """
+    This function calculated the total primary production for the ERSEM  model.
+    """
+    areafile = get_kwarg_file(kwargs, 'areafile')
+    if not loadedArea:
+        model_area = loadDataMask(areafile)
+    # [mgC/m2/yr] [gC/m2/yr]     Gt/m2/yr
+    # mg C/m^3/d (supposedly - but possibly /m2 ?) 
+    factor = 365.25       / 1000.   /     1E15
+    arr = nc.variables[keys[0]][:].squeeze()*factor
+    if arr.ndim ==3:
+        for i in np.arange(arr.shape[0]):
+            arr[i] = arr[i]*model_area
+    elif arr.ndim ==2:
+        arr = arr*model_area
+    else:
+        raise ValueError(f'MA_TotalIntPP: arr shape not recognised, should be either 2 or 3, got value {arr.shape} in {nc.filename}')
     return arr.sum()
 
