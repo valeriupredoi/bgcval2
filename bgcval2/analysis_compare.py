@@ -157,7 +157,7 @@ def apply_timerange(times, datas, jobID, timeranges):
 
     print('apply_timerange', timerange)    
     if timerange is None: 
-       print('apply_timerange', timerange, 'is', None) 
+       print('apply_timerange: timerange is', None) 
        return times, datas
 
     print(jobID, timerange, 'is not None', np.min(times), np.max(times))

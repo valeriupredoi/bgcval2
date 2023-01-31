@@ -41,9 +41,6 @@ def arguments(*args):
 @patch('bgcval2.analysis_timeseries.main', new=wrapper(bgcval2.analysis_timeseries.main))
 def test_run_analysis_timeseries_debug():
     """Patch and run the whole thing."""
-    with pytest.raises(ValueError) as exc:
-        with arguments('analysis_timeseries', '--jobID', 'u-cp416debug',
+    with arguments('analysis_timeseries', '--jobID', 'u-cp416debug',
                        '--keys', 'debug'):
-            main()
-    expected_exc = "operands could not be broadcast together with shapes (4,299,299) (3,) (4,299,299)"
-    assert expected_exc in str(exc.value)
+        main()
