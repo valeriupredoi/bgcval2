@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-#####!/usr/bin/python
-
 #
 # Copyright 2015, Plymouth Marine Laboratory
 #
@@ -187,9 +185,6 @@ def load_function(convert):
     """
     Using the named function in the key yaml, load that function and return it and it kwargs.
     """
-#    if convert.find(' ')>-1: 
-#        converts = convert.split(' ')
-#        return load_function[converts[0]](load_function[converts[1]])
     # function is listed as a standard function string
     if isinstance(convert, str) and convert in std_functions:
         print( "Standard Function Found:", convert)
@@ -254,7 +249,6 @@ def parse_list_from_string(list1):
     list1 = list1.replace('\'', '').replace('\"', '').replace(';', '')
     while list1.count('  ')>0:
         list1 = list1.replace('  ', ' ')
-    #if len(list1)==0: return []
     return list1.split(' ')
 
 
@@ -420,7 +414,6 @@ def analysis_timeseries(
     # Switches:
     # These are some booleans that allow us to choose which analysis to run.
     # This lets up give a list of keys one at a time, or in parrallel.
-    #if type(suites) == type(['Its', 'A', 'list!']):
     if isinstance(suites, str):
         suites = suites.replace(',', ' ').replace('\'', '').replace('"', '')
         suites = suites.split(' ')
@@ -476,19 +469,6 @@ def analysis_timeseries(
     OMZRegions = [
         'EquatorialPacificOcean', 'IndianOcean', 'EquatorialAtlanticOcean'
     ]  #'Ross','Amundsen','Weddel',]
-
-    #if analysisSuite.lower() in ['debug',]:
-    #        regionList      = ['Global', 'ArcticOcean',]
-
-    #####
-    # The z_component custom command:
-    # This flag sets a list of layers and metrics.
-    # It's not advised to run all the metrics and all the layers, as it'll slow down the analysis.
-    # if z_component in ['SurfaceOnly',]:
-
-    #	if z_component in ['FullDepth',]:
-    #		layerList = [0,2,5,10,15,20,25,30,35,40,45,50,55,60,70,]
-    #		metricList = ['mean','median',]
 
     #####
     # Location of images directory
@@ -596,24 +576,15 @@ def analysis_timeseries(
             ukesmkeys['MLD'] = 'ssomxl010'
 
 
-#####
-# Coordinate dictionary
-# These are python dictionairies, one for each data source and model.
-# This is because each data provider seems to use a different set of standard names for dimensions and time.
-# The 'tdict' field is short for "time-dictionary".
-#	This is a dictionary who's indices are the values on the netcdf time dimension.
-#	The tdict indices point to a month number in python numbering (ie January = 0)
-# 	An example would be, if a netcdf uses the middle day of the month as it's time value:
-#		tdict = {15:0, 45:1 ...}
-
-    #	def listModelDataFiles(jobID, filekey, datafolder, annual):
-    #		print "listing model data files:\njobID:\t",jobID, '\nfile key:\t',filekey,'\ndata folder:\t', datafolder, '\nannual flag:\t',annual
-    #		if annual:
-    #			print "listing model data files:",datafolder+jobID+"/"+jobID+"o_1y_*_"+filekey+".nc"
-    #			return sorted(glob(datafolder+jobID+"/"+jobID+"o_1y_*_"+filekey+".nc"))
-    #		else:
-    #                        print "listing model data files:",datafolder+jobID+"/"+jobID+"o_1m_*_"+filekey+".nc"
-    #			return sorted(glob(datafolder+jobID+"/"+jobID+"o_1m_*_"+filekey+".nc"))
+    #####
+    # Coordinate dictionary
+    # These are python dictionairies, one for each data source and model.
+    # This is because each data provider seems to use a different set of standard names for dimensions and time.
+    # The 'tdict' field is short for "time-dictionary".
+    #	This is a dictionary who's indices are the values on the netcdf time dimension.
+    #	The tdict indices point to a month number in python numbering (ie January = 0)
+    # 	An example would be, if a netcdf uses the middle day of the month as it's time value:
+    #		tdict = {15:0, 45:1 ...}
 
     masknc = dataset(paths.orcaGridfn, 'r')
     tlandmask = masknc.variables['tmask'][:]
@@ -632,32 +603,32 @@ def analysis_timeseries(
     def applyLandMask1e3(nc, keys):
         return applyLandMask(nc, keys) * 1000.
 
-#####
-# The analysis settings:
-# Below here is a list of analysis settings.
-# The settings are passed to timeseriesAnalysis using a nested dictionary (called an autovivification, here).
-#
-# These analysis were switched on or off at the start of the function.
-# Each analysis requires:
-#	model files
-#	data files
-#	model and data coordinate dictionaries, (defines above)
-#	model and data details (a set of instructions of what to analyse:
-#		name: 		field name
-#		vars:		variable names in the netcdf
-#		convert: 	a function to manipuate the data (ie change units, or add two fields together.
-#				There are some standard ones in UKESMPython.py, but you can write your own here.
-#		units: 		the units after the convert function has been applied.
-#		layers:		which vertical layers to look at (ie, surface, 100m etc...)
-#		regions:	which regions to look at. Can be speficied here, or use a pre-defined list (from above)
-#		metrics:	what metric to look at:  mean, median or sum
-#		model and data source: 	the name of source of the model/data (for plotting)
-#		model grid: 	the model grid, usually eORCA1
-#		the model grid file: 	the file path for the model mesh file (contains cell area/volume/masks, etc)
-#
-#	Note that the analysis can be run with just the model, it doesn't require a data file.
-#	If so, just set to data file to an empty string:
-#		av[name]['dataFiles']  = ''
+    #####
+    # The analysis settings:
+    # Below here is a list of analysis settings.
+    # The settings are passed to timeseriesAnalysis using a nested dictionary (called an autovivification, here).
+    #
+    # These analysis were switched on or off at the start of the function.
+    # Each analysis requires:
+    #	model files
+    #	data files
+    #	model and data coordinate dictionaries, (defines above)
+    #  	model and data details (a set of instructions of what to analyse:
+    #		name: 		field name
+    #		vars:		variable names in the netcdf
+    #		convert: 	a function to manipuate the data (ie change units, or add two fields together.
+    #				There are some standard ones in UKESMPython.py, but you can write your own here.
+    #		units: 		the units after the convert function has been applied.
+    #		layers:		which vertical layers to look at (ie, surface, 100m etc...)
+    #		regions:	which regions to look at. Can be speficied here, or use a pre-defined list (from above)
+    #		metrics:	what metric to look at:  mean, median or sum
+    #		model and data source: 	the name of source of the model/data (for plotting)
+    #		model grid: 	the model grid, usually eORCA1
+    #		the model grid file: 	the file path for the model mesh file (contains cell area/volume/masks, etc)
+    #
+    #	Note that the analysis can be run with just the model, it doesn't require a data file.
+    #	If so, just set to data file to an empty string:
+    #		av[name]['dataFiles']  = ''
 
     # NEW STYLE keys from file:
     av = ukp.AutoVivification()
@@ -757,40 +728,6 @@ def analysis_timeseries(
                 gridFile=av[name]['gridFile'],
                 clean=False,
             )
-
-
-def singleTimeSeriesProfile(jobID, key):
-
-    FullDepths = [
-        'T',
-        'S',
-        'Chl_pig',
-        'N',
-        'Si',
-        'O2',
-        'Alk',
-        'DIC',
-        'Iron',
-    ]
-    if key in FullDepths:
-        analysis_timeseries(
-            jobID=jobID,
-            suites=[
-                key,
-            ],
-        )
-
-
-def singleTimeSeries(
-    jobID,
-    key,
-):
-    #	try:
-    analysis_timeseries(jobID=jobID,
-                        suites=[
-                            key,
-                        ],
-                        strictFileCheck=False)  #clean=1)
 
 
 def get_args():

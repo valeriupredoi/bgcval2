@@ -26,7 +26,6 @@ import numpy as np
 from netCDF4 import num2date
 import os
 from datetime import datetime, timedelta
-#from pyproj import Proj
 
 #Specific local code:
 from bgcval2 import UKESMpython as ukp
@@ -34,7 +33,6 @@ from bgcval2.netcdf_manipulation import convertToOneDNC
 from bgcval2.bgcvaltools.dataset import dataset
 from bgcval2.bgcvaltools.makeMask import makeMask
 from bgcval2.functions.standard_functions import extractData as std_extractData
-#from bgcval2.functions.standard_functions import choose_best_var
 
 """
 .. module:: timeseriesTools
@@ -68,13 +66,11 @@ def getTimes(nc, coords):
     try:
         cal = nc.variables[coords['t']].calendar
     except:
-        cal = calendar = coords['cal']
+        cal = coords['cal']
 
     dtimes = num2date(nc.variables[coords['t']][:],
                       nc.variables[coords['t']].units,
                       calendar=cal)
-    #nc.variables[coords['t']].calendar)[:]
-    #dtimes = num2date(nc.variables[coords['t']][:], nc.variables[coords['t']].units,calendar=coords['cal'])[:]
     print(dtimes)
     try:
         ts = np.array([float(dt.year) + dt.dayofyr / 365. for dt in dtimes])
@@ -160,7 +156,6 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
             data = std_extractData(nc, details)
         data = np.ma.masked_where(nc.variables[coords['z']][:] > 0, data)
         return data
-        #return ApplyDepthSlice(data, 0)
 
     if layer in [
             'Surface',
@@ -299,16 +294,10 @@ class DataLoader:
             }
         except:
             depths = {}
-        #print "self.nc.variables[self.coords[z]][:]", self.nc.variables[self.coords['z']][:]
-        #print "self.coords[z]", self.coords['z']
-        #print "depths",depths
-        #print "layers",self.layers
-
-        #  	assert 0
         lays = self.layers[:]
         lays.reverse()
 
-        for l in lays:  #self.layers:
+        for l in lays:
             try:
                 layer = int(l)
             except:
@@ -413,9 +402,6 @@ class DataLoader:
   		This creates a set of 1D arrays of the dat and 4D coordinates for the required region.
   		The leg work is done in makeMask.py
   	"""
-
-        #print 'DataLoader:\tcreateDataArray:\t',self.details['name'],region,layer
-
         self.createOneDDataArray(layer)
 
         m = makeMask(
@@ -449,8 +435,6 @@ class DataLoader:
             lat = np.zeros_like(dat)
             lon = np.zeros_like(dat)
             dims = choose_best_ncvar(self.nc, self.details['vars']).dimensions
-            #dims = self.nc.variables[self.details['vars'][0]].dimensions
-
         else:
             if self.coords['lat'] not in self.nc.variables or self.coords['lon'] not in self.nc.variables:
                 raise KeyError(f"ERROR: coordinates provided do not match coordinates in file: {self.coords['lat']}, {self.coords['lon']}")
@@ -458,7 +442,6 @@ class DataLoader:
             lon = ukp.makeLonSafeArr(self.nc.variables[self.coords['lon']]
                                      [:])  # makes sure it's between +/-180
             dims = choose_best_ncvar(self.nc, self.details['vars']).dimensions
-            #dims = self.nc.variables[self.details['vars'][0]].dimensions
             dat = self.__getlayerDat__(layer)
         if dat.ndim == 2: dat = dat[None, :, :]
 
@@ -478,7 +461,6 @@ class DataLoader:
                 True,
             ])
             return a, a, a, a, a
-
 
         #####
         # Create Temporary Output Arrays.
@@ -515,8 +497,6 @@ class DataLoader:
         # Different data has differnt shapes, and order or dimensions, this takes those differences into account.
         if dat.ndim > 2:
             if dims[-2].lower() in latnames and dims[-1].lower() in lonnames:
-
-                #print 'createDataArray',self.details['name'],layer, "Sensible dimsions order:",dims
                 for index, v in ukp.maenumerate(dat):
                     try:
                         (t, z, y, x) = index
@@ -619,15 +599,12 @@ def makeArea(fn, coordsdict):
     nc = dataset(fn, 'r')
     lats = nc.variables[coordsdict['lat']][:]
     lons = nc.variables[coordsdict['lon']][:]
-    #depths = nc.variables[coordsdict['z']][:]
     nc.close()
     if lats.ndim == 1:
-        #lat2d,lon2d = np.meshgrid(lats,lons)
         area = np.zeros((len(lats), len(lons)))
         meanLatDiff = np.abs(lats[:-1] - lats[1:]).mean()
         meanLonDiff = np.abs(lons[:-1] - lons[1:]).mean()
         for a in np.arange(len(lats)):
-            #area[a] = np.ones(len(lats)*calculateArea(lats[a]-meanLatDiff,lats[a]+meanLatDiff,-meanLonDiff,meanLonDiff))
             print(a, area.shape, len(lats), len(lons))
             area[a, :] = np.ones(len(lons)) * ukp.Area(
                 [lats[a] - meanLatDiff / 2., -meanLonDiff / 2.],
@@ -644,27 +621,6 @@ def makeArea(fn, coordsdict):
               lats.ndim, coordsdict)
         assert 0, 'timeseriesTools.py:\tNot implemeted makeArea for this grid. ' + str(
             lats.ndim)
-
-
-#def calculateArea(lat0,lat1,lon0,lon1):
-#		co = {"type": "Polygon", "coordinates": [
-#		    [(lon0, lat0), #('lon', 'lat')
-#		     (lon0, lat1),
-#		     (lon1, lat1),
-#		     (lon1, lat0),
-#		     (lon0, lat0)]]}
-#		clon, clat = zip(*co['coordinates'][0])
-#
-#		pa = Proj("+proj=aea +lat_1="+str(lat0)+" +lat_2="+str(lat1)+"+lon_0="+str(lon0)+" +lon_1="+str(lon0))
-#		x, y = pa(clon, clat)
-#		cop = {"type": "Polygon", "coordinates": [zip(x, y)]}
-#		area = shape(cop).area
-#		return area
-#
-#
-#def calculateVol(lat0,lat1,lon0,lon1,d0,d1):
-#		a = calculateArea(lat0,lat1,lon0,lon1)
-#		return area*abs(d1-d0)
 
 
 def calcCuSum(times, arr):
