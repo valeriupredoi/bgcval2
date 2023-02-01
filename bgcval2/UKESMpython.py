@@ -44,6 +44,7 @@ import cartopy.io.shapereader as shapereader
 from cartopy import img_transform, feature as cfeature
 from scipy.stats.mstats import scoreatpercentile
 from scipy.stats import linregress, mode as scimode
+from sklearn.metrics import mean_squared_error
 from calendar import month_name
 from shelve import open as shOpen
 import socket
@@ -904,8 +905,10 @@ def robinPlotQuad(lons,
         if spl in [
                 224,
         ]:
-            rbma = 10.  #max(np.ma.abs(data1 -data2))
-            rbmi = 0.1
+            rbmi, rbma = logsymetricAroundOne(data1, data2)
+
+#            rbma = 10.  #max(np.ma.abs(data1 -data2))
+#            rbmi = 0.1
 
         if doLogs[i] and rbmi * rbma <= 0.:
             print("UKESMpython:\trobinPlotQuad: \tMasking", end=' ')
@@ -1012,7 +1015,6 @@ def robinPlotQuad(lons,
                             pad=0.05,
                             shrink=0.75,
                         ))
-                        cbs[i].set_ticks([0.1, 1., 10.])
 #                        cbs[i].set_ticks([-1, 0, 1])
 #                        cbs[i].set_ticklabels(['0.1', '1.', '10.'])
 
@@ -1066,8 +1068,8 @@ def robinPlotQuad(lons,
                             pad=0.05,
                             shrink=0.5,
                         ))
-                        cbs[i].set_ticks([0.1, 1., 10.])
-                        cbs[i].set_ticklabels(['0.1', '1.', '10.'])
+#                       cbs[i].set_ticks([0.1, 1., 10.])
+#                       cbs[i].set_ticklabels(['0.1', '1.', '10.'])
 
             #else:		ticks = np.linspace( rbmi,rbma,9)
             #print i, spl, ticks, [rbmi,rbma]
@@ -1179,8 +1181,9 @@ def HovPlotQuad(
         if spl in [
                 224,
         ]:
-            rbma = 10.001
-            rbmi = 0.0999
+            rbmi, rbma = logsymetricAroundOne(data1, data2)
+            #rbma = 10.001
+            #rbmi = 0.0999
 
         if doLogs[i] and rbmi * rbma <= 0.:
             print("UKESMpython:\tHovPlotQuad: \tMasking", end=' ')
@@ -1303,8 +1306,8 @@ def HovPlotQuad(
                     pad=0.05,
                     shrink=0.5,
                 ))
-                cbs[i].set_ticks([0.1, 1., 10.])
-                cbs[i].set_ticklabels(['0.1', '1.', '10.'])
+#                cbs[i].set_ticks([0.1, 1., 10.])
+#                cbs[i].set_ticklabels(['0.1', '1.', '10.'])
 
             #cbs[i].set_clim(rbmi, rbma)
             if doLogs[i] and len(cbarlabel) > 0:
@@ -1446,8 +1449,9 @@ def ArcticTransectPlotQuad(
         if spl in [
                 224,
         ]:
-            rbma = 10.001
-            rbmi = 0.0999
+            rbmi, rbma = logsymetricAroundOne(data1, data2)
+#           rbma = 10.001
+#           rbmi = 0.0999
 
         if doLogs[i] and rbmi * rbma <= 0.:
             print("UKESMpython:\tArcticTransectPlotQuad: \tMasking", end=' ')
@@ -1588,6 +1592,7 @@ def ArcticTransectPlotQuad(
                     pad=0.05,
                     shrink=0.5,
                 ))
+
                 cbs[i].set_ticks([0.1, 1., 10.])
                 cbs[i].set_ticklabels(['0.1', '1.', '10.'])
 
@@ -1764,10 +1769,22 @@ def determineLimsFromData(data1, data2):
 
 
 def symetricAroundZero(data1, data2):
-    # rbmi,rbma = symetricAroundZero(data1,data2)
+    # 3 sigma range, lee you big physicist...
+    # lol.... why not just do 5-95 pc?
     rbma = 3. * np.ma.std(data1 - data2)
     rbmi = -rbma
     return rbmi, rbma
+
+
+def logsymetricAroundOne(data1, data2):
+    print('logsymetricAroundOne', data1.shape, data2.shape, data1.min(), data2.min(), data1.mask.sum(), data2.mask.sum())
+    if 0 in [data1.mask.sum(), data2.mask.sum()]:
+        return 0.1, 10.
+    dat = data1/data2
+    ranges = np.max([np.percentile(dat.compressed(), 95.), 1./np.percentile(dat.compressed(), 5.)])
+    diff= np.log10(ranges) 
+    return 10.**-diff, 10.**diff
+
 
 
 def histPlot(datax,
@@ -2129,13 +2146,17 @@ def addStraightLineFit(ax,
     def getLinRegText(ax, x, y, showtext=True):
         x = [a for a in x if (a is np.ma.masked) == False]
         y = [a for a in y if (a is np.ma.masked) == False]
-        beta1, beta0, rValue, pValue, stdErr = linregress(x, y)
-        thetext = r'$\^\beta_0$ = '+strRound(beta0)		\
-         + '\n'+r'$\^\beta_1$ = '+strRound(beta1)	\
-         + '\nR = '+ strRound(rValue)		\
-         + '\nP = '+strRound(pValue)		\
-         + '\nN = '+str(int(len(x)))
-        #+ '\n'+r'$\epsilon$ = ' + strRound(stdErr)	\
+        slope, intercept, rValue, pValue, stdErr = linregress(x, y)
+        rmse = mean_squared_error(y, x, squared=False)
+        md = np.median(np.ma.array(y).compressed()-np.ma.array(x).compressed()) 
+        thetext = ''. join(['Slope = ', strRound(slope), 
+            '\nIntercept = ',  strRound(intercept),
+            '\nRMSE = ', strRound(rmse),
+            '\nMD = ', strRound(md),
+            '\nR = ', strRound(rValue), 
+            '\nP = ', strRound(pValue), 
+            '\nN = ', str(int(len(x))), 
+            ])
         if showtext:
             pyplot.text(0.04,
                         0.96,
@@ -2143,7 +2164,7 @@ def addStraightLineFit(ax,
                         horizontalalignment='left',
                         verticalalignment='top',
                         transform=ax.transAxes)
-        return beta1, beta0, rValue, pValue, stdErr
+        return slope, intercept, rValue, pValue, stdErr
 
     b1, b0, rValue, pValue, stdErr = getLinRegText(ax, x, y, showtext=showtext)
     if extent == [0, 0, 0, 0]:
