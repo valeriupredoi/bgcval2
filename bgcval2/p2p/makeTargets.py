@@ -393,7 +393,7 @@ class makeTargets:
                             c=c(self.data[leg]['rR']),
                             marker=ma,
                             markersize=9,
-                        ))
+                        )
 
                     for x, xx in list(maxes.items()):
                         if self.data[leg][x] > xx: maxes[x] = self.data[leg][x]
