@@ -1754,10 +1754,9 @@ def histPlot(datax,
              dpi=100,
              minNumPoints=6,
              legendDict=['mean', 'mode', 'std', 'median', 'mad']):
-        """
-	Produces a histogram pair.
-	"""
-
+    """
+    Produces a histogram pair.
+    """
     fig = pyplot.figure()
     ax = pyplot.subplot(111)
     xmin = np.ma.min([np.ma.min(datax), np.ma.min(datay)])
