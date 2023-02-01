@@ -1,0 +1,17 @@
+---
+name            : TotalBenCa
+units           : Peq
+model           : MEDUSA
+modelgrid       : eORCA1
+dimensions      : 1
+modelFiles      : $BASEDIR_MODEL/$JOBID/medusa*_$JOBIDo_1y_*_diad-T.nc
+model_vars      : BEN_CA
+model_convert   :
+    path: bgcval2/functions/BenCa.py
+    function: calc_total_benca
+    areafile: $PATHS_GRIDFILE
+layers          : layerless
+regions         : regionless
+
+
+
