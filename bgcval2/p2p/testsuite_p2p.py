@@ -216,7 +216,6 @@ def testsuite_p2p(
                           imageDir=imageDir,
                           compareCoords=True,
                           noPlots=noPlots)
-            #shelvesAV[model][name][depthLevel] = m.shelvesAV
             shelvesAV.extend(m.shelvesAV)
 
             print('m.shelkvesL:', m.shelvesAV)
@@ -225,9 +224,6 @@ def testsuite_p2p(
             if noPlots: continue
 
             if noTargets: continue
-            #csvFile = ukp.folder(workingDir+'/CSV')+'summary_file.csv'
-            #print "attempting csvFromShelves:",m.shelves, csvFile
-            #c = csvFromShelves.csvFromShelves(m.shelves, csvFile ,['check',])
 
             #####
             # makeTargets:
@@ -235,10 +231,8 @@ def testsuite_p2p(
             filename = ukp.folder(imageFolder+'/Targets/'+year+'/AllSlices')+model+'-'+jobID+'_'+year+'_'+name+depthLevel+'.png'
             t = makeTargets(	m.shelves,
             			filename,
-            			#name=name,
             			legendKeys = ['newSlice','ykey',],
             			debug=True)
-            			#imageDir='',
 
 
     if not len(shelvesAV): 

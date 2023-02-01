@@ -32,15 +32,9 @@
 from matplotlib import pyplot
 from matplotlib import rc
 from matplotlib.patches import Arrow
-#from matplotlib.markers import filled_markers
 from glob import glob
 
 import numpy as np
-#from numpy import sin, arccos, sqrt, max as nmax, abs
-#from numpy import isnan as npNaN, isinf as npInf
-#from calendar import month_name
-
-#from itertoolsmodule import product
 from itertools import cycle, product
 from operator import itemgetter
 from os.path import basename, exists
@@ -48,12 +42,11 @@ from sys import argv
 from shelve import open as shOpen
 from calendar import month_name
 
-from .. import UKESMpython as ukp
-from ..bgcvaltools.pftnames import AutoVivification, getLongName
-
-from ..bgcvaltools.StatsDiagram import TaylorDiagram, TargetDiagram, TaylorDiagramMulti
-from ..bgcvaltools.robust import TargetDiagram as robustTargetDiagram  #, TargetDiagram,TaylorDiagramMulti
-from ..bgcvaltools.robust import StatsDiagram as robustStatsDiagram
+from bgcval2 import UKESMpython as ukp
+from bgcval2.bgcvaltools.pftnames import AutoVivification, getLongName
+from bgcval2.bgcvaltools.StatsDiagram import TaylorDiagram, TargetDiagram, TaylorDiagramMulti
+from bgcval2.bgcvaltools.robust import TargetDiagram as robustTargetDiagram  
+from bgcval2.bgcvaltools.robust import StatsDiagram as robustStatsDiagram
 
 
 class makeTargets:
@@ -72,17 +65,15 @@ class makeTargets:
                      'xkey',
                      'ykey',
                  ],
-                 debug=True):  #name='', #imageDir='',
+                 debug=True):
 
         self.matchedShelves = matchedShelves
         if not len(matchedShelves):
             print('makeTargets: No Shelves provided:', matchedShelves)
             return
 
-        #self.name = name
-
         self.filename = filename
-        self.diagramTypes = diagramTypes  #['Taylor','Target']
+        self.diagramTypes = diagramTypes
         self.debug = debug
 
         runTargets = False
@@ -97,10 +88,6 @@ class makeTargets:
 
         self.legendKeys = legendKeys
         self.determineLegend()
-
-        #self.shelvedir = workingDir
-        #if self.shelvedir == '':self.shelvedir = ukp.folder(['shelves',self.xtype,self.ytype, 'Slices',self.name])
-        #else:			self.shelvedir = ukp.folder(self.shelvedir)
         self.dataLoaded = False
 
         if len(self.matchedShelves) > 0 and ukp.shouldIMakeFile(
@@ -183,11 +170,6 @@ class makeTargets:
                 rR = mrobust.R
                 rG = mrobust.gamma
                 rp = mrobust.p
-                #s['robust.E0'] 	= mrobust.E0
-                #s['robust.E']	= mrobust.E
-                #s['robust.R']	= mrobust.R
-                #s['robust.p']	= mrobust.p
-                #s['robust.gamma']=mrobust.gamma
             leg = ' - '.join([getLongName(s[i]) for i in self.legendKeys])
 
             # order months chronologically instead of alphabetically
@@ -239,36 +221,16 @@ class makeTargets:
             self.ytype = ''
 
         if self.ytype in ['LANA', 'LANA_p']:
-            #labelx = getLongName(self.name)
-            #labely = getLongName(self.ytype)
-            #histtitle = getLongName(newSlice) +' DMS: '+labelx +' vs '+ labely
-            #histxaxis = 'DMS, '+ xunits
             title = ''
             if len(list(self.names.keys())) == 1:
                 title += ', '.join(
                     [getLongName(k) for k in list(self.names.keys())])
 
             title += ' vs '
-            #		title =self.xtype + ' vs '+self.ytype+' '
             if len(list(self.ykeys.keys())) == 1:
                 title += ', '.join(
                     [getLongName(k) for k in list(self.ykeys.keys())])
 
-            #if len(self.newSlices.keys()) ==1:
-            #	title = ', '.join([getLongName(k) for  k in self.newSlices.keys()]) +' '+ title
-            # ie Global
-
-            #if len(self.names.keys()) ==1:
-            #	title += ', '+', '.join([getLongName(k) for  k in self.names.keys()])
-
-            #if len(self.regions.keys()) ==1:
-            #	title += ', '+', '.join([getLongName(k) for  k in self.regions.keys()])
-
-            #if len(self.ykeys.keys()) ==1:
-            #	title += ', '+', '.join([getLongName(k) for  k in self.ykeys.keys()])
-
-            #if len(self.years.keys()) ==1:
-            #	title += ', '+ ', '.join([str(k) for  k in self.years.keys()])
             print("DMS title:", title)
             return title
 
@@ -278,7 +240,6 @@ class makeTargets:
             title = ', '.join(
                 [getLongName(k)
                  for k in list(self.newSlices.keys())]) + ' ' + title
-            # ie Global
 
         if len(list(self.names.keys())) == 1:
             title += ', ' + ', '.join(
@@ -341,8 +302,6 @@ class makeTargets:
                             cmap=c,
                             label=leg,
                         )
-                        #TD.add(g[i], E0[i], R[i],  marker = ma, s=150, cmap=c, label=i,)
-                        #TD.labels(i)
                     except:
                         print('makeDiagram:\tFirst target diagram:\t', title)
                         Target = TargetDiagram(
@@ -413,8 +372,6 @@ class makeTargets:
                             cmap=c,
                             label=leg,
                         )
-                        #TD.add(g[i], E0[i], R[i],  marker = ma, s=150, cmap=c, label=i,)
-                        #TD.labels(i)
 
                     except:
                         print('makeDiagram:\tFirst Robust target diagram:\t',
@@ -429,13 +386,6 @@ class makeTargets:
                             cmap=c,
                             label=leg,
                         )
-                    labs.append(leg)
-
-                    print('Robust Target:\t', leg, '\tGamma:',
-                          self.data[leg]['rG'], '\trE0:',
-                          self.data[leg]['rE0'], '\trE:', self.data[leg]['rE'],
-                          '\trR:', self.data[leg]['rR'])
-                    proxyArt.append(
                         pyplot.Line2D(
                             [0],
                             [0],
@@ -478,7 +428,6 @@ class makeTargets:
                     print('MIN ', x, ':\t', xx)
 
             if t == 'Taylor':
-                #fig.set_size_inches(10,4)		# only if antiCorrelation = True
                 gams = []
                 e0s = []
                 Rs = []
@@ -518,13 +467,6 @@ class makeTargets:
                             marker=marks[i],
                             markersize=9,
                         ))
-
-                #try:
-                #	Taylor.add(self.data[leg]['G'], self.data[leg]['E0'],self.data[leg]['R'], marker = ma, s=150, cmap=c, label=leg,)
-
-                #except:
-                #	print 'makeDiagram\t:First Taylor diagram:\t', title
-                #	Taylor=TaylorDiagramMulti(self.data[leg]['G'], self.data[leg]['E0'],self.data[leg]['R'],R=5,antiCorrelation=False,marker = ma,s=150,cmap=c, label=leg,)
 
                 legend = pyplot.legend(
                     proxyArt,
