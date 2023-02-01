@@ -145,6 +145,14 @@ after checking out the new branch you can test it immediately, while still in th
 since `pip install .` is a local installation that uses the local `bgcval2/` repository (it doesn't move
 installed scripts in such locations as `/opt` or `/lib`)
 
+### Saving and committing local changes
+
+If you made changes to the code, and you want to bring in the latest remote changes (via `git pull`), you have two options:
+- either commit your changes to the remote branch (via `git commit your-changed-code -m "commit message"`, followed by `git push origin your_branch`)
+- or, save your changes elsewhere (in a directory that is not under bgcval2's git control), and run `git stash` to bring your
+  repository to the state of the latest pull from remote (at the HEAD of the latest pushed commit)
+
+Either way you go, please make sure your changes are either committed, or saved and stashed for a later commit!
 
 Running the tool to compare multiple jobs
 =========================================
