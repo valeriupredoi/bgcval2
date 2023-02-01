@@ -1,0 +1,19 @@
+---
+# Quick shortlist of keys to help debug analysis code.
+keys:
+    Temperature_integration_test: True
+#    TotalIceExtent: True
+#    NorthernTotalIceExtent: True
+#    SouthernTotalIceExtent: True
+#    DrakePassageTransport: True
+#    AMOC_26N: True
+#    GlobalMeanTemperature: True
+#    Temperature: True
+#    GlobalMeanSalinity: True
+#    Salinity: True
+    # MLD: True
+ # BGC
+    # TotalAirSeaFluxCO2: True
+    # NoCaspianAirSeaFluxCO2: True
+    # IntPP_OSU: True
+    # GlobalExportRatio: True

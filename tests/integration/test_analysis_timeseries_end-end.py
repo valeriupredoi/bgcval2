@@ -42,5 +42,5 @@ def arguments(*args):
 def test_run_analysis_timeseries_debug():
     """Patch and run the whole thing."""
     with arguments('analysis_timeseries', '--jobID', 'u-cp416debug',
-                       '--keys', 'debug'):
+                       '--keys', 'integration_test'):
         main()
