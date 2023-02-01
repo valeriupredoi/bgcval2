@@ -1,6 +1,6 @@
 ---
 # GC5 N96 ORCA1 spinup analysis
-name: integration_test
+name: debug_testing
 
 # Run the single job analysis
 do_analysis_timeseries: True 
@@ -9,7 +9,7 @@ do_analysis_timeseries: True
 do_mass_download: False
 
 # master analysis suite
-master_suites: integration_test
+master_suites: debug
 
 # Auto download jobs (can also be set for individual jobs).
 auto_download: False
