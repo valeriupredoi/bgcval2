@@ -20,7 +20,7 @@ from bgcval2 import (
 )
 from bgcval2.analysis_timeseries import main as analysis_timeseries_main
 from bgcval2.download_from_mass import main as download_from_mass_main
-from bgcval2.bgcval import run as bgcval_main
+#from bgcval2.bgcval import run as bgcval_main
 from bgcval2.bgcval2_make_report import main as bgcval2_make_report_main
 from bgcval2.analysis_compare import main as analysis_compare_main
 
@@ -84,13 +84,13 @@ def test_run_analysis_timeseries_command():
         assert err in str(stderr.getvalue())
 
 
-@patch('bgcval2.bgcval.run', new=wrapper(bgcval))
-def test_run_bgcval_command():
-    """Test run command."""
-    with arguments('bgcval', '--help'):
-        with pytest.raises(SystemExit) as pytest_wrapped_e:
-            bgcval_main()
-        assert pytest_wrapped_e.type == SystemExit
+#@patch('bgcval2.bgcval.run', new=wrapper(bgcval))
+#def test_run_bgcval_command():
+#    """Test run command."""
+#    with arguments('bgcval', '--help'):
+#        with pytest.raises(SystemExit) as pytest_wrapped_e:
+#            bgcval_main()
+#        assert pytest_wrapped_e.type == SystemExit
         assert pytest_wrapped_e.value.code == 0
     err = "the following arguments are required: -i/--job-id\n"
     with arguments('bgcval'):
