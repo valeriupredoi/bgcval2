@@ -863,7 +863,7 @@ class makePlots:
             if xkey not in list(self.xnc.variables.keys()):
                 raise ValueError(xkey, "not in xnc")
 
-            if ykey not in list(self.ync.variables.keys()):
+            if ykey not in self.ync.variables:
                 raise ValueError(ykey, "not in ync")
 
             if xkey in ['t', 'time','time_counter']:
