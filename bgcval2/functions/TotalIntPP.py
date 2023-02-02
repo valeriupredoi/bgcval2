@@ -89,12 +89,3 @@ def MA_TotalIntPP(nc, keys, **kwargs):
     #print('MA_TotalIntPP', keys[0], arr.sum())
     return arr.sum()
 
-#    if arr.ndim == 3:
-#        for i in np.arange(arr.shape[0]):
-#            arr[i] = arr[i]*model_area
-#    elif arr.ndim == 2:
-#        arr = arr*model_area
-#    else:
-#        raise ValueError(f'MA_TotalIntPP: arr shape not recognised, should be either 2 or 3, got value {arr.shape} in {nc.filename}')
-#    return arr.sum()
-

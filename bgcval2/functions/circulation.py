@@ -286,24 +286,10 @@ def twentysixnorth025(nc,keys,**kwargs):
     depths = np.ma.masked_where(thkcello.mask + np.abs(depths)<500., depths) # masked above 500m depth.
 
     e1v = e1v_AMOC26N[:,None, :, :]
-    #cross_Sectional_area = depths * e1v
     flux = vo * depths * e1v_AMOC26N[:,None, :, :]/1.E06
     
-    #moc_reverse=np.ma.zeros_like(flux)
     moc=np.ma.zeros_like(flux)
-    #np.ma.cumsum(flux[:], axis=1, out=moc_reverse) # sum  surface to floor
     np.ma.cumsum(flux[:,::-1], axis=1, out=moc ) # sum floor to surface
-    #from matplotlib import pyplot
-    #for name, field in zip(['vo', 'thkcello', 'depths', 'flux', 'moc', 'moc_r', 'e1v', 'cross_Sectional_area'], [vo, thkcello, depths, flux, moc, moc_reverse,  e1v, cross_Sectional_area]):
-    #        print(name,'\t', field.shape, '\tmin:', field.min(), 'mean:', field.mean(), 'max', field.max())
-    #        pyplot.pcolormesh(field[0,:,0,:])
-    #        pyplot.colorbar()
-    #        pyplot.title(name)
-    #        pyplot.savefig('images/amoc_test/'+name+'.png')
-    #        pyplot.close()
-
-    #print('twentysixnorth025', thkcello.shape, depths.shape, vo.shape, e1v.shape, cross_Sectional_area.shape)
-    #     twentysixnorth025 (1, 75, 1, 280) (1, 75, 1, 280) (1, 75, 1, 280) (1, 1, 280)
     return moc.max()
 
  

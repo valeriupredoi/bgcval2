@@ -118,9 +118,6 @@ class timeseriesAnalysis:
 
         #####
         # Load Model File
-        #self.loadModelWeightsDict()
-        #if 'wcvweighted' in self.metrics: 
-        #    self.loadModelwcvDict()
         self.loadModel()
 
         #####
