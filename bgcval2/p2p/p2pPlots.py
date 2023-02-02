@@ -866,7 +866,6 @@ class makePlots:
             if ykey not in list(self.ync.variables.keys()):
                 raise ValueError(ykey, "not in ync")
 
-
             if xkey in ['t', 'time','time_counter']:
                 xdata = decimal_time(self.xnc, xkey)
             else:
