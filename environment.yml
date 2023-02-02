@@ -15,6 +15,7 @@ dependencies:
   - python>=3.8
   - pyyaml
   - scipy
+  - scikit-learn
   # Python packages - dependencies for testing
   - flake8
   - iris
