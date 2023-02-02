@@ -338,7 +338,7 @@ def makeLongNameDict():
     lnd['MA_SouthernTotalIceExtent'] = 'Southern Total Ice Extent'
     lnd['MA_NorthernTotalIceExtent'] = 'Northern Total Ice Extent'
     lnd['MA_TotalIceExtent'] = 'Total Ice Extent'
-
+    lnd['NorthernTotalIceArea'] = 'Northern Hemisphere Ice Area'
     lnd['SouthernTotalIceArea'] = 'Southern Hemisphere Ice Area'
     lnd['TotalIceArea'] = 'Total Ice Area'
 
@@ -695,8 +695,8 @@ def getLongName(text, debug=False):
             'b',
     ))]:
         return ' '.join([getLongName(t) for t in text])
-        #out = ''
-    if text in [None, '', ' ',]: return ''
+    if text in [None, '', ' ',]:
+        return ''
 
     try:
         return longNameDict[text]
@@ -716,8 +716,6 @@ def fancyUnits(units, debug=False):
 	Converts ascii units string into latex style formatting.
 	"""
     units = units.replace('[', '').replace(']', '')
-
-    #if units in ['mg C/m^3','mg C/m^2',]:		return 'mg C m'+r'$^{-3}$'
     if units in [
             'umol/l, uM, mo/l, ug/l, ',
     ]:
@@ -788,7 +786,6 @@ def fancyUnits(units, debug=False):
     ]:
         return 'mmol m' + r'$^{-3}$'
     if units in ['mmol/m^2']: return 'mmol m' + r'$^{-2}$'
-    #if units in ['mmol/m^3']:			return 'mmol m'+r'$^{-3}$'
     if units in [
             'degrees Celsius',
             'degreesC',
@@ -801,7 +798,6 @@ def fancyUnits(units, debug=False):
             'psu',
             'PSU',
     ]: return 'psu'
-    #if units in ['umol/l',]:			return r'$\mu$'+'mol/l'
     if units in [
             'm',
             'meters',
@@ -813,7 +809,6 @@ def fancyUnits(units, debug=False):
     if units in [
             'm/s',
     ]: return r'$\mathrm{ms}^{-1}$'
-    #if units in ['ug/l']:			#	return 'mg m'+r'$^{-3}$'
     if units in ['W/m^2']: return 'W m' + r'$^{-2}$'
     if units in [
             'umol/kg',
@@ -828,7 +823,7 @@ def fancyUnits(units, debug=False):
         return 'mg m' + r'$^{-3}$' + '/day'  #yes, there are lots of spaces
     if units.replace(' ', '') in [
             'ug',
-    ]: return r'$\mu$' + 'g'  #r'$\mu$'+
+    ]: return r'$\mu$' + 'g'
     if units in [
             '1',
     ]:

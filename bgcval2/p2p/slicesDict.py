@@ -42,9 +42,7 @@ def getSlicesDict():
         'aboveZero',
     ]
     months = [month_name[i + 1] for i in range(0, 12)
-              ]  #{month_name[i+1]:i for i in xrange(0,12) }
-
-    #depthRanges	=['OffShelf','maskBelowBathy', 'OnShelf',]
+              ]
     depthRanges = [
         'Depth_0-50m', 'Depth_50-100m', 'Depth_100-200m', 'Depth_200-500m',
         'Depth_500-1000m', 'Depth_1000-2000m', 'Depth_2000m'

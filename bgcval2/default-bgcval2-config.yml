@@ -60,7 +60,6 @@ standard-paths:
       GLODAPv2Dir: "GLODAPv2/GLODAPv2_Mapped_Climatologies/"
       OSUDir: "OSU/"
       CCIDir: "CCI/"
-      # icFold: "InitialConditions/"
 
   pml:
     general:

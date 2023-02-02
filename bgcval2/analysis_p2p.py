@@ -45,12 +45,9 @@ import sys
 #Specific local code:
 from bgcval2._runtime_config import get_run_configuration
 from bgcval2 import UKESMpython as ukp
-#from bgcval2.p2p import makePatternStatsPlots, testsuite_p2p
 from bgcval2.p2p.testsuite_p2p import testsuite_p2p
 from bgcval2.p2p.summaryTargets import summaryTargets
-#from bgcval2.p2p.patternAnalyses import InterAnnualPatterns, BGCvsPhysics
 from bgcval2.bgcvaltools.pftnames import months
-#from bgcval2.p2p.shelveToDictionary import shelveToDictionary
 from bgcval2.analysis_timeseries import build_list_of_suite_keys, load_key_file
 
 #####
@@ -60,12 +57,12 @@ from bgcval2.Paths.paths import paths_setter
 
 def analysis_p2p(
     jobID='u-ad980',
-    years=['1997'],  #'2075','2076',
+    years=['1997'],  
     modelGrid='eORCA1',
     annual=True,
     noPlots=False,
     suites='default',
-    noTargets=False, #True,
+    noTargets=False, 
     config_user=None
 ):
     """
@@ -84,7 +81,6 @@ def analysis_p2p(
     # Switches:
     # These are some booleans that allow us to choose which analysis to run.
     # This lets up give a list of keys one at a time, or in parrallel.
-    #if type(suites) == type(['Its', 'A', 'list!']):
     if isinstance(suites, str):
         suites = suites.replace(',', ' ').replace('\'', '').replace('"', '')
         suites = suites.split(' ')
@@ -173,8 +169,6 @@ def analysis_p2p(
 
 def get_args():
     """Parse command line arguments. """
-    #accepted_keys = ['kmf', 'physics','bgc', 'debug', 'spinup', 'salinity', 'fast', 'level1', 'level3', 'nowmaps']
-
     accepted_keys = [os.path.splitext(os.path.basename(fn))[0] for fn in glob('key_lists/*.yml')]
     parser = argparse.ArgumentParser(
         description=__doc__,

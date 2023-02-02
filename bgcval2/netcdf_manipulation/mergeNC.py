@@ -21,7 +21,6 @@
 # If not, see <http://opensource.org/licenses/BSD-3-Clause>.
 #
 
-#from ncdfView import ncdfView
 from netCDF4 import Dataset, num2date, date2num
 try:
     from netCDF4 import default_fillvals
@@ -71,11 +70,10 @@ class mergeNC:
                   self.fnsi[0])
         if self.debug:
             print('mergeNC:\tINFO:\topening dataset:\t', self.fnsi[0])
-        nci = Dataset(self.fnsi[0], 'r')  #Quiet =True)
+        nci = Dataset(self.fnsi[0], 'r')
 
         if self.timeAverage:
-            print('mergeNC:\tWARNING:\ttimeAverage is not yet debugged. '
-                  )  # are no use:', self.vars
+            print('mergeNC:\tWARNING:\ttimeAverage is not yet debugged. ')
         if not self.vars:
             if self.debug:
                 print(
@@ -125,13 +123,6 @@ class mergeNC:
         except:
             nco.Notes = appendToDesc
 
-        # list of variables to save, assuming some conventions
-        #	alwaysInclude = ['time', 'lat','lon', 'latbnd', 'lonbnd', 'latitude', 'Latitude', 'longitude', 'Longitude',
-        #			 't','nav_lat','nav_lon', 'time_counter','time_centered',
-        #			 'deptht','depth','depthu','depthv', 'depthw','z','month','bathymetry','Depth','deptht_bounds',
-        #			  'lat_bnds',  'lon_bnds', 'depth_bnds',
-        #			  'ensemble',]
-        #	alwaysInclude = intersection(nci.variables.keys(),alwaysInclude)
         alwaysInclude = intersection(list(nci.variables.keys()),
                                      alwaysIncludList)
         save = list(set(sorted(alwaysInclude + self.vars)))
@@ -164,7 +155,6 @@ class mergeNC:
                     'mergeNC:\tINFO:\tPerforming full check for missing entries'
                 )
             for t, fni in enumerate(self.fnsi):
-                #if self.debug: print 'mergeNC:\tINFO:\tOpening ', fni, ' ...', t
                 nci = Dataset(fni, 'r')
                 keys = list(nci.variables.keys())
                 for s in save:
@@ -181,10 +171,6 @@ class mergeNC:
                 nci.close()
 
             for s in list(missing.keys()):
-                #remove key:
-                #print 'mergeNC:\tWARNING:\tFull check:\tremoving',s,' from ',save
-                #save.remove(s)
-
                 #remove missing files:
                 for fn in missing[s]:
                     print('mergeNC:\tWARNING:\tFull check:\tremoving', fni,
@@ -196,7 +182,7 @@ class mergeNC:
                               ' already removed from files')
 
         # create dimensions:
-        nci = Dataset(self.fnsi[0], 'r')  #Quiet =True)
+        nci = Dataset(self.fnsi[0], 'r')
         for d in list(nci.dimensions.keys()):
             if nci.dimensions[d].isunlimited() or d.lower() in [
                     'time', 'time_counter', time
@@ -240,9 +226,6 @@ class mergeNC:
                                zlib=True,
                                complevel=5,
                                fill_value=default_fillvals[dfkey])
-        #try:	nco.createVariable(var, dt, nci.variables[var].dimensions,zlib=True,complevel=5,fill_value=default_fillvals[dfkey])
-        #except: nco.createVariable(var, dt, nci.variables[var].dimensions,zlib=True,complevel=5,fill_value=default_fillvals[dfkey])
-
         # Long Names:
         for var in save:
             try:
@@ -253,8 +236,6 @@ class mergeNC:
 
         # Units:
         for var in save:
-            #if var in time and self.timeAverage: nco.variables[var].units='Month'
-            #else:
             try:
                 nco.variables[var].units = nci.variables[var].units
             except:
@@ -262,7 +243,6 @@ class mergeNC:
 
         # Fill Values:
         for var in alwaysInclude:
-            #if var in time:continue
             if var in tvars:
                 continue  # there may be more than one time variable: ie time and month.
             if self.debug:
@@ -303,7 +283,6 @@ class mergeNC:
 
             # not time:
             for var in list(a.keys()):
-                #if var in time:continue
                 if var in tvars:
                     continue  # there may be more than one time variable: ie time and month.
                 if var in list(nci.variables.keys()):
@@ -334,7 +313,6 @@ class mergeNC:
                         array(a[var]).mean(),
                     ]
                 else:
-                    #nco.variables[var][:] = array(a[var])[None,:]/float(len(self.fnsi)) # assumes one month per file.
                     if self.debug:
                         print("mergeNC:\tINFO\tTime Average: shape shift: ",
                               var)
@@ -372,7 +350,7 @@ class mergeNC:
                     print('mergeNC:\tINFO:\tsaving ', var, ' ...',
                           nco.variables[var][:].shape,
                           array(a[var]).shape,
-                          nco.variables[var].dimensions)  #, a[var][0]
+                          nco.variables[var].dimensions)  
                 nco.variables[var][:] = array(a[var])
 
         # Close output netcdfs:

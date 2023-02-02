@@ -32,11 +32,8 @@ from calendar import month_name
 from shelve import open as shOpen
 import os
 from bgcval2.Paths.paths import paths
-
-#rom bgcval2.bgcvaltools.dataset import datase#t
 from netCDF4 import Dataset
 import bgcval2.UKESMpython as ukp
-####
 
 
 def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
@@ -209,7 +206,6 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
         return np.ma.masked_where(xy > -40., nmask).mask
     if newSlice == 'AntarcticOcean':
         return np.ma.masked_where(xy > -50., nmask).mask
-    #if newSlice == 'ArcticOcean': 		return np.ma.masked_where(  xy < 60.,nmask).mask
     if newSlice == 'ignoreArtics':
         return np.ma.masked_outside(xy, -70., 70.).mask
     if newSlice == 'ignoreMidArtics':
@@ -276,8 +272,7 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
         return mx
 
 
-# Regions from Pierce 1995 - https://doi.org/10.1175/1520-0485(1995)025<2046:CROHAF>2.0.CO;2
-
+    # Regions from Pierce 1995 - https://doi.org/10.1175/1520-0485(1995)025<2046:CROHAF>2.0.CO;2
     if newSlice == 'Enderby':
         mx = np.ma.masked_outside(xx, 0., 97.5).mask
         mx += np.ma.masked_outside(xy, -80., -60.).mask
@@ -388,7 +383,6 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
             len(
                 np.ma.masked_where((abs(xz) < 700.) * (abs(xz) > 2000.),
                                    nmask).mask))
-
         assert 0
 
     #####
@@ -448,24 +442,13 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
             'AMM_OffShelf',
     ]:
         if newSlice in ['AMM_Shelf', 'AMM_OffShelf']:
-            #nmask += np.ma.masked_outside(ukp.makeLonSafeArr(xx), -20., 13.).mask + np.ma.masked_outside(xy, 40., 65.).mask
             bathync = Dataset(paths.orcaGridfn,'r')
             print(paths.orcaGridfn)
             latcc = bathync.variables["nav_lat"][:]
             loncc = bathync.variables["nav_lon"][:]
             deptht = np.abs(bathync.variables["nav_lev"][:])
             bathy = bathync.variables["hbatt"][:].squeeze()
-            #bathy_index = np.ma.array(bathync.variables["mbathy"][:].squeeze())
             bathync.close()
-            #bathy_index = np.ma.masked_where(bathy_index.mask + (bathy_index==0), bathy_index)
-            #bathy = np.ma.zeros_like(bathy_index)
-            #print(bathy_index.shape, bathy.shape)
-           # for (y,x), bath in ukp.maenumerate(bathy_index):
-            #for ((y, x), bath) in np.ndenumerate(bathy_index):
-            #    if np.ma.is_masked(bath): continue
-             #   if bath==0: continue
-             #   #print('y',y,'x', x, bath, deptht[bath])#, bathy_index[y,x], deptht[bathy_index[y,x]])
-             #   bathy[y,x] = deptht[bath]
             shelfDepth = 200.
         else:
             bathync = Dataset(paths.orca1bathy, 'r')
@@ -503,16 +486,11 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
                 if (bathy[la, lo] - 10.) > abs(z): 
                     nmask[i] = 1
             elif newSlice in ["OnShelf", 'AMM_Shelf']:
-                #print(i,z, la, lo, bathy[la, lo], shelfDepth)
                 if bathy[la, lo] >= shelfDepth: 
                     nmask[i] = 1
-#                else:
-#                    print('no mask:', i,z, la, lo, bathy[la, lo], shelfDepth)
             elif newSlice in ["OffShelf", 'AMM_OffShelf']:
                 if bathy[la, lo] < shelfDepth: 
                     nmask[i] = 1
-            else:
-                assert 0
         if i > 0:
             try:
                 s = shOpen(shelveFn)
