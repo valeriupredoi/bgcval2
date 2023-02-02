@@ -67,7 +67,6 @@ def getCoordsToKeep_new(nc, variables, newMask='', debug=False):
         nzdims = len(arr)
         for i, a in enumerate(arr[0]):
             coords = tuple([arr[j][i] for j in range(nzdims)])
-            print(coords, nzdims)
             try:
                 if i in CoordsToKeep[coords]: pass
             except:
@@ -89,35 +88,34 @@ def getCoordsToKeep(nc, variables, newMask='', debug=False):
 	   A Mask can be applied instead.
 	"""
     CoordsToKeep = {}
+    if debug:
+        print('getCoordsToKeep:', variables)
+    if not variables:
+        raise ValueError('getCoordsToKeep: not variables provided')
     for var in variables:
         if var in alwaysInclude: continue
         arr = nc.variables[var][:]
+        print('checking out var:', var, arr.shape, arr.mean())
         if len(newMask):
             out = []
             if newMask.shape != arr.shape:
-                if debug: 'getCoordsToKeep:\t', var, 'Wrong shape'
-                continue
-            try:  # 1D arrays
-                for i, m in enumerate(newMask):
-                    if not m: continue
-                    out.append(arr[i])
-                arr = array(out).squeeze()
-            except:
-                # multi dimensional arrays
-                arr = masked_where(newMask, array(arr))
-        #nearlyZero = 1.E-6
-        nz = nonzero(arr)  #+nearlyZero
-        #nz = compressed(arr)
-        #if debug:print "getCoordsToKeep:\tcompressed array:",len(nz),nz.shape,nz.min(),nz.max(),nz.mean()
+                raise ValueError('getCoordsToKeep:\t', var, 'Wrong shape')
+            arr = masked_where(newMask, arr)
+            print('getCoordsToKeep: now masked:', arr.shape, arr.mean())
+
+        nz = nonzero(arr)  
         if not len(nz):
+            print('Var failed:', var)
             variables.remove(var)
             continue
         nzdims = len(nz)
+        if not nzdims:
+            raise ValueError('No non-zero values found!', nzdims, nz)
+        print('nz:', nz)
         for i, a in enumerate(nz[0]):
-            if var in ['OBSERVATIONS']:
+            if var in ['OBSERVATIONS', ]:
                 coords = tuple([nz[j][i] for j in range(nzdims)])
-                #if coords not in CoordsToKeep.keys():
-                #	print "NEWS OBSERVATION LOCATION:",i,coords
+                print("NEW OBSERVATION LOCATION:",i,coords)
                 try:
                     if i in CoordsToKeep[coords]: pass
                 except:
@@ -128,6 +126,7 @@ def getCoordsToKeep(nc, variables, newMask='', debug=False):
                             i,
                         ]
             else:
+                print('getCoordsToKeep',i, a, nzdims)
                 coords = tuple([nz[j][i] for j in range(nzdims)])
                 print(coords)
                 try:
@@ -163,23 +162,11 @@ class convertToOneDNC:
         self.run()
 
     def run(self):
-        if not exists(self.fni):
-            print('convertToOneDNC:\tERROR:\tinputfile name does not exists:',
-                  self.fni)
-            assert False
-            return
-
         nci = Dataset(self.fni, 'r')
-
         if not self.vars:
+            assert 0 
+        if self.vars == 'all':
             self.vars = list(nci.variables.keys())  # save all
-
-        #check that there are some overlap between input vars and nci:
-        for v in self.vars:
-            if v in list(nci.variables.keys()): continue
-            print('convertToOneDNC:\tERROR:\tvariable,', v, ', not found in ',
-                  self.fni)
-            return
 
         #create dataset and header.
         if self.debug:
@@ -202,6 +189,7 @@ class convertToOneDNC:
 
         save = list(set(nci.variables.keys()).intersection(set(alwaysInclude)))
         save = sorted(list(set(sorted(save + self.vars))))
+        save = find_vars_in_nc(nci, save)
 
         # test to find out which coordinates should be saved.
         if not self.dictToKeep:
@@ -213,39 +201,38 @@ class convertToOneDNC:
             CoordsToKeep = self.dictToKeep
 
         print("convertToOneDNC:\tinfo:\tCoordsToKeep:",
-              save)  #, self.dictToKeep
-
+              save)  
         # create dimensions:
         nco.createDimension('index', None)
 
         # create Variables:
         nco.createVariable('index', int64, [
             'index',
-        ], zlib=True, complevel=5)  #,chunksizes=10000)
+        ], zlib=True, complevel=5)  
         nco.createVariable('index_t',
                            int64, [
                                'index',
                            ],
                            zlib=True,
-                           complevel=5)  #,chunksizes=10000)
+                           complevel=5)
         nco.createVariable('index_z',
                            int64, [
                                'index',
                            ],
                            zlib=True,
-                           complevel=5)  #,chunksizes=10000)
+                           complevel=5)
         nco.createVariable('index_y',
                            int64, [
                                'index',
                            ],
                            zlib=True,
-                           complevel=5)  #,chunksizes=10000)
+                           complevel=5) 
         nco.createVariable('index_x',
                            int64, [
                                'index',
                            ],
                            zlib=True,
-                           complevel=5)  #,chunksizes=10000)
+                           complevel=5)
         for var in save:
             if var in ['index', 'index_t', 'index_z', 'index_y', 'index_x']:
                 continue
@@ -254,7 +241,7 @@ class convertToOneDNC:
                                    'index',
                                ],
                                zlib=True,
-                               complevel=5)  #,chunksizes=10000)
+                               complevel=5)
 
         # Long Names:
         nco.variables['index'].long_name = 'index'
@@ -296,14 +283,18 @@ class convertToOneDNC:
         def itemsgetter(a):
             return a[1][0]
 
+        if not CoordsToKeep:
+            raise ValueError('did not find enough coordinates worth keeping:', CoordsToKeep)
+
         sorted_Coords = sorted(iter(CoordsToKeep.items()), key=itemsgetter)
-        print("convertToOneDNC:\tINFO:\tsorted_Coords:", sorted_Coords[0],
-              sorted_Coords[-1])
+
+        print("convertToOneDNC:\tINFO:\tsorted_Coords:", sorted_Coords)
+        if not sorted_Coords:
+            raise ValueError('Sorting Coordinates failed')
         data = {}
         if self.debug:
             print('convertToOneDNC:\tINFO:\tCopying index  ...',
                   len(sorted_Coords))
-        #	nco.variables['index'][:] = [ int(a[1]) for a in sorted_Coords]
 
         nco.variables['index'][:] = array([a[1][0] for a in sorted_Coords])
         nco.sync()
@@ -339,9 +330,8 @@ class convertToOneDNC:
             nco.variables['index_t'][:] = array(
                 [a[0][0] for a in sorted_Coords])
             nco.sync()
-            #if self.debug: print 'convertToOneDNC:\tINFO:\tCopying index z ...'
+
             nco.variables['index_z'][:] = zeros(len(sorted_Coords))
-            #nco.sync()
             if self.debug:
                 print('convertToOneDNC:\tINFO:\tCopying index y ...')
             nco.variables['index_y'][:] = array(
@@ -349,13 +339,9 @@ class convertToOneDNC:
             nco.sync()
             if self.debug:
                 print('convertToOneDNC:\tINFO:\tCopying index x ...')
-            #tempArr = []
-            #for a in sorted_Coords:
-            #	print a[0]
-            #	tempArr.append(a[0][2])
+            for a in sorted_Coords:
+            	print('sorted_coords, a', a)
 
-            nco.variables['index_x'][:] = array(
-                [a[0][2] for a in sorted_Coords])
             nco.sync()
         errorScript = "If it is failing here, then you need to check that your dimensions are names correctly in netcdf_manip/alwaysInclude.py:timeNames, depthNames, lonnames and latnames"
 
@@ -363,6 +349,8 @@ class convertToOneDNC:
             if self.debug:
                 print('convertToOneDNC:\tINFO:\tCopying ', var, ' ...')
             arr = nci.variables[var][:]
+
+
             if len(arr) == 0:
                 print('convertToOneDNC:\tWarning:\tIt looks like the netcdf ',
                       self.fni, 'does not contain the variable', var)
@@ -370,25 +358,27 @@ class convertToOneDNC:
             outarr = []
             if arr.ndim == 1 and len(sorted_Coords[0][0]) == 4:
                 if var.lower() in [
-                        'time', 'time_counter', 't', 'month', 'time_centered'
+                        'time', 'time_counter', 't', 'month', 'time_centered', 'index_t',
                 ]:
                     d = 0
-                if var.lower() in timeNames: d = 0
-                if var.lower() in depthNames: d = 1
-                if var.lower() in latnames: d = 2
-                if var.lower() in lonnames: d = 3
+
+                elif var.lower() in timeNames: d = 0
+                elif var.lower() in depthNames: d = 1
+                elif var.lower() in latnames: d = 2
+                elif var.lower() in lonnames: d = 3
+                else:
+                    raise ValueError('Dimension not recognised:  %s' % var)
+                    assert 0
+
                 print(var,
                       'convertToOneDNC:\tINFO:\tndim: (1-4)',
-                      arr.ndim,
+                      arr.ndim, arr.shape,
                       var,
                       sorted_Coords[0][0],
-                      d,
-                      end=' ')  #arr[0]
+                      d
+                      )
                 for c in sorted_Coords:
-                    try:
-                        outarr.append(arr[c[0][d]])
-                    except:
-                        raise AssertionError(errorScript)
+                    outarr.append(arr[c[0][d]])
 
                 try:
                     print(var, d)
@@ -416,24 +406,23 @@ class convertToOneDNC:
                         't',
                         'month',
                         'time_centered',
+                        'index_t',
                 ]:
                     d = 0
                 if var.lower() in timeNames: d = 0
-                #if var.lower() in depthNames:		d = 1
                 if var.lower() in latnames: d = 1
                 if var.lower() in lonnames: d = 2
-                #for c in (CoordsToKeep.keys()):
-                print(var, 'convertToOneDNC:\tINFO:\tndim: (1-3)', arr.ndim,
-                      var, sorted_Coords[0][0], d)
-                for c in sorted_Coords:
-                    try:
-                        outarr.append(arr[c[0][d]])
-                    except:
-                        raise AssertionError(errorScript)
+
                 try:
                     print(var, d)
                 except:
-                    var, "not found"
+                    print(var, "not found")
+
+                print(var, 'convertToOneDNC:\tINFO:\tndim: (1-3)', arr.ndim,
+                      var, sorted_Coords[0][0], d)
+                for c in sorted_Coords:
+                        print('sorted_coords:', d, c, var, c[0], len(arr), arr.shape, arr.ndim)
+                        outarr.append(arr[c[0][d]])
 
             elif arr.ndim == 2:
                 if var.lower() in ['nav_lat', 'nav_lon']:
@@ -445,6 +434,7 @@ class convertToOneDNC:
                         'latitude',
                         'longitude',
                         'depth',
+                        'index_z',
                 ]:
                     d = (0, 1)
                 elif var.lower() in ['mask'] and len(sorted_Coords[0][0]) == 3:
@@ -454,7 +444,7 @@ class convertToOneDNC:
 
                 print(var, 'convertToOneDNC:\tINFO:\tndim: (2)', arr.ndim, var,
                       sorted_Coords[0][0], d)
-                for c in sorted_Coords:  #for c in sorted(CoordsToKeep.keys()):
+                for c in sorted_Coords:  
                     try:
                         outarr.append(arr[(c[0][d[0]], c[0][d[1]])])
                     except:
@@ -471,7 +461,6 @@ class convertToOneDNC:
                 print(var, 'convertToOneDNC:\tINFO:\tndim: (4)', arr.ndim, var,
                       sorted_Coords[0][0])
                 for c in sorted_Coords:
-                    #print 'convertToOneD:',var, c, c[0], arr.shape, arr[c[0]]
                     outarr.append(arr[(c[0][0], c[0][1], c[0][2], c[0][3])])
             else:
                 print("How many dimensions?", arr.ndim,
@@ -493,8 +482,18 @@ class convertToOneDNC:
         if self.debug:
             print('convertToOneDNC:\tINFO:\tsuccessfully created:\t', self.fno)
 
-        #nc = Dataset(self.fno, 'r')
-        #lon = nc.variables['lon'][:]
-        #print lon.min(), lon.max()
-        #if self.fno.find('Model')>-1:	assert 0
-        return
+
+def find_vars_in_nc(nc, keys):
+    """
+    Takes the list of keys and chooses the first one that exists in the input file.
+    Useful if fields change for no reason.
+    """
+    outlist=[]
+    for key in keys:
+        if key not in nc.variables.keys():
+            continue
+        outlist.append(key)
+    if outlist: 
+        print('find_vars_in_nc: found these keys:',outlist)
+        return outlist
+    raise KeyError(f'find_vars_in_nc: unable to find any variable in {keys} in {nc.filename}')

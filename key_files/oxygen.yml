@@ -16,8 +16,9 @@ model_convert   : NoChange
 # Data coordinates names
 data_vars       : o_an
 data_tdict      : ZeroToZero
-data_convert    : multiplyBy
-data_convert_factor : 44.661
+data_convert:
+    function: multiplyBy
+    factor : 44.661
 
 layers          : Surface 100m 500m
 regions         : Global #gnoreInlandSeas SouthernOcean ArcticOcean Equator10 Remainder NorthernSubpolarAtlantic NorthernSubpolarPacific

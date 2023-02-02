@@ -1,0 +1,18 @@
+---
+name            : AMM7_SST
+units           : degrees C
+dimensions      : 1
+model           : NEMO-ERSEM
+modelFiles      : /data/proteus1/scratch/gle/dare_baseline/*/*/*_1m_*grid_T.nc
+gridFile        : /users/modellers/ledm/workspace/coast/AMM7_grid/mesh_mask.nc
+model_vars      : thetao thetao_con votemper
+model_convert   : maskzeroes
+dataFile        : /data/sthenno1/scratch/ledm/Observations/WOA/annual/woa13_decav_t00_01v2_AMM.nc
+data_vars       : t_an
+data_convert    : NoChange
+data_source     : WOA13
+layers          : Surface #50m 100m
+regions         : AMM AMM_Shelf AMM_OffShelf
+metrics         : mean, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max
+
+
