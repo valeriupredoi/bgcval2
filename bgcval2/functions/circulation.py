@@ -106,7 +106,6 @@ def loadDataMask(gridfn, maskname, grid):
     e2u_drake = nc.variables['e2u'][..., LAT0:LAT1, LON]
     umask_drake = nc.variables['umask'][..., LAT0:LAT1, LON]
     print('circulation loadDataMask:', gridfn, nc.variables['e2u'].shape, nc.variables['umask'].shape, e2u_drake.shape, umask_drake.shape)
-    #assert 0
 
     if 'e3v_0' in nc.variables.keys():
         # print('amoc:', nc.variables['e3v_0'].shape, nc.variables['e3v_0'].min(), nc.variables['e3v_0'].max()) 

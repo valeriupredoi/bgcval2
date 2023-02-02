@@ -81,7 +81,7 @@ using the debug suite.
 Keeping the code up to date
 ---------------------------
 
-To keep the code up to main, fetch the changes from github:
+To keep the code up to date with the main branch, fetch the changes from github:
 ```
 git fetch
 ```
