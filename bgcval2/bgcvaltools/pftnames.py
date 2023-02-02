@@ -659,7 +659,8 @@ def getLongName(text, debug=False):
             'b',
     ))]:
         return ' '.join([getLongName(t) for t in text])
-    if text in [None, '', ' ',]: return ''
+    if text in [None, '', ' ',]:
+        return ''
 
     try:
         return longNameDict[text]

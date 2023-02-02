@@ -865,7 +865,7 @@ def robinPlotQuad(lons,
 	takes a pair of lat lon, data, and title, and filename and then makes a quad of maps (data 1, data 2, difference and quotient), then saves the figure.
 	"""
     if maptype=='Basemap':
-        raise FileNotFound('Basemap not longer supported')
+        raise RuntimeError('Basemap not longer supported, use Cartopy maptype')
 
     fig = pyplot.figure()
     fig.set_size_inches(10, 6)
