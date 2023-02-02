@@ -877,7 +877,7 @@ class makePlots:
                 ydata = self.ync.variables[ykey][:]
              
             mask = np.array(xdata.mask + ydata.mask)
-            if np.ma.is_masked(xdata.min()) or np.ma.is_masked(ydata.max()):
+            if xdata.all() is np.ma.masked:
                 print('All data is masked')
                 continue
             if xdata.shape != ydata.shape:
