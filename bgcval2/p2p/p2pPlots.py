@@ -984,7 +984,8 @@ def decimal_time(nc, tkey):
     units = nc.variables[tkey].units
     try:
         calendar = nc.variables[tkey].calendar
-    except: calendar='gregorian'
+    except:
+        calendar='gregorian'
     if units.lower().find('months since')>-1:
         calendar = '360_day' 
     dates = num2date(times, units=units, calendar=calendar)
