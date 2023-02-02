@@ -31,6 +31,7 @@ REQUIREMENTS = {
         'numpy',
         'pip!=21.3',
         'pyyaml',
+        'scikit-learn',
         'scipy',
     ],
     # Test dependencies
