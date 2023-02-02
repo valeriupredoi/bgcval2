@@ -491,8 +491,6 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
             elif newSlice in ["OffShelf", 'AMM_OffShelf']:
                 if bathy[la, lo] < shelfDepth: 
                     nmask[i] = 1
-            else:
-                assert 0
         if i > 0:
             try:
                 s = shOpen(shelveFn)

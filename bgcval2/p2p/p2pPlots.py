@@ -863,9 +863,8 @@ class makePlots:
             if xkey not in list(self.xnc.variables.keys()):
                 raise ValueError(xkey, "not in xnc")
 
-            if ykey not in list(self.ync.variables.keys()):
+            if ykey not in self.ync.variables:
                 raise ValueError(ykey, "not in ync")
-
 
             if xkey in ['t', 'time','time_counter']:
                 xdata = decimal_time(self.xnc, xkey)
@@ -878,7 +877,7 @@ class makePlots:
                 ydata = self.ync.variables[ykey][:]
              
             mask = np.array(xdata.mask + ydata.mask)
-            if np.ma.is_masked(xdata.min()) or np.ma.is_masked(ydata.max()):
+            if xdata.all() is np.ma.masked:
                 print('All data is masked')
                 continue
             if xdata.shape != ydata.shape:
@@ -984,7 +983,8 @@ def decimal_time(nc, tkey):
     units = nc.variables[tkey].units
     try:
         calendar = nc.variables[tkey].calendar
-    except: calendar='gregorian'
+    except:
+        calendar='gregorian'
     if units.lower().find('months since')>-1:
         calendar = '360_day' 
     dates = num2date(times, units=units, calendar=calendar)

@@ -88,8 +88,9 @@ def getCoordsToKeep(nc, variables, newMask='', debug=False):
 	   A Mask can be applied instead.
 	"""
     CoordsToKeep = {}
-    if debug: print('getCoordsToKeep:', variables)
-    if not len(variables):
+    if debug:
+        print('getCoordsToKeep:', variables)
+    if not variables:
         raise ValueError('getCoordsToKeep: not variables provided')
     for var in variables:
         if var in alwaysInclude: continue
@@ -282,13 +283,13 @@ class convertToOneDNC:
         def itemsgetter(a):
             return a[1][0]
 
-        if not len(CoordsToKeep.keys()):
+        if not CoordsToKeep:
             raise ValueError('did not find enough coordinates worth keeping:', CoordsToKeep)
 
         sorted_Coords = sorted(iter(CoordsToKeep.items()), key=itemsgetter)
 
         print("convertToOneDNC:\tINFO:\tsorted_Coords:", sorted_Coords)
-        if not len(sorted_Coords):
+        if not sorted_Coords:
             raise ValueError('Sorting Coordinates failed')
         data = {}
         if self.debug:

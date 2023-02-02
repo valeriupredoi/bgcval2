@@ -282,7 +282,6 @@ def testsuite_p2p(
                                        sliceslist=slicesDict[g])
         if len(groups[g]) == 0: 
              print('Nothing here:', g, groups[g])
-             #assert 0
              continue
         #####
         # makeTargets:
