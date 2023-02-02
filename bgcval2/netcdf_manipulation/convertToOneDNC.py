@@ -361,10 +361,13 @@ class convertToOneDNC:
                 ]:
                     d = 0
 
-                if var.lower() in timeNames: d = 0
-                if var.lower() in depthNames: d = 1
-                if var.lower() in latnames: d = 2
-                if var.lower() in lonnames: d = 3
+                elif var.lower() in timeNames: d = 0
+                elif var.lower() in depthNames: d = 1
+                elif var.lower() in latnames: d = 2
+                elif var.lower() in lonnames: d = 3
+                else:
+                    raise ValueError('Dimension not recognised:  %s' % var)
+                    assert 0
 
                 print(var,
                       'convertToOneDNC:\tINFO:\tndim: (1-4)',
