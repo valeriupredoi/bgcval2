@@ -57,6 +57,11 @@ mamba env create -n bgcval2 -f environment.yml
 conda activate bgcval2
 ```
 
+- Alternatively, if the environment.yml changes, update it with:
+```
+mamba env update -n bgcval2 -f environment.yml
+```
+
 - then install the development dependencies and the tool itself:
 
 ```
