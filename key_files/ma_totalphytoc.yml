@@ -1,6 +1,6 @@
 ---
 name            : MA_TotalPhytoC
-units           : ""
+units           : mg C/m^3
 dimensions      : 1
 model           : NEMO025-ERSEM
 modelgrid       : eORCA025

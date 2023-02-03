@@ -33,6 +33,7 @@ keys:
   MA_pH: True
   MA_O2: True    
   MA_DIC: True
+  MA_TA: True
 
 
 # what do we need here?
