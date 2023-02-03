@@ -337,7 +337,5 @@ def AEU(nc, keys, **kwargs):
 
     flux = uo * cross_section
     flux = flux.sum() / 1.E06
-    #print('AEU', flux)
-    #assert 0
     return flux
 
