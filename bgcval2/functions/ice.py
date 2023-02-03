@@ -71,7 +71,7 @@ def calculate_ice_extent(nc, keys, **kwargs):
     areafile = get_kwarg_file(kwargs, 'areafile')
 
     maskname = kwargs.get('maskname', 'tmask')
-    if 'area' not in nc.variables.keys() and not loaded_area_and_mask:
+    if 'area' not in nc.variables and not loaded_area_and_mask:
         area, tmask, lat = load_area_and_mask(areafile, maskname)
     else:
         area = nc.variables['area'][:]
