@@ -57,7 +57,9 @@ mamba env create -n bgcval2 -f environment.yml
 conda activate bgcval2
 ```
 
-- then install the development dependencies and the tool itself:
+- then install the development dependencies and the tool itself
+  (note that all our dependencies are from `conda-forge` so there
+  is no risk of mixing Conda and PyPI packages):
 
 ```
 pip install -e .[develop]
@@ -70,7 +72,8 @@ analysis_compare -h
 which should print the module information and instructions on how to run the tool.
 
 
-On the jasmin computational system, members of the esmeval working group should be able to run the debug analysis script:
+On the JASMIN computational system (HPC), members of the `esmeval` working group should
+be able to run the debug analysis script:
 ```
 analysis_compare -y input_yml/debug.yml
 ```
@@ -95,12 +98,13 @@ Should you want to work on several git development branches, you can switch betw
 stay up-to-date with the remote branch; right after you have checked out the `bgcval2` git repository (see above)
 you find yourself on the `main` branch (the main development branch); after a while, with new updates upstream (at remote),
 this branch (your local `main`) becomes out of date with remote, so you should always update it:
+
 ```
 git pull origin main
 ```
 
-After you have updated it, you can now check out a new branch `devel_branch` from upstream, some branch that was recently pushed and you need
-to test or contribute to:
+After you have updated it, you can now check out a new branch `devel_branch` from upstream, some branch that was recently pushed and you need to test or contribute to:
+
 ```
 git fetch -v
 git checkout devel_branch
@@ -108,17 +112,19 @@ git pull origin devel_branch
 ```
 
 If you want to create your own branch, first make sure you are happy with your current code. A good tip is to start from the main branch
-\```
+
+```
 git checkout origin/main
 git branch new_branch_name
 git checkout new_branch_name
-\```
+```
 
 ### Updating an existing environment
 
 Should you wish to update your `bgcval2` environment (e.g. when dependencies have changed), we recommend
 deleting the old environment, and creating a brand new one from scratch. To delete the old environment just remove
 it from the conda tree, after you have deactivated it first:
+
 ```
 conda deactivate
 rm -rf $USER/miniconda3/envs/bgcval2
@@ -126,6 +132,7 @@ rm -rf $USER/miniconda3/envs/bgcval2
 
 Now you can follow the steps above to (re-)create the new environment, still called `bgcval2`, and
 installing the tool inside it:
+
 ```
 mamba env create -n bgcval2 -f environment.yml
 conda activate bgcval2
@@ -138,6 +145,7 @@ Should you need to have multiple environments, each with a different installatio
 with different development branches), you can simply create them like instructed above, with the only difference
 that the environments must have relevant and differing names. An example: you are working on a branch called
 `bgcval2_some-feature` and would like to test it in a bespoke environment, you can create it:
+
 ```
 mamba env create -n bgcval2_some-feature -f environment.yml
 conda activate bgcval2_some-feature
@@ -156,10 +164,12 @@ installed scripts in such locations as `/opt` or `/lib`)
 
 If you made changes to the code, and you want to bring in the latest remote changes (via `git pull`), you have two options:
 - either commit your changes to the remote branch and then push your branch back to github (origin):
-\ ```
+
+```
  git commit your-changed-code -m "commit message"
  git push origin your_branch
-\```
+```
+
 - or, save your changes elsewhere (in a directory that is not under bgcval2's git control), and run `git stash` to bring your
   repository to the state of the latest pull from remote (at the HEAD of the latest pushed commit)
 
@@ -181,6 +191,7 @@ However, there are a few key values:
 
 
 In this yml file, the structure is:
+
 ```
 ---
 name: <Analysis name string>
@@ -295,9 +306,11 @@ in some cases. The output log for this script is sent to the file:
 In the case that data is needed immediately, it's posiible to download manually as well.
 Data can be downloaded and prepared for analysis using the `download_from_mass` bgcval2 tool,
 with the command:
+
 ```
 download_from_mass -j jobIDs
 ```
+
 where `jobIDs` is one or more jobIDs.
 
 This script will only work on JASMIN's `mass-cli1` machine,
@@ -325,14 +338,10 @@ This tool downloads the data, but also includes several functions which create s
 in the data's directory in order to accomodate incompatible changes in NEMO's output formatting.
 
 Please consult the command help for more details:
+
 ```
 download_from_mass -h
 ```
-
-
-
-
-
 
 Running the tool for a single job
 =================================
@@ -347,19 +356,16 @@ bgcval2 -j jobID
 This will run a time series analysis, a point to point analysis, and
 publish the reports into a single job html5 report.
 
-
 Alternatively, these tasks can be invoked individually, e.g.:
 
 ```
 analysis_timeseries --jobID u-bc179 --keys kmf level1
 analysis_p2p u-bc179 level2 2010
 bgcval2_make_report u-bc179 2010
-
 ```
+
 This produces an html5 mobile-friendly website which can be opened using your
 browser of choice.
-
-
 
 Time series analysis
 --------------------
@@ -455,8 +461,6 @@ basic functions such as multiply by or add to, or `noChange`, which can all be
 called without providing the `path`, and which may have their own key word
 arguments.
 
-
-
 Clearing the Cache
 ------------------
 
@@ -466,35 +470,39 @@ This means that older images may appear in new reports, even if they were remove
 input yamls. If you want to "clear the cache", these images need to be deleted.
 
 The key place to clear is set by default on jasmin to be:
+
 ```
 /gws/nopw/j04/ukesm/BGC_data/$USER/bgcval2/images/TimeseriesCompare/$NAME
 ```
+
 where `$USER` is your jasmin user name and `$NAME` is the name given to this analysis 
 in your `input_yml` file.
 This is where the comparison plots are stored.
 
 From there, these plots are copied to
+
 ```
 CompareReports2/$NAME
 ```
+
 This is where the report is generated.
 
 The third place that these plots are kept is on the public facing jasmin directory:
+
 ```
 /gws/nopw/j04/esmeval/public/CompareReports/bgcval2/$USER/$NAME
 ```
-This is where the report is hosted.
 
+This is where the report is hosted.
 
 Point to point analysis
 -----------------------
 
-WORK IN PROGRESS.
+**WORK IN PROGRESS**
 
 This is an analysis that compares a specific year of the model
 against several climatological datasets, and produces comparison
 maps, histograms and scatter plots.
-
 
 The command to run it is `analysisp2p jobID YEAR key`, where jobID is a mass
 job id, such a `u-ab123`, `YEAR` is the single year to investigate
@@ -508,21 +516,20 @@ Key | What it is | Description
 
 Note that there may be some overlap between the contents of these keys.
 
-
 Single Model report
 -------------------
 
-WORK IN PROGRESS.
+**WORK IN PROGRESS**
 
 Once an analysis has run, either time series or point to point, a report
 can be generated from this output, using the command:
+
 ```
 bgcval2_make_report jobID year
 ```
-This  gnerated an HTML5 mobile-friendlyt report, summarising the output of a
+
+This generates an HTML5 mobile-friendlyt report, summarising the output of a
 single model run.
-
-
 
 Running a job on JASMIN's batch system, LOTUS
 =============================================
@@ -532,9 +539,11 @@ it is possible to submit them as batch jobs to JASMIN's LOTUS machine.
 [See the LOTUS documentation here](https://help.jasmin.ac.uk/article/5004-lotus-overview).
 
 To submit a job, make a copy of the `lotus_bgcval2.sh` file:
+
 ```
 rsync -av lotus_bgcval2.sh lotus_bgcval2_$USER.sh
 ```
+
 From there, you'll need to edit your copy of the file `lotus_bgcval2_$USER.sh`.
 
 In this file, you'll need to edit the following bash objects:
@@ -546,13 +555,14 @@ In this file, you'll need to edit the following bash objects:
 You may also need to edit the job time limit, at the top of the file.
 The default it set to 6 hours.
 
-
 Once that is done, the script is submitted to LOTUS with:
+
 ```
 sbatch  lotus_bgcval2_$USER.sh
 ```
 
 You can monitor your script in the queue with:
+
 ```
 squeue | grep $USER
 ```
@@ -561,15 +571,16 @@ You will also see a couple log files appear which will allow you to follow
 the output of the process.
 If you wish to send to to a specific path, you may edit the lines at the top of 
 `lotus_bgcval2_$USER.sh`:
+
 ```
 #SBATCH -o log_bgcval2_%J.out
 #SBATCH -e log_bgcval3_%J.err
 ```
 
-
-
 Documentation
 =============
+
+**WORK IN PROGRESS**
 
 See available Sphinx [documentation](https://htmlpreview.github.io/?https://github.com/valeriupredoi/bgcval2/blob/main/doc/build/index.html). To build locally the documentation run:
 
@@ -584,11 +595,12 @@ Appendix
 
 Migration from the orginal BGCVal code, which was Python2, has been done with the `2to3` tool:
 
-- Install 2to3:
+- Install `2to3` package:
 
 ```
 pip install 2to3
 ```
+
 - Usage: use the 3.9 extension and write to disk option:
 
 ```
