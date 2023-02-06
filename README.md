@@ -155,7 +155,11 @@ installed scripts in such locations as `/opt` or `/lib`)
 ### Saving and committing local changes
 
 If you made changes to the code, and you want to bring in the latest remote changes (via `git pull`), you have two options:
-- either commit your changes to the remote branch (via `git commit your-changed-code -m "commit message"`, followed by `git push origin your_branch`)
+- either commit your changes to the remote branch and then push your branch back to github (origin):
+\ ```
+ git commit your-changed-code -m "commit message"
+ git push origin your_branch
+\```
 - or, save your changes elsewhere (in a directory that is not under bgcval2's git control), and run `git stash` to bring your
   repository to the state of the latest pull from remote (at the HEAD of the latest pushed commit)
 
