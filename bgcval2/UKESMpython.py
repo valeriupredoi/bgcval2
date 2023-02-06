@@ -36,17 +36,14 @@ from glob import glob
 from itertools import product
 import numpy as np
 from matplotlib import pyplot
-from mpl_toolkits.basemap import Basemap
 from matplotlib.ticker import FormatStrFormatter
 from matplotlib.colors import LogNorm
-try:
-    import cartopy.crs as ccrs
-    import cartopy.io.shapereader as shapereader
-    from cartopy import img_transform, feature as cfeature
-except:
-    print("Unable to load Cartopy")
+import cartopy.crs as ccrs
+import cartopy.io.shapereader as shapereader
+from cartopy import img_transform, feature as cfeature
 from scipy.stats.mstats import scoreatpercentile
 from scipy.stats import linregress, mode as scimode
+from sklearn.metrics import mean_squared_error
 from calendar import month_name
 from shelve import open as shOpen
 import socket
@@ -471,10 +468,10 @@ def load_coords_from_netcdf(mdfile):
     """
     # Set input coordinates:
     coord_candidates = {
-        't': ['time_centered','time', 'index_t', 'time_counter'],
+        't': ['time_counter', 'time_centered','time', 'index_t', ],
         'z':  ['depth', 'deptht', 'depthu', 'nav_lev', 'index_z', 'level'],
-        'lat': ['lat', 'lattitude', 'nav_lat', 'nav_lat_grid_T'],
-        'lon': ['lat', 'lattitude', 'nav_lat', 'nav_lon_grid_T'],
+        'lat': ['lat', 'latitude', 'nav_lat', 'nav_lat_grid_T'],
+        'lon': ['lon', 'longitude', 'nav_lon', 'nav_lon_grid_T'],
         }
     # Exntend with capitalization:
     for coord, coord_candidate_list in coord_candidates.items():
@@ -489,7 +486,8 @@ def load_coords_from_netcdf(mdfile):
     nckeys = set(nctmp.variables.keys())
 
     # Special cases to find coords:
-    special_cases = {('time_centered', 'time_counter'): ['time_centered',]}
+    special_cases = {('time_centered', 'time_counter'): ['time_counter',]}
+
 
     output_coords = {}
     for coord, coord_candidate_list in coord_candidates.items():
@@ -505,7 +503,7 @@ def load_coords_from_netcdf(mdfile):
             raise KeyError(f'Several {coord} coordinates found: {intersection}')
 
     try:
-        calendar = nctmp.variables[output_coords.get('t')].calendar # might break.
+        calendar = nctmp.variables[output_coords.get('t', 'time')].calendar # might break.
     except AttributeError:
         calendar = 'standard'
 
@@ -715,9 +713,8 @@ def robinPlotPair(
     drawCbar=True,
     cbarlabel='',
     doLog=False,
-    scatter=True,
     dpi=100,
-):  #**kwargs):
+):  
     """
 	takes a pair of lat lon, data, and title, and filename and then makes a pair of maps, then saves the figure.
 	"""
@@ -757,7 +754,7 @@ def robinPlotPair(
                              c=np.log10(data1),
                              marker="s",
                              alpha=0.9,
-                             linewidth='0',
+                             linewidth=0,
                              **kwargs)
         else:
             im1 = m1.scatter(x1,
@@ -765,7 +762,7 @@ def robinPlotPair(
                              c=data1,
                              marker="s",
                              alpha=0.9,
-                             linewidth='0',
+                             linewidth=0,
                              **kwargs)
 
     else:
@@ -810,16 +807,16 @@ def robinPlotPair(
                              c=np.log10(data2),
                              marker="s",
                              alpha=0.9,
-                             linewidth='0',
-                             **kwargs)  #vmin=vmin,vmax=vmax)
+                             linewidth=0,
+                             **kwargs)  
         else:
             im2 = m2.scatter(x2,
                              y2,
                              c=data2,
                              marker="s",
                              alpha=0.9,
-                             linewidth='0',
-                             **kwargs)  #vmin=vmin,vmax=vmax)
+                             linewidth=0,
+                             **kwargs)  
     else:
         xi2, yi2, di2 = mapIrregularGrid(m2,
                                          ax2,
@@ -833,7 +830,7 @@ def robinPlotPair(
         if doLog:
             im2 = m2.pcolormesh(xi2, yi2, di2, cmap=defcmap, norm=LogNorm())
         else:
-            im2 = m2.pcolormesh(xi2, yi2, di2, cmap=defcmap)  #shading='flat',
+            im2 = m2.pcolormesh(xi2, yi2, di2, cmap=defcmap)  
 
     if drawCbar:
         c2 = fig.colorbar(im2, pad=0.05, shrink=0.75)
@@ -862,10 +859,14 @@ def robinPlotQuad(lons,
                   dpi=100,
                   vmin='',
                   vmax='',
-                  maptype='Basemap'):  #,**kwargs):
+                  zoom = False,
+                  maptype='Cartopy'):  
     """
 	takes a pair of lat lon, data, and title, and filename and then makes a quad of maps (data 1, data 2, difference and quotient), then saves the figure.
 	"""
+    if maptype=='Basemap':
+        raise RuntimeError('Basemap not longer supported, use Cartopy maptype')
+
     fig = pyplot.figure()
     fig.set_size_inches(10, 6)
 
@@ -880,7 +881,6 @@ def robinPlotQuad(lons,
     vmin = min([data1.min(), data2.min(), vmin])
     vmax = max([data1.max(), data2.max(), vmax])
 
-    #doLog, vmin,vmax = determineLimsAndLog(vmin,vmax)
     doLog, vmin, vmax = determineLimsFromData(data1, data2)
 
     doLogs = [doLog, doLog, False, True]
@@ -895,15 +895,10 @@ def robinPlotQuad(lons,
                 223,
         ]:
             rbmi, rbma = symetricAroundZero(data1, data2)
-            #rbma =3*np.ma.std(data1 -data2)
-            #print spl,i, rbma, max(data1),max(data2)
-            #assert False
-            #rbmi = -rbma
         if spl in [
                 224,
         ]:
-            rbma = 10.  #max(np.ma.abs(data1 -data2))
-            rbmi = 0.1
+            rbmi, rbma = logsymetricAroundOne(data1, data2)
 
         if doLogs[i] and rbmi * rbma <= 0.:
             print("UKESMpython:\trobinPlotQuad: \tMasking", end=' ')
@@ -940,112 +935,15 @@ def robinPlotQuad(lons,
         ]:
             cmap = pyplot.cm.RdBu_r
 
-        if maptype == 'Basemap':
-            axs.append(fig.add_subplot(spl))
-            bms.append(Basemap(projection='robin', lon_0=lon0,
-                               resolution='c'))  #lon_0=-106.,
-            x1, y1 = bms[i](lons, lats)
-            bms[i].drawcoastlines(linewidth=0.5)
-            if marble: bms[i].bluemarble()
-            else:
-                bms[i].drawmapboundary(fill_color='1.')
-                bms[i].fillcontinents(color=(255 / 255., 255 / 255.,
-                                             255 / 255., 1))
-            bms[i].drawparallels(np.arange(-90., 120., 30.))
-            bms[i].drawmeridians(np.arange(0., 420., 60.))
-
-            if doLogs[i]:
-                rbmi = np.int(np.log10(rbmi))
-                rbma = np.log10(rbma)
-                if rbma > np.int(rbma): rbma += 1
-                rbma = np.int(rbma)
-
-            if scatter:
-                if doLogs[i]:
-                    if len(cbarlabel) > 0:
-                        cbarlabel = 'log$_{10}$(' + cbarlabel + ')'
-                    ims.append(bms[i].scatter(
-                        x1,
-                        y1,
-                        c=np.log10(data),
-                        cmap=cmap,
-                        marker="s",
-                        alpha=0.9,
-                        linewidth='0',
-                        vmin=rbmi,
-                        vmax=rbma,
-                    ))  # **kwargs))
-                else:
-                    ims.append(bms[i].scatter(
-                        x1,
-                        y1,
-                        c=data,
-                        cmap=cmap,
-                        marker="s",
-                        alpha=0.9,
-                        linewidth='0',
-                        vmin=rbmi,
-                        vmax=rbma,
-                    ))  # **kwargs))
-            else:
-                xi1, yi1, di1 = mapIrregularGrid(bms[i],
-                                                 axs[i],
-                                                 lons,
-                                                 lats,
-                                                 data,
-                                                 lon0,
-                                                 xres=360,
-                                                 yres=180)
-                if doLogs[i]:
-                    ims.append(bms[i].pcolormesh(xi1,
-                                                 yi1,
-                                                 di1,
-                                                 cmap=cmap,
-                                                 norm=LogNorm()))
-                else:
-                    ims.append(bms[i].pcolormesh(xi1, yi1, di1, cmap=cmap))
-            if drawCbar:
-                if spl in [221, 222, 223]:
-                    if doLogs[i]:
-                        cbs.append(
-                            fig.colorbar(ims[i],
-                                         pad=0.05,
-                                         shrink=0.5,
-                                         ticks=np.linspace(
-                                             rbmi, rbma, rbma - rbmi + 1)))
-                    else:
-                        cbs.append(fig.colorbar(
-                            ims[i],
-                            pad=0.05,
-                            shrink=0.5,
-                        ))
-                if spl in [
-                        224,
-                ]:
-                    cbs.append(fig.colorbar(
-                        ims[i],
-                        pad=0.05,
-                        shrink=0.5,
-                    ))
-                    cbs[i].set_ticks([-1, 0, 1])
-                    cbs[i].set_ticklabels(['0.1', '1.', '10.'])
-
         if maptype == 'Cartopy':
-            #axs.append(fig.add_subplot(spl))
-            bms.append(pyplot.subplot(spl, projection=ccrs.Robinson()))
-            bms[i].set_global()
-
-            if marble: bms[i].stock_img()
+            ax = pyplot.subplot(spl, projection=ccrs.Robinson())
+            bms.append(ax)
+            if zoom:
+                ax.set_extent((lons.min(), lons.max(), lats.min(), lats.max()), ccrs.PlateCarree())
             else:
-                # Because Cartopy is hard wired to download the shapes files from a website that doesn't exist anymore:
-
-                bms[i].add_geometries(list(
-                    shapereader.Reader(
-                        'data/ne_110m_coastline.shp').geometries()),
-                                      ccrs.PlateCarree(),
-                                      color='k',
-                                      facecolor='none',
-                                      linewidth=0.5)
+                ax.set_global()
+            ax.coastlines()
+            ax.add_feature(cfeature.LAND)
 
             if scatter:
                 if doLogs[i] and spl in [221, 222]:
@@ -1058,13 +956,12 @@ def robinPlotQuad(lons,
                     ims.append(bms[i].scatter(
                         lons,
                         lats,
-                        c=np.log10(data),
+                        c=data,
+                        norm=LogNorm(vmin=rbmi, vmax=rbma),
                         cmap=cmap,
                         marker="s",
                         alpha=0.9,
-                        linewidth='0',
-                        vmin=rbmi,
-                        vmax=rbma,
+                        linewidth=0,
                         transform=ccrs.PlateCarree(),
                     ))
                 else:
@@ -1075,7 +972,7 @@ def robinPlotQuad(lons,
                         cmap=cmap,
                         marker="s",
                         alpha=0.9,
-                        linewidth='0',
+                        linewidth=0,
                         vmin=rbmi,
                         vmax=rbma,
                         transform=ccrs.PlateCarree(),
@@ -1086,7 +983,7 @@ def robinPlotQuad(lons,
                             cbs.append(
                                 fig.colorbar(ims[i],
                                              pad=0.05,
-                                             shrink=0.5,
+                                             shrink=0.75,
                                              ticks=np.linspace(
                                                  rbmi, rbma, rbma - rbmi + 1)))
                         else:
@@ -1094,7 +991,7 @@ def robinPlotQuad(lons,
                                 fig.colorbar(
                                     ims[i],
                                     pad=0.05,
-                                    shrink=0.5,
+                                    shrink=0.75,
                                 ))
                     if spl in [
                             224,
@@ -1102,11 +999,9 @@ def robinPlotQuad(lons,
                         cbs.append(fig.colorbar(
                             ims[i],
                             pad=0.05,
-                            shrink=0.5,
+                            shrink=0.75,
                         ))
-                        cbs[i].set_ticks([-1, 0, 1])
-                        cbs[i].set_ticklabels(['0.1', '1.', '10.'])
-
+                        cbs[i].set_ticks([0.1, 1., 10.])
             else:
                 crojp2, newData, newLon, newLat = regrid(
                     data.squeeze(), lons, lats)
@@ -1129,9 +1024,6 @@ def robinPlotQuad(lons,
                                                  cmap=cmap,
                                                  vmin=rbmi,
                                                  vmax=rbma))
-                bms[i].coastlines()  #doesn't work.
-                #bms[i].fillcontinents(color=(255/255.,255/255.,255/255.,1))
-                bms[i].add_feature(cfeature.LAND, facecolor='1.')
                 if drawCbar:
                     if spl in [221, 222, 223]:
                         if doLogs[i]:
@@ -1141,7 +1033,7 @@ def robinPlotQuad(lons,
                                     pad=0.05,
                                     shrink=0.5,
                                 )
-                            )  #ticks = np.linspace(rbmi,rbma,rbma-rbmi+1)))
+                            )  
                         else:
                             cbs.append(
                                 fig.colorbar(
@@ -1157,16 +1049,8 @@ def robinPlotQuad(lons,
                             pad=0.05,
                             shrink=0.5,
                         ))
-                        cbs[i].set_ticks([0.1, 1., 10.])
-                        cbs[i].set_ticklabels(['0.1', '1.', '10.'])
-
-            #else:		ticks = np.linspace( rbmi,rbma,9)
-            #print i, spl, ticks, [rbmi,rbma]
-
-            #pyplot.colorbar(ims[i],cmap=defcmap,values=[rbmi,rbma])#boundaries=[rbmi,rbma])
-            #cbs.append(fig.colorbar(ims[i],pad=0.05,shrink=0.5))#,ticks=ticks))
-
-            cbs[i].set_clim(rbmi, rbma)
+#                       cbs[i].set_ticks([0.1, 1., 10.])
+#                       cbs[i].set_ticklabels(['0.1', '1.', '10.'])
 
             if len(cbarlabel) > 0 and spl in [
                     221,
@@ -1186,13 +1070,8 @@ def robinPlotQuad(lons,
                  title,
                  horizontalalignment='center',
                  verticalalignment='top')
-    pyplot.tight_layout()
     print("UKESMpython:\trobinPlotQuad: \tSaving:", filename)
-
-    try:
-        pyplot.savefig(filename, dpi=dpi)
-    except:
-        print("Unable to save image.")
+    pyplot.savefig(filename, dpi=dpi)
     pyplot.close()
 
 
@@ -1274,8 +1153,9 @@ def HovPlotQuad(
         if spl in [
                 224,
         ]:
-            rbma = 10.001
-            rbmi = 0.0999
+            rbmi, rbma = logsymetricAroundOne(data1, data2)
+            #rbma = 10.001
+            #rbmi = 0.0999
 
         if doLogs[i] and rbmi * rbma <= 0.:
             print("UKESMpython:\tHovPlotQuad: \tMasking", end=' ')
@@ -1327,7 +1207,7 @@ def HovPlotQuad(
                         cmap=cmap,
                         marker="s",
                         alpha=0.9,
-                        linewidth='0',
+                        linewidth=0,
                         vmin=rbmi,
                         vmax=rbma,
                     ))
@@ -1340,7 +1220,7 @@ def HovPlotQuad(
                         cmap=cmap,
                         marker="s",
                         alpha=0.9,
-                        linewidth='0',
+                        linewidth=0,
                         vmin=rbmi,
                         vmax=rbma,
                     ))
@@ -1398,10 +1278,9 @@ def HovPlotQuad(
                     pad=0.05,
                     shrink=0.5,
                 ))
-                cbs[i].set_ticks([0.1, 1., 10.])
-                cbs[i].set_ticklabels(['0.1', '1.', '10.'])
+#                cbs[i].set_ticks([0.1, 1., 10.])
+#                cbs[i].set_ticklabels(['0.1', '1.', '10.'])
 
-            cbs[i].set_clim(rbmi, rbma)
             if doLogs[i] and len(cbarlabel) > 0:
                 cbarlabel = 'log$_{10}$(' + cbarlabel + ')'
 
@@ -1411,8 +1290,8 @@ def HovPlotQuad(
             ]:
                 cbs[i].set_label(cbarlabel)
 
-    #####
-    # Add the titles.
+        #####
+        # Add the titles.
         if i in [0, 1]: pyplot.title(titles[i])
         if i == 2:
             pyplot.title('Difference (' + titles[0] + ' - ' + titles[1] + ')')
@@ -1463,7 +1342,7 @@ def ArcticTransectPlotQuad(
     logy=False,
     maskSurface=True,
     transectName='ArcTransect',
-):  #,**kwargs):
+):  
     """
 	:param lons: Longitude array
 	:param lats: Lattitude array	
@@ -1535,14 +1414,12 @@ def ArcticTransectPlotQuad(
                 223,
         ]:
             rbmi, rbma = symetricAroundZero(data1, data2)
-            #			rbma =3.*np.ma.std(data1 -data2)
-            #print spl,i, rbma, max(data1),max(data2)
-            #rbmi = -rbma
         if spl in [
                 224,
         ]:
-            rbma = 10.001
-            rbmi = 0.0999
+            rbmi, rbma = logsymetricAroundOne(data1, data2)
+#           rbma = 10.001
+#           rbmi = 0.0999
 
         if doLogs[i] and rbmi * rbma <= 0.:
             print("UKESMpython:\tArcticTransectPlotQuad: \tMasking", end=' ')
@@ -1594,7 +1471,7 @@ def ArcticTransectPlotQuad(
                         cmap=cmap,
                         marker="s",
                         alpha=0.9,
-                        linewidth='0',
+                        linewidth=0,
                         vmin=rbmi,
                         vmax=rbma,
                     ))
@@ -1607,7 +1484,7 @@ def ArcticTransectPlotQuad(
                         cmap=cmap,
                         marker="s",
                         alpha=0.9,
-                        linewidth='0',
+                        linewidth=0,
                         vmin=rbmi,
                         vmax=rbma,
                     ))
@@ -1645,7 +1522,7 @@ def ArcticTransectPlotQuad(
             xtickslabs = [
                 'Bering Strait', '75N', 'North Pole', '75N', 'Shetland'
             ]
-            pyplot.xticks(xticks, xtickslabs)  #,labelsize=8)
+            pyplot.xticks(xticks, xtickslabs) 
             pyplot.tick_params(axis='x', which='both', labelsize=9)
 
         if transectName == 'CanRusTransect':
@@ -1653,7 +1530,7 @@ def ArcticTransectPlotQuad(
             xtickslabs = [
                 'Canada', '80N', '85N', 'N. Pole', '85N', '80N', 'Siberia'
             ]
-            pyplot.xticks(xticks, xtickslabs)  #,labelsize=8)
+            pyplot.xticks(xticks, xtickslabs) 
             pyplot.tick_params(axis='x', which='both', labelsize=9)
         if transectName == 'AntTransect':
             pyplot.xlabel('Latitude')
@@ -1683,10 +1560,10 @@ def ArcticTransectPlotQuad(
                     pad=0.05,
                     shrink=0.5,
                 ))
+
                 cbs[i].set_ticks([0.1, 1., 10.])
                 cbs[i].set_ticklabels(['0.1', '1.', '10.'])
 
-            cbs[i].set_clim(rbmi, rbma)
             if doLogs[i] and len(cbarlabel) > 0:
                 cbarlabel = 'log$_{10}$(' + cbarlabel + ')'
 
@@ -1696,8 +1573,8 @@ def ArcticTransectPlotQuad(
             ]:
                 cbs[i].set_label(cbarlabel)
 
-    #####
-    # Add the titles.
+        #####
+        # Add the titles.
         if i in [0, 1]: pyplot.title(titles[i])
         if i == 2:
             pyplot.title('Difference (' + titles[0] + ' - ' + titles[1] + ')')
@@ -1859,10 +1736,23 @@ def determineLimsFromData(data1, data2):
 
 
 def symetricAroundZero(data1, data2):
-    # rbmi,rbma = symetricAroundZero(data1,data2)
+    """
+    Calcualtes the symetrical max around zero.
+    """
     rbma = 3. * np.ma.std(data1 - data2)
     rbmi = -rbma
     return rbmi, rbma
+
+
+def logsymetricAroundOne(data1, data2):
+    print('logsymetricAroundOne', data1.shape, data2.shape, data1.min(), data2.min(), data1.mask.sum(), data2.mask.sum())
+    if 0 in [data1.mask.sum(), data2.mask.sum()]:
+        return 0.1, 10.
+    dat = data1/data2
+    ranges = np.max([np.percentile(dat.compressed(), 95.), 1./np.percentile(dat.compressed(), 5.)])
+    diff= np.log10(ranges) 
+    return 10.**-diff, 10.**diff
+
 
 
 def histPlot(datax,
@@ -1878,16 +1768,13 @@ def histPlot(datax,
              dpi=100,
              minNumPoints=6,
              legendDict=['mean', 'mode', 'std', 'median', 'mad']):
-    #	try:import seaborn as sb
-    #	except:pass
     """
-	Produces a histogram pair.
-	"""
-
+    Produces a histogram pair.
+    """
     fig = pyplot.figure()
     ax = pyplot.subplot(111)
-    xmin = np.ma.min([np.ma.min(datax), np.ma.min(datay)])  #*0.9
-    xmax = np.ma.max([np.ma.max(datax), np.ma.max(datay)])  #*1.1
+    xmin = np.ma.min([np.ma.min(datax), np.ma.min(datay)])
+    xmax = np.ma.max([np.ma.max(datax), np.ma.max(datay)])
 
     logx, xmin, xmax = determineLimsAndLog(xmin, xmax)
 
@@ -1898,7 +1785,7 @@ def histPlot(datax,
         return
 
     print("UKESMpython:\thistplot:\t preparing", Title, datax.size, datay.size,
-          (xmin, '-->', xmax))  #, datax,datay
+          (xmin, '-->', xmax))  
 
     if logx:
         n, bins, patchesx = pyplot.hist(datax,
@@ -1929,10 +1816,10 @@ def histPlot(datax,
 
     if len(legendDict) > 0:
         if logx:
-            mod = scimode(np.ma.round(np.ma.log10(datax), 2))[0][0]  #
+            mod = scimode(np.ma.round(np.ma.log10(datax), 2))[0][0]
             mod = 10.**mod
         else:
-            mod = scimode(np.ma.round(datax, 2))[0][0]  #
+            mod = scimode(np.ma.round(datax, 2))[0][0] 
         med = np.ma.median(datax)
         mea = np.ma.mean(datax)
         std = np.ma.std(datax)
@@ -1952,10 +1839,10 @@ def histPlot(datax,
             txt += '\n' + '   MAD:       ' + str(round(mad, 2))
 
         if logx:
-            mody = scimode(np.ma.round(np.ma.log10(datay), 2))[0][0]  #
+            mody = scimode(np.ma.round(np.ma.log10(datay), 2))[0][0]
             mody = 10.**mody
         else:
-            mody = scimode(np.ma.round(datay, 2))[0][0]  #
+            mody = scimode(np.ma.round(datay, 2))[0][0]
 
         medy = np.ma.median(datay)
         meay = np.ma.mean(datay)
@@ -1980,11 +1867,6 @@ def histPlot(datax,
                  horizontalalignment='left',
                  verticalalignment='bottom')
 
-    #if logx:
-    #	bins = range(xmin, xmax)
-    #	pyplot.xticks(bins, ["2^%s" % i for i in bins])
-    #	plt.hist(numpy.log2(data), log=True, bins=bins)
-
     if logx:
         ax.set_xscale('log')
 
@@ -1996,7 +1878,6 @@ def histPlot(datax,
 
     pyplot.title(Title)
     pyplot.xlabel(xaxislabel)
-    #pyplot.ylabel(labely)
 
     print("UKESMpython:\thistPlot:\tSaving:", filename)
     pyplot.savefig(filename, dpi=dpi)
@@ -2016,8 +1897,8 @@ def histsPlot(datax,
               dpi=100,
               minNumPoints=6):
     """
-	Produces a single histogram.
-	"""
+    Produces a single histogram.
+    """
 
     fig = pyplot.figure()
     ax = pyplot.subplot(311)
@@ -2059,18 +1940,11 @@ def histsPlot(datax,
     pyplot.setp(patchesx, 'facecolor', 'g', 'alpha', 0.5)
     pyplot.setp(patchesy, 'facecolor', 'b', 'alpha', 0.5)
 
-    #if logx:
-    #	bins = range(xmin, xmax)
-    #	pyplot.xticks(bins, ["2^%s" % i for i in bins])
-    #	plt.hist(numpy.log2(data), log=True, bins=bins)
-
     if logx: ax.set_xscale('log')
     if logy: ax.set_yscale('log')
     pyplot.legend([labelx, labely], loc='upper left')
 
     pyplot.title(Title)
-    #pyplot.xlabel(xaxislabel)
-    #pyplot.ylabel(labely)
 
     ax = pyplot.subplot(312)
     pyplot.title('Difference: ' + labelx + ' - ' + labely)
@@ -2148,8 +2022,8 @@ def histsPlot(datax,
 
 def makeOneDPlot(dates, data, title, filename, minmax=[0., 0.], dpi=100):
     """
-	Produces a single time series plot.
-	"""
+    Produces a single time series plot.
+    """
 
     print("makeOneDPlot: ", filename)
     fig = pyplot.figure()
@@ -2188,11 +2062,12 @@ def makeOneDPlot(dates, data, title, filename, minmax=[0., 0.], dpi=100):
     pyplot.title(title)
 
     print("makeOneDPlot:\tSaving: " + filename)
-    pyplot.savefig(filename, dpi=dpi)  #, bbox_inches='tight')
+    pyplot.savefig(filename, dpi=dpi) 
     pyplot.close()
 
 
 def strRound(val, i=4):
+    """ Round a value to i significant figrues and return a string"""
     return str(round_sig(val, 3))
 
 
@@ -2202,7 +2077,7 @@ def round_sig(x, sig=2):
 	:param sig: number of significant figures
 	
 	rounds a value to a specific number of significant figures.
-	"""
+    """
     if x == 0.: return 0.
     if x < 0.:
         return -1. * round(abs(x),
@@ -2218,19 +2093,23 @@ def addStraightLineFit(ax,
                        addOneToOne=False,
                        extent=[0, 0, 0, 0]):
     """
-	Adds a straight line fit to an axis.
-	"""
+    Adds a straight line fit to an axis.
+    """
 
     def getLinRegText(ax, x, y, showtext=True):
         x = [a for a in x if (a is np.ma.masked) == False]
         y = [a for a in y if (a is np.ma.masked) == False]
-        beta1, beta0, rValue, pValue, stdErr = linregress(x, y)
-        thetext = r'$\^\beta_0$ = '+strRound(beta0)		\
-         + '\n'+r'$\^\beta_1$ = '+strRound(beta1)	\
-         + '\nR = '+ strRound(rValue)		\
-         + '\nP = '+strRound(pValue)		\
-         + '\nN = '+str(int(len(x)))
-        #+ '\n'+r'$\epsilon$ = ' + strRound(stdErr)	\
+        slope, intercept, rValue, pValue, stdErr = linregress(x, y)
+        rmse = mean_squared_error(y, x, squared=False)
+        md = np.median(np.ma.array(y).compressed()-np.ma.array(x).compressed()) 
+        thetext = ''. join(['Slope = ', strRound(slope), 
+            '\nIntercept = ',  strRound(intercept),
+            '\nRMSE = ', strRound(rmse),
+            '\nMD = ', strRound(md),
+            '\nR = ', strRound(rValue), 
+            '\nP = ', strRound(pValue), 
+            '\nN = ', str(int(len(x))), 
+            ])
         if showtext:
             pyplot.text(0.04,
                         0.96,
@@ -2238,7 +2117,7 @@ def addStraightLineFit(ax,
                         horizontalalignment='left',
                         verticalalignment='top',
                         transform=ax.transAxes)
-        return beta1, beta0, rValue, pValue, stdErr
+        return slope, intercept, rValue, pValue, stdErr
 
     b1, b0, rValue, pValue, stdErr = getLinRegText(ax, x, y, showtext=showtext)
     if extent == [0, 0, 0, 0]:
@@ -2258,10 +2137,6 @@ def addStraightLineFit(ax,
     pyplot.plot(fx, fy, 'k')
     if addOneToOne: pyplot.plot(fx, fx, 'k--')
 
-    #xstep = (x.max()-x.min())/40.
-    #ystep = (y.max()-y.min())/40.
-    #pyplot.axis([x.min()-xstep, x.max()+xstep, y.min()-ystep, y.max()+ystep])
-
 
 def scatterPlot(datax,
                 datay,
@@ -2278,8 +2153,8 @@ def scatterPlot(datax,
                 percentileRange=[0, 100],
                 dpi=100):
     """
-	Produces a scatter plot and saves it.
-	"""
+    Produces a scatter plot and saves it.
+    """
 
     fig = pyplot.figure()
     ax = pyplot.subplot(111)
@@ -2307,24 +2182,14 @@ def scatterPlot(datax,
     plotrange = [xmin, xmax, ymin, ymax]
     print("UKESMpython:\tscatterPlot:\trange:", plotrange)
 
-    #if xmin*xmax <= 0. or ymin*ymax <=.0:
-    #		logx=False
-    #		logy=False
-    #		print "UKESMpython:\tscatterPlot:\tx value below zero, can not run log scale.", '\t',labelx,'(x):', xmin, '\t',labely,'(y):', ymin
-
     if logx: ax.set_xscale('log')
     if logy: ax.set_yscale('log')
 
-    #gridsize = 50
     if hexPlot:
         colours = 'gist_yarg'  # 'Greens'
-
-        #if logx:bins = 10**linspace(np.log10(xmin), np.log10(xmax))
-        #else:
         bins = 'log'
 
         if logx and logy:
-
             h = pyplot.hexbin(datax,
                               datay,
                               xscale='log',
@@ -2342,26 +2207,7 @@ def scatterPlot(datax,
                               extent=plotrange,
                               cmap=pyplot.get_cmap(colours),
                               mincnt=0)
-        cb = pyplot.colorbar(ticks=[
-            0,
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-        ], )
-
-        cb.set_ticklabels([
-            r'$10^0$',
-            r'$10^1$',
-            r'$10^2$',
-            r'$10^3$',
-            r'$10^4$',
-            r'$10^5$',
-            r'$10^6$',
-        ])
-        #cb.set_label('np.log10(N)')
+        cb = pyplot.colorbar() 
 
     else:
         pyplot.scatter(datax, datay, marker='o')
@@ -2391,10 +2237,10 @@ def getOrcaIndexCC(
     latcc,
     loncc,
     debug=True,
-):  #slowMethod=False,llrange=5.):
+):  
     """ 
-	Takes a lat and long coordinate, an returns the position of the closest coordinate in the grid.
-	"""
+    Takes a lat and long coordinate, an returns the position of the closest coordinate in the grid.
+    """
     km = 10.E20
     la_ind, lo_ind = -1, -1
     lat = makeLatSafe(lat)
@@ -2420,9 +2266,10 @@ def getORCAdepth(z, depth_arr, debug=True):
     d = 1000.
     best = -1
     depth_arr = np.array(depth_arr)
-    print("getORCAdepth:", z, depth_arr)
+    if debug: 
+        print("getORCAdepth:", z, depth_arr)
     if len(depth_arr) == 1: return 0
-
+    best = np.argmin(np.abs(np.abs(depth_arr) - abs(z)))
     for i, zz in enumerate(depth_arr.squeeze()):
         d2 = abs(abs(z) - abs(zz))
         if d2 < d:
@@ -2506,18 +2353,10 @@ def makeLatSafe(lat):
     """
 	Makes sure that the value is between -90 and 90.
 	"""
-
-    #while True:
     if -90. <= lat <= 90.: return lat
-    #print 'You can\'t have a latitude > 90 or <-90',lat
     if lat is np.ma.masked: return lat
     print("makeLatSafe:\tERROR:\tYou can\'t have a latitude > 90 or <-90", lat)
     assert False
-    #return np.ma.clip(lat,-90.,90.)
-    #assert False
-    #return False
-    #if lon<=-90:lat+=360.
-    #if lon> 90:lat-=360.
 
 
 def makeLonSafeArr(lon):
@@ -2569,7 +2408,7 @@ def sensibleLonBox(lons):
     return lons
 
 
-def Area(p1, p2):  #lat,lon
+def Area(p1, p2):  
     """
 	Calculates the area in m^2 between two coordinates points.
 	points are [lat,lon]
@@ -2604,10 +2443,8 @@ def regrid(data, lon, lat):
 
     newLon, newLat = np.meshgrid(nX, nY)
 
-    crojp1 = ccrs.PlateCarree(central_longitude=180.0,
-                              )  #central_latitude=300.0)
-    crojp2 = ccrs.PlateCarree(central_longitude=180.0,
-                              )  #central_latitude=300.0)
+    crojp1 = ccrs.PlateCarree(central_longitude=180.0, )
+    crojp2 = ccrs.PlateCarree(central_longitude=180.0, )
 
     a = img_transform.regrid(data,
                              source_x_coords=oldLon,
@@ -2616,7 +2453,6 @@ def regrid(data, lon, lat):
                              target_proj=crojp2,
                              target_x_points=newLon,
                              target_y_points=newLat)
-    # print 'newregid shape:',a.shape
     return crojp2, a, newLon, newLat
 
 
@@ -2718,11 +2554,12 @@ def reducesShelves(
 	"""
     emptySMDtype = type(shelveMetadata())
     outArray = []
+    print('reducesShelves: looking for:', models, names, years, depthLevels, sliceslist)
     for shelveMD in AllShelves:
         if type(shelveMD) != emptySMDtype:
             print("somewhere, this is not a shelveMD:", shelveMD)
             assert False
-
+        print('reducesShelves:', shelveMD,  shelveMD.model, shelveMD.name, shelveMD.year, shelveMD.depthLevel, shelveMD.newSlice)
         if len(models) and shelveMD.model not in models: continue
         if len(names) and shelveMD.name not in names: continue
         if len(years) and shelveMD.year not in years: continue
@@ -2730,6 +2567,7 @@ def reducesShelves(
             continue
         if len(sliceslist) and shelveMD.newSlice not in sliceslist: continue
         outArray.append(shelveMD.shelve)
+    print('outArray:', outArray)
     return outArray
 
 
@@ -2908,3 +2746,21 @@ def extractData(nc, details, key=[
     print("extractData:\t you may have a problem in your details dictionairy:",
           details, key)
     assert False
+
+
+def choose_best_ncvar(nc, keys):
+    """
+    Takes the list of keys and chooses the first one that exists in the input file.
+    Useful if fields change for no reason.
+    
+    Unlike standard_functions.choose_best_var, this function returns the netcdf.variable
+    not the data. 
+
+    """
+    for key in keys:
+        if key not in nc.variables.keys():
+            continue
+        return nc.variables[key]
+    raise KeyError(f'choose_best_ncvar: unable to find {keys} in {nc.filename}')
+
+    

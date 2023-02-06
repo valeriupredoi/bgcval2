@@ -53,14 +53,19 @@ def loadDataMask(gridfn):
     if not gridfn or not os.path.exists(gridfn):
         raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), gridfn)
 
+    print(gridfn)
     nc = dataset(gridfn, 'r')
-    tmask = nc.variables['tmask'][:]
+    tmask = nc.variables['tmask'][:].squeeze()
 
     try:
         pvol   = nc.variables['pvol'][:]
     except:
         area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
-        pvol = nc.variables['e3t'][:] * area
+        if 'e3t_0' in nc.variables.keys():
+            pvol = nc.variables['e3t_0'][:] * area
+        else:
+            pvol = nc.variables['e3t'][:] * area
+        pvol = pvol.squeeze()
         pvol = np.ma.masked_where(tmask==0, pvol)
     nc.close()
     loaded_volume = True

@@ -47,5 +47,5 @@ def test_create_files():
 def test_run_analysis_compare():
     """Patch and run the whole thing."""
     bgcval2_test_data()
-    with arguments('analysis_compare', '-y', 'input_yml/debug.yml'):
+    with arguments('analysis_compare', '-y', 'input_yml/integration_testing.yml'):
         main()

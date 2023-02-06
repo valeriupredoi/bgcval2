@@ -42,9 +42,7 @@ def getSlicesDict():
         'aboveZero',
     ]
     months = [month_name[i + 1] for i in range(0, 12)
-              ]  #{month_name[i+1]:i for i in xrange(0,12) }
-
-    #depthRanges	=['OffShelf','maskBelowBathy', 'OnShelf',]
+              ]
     depthRanges = [
         'Depth_0-50m', 'Depth_50-100m', 'Depth_100-200m', 'Depth_200-500m',
         'Depth_500-1000m', 'Depth_1000-2000m', 'Depth_2000m'
@@ -121,7 +119,9 @@ def getSlicesDict():
         'NorthernSubpolarPacific',
         'SouthernOcean',
         'Remainder',
+        'AMM',
     ]
+    AMM = ['AMM','AMM_Shelf', 'AMM_OffShelf']
 
     OceanMonths = {o: [(o, m) for m in months] for o in Oceans}
     OceanSeasons = {o: [(o, m) for m in Seasons] for o in Oceans}
@@ -148,6 +148,8 @@ def getSlicesDict():
     newSlices.extend(Transects)
     newSlices.extend(Misc)
     newSlices.extend(BGCVal)
+    newSlices.extend(AMM)
+
     for om, keys in list(OceanMonths.items()):
         newSlices.extend(keys)
     for om, keys in list(OceanSeasons.items()):
@@ -171,6 +173,7 @@ def getSlicesDict():
     slicesDict['Transects'] = Transects
     slicesDict['Misc'] = Misc
     slicesDict['BGCVal'] = BGCVal
+    slicesDict['AMM'] = AMM
     for om, keys in list(OceanMonths.items()):
         slicesDict[om + 'Months'] = keys
     for om, keys in list(OceanSeasons.items()):
@@ -179,9 +182,7 @@ def getSlicesDict():
         slicesDict[om + 'Months'] = keys
     for om, keys in list(HemispheresSeasons.items()):
         slicesDict[om + 'Seasons'] = keys
-
     return slicesDict
-
 
 slicesDict = getSlicesDict()
 

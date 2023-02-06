@@ -124,6 +124,16 @@ def applymask(nc,keys):
     return np.ma.masked_where(nc.variables[keys[1]][:] == 0., nc.variables[keys[0]][:])
 
 
+def maskzeroes(nc, keys):
+    """
+    Masks all instances of exactly zero in keys[0]. 
+    Also applied find best var.
+    """
+    var0 = find_best_var(nc, keys)
+    arr = np.ma.array(nc.variables[var0][:])
+    return np.ma.masked_where(arr == 0. + arr.mask, arr)
+
+
 def sums(nc,keys):
     """
     Loads Key[0] from the netcdf, then sums the other keys.
@@ -159,6 +169,16 @@ def choose_best_var(nc, keys):
         return nc.variables[key][:]
     raise KeyError(f'choose_best_var: unable to find any variable in {keys} in {nc.filename}')    
 
+def find_best_var(nc, keys):
+    """
+    Takes the list of keys and returns the first one that exists in the input file.
+    """
+    for key in keys:
+        if key not in nc.variables.keys():
+            continue
+        return key
+    raise KeyError(f'find_best_var: unable to find any variable {keys} in {nc.filename}')
+
 
 #####
 # kwargs functions:
@@ -191,6 +211,7 @@ std_functions['mul1000000'] = mul1000000
 std_functions['div1000'] = div1000
 std_functions['div1e6'] = div1e6
 std_functions['applymask'] = applymask
+std_functions['maskzeroes'] = maskzeroes
 std_functions['sums'] = sums
 std_functions['sum'] = sums
 std_functions['oxconvert'] = oxconvert

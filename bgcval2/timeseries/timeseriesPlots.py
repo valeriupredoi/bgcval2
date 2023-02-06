@@ -38,13 +38,10 @@ import numpy as np
 from numpy import hanning, hamming, bartlett, blackman
 from scipy import interpolate
 from collections import defaultdict
-
-#from statsmodels.nonparametric.smoothers_lowess import lowess
-
-from . import timeseriesTools as tst
-from ..bgcvaltools.viridis import viridis, discrete_viridis
-from .. import UKESMpython as ukp
-from ..bgcvaltools.pftnames import getLongName
+from bgcval2.timeseries import timeseriesTools as tst
+from bgcval2.bgcvaltools.viridis import viridis, discrete_viridis
+from bgcval2 import UKESMpython as ukp
+from bgcval2.bgcvaltools.pftnames import getLongName
 
 try:
     defcmap = pyplot.cm.jet
@@ -131,9 +128,6 @@ def percentilesPlot(
 
     if len(dataslice):
         if not len(dataweights): dataweights = np.ma.ones_like(dataslice)
-
-        #dataslice   = np.ma.masked_where(dataslice.mask + dataweights.mask,dataslice)
-        #dataweights = np.ma.masked_where(dataslice.mask + dataweights.mask,dataweights)
         pcs = [10., 20., 30., 40., 50., 60., 70., 80., 90.]
         out_pc = ukp.weighted_percentiles(dataslice, pcs, weights=dataweights)
         datapcs = {p: o for p, o in zip(pcs, out_pc)}
@@ -331,18 +325,11 @@ def percentilesPlot(
             [modeldataDict[m] for m in ['80pc', '90pc']],
         )
 
-    #yticks = list(axm.get_xticks())
-    #ytickLabels = list(axm.get_yticklabels())
-
     axm.set_xlim(xlims)
     axm.set_title(title)
 
     axm.set_ylim(ylims)
     axd.set_ylim(ylims)
-
-    #if np.ma.max(ylims)/np.ma.min(ylims)>500.:
-    #	axm.set_yscale('log')
-    #	axd.set_yscale('log')
 
     modelleft = 0  #True
     if modelleft:
@@ -372,21 +359,8 @@ def percentilesPlot(
         axm.set_yticklabels(ytickLabels, fontsize=10)
         axm.yaxis.tick_right()
     else:
-        #axm.get_yaxis().set_ticklabels([])
         axd.get_xaxis().set_ticks([])
         axm.set_ylabel(units)
-
-        #if greyband == 'MinMax':
-    #	#	ytickLabels	= ['min',  '20pc','30pc','40pc','60pc','70pc','80pc','max']
-    #elif greyband == '10-90pc':
-    #	ytickLabels	= ['10pc', '20pc','30pc','40pc','60pc','70pc','80pc','90pc']
-    #else:
-    #	ytickLabels	= [        '20pc','30pc','40pc','60pc','70pc','80pc',]
-
-    #yticks = [ modeldataDict[m][-1]	for m in ytickLabels]
-    #axm.set_yticks(yticks)
-    #axm.set_yticklabels(ytickLabels,fontsize=10)
-    #axm.yaxis.tick_right()
 
     print("timeseriesPlots:\tpercentilesPlot:\tSaving:", filename)
     try:
@@ -439,25 +413,17 @@ def trafficlightsPlot(
     )
     pyplot.plot(times, arr_new, c='b', ls='-', lw=2., label='Model')
 
-    #        if len(arr)>30:
-    #                smoothing = movingaverage2(arr,window_len=30,window='flat',extrapolate='axially')
-    #                pyplot.plot(times,arr,      c='b',ls='-',lw=0.3,)
-    #                pyplot.plot(times,smoothing,c='b',ls='-',lw=2,label='Model')
-    #        else:
-    #                pyplot.plot(times,arr,c='b',ls='-',lw=1,label='Model',)
-
     pyplot.xlim(xlims)
     pyplot.title(title)
     pyplot.ylabel(units)
 
     if len(dataslice) and metric != 'sum':
-        #pyplot.axhline(y=np.ma.mean(dataslice),c='k',ls='-',lw=2,alpha=0.5)
         pyplot.axhline(
             y=np.ma.median(dataslice),
             c='k',
             ls='-',
             lw=1,
-        )  #alpha=0.5)
+        ) 
         pcmin = np.array([dataslice.min() for i in xlims])
         pc1 = np.array([np.percentile(dataslice, 20.) for i in xlims])
         pc2 = np.array([np.percentile(dataslice, 30.) for i in xlims])
@@ -493,7 +459,7 @@ def trafficlightsPlot(
                        c='b',
                        ls='-',
                        lw=1,
-                       label='Data')  #+str(np.ma.sum(dataslice)))#alpha=0.5)
+                       label='Data')
 
     if len(dataslice) and metric == 'mean':
         if np.ma.mean(dataslice) not in [
@@ -505,7 +471,7 @@ def trafficlightsPlot(
         ]:
             pyplot.axhline(
                 y=np.ma.mean(dataslice), c='b', ls='-', lw=1,
-                label='Data')  #+str(np.ma.sum(dataslice)))#alpha=0.5)
+                label='Data') 
             assert "Plotting data with no data!"
 
     legend = pyplot.legend(loc='lower center',
@@ -530,7 +496,6 @@ def simpletimeseries(
         greyband=False):
     #####
     # This is exclusively used for sums now.
-    #title = ' '.join([getLongName(t) for t in title])
     if len(times) == 0 or len(arr) == 0:
         print("simpletimeseries:\tWARNING:\tdata or time arrays are empty.",
               len(times), len(arr), title)
@@ -543,7 +508,6 @@ def simpletimeseries(
     xlims = [times[0], times[-1]]
 
     fig = pyplot.figure()
-    #print "simpletimeseries,",arr, times
     ax = fig.add_subplot(111)
 
     arr_new = movingaverage_DT(arr, times, window_len=5.,
@@ -556,6 +520,7 @@ def simpletimeseries(
                 lw=2.,
                 label='Model 5yr moving average')
 
+    print('simple time series plot data:', times, arr)
     pyplot.xlim(xlims)
     pyplot.title(title)
     pyplot.ylabel(units)
@@ -651,15 +616,11 @@ def movingaverage2(x, window_len=11, window='flat', extrapolate='axially'):
     elif extrapolate == 'rotation':
         s = np.r_[2 * x[0] - x[window_len - 1:0:-1], x,
                   2 * x[-1] - x[-2:mwlp1:-1]]
-    #print(len(s))
     if window == 'flat':  #moving average
         w = np.ones(window_len, 'd')
     elif window == 'robust':
         pass
 
-
-#    elif window =='hanning':
-#      w=eval(np.hanning(
     else:
         w = eval(window + '(window_len)')
 
@@ -710,14 +671,13 @@ def movingaverage_DT(data, times, window_len=5., window_units='years'):
     ]:
         window = float(window_len) / (2. * 365.25)
 
-    output = []  #np.ma.zeros(data.shape)
+    output = [] 
     for i, t in enumerate(times):
 
         tmin = t - window
         tmax = t + window
         arr = np.ma.masked_where((times < tmin) + (times > tmax), data)
 
-        #print [i,t],[tmin,tmax],[t,data[i]], arr.mean(), 'mask:',arr.mask.sum()
         output.append(arr.mean())
 
     return np.array(output)
@@ -787,7 +747,6 @@ def multitimeseries(
     for i, jobID in enumerate(sorted(timesD.keys())):
         times = timesD[jobID]
         arr = arrD[jobID]
-        #print 'multitimeseries: ', len(times), len(arr)
         try:
             print("multitimeseries:", jobID, dataname, min(times), max(times))
         except:
@@ -995,8 +954,6 @@ def multitimeseries(
                         lw=0.25)
 
         if lineStyle.lower() in ['dataonly']:
-            #print jobID, times,arr
-            #print len(times), len(arr)
             pyplot.plot(
                 times,
                 arr,
@@ -1016,19 +973,6 @@ def multitimeseries(
         pyplot.ylabel(units)
         pyplot.xlim(xlims)
 
-        #if len(timesD.keys()) < 10:
-        #	try:
-        #		legend = pyplot.legend(loc='best',  numpoints = 1, ncol=len(timesD.keys())/2, prop={'size':12})
-        #		legend.draw_frame(False)
-        #		legend.get_frame().set_alpha(0.)
-        #	except:pass
-        #else:
-        #	ncol = int(len(timesD.keys())/5.) +1
-        #      	leg2 = pyplot.legend(ncol=ncol,
-        #		loc='upper center', bbox_to_anchor=(0.5, -0.1),)
-        #      	leg2.draw_frame(False)
-        #      	leg2.get_frame().set_alpha(0.)
-
         #####
         # Add legend:
         legendSize = len(list(timesD.keys()))
@@ -1036,9 +980,6 @@ def multitimeseries(
         box = ax.get_position()
         ax.set_position(
             [box.x0, box.y0, box.width * (1. - 0.1 * ncols), box.height])
-
-        #for jobID in sorted(timesD.keys()):
-        #        pyplot.plot([], [], c=colours[jobID],ls='-',lw=thicknesses[jobID],label=jobID)
 
         legd = ax.legend(loc='center left',
                          ncol=ncols,
@@ -1069,9 +1010,9 @@ def regrid(data, lat, lon):
     newLon, newLat = np.meshgrid(nX, nY)
 
     crojp1 = cartopy.crs.PlateCarree(central_longitude=0.0,
-                                     )  #central_latitude=300.0)
+                                     ) 
     crojp2 = cartopy.crs.PlateCarree(central_longitude=0.0,
-                                     )  #central_latitude=300.0)
+                                     )  
 
     a = cartopy.img_transform.regrid(data,
                                      source_x_coords=oldLon,
@@ -1080,7 +1021,6 @@ def regrid(data, lat, lon):
                                      target_proj=crojp2,
                                      target_x_points=newLon,
                                      target_y_points=newLat)
-    # print 'newregid shape:',a.shape
     return crojp2, a, newLon, newLat
 
 
@@ -1180,7 +1120,7 @@ def mapPlotSingle(
     cbarlabel='',
     doLog=False,
     dpi=100,
-):  #**kwargs):
+):
 
     fig = pyplot.figure()
     fig.set_size_inches(10, 6)
@@ -1363,7 +1303,6 @@ def hovmoellerAxis(fig,
                               vmax=vmax,
                               cmap=cmap)
     pyplot.title(title)
-    #ax.set_yscale("log", nonposy='clip')
     ax.set_yscale('symlog')
 
 
@@ -1378,7 +1317,6 @@ def zaxisfromCC(arr):
     zarr = list((arr[1:] + arr[:-1]) / 2.)
     zarr.insert(0, 0.)
     zarr.append(arr[-1])
-    #print arr,zarr
     return -1. * np.abs(np.array(zarr))
 
 
@@ -1394,7 +1332,6 @@ def taxisfromCC(arr):
     zarr = list((arr[1:] + arr[:-1]) / 2.)
     zarr.insert(0, arr[0] - diff)
     zarr.append(arr[-1] + diff)
-    #print arr,zarr
     return np.array(zarr)
 
 
@@ -1429,7 +1366,7 @@ def hovmoellerPlot(modeldata,
     times = taxisfromCC(np.array(times_cc))
     yaxis = zaxisfromCC(yaxis_cc)
     print("hovmoellerPlot model:", title, md.shape, md.mean(), times.shape,
-          yaxis.shape)  #, times, yaxis
+          yaxis.shape) 
     if len(md.shape) == 1 or 1 in md.shape:
         print("Not enough model data dimensions:", md.shape)
         return
@@ -1443,10 +1380,9 @@ def hovmoellerPlot(modeldata,
     for l in sorted(dataZcoords.keys()):
         if l not in list(dataslice.keys()): continue
         dyaxis_cc.append(dataZcoords[l])
-        #print 'hovmoellerPlot:\tpreparing data for hov:',l,dataZcoords[l], dataslice[l]
         dd.append(dataslice[l])
     if len(dd):
-        dd = np.ma.array(dd)  #.squeeze()
+        dd = np.ma.array(dd)
         print("hovmoellerPlot data: (pre-mask)", title, '\t', dd.shape,
               dd.min(), dd.mean(), dd.max())
         dd = np.ma.masked_where(np.ma.masked_invalid(dd).mask + dd.mask, dd)
@@ -1539,7 +1475,6 @@ def hovmoellerPlot(modeldata,
             abs(md.min()),
         ])
         ax2min = -ax2max
-        #cmapax2 = pyplot.cm.bwr
         cmapax2 = pyplot.cm.get_cmap('bwr', bins)
 
         title = 'Model - Data: ' + title
@@ -1561,7 +1496,6 @@ def hovmoellerPlot(modeldata,
 
     #####
     # Data  subplot
-
     ax1 = pyplot.subplot(gs[0])
     if len(dd.squeeze().compressed()) != 0:
         try:
@@ -1586,7 +1520,6 @@ def hovmoellerPlot(modeldata,
                            cmap=cmapax1)
 
         if diff:
-            #c1 = fig.colorbar(ax1,pad=0.05,shrink=0.75)
             pyplot.colorbar(pad=0.25, shrink=1.)
 
     pyplot.ylim([zmi, zma])
@@ -1647,13 +1580,10 @@ def profilePlot(
         except:
             md.append(np.array([modeldata[l][t] for t in times_cc]))
 
-    md = np.ma.array(md)  #
+    md = np.ma.array(md)  
     md = md.squeeze()
     md = np.ma.masked_where(np.ma.masked_invalid(md).mask + md.mask, md)
     yaxis_cc = np.abs(np.array(yaxis_cc)) * -1.
-    #times = taxisfromCC(np.array(times_cc))
-    #yaxis = zaxisfromCC(yaxis_cc)
-    #print "profilePlot model:", title, md.shape,md.mean(),times.shape,yaxis.shape #, times, yaxis
     if len(md.shape) == 1 or 1 in md.shape:
         print("Not enough model data dimensions:", md.shape)
         return
@@ -1661,17 +1591,15 @@ def profilePlot(
     #####
     # creating data data dictionairies
     dd = []
-    #dxaxis= []
     dyaxis_cc = []
 
     for l in sorted(dataZcoords.keys()):
         if l not in list(dataslice.keys()): continue
         dyaxis_cc.append(dataZcoords[l])
-        #print 'preparing data for hov:',l,dataZcoords[l], dataslice[l]
         dd.append(dataslice[l])
 
     if len(dd):
-        dd = np.ma.array(dd)  #.squeeze()
+        dd = np.ma.array(dd)
         print("profilePlot data: (pre-mask)", title, '\t', dd.shape, dd.min(),
               dd.mean(), dd.max())
         dd = np.ma.masked_where(np.ma.masked_invalid(dd).mask + dd.mask, dd)
@@ -1763,14 +1691,12 @@ def profilePlot(
             yaxis_cc,
             c=color,
             lw=lw,
-        )  #label=label)
+        ) 
 
     pyplot.xlabel(xaxislabel)
     pyplot.ylabel('Depth')
     pyplot.title(title)
     print('x', rbmi, '->', rbma, 'z:', zmi, '->', zma)
-
-    #ax1.set_yscale('log')	# Doesn't like negative values
 
     #####
     ticks = []
@@ -1796,7 +1722,7 @@ def profilePlot(
             dyaxis_cc,
             'k',
             lw=2,
-        )  #label='Data')
+        )
 
     #####
     # Add legend:
@@ -1823,11 +1749,6 @@ def profilePlot(
     legd.draw_frame(False)
     legd.get_frame().set_alpha(0.)
 
-    #legend = pyplot.legend(loc='best',  numpoints = 1, ncol=2, prop={'size':10})
-    #legend.draw_frame(False)
-    #legend.get_frame().set_alpha(0.)
-
-    #pyplot.tight_layout()
     print("profilePlot.py: \tSaving:", filename)
     pyplot.savefig(filename, dpi=dpi)
     pyplot.close()

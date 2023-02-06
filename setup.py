@@ -31,6 +31,7 @@ REQUIREMENTS = {
         'numpy',
         'pip!=21.3',
         'pyyaml',
+        'scikit-learn',
         'scipy',
     ],
     # Test dependencies
@@ -198,7 +199,6 @@ setup(
             'analysis_level3_sameYear = bgcval2.analysis_level3_sameYear:main',
             'analysis_p2p = bgcval2.analysis_p2p:run',
             'analysis_timeseries = bgcval2.analysis_timeseries:main',
-            'bgcval = bgcval2.bgcval:run',
             'download_from_mass = bgcval2.download_from_mass:main',   
             'bgcval2_make_report = bgcval2.bgcval2_make_report:main',
         ],

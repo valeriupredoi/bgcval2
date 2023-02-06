@@ -27,9 +27,9 @@
 
 """
 
-from .. import UKESMpython as ukp
-from . import makeTargets
-
+from bgcval2 import UKESMpython as ukp
+from bgcval2.p2p.makeTargets import makeTargets
+from itertools import product
 
 def summaryTargets(shelvesAV, imageFold, year):
     """	Produces some straightforward summary metrics, using a list of shelves.
@@ -47,18 +47,18 @@ def summaryTargets(shelvesAV, imageFold, year):
         'NorthernSubpolarPacific',
         'SouthernOcean',
         'Remainder',
+        'AMM',
     ]
+    if isinstance(year, int):
+        year = str(year)
+    if isinstance(year, str):
+        year = [year, ]
 
-    for r in BGCVALregions:
+    for r, year in product(BGCVALregions, year):
+        year = str(year)
         shelves = ukp.reducesShelves(shelvesAV,
-                                     models=[
-                                         'NEMO',
-                                         'MEDUSA',
-                                     ],
-                                     sliceslist=[
-                                         r,
-                                     ])
-
+                                     sliceslist=[r, ],)
+        if not shelves:continue
         filename = imageFold + 'Summary_' + year + '_' + r + '.png'
         print("Summary Target", shelves, '\nfilename:', filename)
         makeTargets(
