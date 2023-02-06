@@ -107,6 +107,13 @@ git checkout devel_branch
 git pull origin devel_branch
 ```
 
+If you want to create your own branch, first make sure you are happy with your current code. A good tip is to start from the main branch
+\```
+git checkout origin/main
+git branch new_branch_name
+git checkout new_branch_name
+\```
+
 ### Updating an existing environment
 
 Should you wish to update your `bgcval2` environment (e.g. when dependencies have changed), we recommend
