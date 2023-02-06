@@ -448,7 +448,7 @@ model_convert:
     function: custom_function
     path: path/to/custom/function.py
     kwarg_1: 5.
-    kawrg_2: yellow
+    kwarg_2: yellow
 ```
 
 For instance, this example applies the function `custom_function` which is in the
