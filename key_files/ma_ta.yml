@@ -1,5 +1,5 @@
 ---
-name            : MA_DIC
+name            : MA_TA 
 units           : umol/kg   
 dimensions      : 1
 model           : NEMO025-ERSEM
