@@ -149,7 +149,7 @@ def loadAtlanticMask(altmaskfile, maskname='tmaskatl', grid = 'eORCA1'):
     if grid == 'eORCA1':
         latslice26Nnm = eORCA1_latslice26Nnm
     else:
-        assert 0
+        raise ValueError("Grid not recognised in this calculation: %s", grid)
     nc = dataset(altmaskfile, 'r')        
     alttmask_AMOC26N = nc.variables[maskname][latslice26Nnm, :]
     nc.close()
