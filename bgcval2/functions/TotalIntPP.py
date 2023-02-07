@@ -86,6 +86,5 @@ def MA_TotalIntPP(nc, keys, **kwargs):
     arr = thick * nc.variables[keys[0]][:]*factor
     arr = arr.sum(axis=1)
     arr = arr * area[None, ...]
-    #print('MA_TotalIntPP', keys[0], arr.sum())
     return arr.sum()
 
