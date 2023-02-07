@@ -149,7 +149,7 @@ def loadAtlanticMask(altmaskfile, maskname='tmaskatl', grid = 'eORCA1'):
     if grid == 'eORCA1':
         latslice26Nnm = eORCA1_latslice26Nnm
     else:
-        assert 0
+        raise ValueError("Grid not recognised in this calculation: %s", grid)
     nc = dataset(altmaskfile, 'r')        
     alttmask_AMOC26N = nc.variables[maskname][latslice26Nnm, :]
     nc.close()
@@ -337,7 +337,5 @@ def AEU(nc, keys, **kwargs):
 
     flux = uo * cross_section
     flux = flux.sum() / 1.E06
-    #print('AEU', flux)
-    #assert 0
     return flux
 

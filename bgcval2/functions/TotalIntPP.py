@@ -80,12 +80,11 @@ def MA_TotalIntPP(nc, keys, **kwargs):
     if not loadedArea:
         model_area = loadDataMask(areafile)
     # mg C/m^3/d (supposedly - but possibly /m2 ?)
-    factor = 365.25       / 1000.   /     1E15
+    factor = 365.25 / 1000. / 1E15
     area = nc.variables['area_grid_T'][:]
     thick = nc.variables['e3w'][:]
     arr = thick * nc.variables[keys[0]][:]*factor
     arr = arr.sum(axis=1)
     arr = arr * area[None, ...]
-    #print('MA_TotalIntPP', keys[0], arr.sum())
     return arr.sum()
 
