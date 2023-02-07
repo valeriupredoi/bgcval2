@@ -22,6 +22,7 @@ keys:
   MA_TotalIntGPP: True
   MA_TotalIntNPP: True
   MA_Nitrate: True
+  MA_Ammonium: True
   MA_Phosphate: True
   MA_Iron: True
   MA_Silicate: True
