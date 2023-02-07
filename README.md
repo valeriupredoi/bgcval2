@@ -78,6 +78,31 @@ This script performs an analysis of two small physics-only UKESM development job
 using the debug suite.
 
 
+Keeping the code up to date
+---------------------------
+
+To keep the code up to date with the main branch, fetch the changes from github:
+```
+git fetch
+```
+
+You can merge the main branch into your local code:
+```
+git merge origin/main
+```
+
+If the `environment.yml` file has changed in the merge, you can update your conda environment with:
+```
+mamba env update -n bgcval2 -f environment.yml
+pip install -e .[develop]
+```
+
+or delete your old environment and follow the instructions above to create a new one:
+```
+conda env remove -n ENV_NAME
+```
+
+
 ### Available executables
 
 Executable name | What it does | Command

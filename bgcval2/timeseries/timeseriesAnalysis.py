@@ -118,9 +118,6 @@ class timeseriesAnalysis:
 
         #####
         # Load Model File
-        self.loadModelWeightsDict()
-        if 'wcvweighted' in self.metrics: 
-            self.loadModelwcvDict()
         self.loadModel()
 
         #####
@@ -234,6 +231,11 @@ class timeseriesAnalysis:
                     "timeseriesAnalysis:\tloadModel.\tno New Files requested. Loaded: ",
                     len(list(modeldataD.keys())), 'Model data')
             return
+
+        self.loadModelWeightsDict()
+        if 'wcvweighted' in self.metrics:
+            self.loadModelwcvDict()
+
 
         percentiles = {}
         for m in self.metrics:
@@ -431,11 +433,12 @@ class timeseriesAnalysis:
 
     def loadModelWeightsDict(self, ):
         """
-  	Adding Area dictionany for Model.
-  	"""
+        Adding Area dictionany for Model.
+        """
         if not os.path.exists(self.gridFile):
             raise FileNotFoundError(
                 errno.ENOENT, os.strerror(errno.ENOENT), self.gridFile)
+        print('loadModelWeightsDict loading grid file:', self.gridFile)
         nc = dataset(self.gridFile, 'r')
         tmask = nc.variables['tmask'][:]
         try:

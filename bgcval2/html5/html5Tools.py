@@ -120,9 +120,10 @@ def fnToTitle(fn, jobID='u-a'):
         '',
         '10-90pc',
         '5-95pc',
+        'MA',
     ]
 
-    title = ''
+    title = [] 
     for i, t in enumerate(titlelist):
         # remove redundent versus field
         if t.find('vs') > -1: continue
@@ -132,8 +133,8 @@ def fnToTitle(fn, jobID='u-a'):
 
         ln = getLongName(t)
         if ln in IgnoreList: continue
-        title += ln + ', '
-    return title[:-2]
+        title.append(ln)
+    return ' '.join(title)
 
 
 def addImagesText(imagePath, title=''):

@@ -1,0 +1,14 @@
+---
+name            : MA_NPP
+units           : ""
+dimensions      : 1
+model           : NEMO025-ERSEM
+modelgrid       : eORCA025
+modelFiles      : $BASEDIR_MODEL/$JOBID/SENEMO_S1_1m_*diag_T*.nc
+gridFile        : /data/proteus2/scratch/ledm/MissionAtlantic/SENEMO/eORCA025_mesh_mask_mes_v2.nc
+model_vars      : Ptot_NPP_result
+model_convert   : NoChange
+layers          : Surface #50m 100m
+regions         : Global NorthAtlanticOcean SouthAtlanticOcean EquatorialAtlanticOcean
+metrics         : mean #, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max
+
