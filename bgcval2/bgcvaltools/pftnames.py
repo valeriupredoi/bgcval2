@@ -319,6 +319,7 @@ def makeLongNameDict():
     lnd['MA_Iron'] = 'Iron'
     lnd['MA_Silicate'] = 'Silicate'
     lnd['MA_TotalChlorophyll'] = 'Total Chlorophyll'
+    lnd['MA_P1c'] = 'Diatom Carbon Biomass'
     lnd['MA_TotalPhytoC'] = 'Total Phytoplankton Carbon'
     lnd['MA_TotalZooC'] = 'Total Zooplankton Carbon'
     lnd['TotalChlorophyll'] = lnd['MA_TotalChlorophyll']
