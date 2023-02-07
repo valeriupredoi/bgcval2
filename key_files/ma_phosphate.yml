@@ -12,7 +12,7 @@ dataFile        : $BASEDIR_OBS/WOA/annual/woa13_all_p00_01.nc
 data_vars       : p_an
 data_convert    : NoChange
 data_source     : WOA13
-layers          : Surface #50m 100m
+layers          : Surface 500m
 regions         : Global NorthAtlanticOcean SouthAtlanticOcean EquatorialAtlanticOcean
 metrics         : mean #, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max
 

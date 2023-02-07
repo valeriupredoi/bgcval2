@@ -314,10 +314,12 @@ def makeLongNameDict():
     lnd['MA_MLD'] = 'Mixed Layer Depth'
     lnd['MA_MLD_Sigma'] = 'Mixed Layer Depth (Sigma)'
     lnd['MA_Nitrate'] = 'Nitrate'
+    lnd['MA_Ammonium'] = 'Ammonium'
     lnd['MA_Phosphate'] = 'Phosphate'
     lnd['MA_Iron'] = 'Iron'
     lnd['MA_Silicate'] = 'Silicate'
     lnd['MA_TotalChlorophyll'] = 'Total Chlorophyll'
+    lnd['MA_P1c'] = 'Diatom Carbon Biomass'
     lnd['MA_TotalPhytoC'] = 'Total Phytoplankton Carbon'
     lnd['MA_TotalZooC'] = 'Total Zooplankton Carbon'
     lnd['TotalChlorophyll'] = lnd['MA_TotalChlorophyll']
@@ -330,6 +332,7 @@ def makeLongNameDict():
     lnd['TotalIntNPP'] = lnd['MA_TotalIntNPP']
     lnd['TotalIntGPP'] = lnd['MA_TotalIntGPP']
     lnd['MA_pH'] = 'pH'
+    lnd['MA_TA'] = 'Total Alkalinity'
     lnd['MA_O2'] = 'Oxygen'
     lnd['MA_Oxygen'] = 'Oxygen'
     lnd['MA_DIC'] = 'Dissolved Inorganic Carbon'

@@ -16,13 +16,12 @@ auto_download: False
 
 # Job ID's suites as named by Rose/Cylc
 jobs:
-     test16:
-        description: 'NEMO-ERSEM eORCA025'
-        colour: purple
+     test17: 
+        description: 'NEMO-ERSEM eORCA025 - revised rivers  '
+        colour: green  
         thickness: 1.5
         linestyle: '-'
         shifttime: 0.
         suite: missionatlantic
-
 
 
