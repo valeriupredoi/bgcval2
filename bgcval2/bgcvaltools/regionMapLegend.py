@@ -34,7 +34,7 @@
 # from ..Paths.paths import orcaGridfn, WOAFolder_annual
 from netCDF4 import Dataset
 import numpy as np
-from .. import UKESMpython as ukp
+from bgcval2.bgcvaltools import UKESMpython as ukp
 from matplotlib import pyplot
 import cartopy.crs as ccrs
 from cartopy import img_transform, feature as cfeature

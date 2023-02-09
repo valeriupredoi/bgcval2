@@ -33,7 +33,7 @@ from glob import glob
 from os.path import basename, exists
 from sys import argv
 import numpy as np
-from .. import UKESMpython as ukp
+from bgcval2.bgcvaltools import UKESMpython as ukp
 from netCDF4 import Dataset
 from ..netcdf_manipulation.changeNC import changeNC, AutoVivification
 from ..netcdf_manipulation.mergeNC import mergeNC
