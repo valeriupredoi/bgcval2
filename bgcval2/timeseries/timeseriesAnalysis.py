@@ -38,7 +38,7 @@ import errno
 
 
 #Specific local code:
-from bgcval2 import UKESMpython as ukp
+from bgcval2.bgcvaltools import UKESMpython as ukp
 from bgcval2.bgcvaltools.pftnames import getLongName
 from bgcval2.bgcvaltools.dataset import dataset
 from bgcval2.timeseries import timeseriesTools as tst

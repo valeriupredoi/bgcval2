@@ -52,7 +52,7 @@ import pathlib
 
 #####
 # Load specific local code:
-from bgcval2 import UKESMpython as ukp
+from bgcval2.bgcvaltools import UKESMpython as ukp
 from bgcval2.timeseries import timeseriesAnalysis
 from bgcval2.timeseries import profileAnalysis
 from bgcval2.timeseries import timeseriesTools as tst

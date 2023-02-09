@@ -1,4 +1,4 @@
-python UKESMpython.py
+python bgcvaltools/UKESMpython.py
 python analysis_level3_amoc.py
 python analysis_level3_dms.py
 python analysis_level3_omz.py

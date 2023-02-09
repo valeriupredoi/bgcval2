@@ -29,7 +29,7 @@
 """
 
 from calendar import month_name
-from ..UKESMpython import AutoVivification, AutoVivToYaml, folder, YamlToDict
+from .UKESMpython import AutoVivification, AutoVivToYaml, folder, YamlToDict
 #from itertools import product
 from os.path import exists
 import numpy as np

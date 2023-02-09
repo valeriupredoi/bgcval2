@@ -28,7 +28,7 @@ import os
 from datetime import datetime, timedelta
 
 #Specific local code:
-from bgcval2 import UKESMpython as ukp
+from bgcval2.bgcvaltools import UKESMpython as ukp
 from bgcval2.netcdf_manipulation import convertToOneDNC
 from bgcval2.bgcvaltools.dataset import dataset
 from bgcval2.bgcvaltools.makeMask import makeMask

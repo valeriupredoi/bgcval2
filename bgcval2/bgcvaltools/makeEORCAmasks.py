@@ -31,7 +31,7 @@
 """
 
 from netCDF4 import Dataset
-from .. import UKESMpython as ukp
+from . import UKESMpython as ukp
 import numpy as np
 from ..netcdf_manipulation.changeNC import changeNC, AutoVivification
 from .. import Paths

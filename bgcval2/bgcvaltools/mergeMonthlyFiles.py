@@ -31,7 +31,7 @@
 import os
 from re import findall
 
-from .. import UKESMpython as ukp
+from bgcval2.bgcvaltools import UKESMpython as ukp
 from ..netcdf_manipulation.mergeNC import mergeNC
 
 

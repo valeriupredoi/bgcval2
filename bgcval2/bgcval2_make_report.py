@@ -40,7 +40,7 @@ import yaml
 
 #####
 # Load specific local code:
-from bgcval2.UKESMpython import folder, shouldIMakeFile, round_sig
+from bgcval2.bgcvaltools.UKESMpython import folder, shouldIMakeFile, round_sig
 from bgcval2.html5 import html5Tools, htmltables
 from bgcval2.bgcvaltools.pftnames import getLongName
 from bgcval2.timeseries.analysis_level0 import analysis_level0, analysis_level0_insitu

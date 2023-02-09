@@ -40,7 +40,7 @@ from scipy import interpolate
 from collections import defaultdict
 from bgcval2.timeseries import timeseriesTools as tst
 from bgcval2.bgcvaltools.viridis import viridis, discrete_viridis
-from bgcval2 import UKESMpython as ukp
+from bgcval2.bgcvaltools import UKESMpython as ukp
 from bgcval2.bgcvaltools.pftnames import getLongName
 
 try:

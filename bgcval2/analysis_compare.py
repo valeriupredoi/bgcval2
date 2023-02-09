@@ -57,7 +57,7 @@ import itertools
 
 #####
 # Load specific local code:
-from . import UKESMpython as ukp
+from .bgcvaltools import UKESMpython as ukp
 from .timeseries import timeseriesAnalysis
 from .timeseries import profileAnalysis
 from .timeseries import timeseriesPlots as tsp

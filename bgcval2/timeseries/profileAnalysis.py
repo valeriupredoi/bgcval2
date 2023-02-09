@@ -35,7 +35,7 @@ import os
 import shutil
 
 #Specific local code:
-from .. import UKESMpython as ukp
+from bgcval2.bgcvaltools import UKESMpython as ukp
 from . import timeseriesTools as tst
 from . import timeseriesPlots as tsp
 from ..bgcvaltools.makeEORCAmasks import makeMaskNC

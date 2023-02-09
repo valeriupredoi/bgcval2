@@ -33,7 +33,7 @@ from shelve import open as shOpen
 import os
 from bgcval2.Paths.paths import paths
 from netCDF4 import Dataset
-import bgcval2.UKESMpython as ukp
+import bgcval2.bgcvaltools.UKESMpython as ukp
 
 
 def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
