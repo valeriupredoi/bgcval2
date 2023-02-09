@@ -29,7 +29,7 @@
 import os
 import numpy as np
 from bgcval2.bgcvaltools.dataset import dataset
-from bgcval2.UKESMpython import maenumerate
+from bgcval2.bgcvaltools.UKESMpython import maenumerate
 from bgcval2.functions.get_kwarg_file import get_kwarg_file
 
 # coordinates of Drake Passage in eORCA1
