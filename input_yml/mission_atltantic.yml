@@ -19,9 +19,17 @@ jobs:
      test17: 
         description: 'NEMO-ERSEM eORCA025 - revised rivers  '
         colour: green  
-        thickness: 1.5
+        thickness: 1.8
         linestyle: '-'
         shifttime: 0.
         suite: missionatlantic
+     test17a:
+        description: 'NEMO-ERSEM eORCA025 - with iron deposition x0.1'
+        colour: red  
+        thickness: 1.7
+        linestyle: '-'
+        shifttime: 0.
+        suite: missionatlantic
+
 
 

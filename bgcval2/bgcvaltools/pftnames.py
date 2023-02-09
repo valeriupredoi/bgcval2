@@ -337,7 +337,6 @@ def makeLongNameDict():
     lnd['MA_Oxygen'] = 'Oxygen'
     lnd['MA_DIC'] = 'Dissolved Inorganic Carbon'
     lnd['MA_AEU'] = 'Atlantic Equatorial Undercurrent'
-    
     lnd['MA_SouthernTotalIceExtent'] = 'Southern Total Ice Extent'
     lnd['MA_NorthernTotalIceExtent'] = 'Northern Total Ice Extent'
     lnd['MA_TotalIceExtent'] = 'Total Ice Extent'
@@ -487,6 +486,7 @@ def makeLongNameDict():
     lnd['NorthPacificOcean'] = "North Pacific Ocean"
     lnd['SouthPacificOcean'] = "South Pacific Ocean"
     lnd['EquatorialAtlanticOcean'] = "Equatorial Atlantic Ocean"
+    lnd['ITCZ'] = '#Inter‐Tropical Convergence Zone'
     lnd['EquatorialPacificOcean'] = "Equatorial Pacific Ocean"
     lnd['IndianOcean'] = "Indian Ocean"
     lnd['NorthHemisphere'] = "North Hemisphere"

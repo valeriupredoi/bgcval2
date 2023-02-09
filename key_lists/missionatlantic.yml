@@ -19,6 +19,7 @@ keys:
   MA_TotalIceExtent: True
 
   # BGC
+  MA_Totalairseafluxco2: True
   MA_TotalIntGPP: True
   MA_TotalIntNPP: True
   MA_Nitrate: True

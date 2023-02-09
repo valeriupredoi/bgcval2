@@ -1,13 +1,12 @@
 ---
 name            : TotalIntGPP
-units           : Gt/yr
+units           : Pg/yr
 dimensions      : 1
 modelFiles      : $BASEDIR_MODEL/$JOBID/SENEMO_S1_1m_*diag_T*.nc
 model_vars      : Ptot_NPP_result
 model_convert   : 
     path: bgcval2/functions/TotalIntPP.py
-    function: MA_TotalIntPP
-    areafile: $PATHS_GRIDFILE
+    function: calc_ma_total_airseafluxco2
 layers          : layerless
 regions         : regionless
 

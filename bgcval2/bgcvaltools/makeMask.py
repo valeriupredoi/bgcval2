@@ -226,6 +226,10 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
         return np.ma.masked_outside(ukp.makeLonSafeArr(xx), -65.,
                                     20.).mask + np.ma.masked_outside(
                                         xy, -15., 15.).mask
+    if newSlice == 'ITCZ': #Inter‐Tropical Convergence Zone (johns 2020 Sargassum) in the region 0-15N, 15-55W
+        return np.ma.masked_outside(ukp.makeLonSafeArr(xx), -55.,
+                                    15.).mask + np.ma.masked_outside(
+                                        xy, 0., 15.).mask
 
     if newSlice == 'ArcticOcean':
         mx = np.ma.masked_where(xy < 60., nmask).mask
