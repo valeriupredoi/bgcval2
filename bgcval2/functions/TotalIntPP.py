@@ -30,7 +30,7 @@
 import numpy as np
 from bgcval2.bgcvaltools.dataset import dataset
 from bgcval2.functions.get_kwarg_file import get_kwarg_file
-
+from bgcval2.functions.standard_functions import find_best_var
 
 global loadedArea
 global model_area
@@ -76,13 +76,20 @@ def MA_TotalIntPP(nc, keys, **kwargs):
     """
     This function calculated the total primary production for the ERSEM  model.
     """
-    areafile = get_kwarg_file(kwargs, 'areafile')
-    if not loadedArea:
-        model_area = loadDataMask(areafile)
+    #areafile = get_kwarg_file(kwargs, 'areafile')
+    #if not loadedArea:
+    #    model_area = loadDataMask(areafile)
     # mg C/m^3/d (supposedly - but possibly /m2 ?)
     factor = 365.25 / 1000. / 1E15
-    area = nc.variables['area_grid_T'][:]
-    thick = nc.variables['e3w'][:]
+    area_key = find_best_var(nc, ['area', 'area_grid_T'])
+    area = nc.variables[area_key][:]
+    
+    thkfn = nc.filename.replace('diag_T', 'grid_T').replace('ptrc_T', 'grid_T')
+    print('MA_TotalIntPP: opening:', thkfn)
+    thknc = dataset(thkfn, 'r')
+    thick = thknc.variables['thkcello'][:]
+    thknc.close()
+    
     arr = thick * nc.variables[keys[0]][:]*factor
     arr = arr.sum(axis=1)
     arr = arr * area[None, ...]
