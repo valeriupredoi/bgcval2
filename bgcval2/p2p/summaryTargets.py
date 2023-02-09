@@ -27,7 +27,7 @@
 
 """
 
-from bgcval2 import UKESMpython as ukp
+from bgcval2.bgcvaltools import UKESMpython as ukp
 from bgcval2.p2p.makeTargets import makeTargets
 from itertools import product
 

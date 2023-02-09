@@ -42,7 +42,7 @@ import nctoolkit
 
 ######
 # local imports
-import bgcval2.UKESMpython as ukp
+import bgcval2.bgcvaltools.UKESMpython as ukp
 from bgcval2.bgcvaltools.pftnames import CMIP5models
 #####
 # These are availalble in the module:

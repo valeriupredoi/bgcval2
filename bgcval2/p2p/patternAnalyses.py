@@ -29,7 +29,7 @@
 """
 
 from . import makePatternStatsPlots, makeTargets
-from ..UKESMpython import folder, reducesShelves, listShelvesContents
+from bgcval2.bgcvaltools.UKESMpython import folder, reducesShelves, listShelvesContents
 from ..bgcvaltools.pftnames import months, Ocean_names, SouthHemispheresMonths, NorthHemispheresMonths
 from .slicesDict import populateSlicesList, slicesDict
 

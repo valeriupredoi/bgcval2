@@ -33,7 +33,7 @@ from calendar import month_name
 from itertools import product
 
 #Specific local code:
-from bgcval2 import UKESMpython as ukp
+from bgcval2.bgcvaltools import UKESMpython as ukp
 from bgcval2.p2p.matchDataAndModel import matchDataAndModel
 from bgcval2.p2p.makeTargets import makeTargets
 from bgcval2.p2p.makePatternStatsPlots import makePatternStatsPlots

@@ -42,7 +42,7 @@ from sys import argv
 from shelve import open as shOpen
 from calendar import month_name
 
-from bgcval2 import UKESMpython as ukp
+from bgcval2.bgcvaltools import UKESMpython as ukp
 from bgcval2.bgcvaltools.pftnames import AutoVivification, getLongName
 from bgcval2.bgcvaltools.StatsDiagram import TaylorDiagram, TargetDiagram, TaylorDiagramMulti
 from bgcval2.bgcvaltools.robust import TargetDiagram as robustTargetDiagram  

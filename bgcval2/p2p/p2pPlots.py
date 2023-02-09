@@ -47,7 +47,7 @@ import numpy as np
 from ..bgcvaltools.StatsDiagram import StatsDiagram
 from ..bgcvaltools.robust import StatsDiagram as robustStatsDiagram
 from ..bgcvaltools import unbiasedSymmetricMetrics as usm
-from .. import UKESMpython as ukp
+from bgcval2.bgcvaltools import UKESMpython as ukp
 from ..bgcvaltools.pftnames import getLongName, AutoVivification, fancyUnits, CMIP5models  # getmt
 from ..bgcvaltools.makeMask import makeMask
 from .slicesDict import populateSlicesList, slicesDict
