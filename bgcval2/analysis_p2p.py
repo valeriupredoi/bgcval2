@@ -44,7 +44,7 @@ import sys
 #####
 #Specific local code:
 from bgcval2._runtime_config import get_run_configuration
-from bgcval2 import UKESMpython as ukp
+from bgcval2.bgcvaltools import UKESMpython as ukp
 from bgcval2.p2p.testsuite_p2p import testsuite_p2p
 from bgcval2.p2p.summaryTargets import summaryTargets
 from bgcval2.bgcvaltools.pftnames import months
