@@ -44,7 +44,7 @@ import cartopy.io.shapereader as shapereader
 from cartopy import img_transform, feature as cfeature
 
 #Specific local code:
-from .. import UKESMpython as ukp
+from bgcval2.bgcvaltools import UKESMpython as ukp
 from ..bgcvaltools.pftnames import getLongName
 from ..bgcvaltools.dataset import dataset
 from . import timeseriesTools as tst
