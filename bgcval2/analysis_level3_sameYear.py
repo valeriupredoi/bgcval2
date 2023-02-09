@@ -49,7 +49,7 @@ import re
 
 #####
 # Load specific local code:
-from . import UKESMpython as ukp
+from bgcval2.bgcvaltools import UKESMpython as ukp
 from .timeseries import timeseriesAnalysis
 from .timeseries import profileAnalysis
 from .timeseries import timeseriesPlots as tsp
