@@ -1,7 +1,9 @@
 ---
 # Quick shortlist of keys to help debug analysis code.
 keys:
-    Temperature_debug: True
+    MA_Totalairseafluxco2: True
+
+      #    Temperature_debug: True
 #    TotalIceExtent: True
 #    NorthernTotalIceExtent: True
 #    SouthernTotalIceExtent: True

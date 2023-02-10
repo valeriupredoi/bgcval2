@@ -137,8 +137,8 @@ def _set_local_test_paths(paths_dict):
 
 def _set_pml_paths(paths_dict):
     """Fix paths for running on PML."""
-    # import UKESM module
-    from . import bv2tools as bvt
+    # import bv2tools module
+    from bgcval2.bgcvaltools import bv2tools as bvt
 
     pml_paths = dict(paths_dict)
 
@@ -179,8 +179,8 @@ def _set_pml_paths(paths_dict):
 def _set_monsoon_paths(paths_dict):
     """Fix runtime paths when running on MONSOON."""
 
-    # import UKESM module
-    from . import bv2tools as bvt
+    # import bv2tools module
+    from bgcval2.bgcvaltools import bv2tools as bvt
 
     mons_paths = dict(paths_dict)
 
