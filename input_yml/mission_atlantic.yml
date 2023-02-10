@@ -8,6 +8,9 @@ do_analysis_timeseries: True
 # Download from mass:
 do_mass_download: False
 
+# Strict file check (fails if True and files are missing)
+strictFileCheck: False
+
 # master analysis suite
 master_suites: missionatlantic
 
@@ -37,7 +40,7 @@ jobs:
         linestyle: '-'
         shifttime: 0.
         suite: missionatlantic
-      test17b:
+     test17b:
         description: 'NEMO-ERSEM eORCA025 - with iron deposition x0.59 spinup year 2'
         colour: blue
         thickness: 1.7

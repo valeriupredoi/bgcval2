@@ -1606,6 +1606,7 @@ def timeseries_compare(jobs,
                 gridFile=av[name]['gridFile'],
                 clean=False,
                 noNewFiles=True,
+#                strictFileCheck=strictFileCheck,
             )
             #dataD[(jobID,name )] = tsa.dataD
             modeldataD[(jobID, name)] = tsa.modeldataD
@@ -1812,7 +1813,7 @@ def load_yml_and_run(compare_yml, config_user):
     timeranges = details['timeranges']
     suites = details['suites']
     auto_download = details['auto_download']
-
+    strictFileCheck = details.get('strictFileCheck', True)
     print('---------------------')
     print('timeseries_compare:',  analysis_name)
     print('job ids:', jobs.keys())
@@ -1836,7 +1837,8 @@ def load_yml_and_run(compare_yml, config_user):
             analysis_timeseries(
                 jobID=jobID,
                 suites=suites[jobID],
-                config_user=config_user
+                config_user=config_user,
+                strictFileCheck=strictFileCheck,
             )
 
     # Master suite leys:
