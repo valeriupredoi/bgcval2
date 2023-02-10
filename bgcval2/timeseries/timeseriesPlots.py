@@ -40,7 +40,7 @@ from scipy import interpolate
 from collections import defaultdict
 from bgcval2.timeseries import timeseriesTools as tst
 from bgcval2.bgcvaltools.viridis import viridis, discrete_viridis
-from bgcval2 import UKESMpython as ukp
+from bgcval2.bgcvaltools import bv2tools as bvt
 from bgcval2.bgcvaltools.pftnames import getLongName
 
 try:
@@ -129,7 +129,7 @@ def percentilesPlot(
     if len(dataslice):
         if not len(dataweights): dataweights = np.ma.ones_like(dataslice)
         pcs = [10., 20., 30., 40., 50., 60., 70., 80., 90.]
-        out_pc = ukp.weighted_percentiles(dataslice, pcs, weights=dataweights)
+        out_pc = bvt.weighted_percentiles(dataslice, pcs, weights=dataweights)
         datapcs = {p: o for p, o in zip(pcs, out_pc)}
 
         pc1 = np.array([datapcs[20.] for i in xlims])

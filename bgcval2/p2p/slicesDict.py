@@ -22,7 +22,7 @@
 #
 
 # This is a long list of possible values for new Slice used in bgcvaltools.makeMask.
-# these are all included in the UKESMPython.slicesDict dictonairy. #
+# these are all included in the bv2tools.slicesDict dictonairy. #
 # This list is deprecated now, as it's largely unused.
 #
 import numpy as np

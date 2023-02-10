@@ -46,7 +46,7 @@ from getpass import getuser
 
 #####
 # Load specific local code:
-from . import UKESMpython as ukp
+from bgcval2.bgcvaltools import bv2tools as bvt
 from .timeseries import timeseriesAnalysis
 from .timeseries import profileAnalysis
 from .timeseries import timeseriesPlots as tsp
@@ -68,7 +68,7 @@ dmsCoords = {
     'lat': 'Latitude',
     'lon': 'Longitude',
     'cal': 'standard',
-    'tdict': ukp.tdicts['ZeroToZero']
+    'tdict': bvt.tdicts['ZeroToZero']
 }
 
 
@@ -76,8 +76,8 @@ def analysis_dms(jobID=''):
     annual = True
 
     analysisDict = {}
-    imagedir = ukp.folder(paths.imagedir + '/' + jobID + '/Level3/DMS')
-    shelvedir = ukp.folder(paths.shelvedir + '/' + jobID + '/Level3/DMS')
+    imagedir = bvt.folder(paths.imagedir + '/' + jobID + '/Level3/DMS')
+    shelvedir = bvt.folder(paths.shelvedir + '/' + jobID + '/Level3/DMS')
 
     regionList = [
         'Global',
@@ -115,7 +115,7 @@ def analysis_dms(jobID=''):
         if name == 'DMS_ARAN':
             analysisDict['modelFiles'] = dmsfiles
         else:
-            analysisDict['modelFiles'] = ukp.listFiles(dmsfiles,
+            analysisDict['modelFiles'] = bvt.listFiles(dmsfiles,
                                                        want=100,
                                                        listType='backloaded',
                                                        first=30,
@@ -134,7 +134,7 @@ def analysis_dms(jobID=''):
             'vars': [
                 'DMS_ARAN',
             ],
-            'convert': ukp.mul1000000,
+            'convert': bvt.mul1000000,
             'units': 'umol/m3'
         }
         analysisDict['datadetails'] = {
@@ -142,7 +142,7 @@ def analysis_dms(jobID=''):
             'vars': [
                 'DMS',
             ],
-            'convert': ukp.NoChange,
+            'convert': bvt.NoChange,
             'units': 'umol/m3'
         }
 
@@ -213,7 +213,7 @@ def analysis_dms(jobID=''):
             arrD,  # model time series
             data=-999,  # in situ data distribution
             title=title,
-            filename=ukp.folder(imagedir) + 'DMS_' + region + '_' + ls +
+            filename=bvt.folder(imagedir) + 'DMS_' + region + '_' + ls +
             '.png',
             units='',
             plotStyle='Together',

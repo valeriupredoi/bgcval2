@@ -35,7 +35,7 @@ import os
 import shutil
 
 #Specific local code:
-from .. import UKESMpython as ukp
+from bgcval2.bgcvaltools import bv2tools as bvt
 from . import timeseriesTools as tst
 from . import timeseriesPlots as tsp
 from ..bgcvaltools.makeEORCAmasks import makeMaskNC
@@ -93,15 +93,15 @@ class profileAnalysis:
         self.debug = debug
         self.clean = clean
 
-        self.gridmaskshelve = ukp.folder(self.workingDir) + '_'.join([
+        self.gridmaskshelve = bvt.folder(self.workingDir) + '_'.join([
             self.grid,
         ]) + '_masks.shelve'
-        self.shelvefn = ukp.folder(self.workingDir) + '_'.join([
+        self.shelvefn = bvt.folder(self.workingDir) + '_'.join([
             'profile',
             self.jobID,
             self.dataType,
         ]) + '.shelve'
-        self.shelvefn_insitu = ukp.folder(self.workingDir) + '_'.join([
+        self.shelvefn_insitu = bvt.folder(self.workingDir) + '_'.join([
             'profile',
             self.jobID,
             self.dataType,
@@ -262,12 +262,12 @@ class profileAnalysis:
 
             #DL = tst.DataLoader(fn,nc,self.modelcoords,self.modeldetails, regions = self.regions, layers = self.layers,)
             nc = dataset(fn, 'r')
-            dataAll = ukp.extractData(nc, self.modeldetails).squeeze()
+            dataAll = bvt.extractData(nc, self.modeldetails).squeeze()
 
             for r in self.regions:
                 for m in self.metrics:
                     if m == 'mean':
-                        data = ukp.mameanaxis(np.ma.masked_where(
+                        data = bvt.mameanaxis(np.ma.masked_where(
                             (self.modelMasks[r] != 1) + dataAll.mask, dataAll),
                                               axis=(1, 2))
 
@@ -436,7 +436,7 @@ class profileAnalysis:
         #			dataD[(r,l,'lon')]  = np.ma.masked
 
         AreaNeeded = len(
-            ukp.intersection([
+            bvt.intersection([
                 'mean',
                 'median',
                 'sum',
@@ -509,7 +509,7 @@ class profileAnalysis:
             for key in sorted(dataD.keys()):
 
                 print(key, ':\t', dataD[key])
-                sh = shOpen(ukp.folder('./tmpshelves') + 'tmshelve.shelve')
+                sh = shOpen(bvt.folder('./tmpshelves') + 'tmshelve.shelve')
                 sh['dataD'] = dataD[key]
                 sh.close()
                 print("saved fine:\t./tmpshelves/tmshelve.shelve")
@@ -581,7 +581,7 @@ class profileAnalysis:
         for r in self.regions:
             for l in self.layers:
                 if type(l) in [type(0), type(0.)]: continue
-                mapfilename = ukp.folder(self.imageDir + '/' +
+                mapfilename = bvt.folder(self.imageDir + '/' +
                                          self.dataType) + '_'.join([
                                              'map',
                                              self.jobID,
@@ -778,7 +778,7 @@ class profileAnalysis:
 
                 title = ' '.join(
                     [getLongName(t) for t in [r, m, self.dataType]])
-                profilefn = ukp.folder(self.imageDir + '/' +
+                profilefn = bvt.folder(self.imageDir + '/' +
                                        self.dataType) + '_'.join([
                                            'profile',
                                            self.jobID,
@@ -789,7 +789,7 @@ class profileAnalysis:
                 axislabel = getLongName(
                     self.modeldetails['name']) + ', ' + getLongName(
                         self.modeldetails['units'])
-                if ukp.shouldIMakeFile([self.shelvefn, self.shelvefn_insitu],
+                if bvt.shouldIMakeFile([self.shelvefn, self.shelvefn_insitu],
                                        profilefn,
                                        debug=False):
                     tsp.profilePlot(
@@ -803,7 +803,7 @@ class profileAnalysis:
                     )
 
                 if self.doHov:
-                    hovfilename = ukp.folder(self.imageDir + '/' +
+                    hovfilename = bvt.folder(self.imageDir + '/' +
                                              self.dataType) + '_'.join([
                                                  'profilehov',
                                                  self.jobID,
@@ -811,7 +811,7 @@ class profileAnalysis:
                                                  r,
                                                  m,
                                              ]) + '.png'
-                    if ukp.shouldIMakeFile(
+                    if bvt.shouldIMakeFile(
                         [self.shelvefn, self.shelvefn_insitu],
                             hovfilename,
                             debug=False):
@@ -824,7 +824,7 @@ class profileAnalysis:
                                            zaxislabel=axislabel,
                                            diff=False)
 
-                    hovfilename_diff = ukp.folder(self.imageDir + '/' +
+                    hovfilename_diff = bvt.folder(self.imageDir + '/' +
                                                   self.dataType) + '_'.join([
                                                       'profileDiff',
                                                       self.jobID,
@@ -832,7 +832,7 @@ class profileAnalysis:
                                                       r,
                                                       m,
                                                   ]) + '.png'
-                    if ukp.shouldIMakeFile(
+                    if bvt.shouldIMakeFile(
                         [self.shelvefn, self.shelvefn_insitu],
                             hovfilename_diff,
                             debug=False):

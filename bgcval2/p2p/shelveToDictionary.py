@@ -28,7 +28,7 @@
 
 """
 
-from ..UKESMpython import reducesShelves, listShelvesContents
+from bgcval2.bgcvaltools.bv2tools import reducesShelves, listShelvesContents
 from shelve import open as shOpen
 
 

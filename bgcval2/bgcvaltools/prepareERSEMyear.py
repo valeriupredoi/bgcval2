@@ -32,7 +32,7 @@ from glob import glob
 from os.path import basename, exists
 from sys import argv
 import numpy as np
-from .. import UKESMpython as ukp
+from .. import bv2tools as bvt
 
 from ..netcdf_manipulation.mergeNC import mergeNC
 """	The goal of this code is to have a simple way to make climatology code.
@@ -180,7 +180,7 @@ def run(jobID, key, runType, doAnnual=True):
             if month not in [
                     '1231',
             ]:
-                filesIn = ukp.getFileList([
+                filesIn = bvt.getFileList([
                     foldIn + ykey + month + 'm01' + L + '.nc',
                 ])
             else:
@@ -189,19 +189,19 @@ def run(jobID, key, runType, doAnnual=True):
                 print("trying file0101 instead:", file0101)
                 if exists(file0101):
                     print("Using file0101 instead:", file0101)
-                    filesIn = ukp.getFileList([
+                    filesIn = bvt.getFileList([
                         file0101,
                     ])
                 else:
-                    filesIn = ukp.getFileList([
+                    filesIn = bvt.getFileList([
                         foldIn + ykey + month + 'm01' + L + '.nc',
                     ])
 
             #if jobID=='xhonp' and key in ['HighResp', ]:
-            #   filesIn = ukp.getFileList([foldIn+'189[3]'+month+'m01'+L+'.nc',])
+            #   filesIn = bvt.getFileList([foldIn+'189[3]'+month+'m01'+L+'.nc',])
 
             print("filesIn:", filesIn)
-            fileOut = ukp.folder('/tmp/outNetCDF/tmp-Clims') + basename(
+            fileOut = bvt.folder('/tmp/outNetCDF/tmp-Clims') + basename(
                 filesIn[0])[:-3] + '_' + key + '_' + runType + '.nc'
             print(fileOut)
 
@@ -219,11 +219,11 @@ def run(jobID, key, runType, doAnnual=True):
     #	filenameOut = folder('outNetCDF/Climatologies')+jobID+'_'+key+'_'+runType+'.nc'
     #if key in [ '2006','2001', '1982','1948', '1894', "HighResp",]:
 
-    filenameOut = ukp.folder('/data/euryale7/scratch/ledm/UKESM/ERSEM/' +
+    filenameOut = bvt.folder('/data/euryale7/scratch/ledm/UKESM/ERSEM/' +
                              jobID + '/' +
                              key) + jobID + '_' + key + '_' + runType + '.nc'
 
-    if ukp.shouldIMakeFile(mergedFiles, filenameOut):
+    if bvt.shouldIMakeFile(mergedFiles, filenameOut):
         m = mergeNC(mergedFiles,
                     filenameOut,
                     keys,
@@ -232,10 +232,10 @@ def run(jobID, key, runType, doAnnual=True):
                     calendar=cal)
 
     if doAnnual:
-        filenameOut = ukp.folder(
+        filenameOut = bvt.folder(
             '/data/euryale7/scratch/ledm/UKESM/ERSEM/' + jobID + '/' + key +
             '-annual') + jobID + '_' + key + '-annual' + '_' + runType + '.nc'
-        if ukp.shouldIMakeFile(mergedFiles, filenameOut):
+        if bvt.shouldIMakeFile(mergedFiles, filenameOut):
             m = mergeNC(mergedFiles,
                         filenameOut,
                         keys,

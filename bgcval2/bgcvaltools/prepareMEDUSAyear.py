@@ -33,7 +33,7 @@ from glob import glob
 from os.path import basename, exists
 from sys import argv
 import numpy as np
-from .. import UKESMpython as ukp
+from bgcval2.bgcvaltools import bv2tools as bvt
 from netCDF4 import Dataset
 from ..netcdf_manipulation.changeNC import changeNC, AutoVivification
 from ..netcdf_manipulation.mergeNC import mergeNC
@@ -135,15 +135,15 @@ def setup(jobID, key, runType, foldIn, foldOut):
     filesIn = sorted(glob(fns))
 
     print("filesIn:", fns, filesIn)
-    filenameOut = ukp.folder(foldOut +
+    filenameOut = bvt.folder(foldOut +
                              key) + jobID + '_' + key + '_' + runType + '.nc'
     run(jobID, key, keys, runType, filesIn, foldOut)
 
 
 def run(jobID, key, keys, runType, filesIn, filenameOut):
 
-    #filenameOut 	= ukp.folder(foldOut+key)+jobID+'_'+key+'_'+runType+'.nc'
-    #ukp.folder(foldOut+key+'-annual')+jobID+'_'+key+'-annual'+'_'+runType+'.nc'
+    #filenameOut 	= bvt.folder(foldOut+key)+jobID+'_'+key+'_'+runType+'.nc'
+    #bvt.folder(foldOut+key+'-annual')+jobID+'_'+key+'-annual'+'_'+runType+'.nc'
     filenameAnnual = filenameOut.replace(key, key + '-annual')
 
     if exists(filenameOut) and exists(filenameAnnual):
@@ -152,7 +152,7 @@ def run(jobID, key, keys, runType, filesIn, filenameOut):
 
     for fn in filesIn:
 
-        prunedfn = ukp.folder('/tmp/outNetCDF/tmp-Clims') + basename(
+        prunedfn = bvt.folder('/tmp/outNetCDF/tmp-Clims') + basename(
             fn)[:-3] + '_' + key + '_' + runType + '.nc'
         print(fn, '--->', prunedfn)
 
@@ -184,7 +184,7 @@ def run(jobID, key, keys, runType, filesIn, filenameOut):
             'CHL',
     ]
 
-    if ukp.shouldIMakeFile(mergedFiles, filenameOut):
+    if bvt.shouldIMakeFile(mergedFiles, filenameOut):
         m = mergeNC(mergedFiles,
                     filenameOut,
                     keys,
@@ -192,7 +192,7 @@ def run(jobID, key, keys, runType, filesIn, filenameOut):
                     debug=True,
                     calendar=cal)
 
-    if ukp.shouldIMakeFile(mergedFiles, filenameAnnual):
+    if bvt.shouldIMakeFile(mergedFiles, filenameAnnual):
         m = mergeNC(mergedFiles,
                     filenameAnnual,
                     keys,
@@ -237,7 +237,7 @@ def main():
             for r in runTypes:
                 #foldIn = '/data/euryale7/scratch/ledm/iMarNet/'+j+'/MEANS/'
                 foldIn = '/data/euryale7/scratch/ledm/UKESM/MEDUSA-ORCA025/' + j
-                foldOut = ukp.folder(
+                foldOut = bvt.folder(
                     '/data/euryale7/scratch/ledm/UKESM/MEDUSA/' + j +
                     '_postProc/')
                 run(j, key, r, foldIn, foldOut)
@@ -246,7 +246,7 @@ def main():
     for r in runTypes:
         #foldIn = '/data/euryale7/scratch/ledm/iMarNet/'+jobID+'/MEANS/'
         foldIn = '/data/euryale7/scratch/ledm/UKESM/MEDUSA/' + jobID
-        foldOut = ukp.folder('/data/euryale7/scratch/ledm/UKESM/MEDUSA/' +
+        foldOut = bvt.folder('/data/euryale7/scratch/ledm/UKESM/MEDUSA/' +
                              jobID + '_postProc/')
         setup(jobID, key, r, foldIn, foldOut)
 
