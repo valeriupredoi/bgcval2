@@ -31,7 +31,7 @@
 """
 
 from netCDF4 import Dataset
-from bgcvaltools import bv2tools as bvt
+from bgcval2.bgcvaltools import bv2tools as bvt
 import numpy as np
 from ..netcdf_manipulation.changeNC import changeNC, AutoVivification
 from .. import Paths
