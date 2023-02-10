@@ -952,7 +952,7 @@ class makePlots:
     def getFileName(self, newSlice, xkey, ykey):
         #####
         # This needs some work.
-        file_prefix = self.imageDir  #bvt.folder(['images',self.xtype,'P2P_plots',self.year,self.name+self.region,])
+        file_prefix = self.imageDir
 
         file_suffix = '_' + self.xtype + '_' + self.year + '.png'
 
