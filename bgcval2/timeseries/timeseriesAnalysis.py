@@ -38,7 +38,7 @@ import errno
 
 
 #Specific local code:
-from bgcval2.bgcvaltools import UKESMpython as ukp
+from bgcval2.bgcvaltools import bv2tools as bvt
 from bgcval2.bgcvaltools.pftnames import getLongName
 from bgcval2.bgcvaltools.dataset import dataset
 from bgcval2.timeseries import timeseriesTools as tst
@@ -99,7 +99,7 @@ class timeseriesAnalysis:
         self.clean = clean
         self.noNewFiles = noNewFiles
 
-        # workingdir set else to match       shelvedir = ukp.folder(paths.shelvedir + "/timeseries/" + jobID)
+        # workingdir set else to match       shelvedir = bvt.folder(paths.shelvedir + "/timeseries/" + jobID)
 
         self.shelvefn = self.workingDir + '_'.join([
             self.jobID,
@@ -301,7 +301,7 @@ class timeseriesAnalysis:
                     volumeWeightedLayers = ['All', 'Transect']
 
                     if len(
-                            ukp.intersection([
+                            bvt.intersection([
                                 'mean',
                                 'median',
                                 'sum',
@@ -392,13 +392,13 @@ class timeseriesAnalysis:
                                         layerdata, weights=wcvweights)
 
                     if len(percentiles) == 0: continue
-                    out_pc = ukp.weighted_percentiles(layerdata,
+                    out_pc = bvt.weighted_percentiles(layerdata,
                                                       percentiles,
                                                       weights=weights)
 
                     for pc, dat in zip(percentiles, out_pc):
                         modeldataD[(r, l,
-                                    ukp.mnStr(pc) + 'pc')][meantime] = dat
+                                    bvt.mnStr(pc) + 'pc')][meantime] = dat
                         if pc == 50.:
                             modeldataD[(r, l, 'median')][meantime] = dat
 
@@ -460,7 +460,7 @@ class timeseriesAnalysis:
         grid_coords = {k: self.modelcoords[k] for k in ['lat', 'lon']}
         if grid_coords['lat'] not in nc.variables.keys() or grid_coords['lon'] not in nc.variables.keys():
             # guess new coordinate:
-            grid_coords = ukp.load_coords_from_netcdf(nc.filename)
+            grid_coords = bvt.load_coords_from_netcdf(nc.filename)
          
         lats = nc.variables[grid_coords['lat']][:]
         lons = nc.variables[grid_coords['lon']][:]
@@ -643,7 +643,7 @@ class timeseriesAnalysis:
                 dataD[(r, l, 'lat')] = dl.load[(r, l, 'lat')]
                 dataD[(r, l, 'lon')] = dl.load[(r, l, 'lon')]
                 if len(
-                        ukp.intersection([
+                        bvt.intersection([
                             'mean',
                             'median',
                             'sum',
@@ -724,7 +724,7 @@ class timeseriesAnalysis:
         for r in self.regions:
             for l in self.layers:
                 if type(l) in [type(0), type(0.)]: continue
-                mapfilename = ukp.folder(self.imageDir + '/' +
+                mapfilename = bvt.folder(self.imageDir + '/' +
                                          self.dataType) + '_'.join([
                                              'map',
                                              self.jobID,
@@ -892,7 +892,7 @@ class timeseriesAnalysis:
                     for greyband in [
                             '10-90pc',
                     ]:  #'MinMax',
-                        filename = ukp.folder(self.imageDir + '/' +
+                        filename = bvt.folder(self.imageDir + '/' +
                                               self.dataType) + '_'.join([
                                                   'percentiles', self.jobID,
                                                   self.dataType, r,
@@ -903,7 +903,7 @@ class timeseriesAnalysis:
                                 "timeseriesAnalysis:\t makePlots.\tInvestigating:",
                                 filename)
 
-                        if not ukp.shouldIMakeFile(
+                        if not bvt.shouldIMakeFile(
                             [self.shelvefn, self.shelvefn_insitu],
                                 filename,
                                 debug=False):
@@ -931,7 +931,7 @@ class timeseriesAnalysis:
                             'wcvweighted',
                     ]:
                         continue
-                    filename = ukp.folder(self.imageDir + '/' +
+                    filename = bvt.folder(self.imageDir + '/' +
                                           self.dataType) + '_'.join([
                                               m,
                                               self.jobID,
@@ -944,7 +944,7 @@ class timeseriesAnalysis:
                         print(
                             "timeseriesAnalysis:\t makePlots.\tInvestigating simpletimeseries: ",
                             filename)
-                    if not ukp.shouldIMakeFile(
+                    if not bvt.shouldIMakeFile(
                         [self.shelvefn + '*', self.shelvefn_insitu + '*'],
                             filename,
                             debug=False):
@@ -993,7 +993,7 @@ class timeseriesAnalysis:
         for r in self.regions:
             for l in self.layers:
                 if not runmapplots: continue
-                mapfilename = ukp.folder(self.imageDir + '/' +
+                mapfilename = bvt.folder(self.imageDir + '/' +
                                          self.dataType) + '_'.join([
                                              'map',
                                              self.jobID,
@@ -1001,7 +1001,7 @@ class timeseriesAnalysis:
                                              str(l),
                                              r,
                                          ]) + '.png'
-                if not ukp.shouldIMakeFile(self.modelFiles[-1],
+                if not bvt.shouldIMakeFile(self.modelFiles[-1],
                                        mapfilename,
                                        debug=False):
                     runmapplots = False

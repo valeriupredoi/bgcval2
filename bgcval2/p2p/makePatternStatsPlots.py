@@ -36,7 +36,7 @@ from ..bgcvaltools.StatsDiagram import rmsds
 from ..bgcvaltools import unbiasedSymmetricMetrics as usm
 from netCDF4 import Dataset
 
-from bgcval2.bgcvaltools import UKESMpython as ukp
+from bgcval2.bgcvaltools import bv2tools as bvt
 from itertools import product
 import os
 import numpy as np
@@ -73,7 +73,7 @@ class makePatternStatsPlots:
   		  xkeys: are the tick lables on the x axis. Can be strings or tuple. These need to appear in the shelve filename.
   		  filenamebase: the base name of the image to be saved.
 		  grid: which grid to be used (ORCA1, ORCA025, Flat1deg.) 
-		  	the grid needs to be in UKESMpython.
+		  	the grid needs to be in bv2tools.
   		The labels of the different lines are taken from he keys of the shelve dictionairy.
   		
   	"""
@@ -109,7 +109,7 @@ class makePatternStatsPlots:
     def calculateVolume(self):
         # makes a netcdf with the volumes of each pixel in the flat map.
         #
-        if self.gridFile == '': self.gridFile = ukp.getGridFile(self.grid)
+        if self.gridFile == '': self.gridFile = bvt.getGridFile(self.grid)
         volumeDict = {}
         if self.grid == 'Flat1deg':
             nc = Dataset(self.gridFile, 'r')
@@ -435,7 +435,7 @@ class makePatternStatsPlots:
             fn = self.filenamebase + self.plotTitle.replace(
                 ' ', '') + '_' + plotType + '.png'
             fn = fn.replace(' ', '')
-            if not ukp.shouldIMakeFile(self.AllShelves, fn, debug=False):
+            if not bvt.shouldIMakeFile(self.AllShelves, fn, debug=False):
                 continue
             #if os.path.exists(fn):continue
 

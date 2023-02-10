@@ -57,7 +57,7 @@ import itertools
 
 #####
 # Load specific local code:
-from .bgcvaltools import UKESMpython as ukp
+from .bgcvaltools import bv2tools as bvt
 from .timeseries import timeseriesAnalysis
 from .timeseries import profileAnalysis
 from .timeseries import timeseriesPlots as tsp
@@ -299,13 +299,13 @@ def timeseries_compare(jobs,
         #####
         # Location of images directory
         # the imagedir is where the analysis images will be saved.
-        imagedir = ukp.folder(paths.imagedir + '/' + jobID + '/timeseries')
-        shelvedir = ukp.folder(paths.shelvedir + "/timeseries/" + jobID)
+        imagedir = bvt.folder(paths.imagedir + '/' + jobID + '/timeseries')
+        shelvedir = bvt.folder(paths.shelvedir + "/timeseries/" + jobID)
 
         if jobID in list(ensembles.keys()): continue
         # ensembles names can not be the same as jobIDs
 
-        av = ukp.AutoVivification()
+        av = bvt.AutoVivification()
 
         # NEW STYLE keys from file:
         for key in analysisKeys:
@@ -376,7 +376,7 @@ def timeseries_compare(jobs,
                     'vars': [
                         name,
                     ],
-                    'convert': ukp.NoChange,
+                    'convert': bvt.NoChange,
                     'units': 'mg C/m^3'
                 }
                 av[name]['datadetails'] = {'name': '', 'units': ''}
@@ -453,7 +453,7 @@ def timeseries_compare(jobs,
                     'vars': [
                         name,
                     ],
-                    'convert': ukp.mul1000,
+                    'convert': bvt.mul1000,
                     'units': 'umol-C/m3'
                 }
                 av[name]['datadetails'] = {'name': '', 'units': ''}
@@ -687,7 +687,7 @@ def timeseries_compare(jobs,
                                 nc.variables['depth_bnds'][:, 1])
 
                 for y, lat in enumerate(lats):
-                    area = ukp.Area([latbnds[y, 0], 0.], [latbnds[y, 1], 1.])
+                    area = bvt.Area([latbnds[y, 0], 0.], [latbnds[y, 1], 1.])
                     for z, thick in enumerate(zthick):
                         pvol[z, y, :] = np.ones_like(lons) * area * thick
 
@@ -775,7 +775,7 @@ def timeseries_compare(jobs,
                 'units': 'mmol O2/m^3'
             }
             av[name]['datadetails'] = {'name': '', 'units': ''}
-            #av[name]['datadetails']  	= {'name': name, 'vars':['t_an',], 'convert': ukp.NoChange,'units':'degrees C'}
+            #av[name]['datadetails']  	= {'name': name, 'vars':['t_an',], 'convert': bvt.NoChange,'units':'degrees C'}
 
             oxregions = [
                 'Global',
@@ -824,7 +824,7 @@ def timeseries_compare(jobs,
                 'vars': [
                     'sst',
                 ],
-                'convert': ukp.NoChange,
+                'convert': bvt.NoChange,
                 'units': 'degrees C'
             }
             av[name]['datadetails'] = {'name': name, 'vars': [], 'units': ''}
@@ -894,7 +894,7 @@ def timeseries_compare(jobs,
                 'vars': [
                     'scvoltot',
                 ],
-                'convert': ukp.NoChange,
+                'convert': bvt.NoChange,
                 'units': 'm3'
             }
             av[name]['datadetails'] = {'name': '', 'units': ''}
@@ -930,7 +930,7 @@ def timeseries_compare(jobs,
                 'vars': [
                     'soga',
                 ],
-                'convert': ukp.NoChange,
+                'convert': bvt.NoChange,
                 'units': 'psu'
             }
             av[name]['datadetails'] = {'name': '', 'units': ''}
@@ -966,7 +966,7 @@ def timeseries_compare(jobs,
                 'vars': [
                     'thetaoga',
                 ],
-                'convert': ukp.NoChange,
+                'convert': bvt.NoChange,
                 'units': 'degrees C'
             }
             av[name]['datadetails'] = {'name': '', 'units': ''}
@@ -1016,7 +1016,7 @@ def timeseries_compare(jobs,
                         'thetaoga',
                         'scvoltot',
                     ],
-                    'convert': ukp.NoChange,
+                    'convert': bvt.NoChange,
                     'units': 'YottaJoules'
                 }
                 av[name]['datadetails'] = {'name': '', 'units': ''}
@@ -1071,7 +1071,7 @@ def timeseries_compare(jobs,
                 'units': 'degrees C'
             }
             av[name]['datadetails'] = {'name': '', 'units': ''}
-            #av[name]['datadetails']  	= {'name': name, 'vars':['t_an',], 'convert': ukp.NoChange,'units':'degrees C'}
+            #av[name]['datadetails']  	= {'name': name, 'vars':['t_an',], 'convert': bvt.NoChange,'units':'degrees C'}
 
             av[name]['layers'] = [
                 'layerless',
@@ -1258,7 +1258,7 @@ def timeseries_compare(jobs,
                 'vars': [
                     'vozocrtx',
                 ],
-                'convert': ukp.mul1000,
+                'convert': bvt.mul1000,
                 'units': 'mm/s'
             }
             av[name]['datadetails'] = {
@@ -1266,7 +1266,7 @@ def timeseries_compare(jobs,
                 'vars': [
                     'ucur',
                 ],
-                'convert': ukp.NoChange,
+                'convert': bvt.NoChange,
                 'units': 'mm/s'
             }
 
@@ -1296,7 +1296,7 @@ def timeseries_compare(jobs,
                 'vars': [
                     'vomecrty',
                 ],
-                'convert': ukp.mul1000,
+                'convert': bvt.mul1000,
                 'units': 'mm/s'
             }
             av[name]['datadetails'] = {
@@ -1304,7 +1304,7 @@ def timeseries_compare(jobs,
                 'vars': [
                     'vcur',
                 ],
-                'convert': ukp.NoChange,
+                'convert': bvt.NoChange,
                 'units': 'mm/s'
             }
 
@@ -1334,7 +1334,7 @@ def timeseries_compare(jobs,
                 'vars': [
                     'vovecrtz',
                 ],
-                'convert': ukp.mul1000000,
+                'convert': bvt.mul1000000,
                 'units': 'um/s'
             }
             av[name]['datadetails'] = {
@@ -1342,7 +1342,7 @@ def timeseries_compare(jobs,
                 'vars': [
                     'dzdt',
                 ],
-                'convert': ukp.NoChange,
+                'convert': bvt.NoChange,
                 'units': 'um/s'
             }
 
@@ -1374,7 +1374,7 @@ def timeseries_compare(jobs,
                 'vars': [
                     'DMS_ARAN',
                 ],
-                'convert': ukp.mul1000000,
+                'convert': bvt.mul1000000,
                 'units': 'umol/m3'
             }
             av[name]['datadetails'] = {
@@ -1382,7 +1382,7 @@ def timeseries_compare(jobs,
                 'vars': [
                     'DMS',
                 ],
-                'convert': ukp.NoChange,
+                'convert': bvt.NoChange,
                 'units': 'umol/m3'
             }
 
@@ -1419,7 +1419,7 @@ def timeseries_compare(jobs,
                 'vars': [
                     'hfds',
                 ],
-                'convert': ukp.NoChange,
+                'convert': bvt.NoChange,
                 'units': 'W/m2'
             }
             av[name]['datadetails'] = {'name': '', 'units': ''}
@@ -1529,7 +1529,7 @@ def timeseries_compare(jobs,
                     'vars': [
                         name[:],
                     ],
-                    'convert': ukp.NoChange,
+                    'convert': bvt.NoChange,
                     'units': nasUnits[name][:]
                 }
 
@@ -1658,7 +1658,7 @@ def timeseries_compare(jobs,
                     arrD,  # model time series
                     data=-999,  # in situ data distribution
                     title=title,
-                    filename=ukp.folder(imageFolder) +
+                    filename=bvt.folder(imageFolder) +
                         '_'.join([name, region, layer, ts, ls + '.png']),
                     units=units,
                     plotStyle=ts,
@@ -1686,7 +1686,7 @@ def timeseries_compare(jobs,
     # Senmd everything to the comparison maker:
     comparehtml5Maker(
         jobIDs=jobs,
-        reportdir=ukp.folder('CompareReports2/' + analysisname),
+        reportdir=bvt.folder('CompareReports2/' + analysisname),
         files=AllImages,
         clean=False,
         doZip=False,

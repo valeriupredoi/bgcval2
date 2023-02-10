@@ -44,7 +44,7 @@ import sys
 #####
 #Specific local code:
 from bgcval2._runtime_config import get_run_configuration
-from bgcval2.bgcvaltools import UKESMpython as ukp
+from bgcval2.bgcvaltools import bv2tools as bvt
 from bgcval2.p2p.testsuite_p2p import testsuite_p2p
 from bgcval2.p2p.summaryTargets import summaryTargets
 from bgcval2.bgcvaltools.pftnames import months
@@ -91,7 +91,7 @@ def analysis_p2p(
     ModelFolder_pref = paths.ModelFolder_pref
 
     # NEW STYLE keys from file:
-    av = ukp.AutoVivification()
+    av = bvt.AutoVivification()
     for key in analysisKeys:
         print('Loading:', key)
         av[key] = load_key_file(key, paths, jobID)
@@ -140,8 +140,8 @@ def analysis_p2p(
     print('P2P image dir:', imageFolder)
 
     # Attempt to make the directories:
-    workingDir = ukp.folder(workingDir)
-    imageFolder = ukp.folder(imageFolder)
+    workingDir = bvt.folder(workingDir)
+    imageFolder = bvt.folder(imageFolder)
     
     print('p2p: av keys:', av.keys())
 
@@ -163,7 +163,7 @@ def analysis_p2p(
 
     ######
     # Summary Target diagrams:
-    imageFold = ukp.folder(imageFolder + '/Targets/Summary')
+    imageFold = bvt.folder(imageFolder + '/Targets/Summary')
     summaryTargets(shelvesAV, imageFold, years)
 
 

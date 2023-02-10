@@ -27,7 +27,7 @@
 
 """
 
-from bgcval2.bgcvaltools import UKESMpython as ukp
+from bgcval2.bgcvaltools import bv2tools as bvt
 from bgcval2.p2p.makeTargets import makeTargets
 from itertools import product
 
@@ -56,7 +56,7 @@ def summaryTargets(shelvesAV, imageFold, year):
 
     for r, year in product(BGCVALregions, year):
         year = str(year)
-        shelves = ukp.reducesShelves(shelvesAV,
+        shelves = bvt.reducesShelves(shelvesAV,
                                      sliceslist=[r, ],)
         if not shelves:continue
         filename = imageFold + 'Summary_' + year + '_' + r + '.png'

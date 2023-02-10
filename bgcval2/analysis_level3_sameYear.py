@@ -49,7 +49,7 @@ import re
 
 #####
 # Load specific local code:
-from bgcval2.bgcvaltools import UKESMpython as ukp
+from bgcval2.bgcvaltools import bv2tools as bvt
 from .timeseries import timeseriesAnalysis
 from .timeseries import profileAnalysis
 from .timeseries import timeseriesPlots as tsp
@@ -138,9 +138,9 @@ def analysis_sy(
     analysisKeys.append('sorunoff')
 
     analysisDict = {}
-    imagedir = ukp.folder(paths.imagedir + '/' + jobID1 + '-' + jobID2 +
+    imagedir = bvt.folder(paths.imagedir + '/' + jobID1 + '-' + jobID2 +
                           '/Level3/')
-    #shelvedir 	= ukp.folder(paths.shelvedir+'/'+jobID+'/Level3/'+jobID1+'-'+jobID2)
+    #shelvedir 	= bvt.folder(paths.shelvedir+'/'+jobID+'/Level3/'+jobID1+'-'+jobID2)
 
     dataD = {}
     modeldataD = {}
@@ -329,7 +329,7 @@ def analysis_sy(
 
         for n in analysisKeys:
 
-            filename = ukp.folder(
+            filename = bvt.folder(
                 imagedir + ystr) + plotDetails[n]['name'] + '_' + ystr + '.png'
             if plotDetails[n]['ndim'] == 4:
                 data1 = nc1.variables[plotDetails[n]['key']][0, 0]
@@ -342,7 +342,7 @@ def analysis_sy(
                                                        data2)
 
             try:
-                ukp.robinPlotQuad(
+                bvt.robinPlotQuad(
                     lons,
                     lats,
                     data1,

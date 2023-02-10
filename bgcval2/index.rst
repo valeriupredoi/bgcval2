@@ -165,7 +165,7 @@ Standard nomencature
 There are some standard definitions used accross the software:
 
 	:jobID: The jobID is used as a unique identifyer of each run. In the case of UKESM, jobID is automatically created by the ROSE suite. A unique jobId for each run is required to create unique paths for the post processed data.
-	:region: The regions of the global ocean which to perform the analysis. These are usually assigned as a list of regions. 'Global' indicates the entire earth, but many other regions are available. Regions are defined in the UKESMPython.py file in the function makeMask().
+	:region: The regions of the global ocean which to perform the analysis. These are usually assigned as a list of regions. 'Global' indicates the entire earth, but many other regions are available. Regions are defined in the bv2tools.py file in the function makeMask().
 	:layer:  The depth layer used in the analysis.
 	:suite:  The suite is a set of analysises that 
 	:debug: A boolean flag for printing extra run-time debugging statements.
@@ -178,7 +178,7 @@ Autovivification
 An Autovivification is an object that behaves like a dictionairy in a dictionairy. 
 It simifies the process of creating a nested dictionairy. ie::
 
-	from UKESMPython import Autovivification
+	from bv2tools import Autovivification
 	av = Autovivification()
 	av['three']['level']['dictionairy'] = 'a string'
 
@@ -217,7 +217,7 @@ An exmaple of this dictionairy for the NEMO model is::
 		'lat': 'nav_lat', 
 		'lon': 'nav_lon', 
 		'cal': '360_day',
-		'tdict':UKESMPython.tdicts['ZeroToZero']
+		'tdict':bv2tools.tdicts['ZeroToZero']
 	}	
 
 
@@ -251,14 +251,14 @@ An example would be for chlorophull in MEDUSA::
 	modeldetails = {
 		'name': 	'Chlorophyll', 
 		'vars':		['CHN','CHD'], 
-		'convert': 	UKESMPython.sums,
+		'convert': 	bv2tools.sums,
 		'units':	'mg C/m^3'
 	} 
 
 The 'name' and 'units' fields are self evident in this exmaple.
 The 'vars' are the chlorophyll concentrations of two plankton functional types in MEDUSA.
 The sum of these two fields is the total chlorophyll concentration.
-The 'convert' function is the sums function in UKESMPython, which produces the sum of all the fields  in the 'vars' item.
+The 'convert' function is the sums function in bv2tools, which produces the sum of all the fields  in the 'vars' item.
 In this case, the sums function is::
 
 	def sums(nc,keys):		
@@ -268,7 +268,7 @@ In this case, the sums function is::
 
 
 
-UKESMpython holds many other useful functions to fulfil this role, such as:
+bv2tools holds many other useful functions to fulfil this role, such as:
 	:NoChange: Loads keys[0] from the netcdf.
 	:mul1000: Loads keys[0] from the netcdf, then multiplies by 1000.
 	:div1000: Loads keys[0] from the netcdf, but divides by 1000.

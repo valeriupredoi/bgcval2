@@ -21,7 +21,7 @@
 # ledm@pml.ac.uk
 
 from socket import gethostname
-import UKESMpython as ukp
+import bv2tools as bvt
 from getpass import getuser
 
 #####
@@ -48,13 +48,13 @@ if gethostname().find('LOCAL_MACHINE_NAME') > -1:
 
     #####
     # Post processed Data location
-    shelvedir = ukp.folder("/Path/To/Model/Data/BGC_val_data/" + getuser() +
+    shelvedir = bvt.folder("/Path/To/Model/Data/BGC_val_data/" + getuser() +
                            "/shelves/")
 
     #####
     # Location of model files.
     esmvalFolder = "/Path/To/Model/Data/BGC_data/"
-    ModelFolder_pref = ukp.folder(esmvalFolder)
+    ModelFolder_pref = bvt.folder(esmvalFolder)
 
     #####
     # eORCA1 grid

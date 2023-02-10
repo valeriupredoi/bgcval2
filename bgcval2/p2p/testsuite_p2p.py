@@ -33,7 +33,7 @@ from calendar import month_name
 from itertools import product
 
 #Specific local code:
-from bgcval2.bgcvaltools import UKESMpython as ukp
+from bgcval2.bgcvaltools import bv2tools as bvt
 from bgcval2.p2p.matchDataAndModel import matchDataAndModel
 from bgcval2.p2p.makeTargets import makeTargets
 from bgcval2.p2p.makePatternStatsPlots import makePatternStatsPlots
@@ -136,13 +136,13 @@ def testsuite_p2p(
 
     # Location of processing files
     if len(workingDir) == 0:
-        workingDir = ukp.folder(''.join(["WorkingFiles/", jobID]))
+        workingDir = bvt.folder(''.join(["WorkingFiles/", jobID]))
         print("No working directory provided, creating default:", workingDir)
 
     # Location of image Output files
     if noPlots is False:
         if len(imageFolder) == 0:
-            imageFolder = ukp.folder(''.joib(['images/', jobID]))
+            imageFolder = bvt.folder(''.joib(['images/', jobID]))
             print("No image directory provided, creating default:",
                   imageFolder)
 
@@ -174,7 +174,7 @@ def testsuite_p2p(
                                   jobID=jobID,
                                   year=year,
 #                                  annualMean=annual,
-                                  workingDir=ukp.folder(workingDir + name),
+                                  workingDir=bvt.folder(workingDir + name),
                                   depthLevel=depthLevel,
                                   grid=av[name].get('modelgrid', None),
                                   gridFile=gridFile)
@@ -197,7 +197,7 @@ def testsuite_p2p(
             else:
                 nregions = regions
 
-            imageDir = ukp.folder(imageFolder + 'P2Pplots/' + year + '/' +
+            imageDir = bvt.folder(imageFolder + 'P2Pplots/' + year + '/' +
                                   name + depthLevel)
             m = makePlots(b.MatchedDataFile,
                           b.MatchedModelFile,
@@ -212,7 +212,7 @@ def testsuite_p2p(
                           modeldetails=av[name]['modeldetails'],
                           datacoords=av[name].get('datacoords', None),
                           datadetails=av[name].get('datadetails', None),
-                          shelveDir=ukp.folder(workingDir + name + depthLevel),
+                          shelveDir=bvt.folder(workingDir + name + depthLevel),
                           imageDir=imageDir,
                           compareCoords=True,
                           noPlots=noPlots)
@@ -228,7 +228,7 @@ def testsuite_p2p(
             #####
             # makeTargets:
             # Make a target diagram of all matches for this particular dataset.
-            filename = ukp.folder(imageFolder+'/Targets/'+year+'/AllSlices')+model+'-'+jobID+'_'+year+'_'+name+depthLevel+'.png'
+            filename = bvt.folder(imageFolder+'/Targets/'+year+'/AllSlices')+model+'-'+jobID+'_'+year+'_'+name+depthLevel+'.png'
             t = makeTargets(	m.shelves,
             			filename,
             			legendKeys = ['newSlice','ykey',],
@@ -243,8 +243,8 @@ def testsuite_p2p(
         return shelvesAV
 
     # everything target:
-    filename = ukp.folder(imageFolder+'/Targets/')+'everything.png'
-    everything = ukp.reducesShelves(shelvesAV)
+    filename = bvt.folder(imageFolder+'/Targets/')+'everything.png'
+    everything = bvt.reducesShelves(shelvesAV)
     print('shelvesAV:', shelvesAV, everything)
     t = makeTargets(everything,
                     filename,
@@ -276,7 +276,7 @@ def testsuite_p2p(
 
     year='_'.join([str(yr) for yr in years])
     for g in groups:
-        groups[g] = ukp.reducesShelves(shelvesAV,
+        groups[g] = bvt.reducesShelves(shelvesAV,
                                        depthLevels=[depthLevel, ],
                                        names=[name, ] ,
                                        sliceslist=slicesDict[g])
@@ -286,7 +286,7 @@ def testsuite_p2p(
         #####
         # makeTargets:
         # Make a target diagram of the shelves of this group.
-        filename = ukp.folder('/'.join([imageFolder, 'Targets', year, name, depthLevel, g]))
+        filename = bvt.folder('/'.join([imageFolder, 'Targets', year, name, depthLevel, g]))
         filename = filename + '_'.join([model, jobID, year, name, depthLevel, g])+'.png'
         print('attempting to make:', filename)
         print('attempting to make:', g, groups[g])
@@ -307,7 +307,7 @@ def testsuite_p2p(
                 print("Could no find x axis keys!", g, 'in',
                       ['Oceans', 'Months', 'BGCVal'])
 
-                filenamebase = ukp.folder(
+                filenamebase = bvt.folder(
                     imageFolder + '/Patterns/' + year + '/' + name +
                     depthLevel + '/' + g
                 ) + 'Months_' + model + '_' + jobID + '_' + year + '_' + name + depthLevel
@@ -323,7 +323,7 @@ def testsuite_p2p(
             if not annual:
                 #####
                 # After finding all the shelves, we can plot them on the same axis.
-                filenamebase = ukp.folder(
+                filenamebase = bvt.folder(
                     imageFolder + '/Patterns/' + year + '/' + name +
                     depthLevel + '/ANSH'
                 ) + 'ANSH-Months_' + model + '_' + jobID + '_' + year + '_' + name + depthLevel
@@ -357,13 +357,13 @@ def testsuite_p2p(
         if len(av[name]['layers']) <= 1: continue
         outShelves = {}
         for dl in av[name]['layers']:
-            outShelves[dl] = ukp.reducesShelves(shelvesAV,
+            outShelves[dl] = bvt.reducesShelves(shelvesAV,
                                        models=[],
                                        depthLevels=[dl, ],
                                        names=[name, ] ,
                                        sliceslist=slicesDict[g])
 
-            filenamebase = ukp.folder(
+            filenamebase = bvt.folder(
                 imageFolder + '/Patterns/' + year + '/' + name + 'AllDepths/'
             ) + 'AllDepths_' + g + '_' + model + '_' + jobID + '_' + year + '_' + name
             print('outShelves', outShelves)

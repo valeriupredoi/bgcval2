@@ -18,7 +18,7 @@ model_convert   : NoChange
 #        av[name]['datadetails'] = {
 #                'name': 'DIC',
 #                'vars': ['tco2',]
-#                'convert': ukp.convertkgToM3,
+#                'convert': bvt.convertkgToM3,
 #                'units': 'mmol C/m^3'
 #                   }
 #        av[name]['dataFile'] = paths.GLODAPv2Dir + 'GLODAPv2.tco2.historic.nc'
