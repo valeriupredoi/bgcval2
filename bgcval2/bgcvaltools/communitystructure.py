@@ -21,7 +21,7 @@
 # ledm@pml.ac.uk
 #
 """
-.. module:: bv2tools
+.. module:: communitystructure
    :platform: Unix
    :synopsis: Toolkit for calculating the communicty structure.
 .. moduleauthor:: Lee de Mora <ledm@pml.ac.uk>
