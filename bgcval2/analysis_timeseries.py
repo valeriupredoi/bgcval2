@@ -52,7 +52,7 @@ import pathlib
 
 #####
 # Load specific local code:
-from bgcval2 import UKESMpython as ukp
+from bgcval2.bgcvaltools import bv2tools as bvt
 from bgcval2.timeseries import timeseriesAnalysis
 from bgcval2.timeseries import profileAnalysis
 from bgcval2.timeseries import timeseriesTools as tst
@@ -346,9 +346,9 @@ def load_key_file(key, paths, jobID):
 
         output_dict[''.join([model_or_data, 'Files'])] = mdfile
 
-        coords = ukp.load_coords_from_netcdf(mdfile)
+        coords = bvt.load_coords_from_netcdf(mdfile)
         output_dict[''.join([model_or_data, 'coords'])] = {
-            'tdict': ukp.tdicts[key_dict.get('tdict', 'ZeroToZero')],
+            'tdict': bvt.tdicts[key_dict.get('tdict', 'ZeroToZero')],
             }
         for coord, value in coords.items():
             # Coordinate names are guessed, but can be over-written in the yaml.
@@ -480,7 +480,7 @@ def analysis_timeseries(
     # This allows us to put away a python open to be re-opened later.
     # This means that we can interupt the analysis without loosing lots of data and processing time,
     # or we can append new simulation years to the end of the analysis without starting from scratch each time.
-    #shelvedir 	= ukp.folder('shelves/timeseries/'+jobID)
+    #shelvedir 	= bvt.folder('shelves/timeseries/'+jobID)
 
     #####
     # Location of data files.
@@ -493,8 +493,8 @@ def analysis_timeseries(
     #
     # Feel free to add other macihines onto this list, if need be.
 
-    shelvedir = ukp.folder([paths.shelvedir, "timeseries", jobID])
-    imagedir = ukp.folder([paths.imagedir, jobID, 'timeseries'])
+    shelvedir = bvt.folder([paths.shelvedir, "timeseries", jobID])
+    imagedir = bvt.folder([paths.imagedir, jobID, 'timeseries'])
 
     if annual: WOAFolder = paths.WOAFolder_annual
     else: WOAFolder = paths.WOAFolder
@@ -617,7 +617,7 @@ def analysis_timeseries(
     #		name: 		field name
     #		vars:		variable names in the netcdf
     #		convert: 	a function to manipuate the data (ie change units, or add two fields together.
-    #				There are some standard ones in UKESMPython.py, but you can write your own here.
+    #				There are some standard ones in bv2tools.py, but you can write your own here.
     #		units: 		the units after the convert function has been applied.
     #		layers:		which vertical layers to look at (ie, surface, 100m etc...)
     #		regions:	which regions to look at. Can be speficied here, or use a pre-defined list (from above)
@@ -631,7 +631,7 @@ def analysis_timeseries(
     #		av[name]['dataFiles']  = ''
 
     # NEW STYLE keys from file:
-    av = ukp.AutoVivification()
+    av = bvt.AutoVivification()
     for key in analysisKeys:
         av[key] = load_key_file(key, paths, jobID)
 

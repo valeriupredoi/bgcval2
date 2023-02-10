@@ -44,7 +44,7 @@ import cartopy.io.shapereader as shapereader
 from cartopy import img_transform, feature as cfeature
 
 #Specific local code:
-from .. import UKESMpython as ukp
+from ..bgcvaltools import bv2tools as bvt
 from ..bgcvaltools.pftnames import getLongName
 from ..bgcvaltools.dataset import dataset
 from . import timeseriesTools as tst
@@ -616,11 +616,11 @@ class extentMaps:
         self.debug = debug
         self.plotEvery = plotEvery
 
-        self.shelvefn = ukp.folder(self.workingDir) + '_'.join([
+        self.shelvefn = bvt.folder(self.workingDir) + '_'.join([
             self.jobID,
             self.dataType,
         ]) + '_contour.shelve'
-        self.shelvefn_insitu = ukp.folder(self.workingDir) + '_'.join([
+        self.shelvefn_insitu = bvt.folder(self.workingDir) + '_'.join([
             self.jobID,
             self.dataType,
         ]) + '_contour_insitu.shelve'
@@ -650,7 +650,7 @@ class extentMaps:
                 modellat = {}
                 modellon = {}
 
-                interannualExtendfilename = ukp.folder(
+                interannualExtendfilename = bvt.folder(
                     self.imageDir) + '_'.join(
                         [self.jobID, self.dataType, l, r]) + '.png'
                 if os.path.exists(interannualExtendfilename):
@@ -674,7 +674,7 @@ class extentMaps:
                 }
                 for transect in list(transects.keys()):
                     continue
-                    filename = ukp.folder(
+                    filename = bvt.folder(
                         self.imageDir) + 'TransectMap-' + transect + '.png'
 
                     makeTransectMap(
@@ -745,7 +745,7 @@ class extentMaps:
                                 continue
 
                         if mesh:
-                            filename = ukp.folder(self.imageDir) + '_'.join([
+                            filename = bvt.folder(self.imageDir) + '_'.join([
                                 self.jobID,
                                 self.dataType,
                                 l,
@@ -754,7 +754,7 @@ class extentMaps:
                                 'mesh',
                             ]) + '.png'
                         else:
-                            filename = ukp.folder(self.imageDir) + '_'.join([
+                            filename = bvt.folder(self.imageDir) + '_'.join([
                                 self.jobID, self.dataType, l, r,
                                 str(meantime)
                             ]) + '.png'

@@ -44,7 +44,7 @@ import cartopy.io.shapereader as shapereader
 from cartopy import img_transform, feature as cfeature
 
 #Specific local code:
-from .. import UKESMpython as ukp
+from bgcval2.bgcvaltools import bv2tools as bvt
 from ..bgcvaltools.pftnames import getLongName
 from ..bgcvaltools.dataset import dataset
 from . import timeseriesTools as tst
@@ -324,7 +324,7 @@ def contourplot(
     dlats = dnc.variables[datacoords['lat']][:]
     dlons = dnc.variables[datacoords['lon']][:]
     ddepths = dnc.variables[datacoords['z']][:]
-    do2 = ukp.extractData(dnc, datadetails)
+    do2 = bvt.extractData(dnc, datadetails)
     dnc.close()
 
     if plotKey in zonalCuts:
@@ -372,7 +372,7 @@ def contourplot(
     # Add model data as a colormesh
     for fn in modelfiles:
         nc = dataset(fn, 'r')
-        o2 = ukp.extractData(nc, modeldetails)
+        o2 = bvt.extractData(nc, modeldetails)
         key = loadKeyFromFile(
             fn,
             modelcoords,
@@ -456,7 +456,7 @@ def contourplot(
     #####
     #Save figure
     if filename == '':
-        filename = ukp.folder(['images', jobID, 'OMZ']) + '-'.join(
+        filename = bvt.folder(['images', jobID, 'OMZ']) + '-'.join(
             [name, plotKey, 'contour',
              str(int(oxcutoff))]) + '.png'
     print("saving", filename)
@@ -496,14 +496,14 @@ def run():
         'lat': 'lat',
         'lon': 'lon',
         'cal': 'standard',
-        'tdict': ukp.tdicts['ZeroToZero']
+        'tdict': bvt.tdicts['ZeroToZero']
     }
     modeldetails = {
         'name': name,
         'vars': [
             'OXY',
         ],
-        'convert': ukp.NoChange,
+        'convert': bvt.NoChange,
         'units': 'mmol O2/m^3'
     }
     datadetails = {
@@ -511,7 +511,7 @@ def run():
         'vars': [
             'o_an',
         ],
-        'convert': ukp.oxconvert,
+        'convert': bvt.oxconvert,
         'units': 'mmol O2/m^3'
     }
 
@@ -527,7 +527,7 @@ def run():
             50.,
         ]
         for oxcutoff in oxcutoffs:
-            filename = ukp.folder(['images', jobID, 'OMZ']) + '-'.join(
+            filename = bvt.folder(['images', jobID, 'OMZ']) + '-'.join(
                 [name, plotKey, 'contour',
                  str(int(oxcutoff))]) + '.png'
             title = ' '.join([

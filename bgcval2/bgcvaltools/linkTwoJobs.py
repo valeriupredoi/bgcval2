@@ -38,7 +38,7 @@ from glob import glob
 from shelve import open as shopen
 from datetime import datetime
 
-from ..UKESMpython import folder
+from bgcval2.bgcvaltools.bv2tools import folder
 from getpass import getuser
 
 

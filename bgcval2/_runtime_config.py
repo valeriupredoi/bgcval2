@@ -137,8 +137,8 @@ def _set_local_test_paths(paths_dict):
 
 def _set_pml_paths(paths_dict):
     """Fix paths for running on PML."""
-    # import UKESM module
-    from . import UKESMpython as ukp
+    # import bv2tools module
+    from bgcval2.bgcvaltools import bv2tools as bvt
 
     pml_paths = dict(paths_dict)
 
@@ -146,7 +146,7 @@ def _set_pml_paths(paths_dict):
     root_dir = _normalize_path(pml_paths["general"]["root_dir"])
 
     user = getuser()
-    shelves_dir = ukp.folder(pml_paths["general"]["shelvedir"])
+    shelves_dir = bvt.folder(pml_paths["general"]["shelvedir"])
     data_dir = pml_paths["general"]["ModelFolder_pref"]
     pml_paths["general"]["shelvedir"] = os.path.join(
         shelves_dir
@@ -155,7 +155,7 @@ def _set_pml_paths(paths_dict):
     pml_paths["general"]["p2p_ppDir"] = os.path.join(
         p2p_dir
     )
-    images_dir = ukp.folder(pml_paths["general"]["imagedir"])
+    images_dir = bvt.folder(pml_paths["general"]["imagedir"])
     pml_paths["general"]["imagedir"] = os.path.join(
         images_dir
     )
@@ -179,8 +179,8 @@ def _set_pml_paths(paths_dict):
 def _set_monsoon_paths(paths_dict):
     """Fix runtime paths when running on MONSOON."""
 
-    # import UKESM module
-    from . import UKESMpython as ukp
+    # import bv2tools module
+    from bgcval2.bgcvaltools import bv2tools as bvt
 
     mons_paths = dict(paths_dict)
 
@@ -199,9 +199,9 @@ def _set_monsoon_paths(paths_dict):
         "UKESM"
     )
     mons_paths["general"]["MEDUSAFolder_pref"] = \
-        ukp.folder(mons_paths["general"]["ModelFolder"])
+        bvt.folder(mons_paths["general"]["ModelFolder"])
     mons_paths["general"]["NEMOFolder_pref"] = \
-        ukp.folder(mons_paths["general"]["ModelFolder"])
+        bvt.folder(mons_paths["general"]["ModelFolder"])
     shelves_dir = mons_paths["general"]["shelvedir"]
     data_dir = mons_paths["general"]["ModelFolder_pref"]
     mons_paths["general"]["shelvedir"] = os.path.join(

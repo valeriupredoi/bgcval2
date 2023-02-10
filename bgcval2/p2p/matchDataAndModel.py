@@ -42,7 +42,7 @@ import nctoolkit
 
 ######
 # local imports
-import bgcval2.UKESMpython as ukp
+import bgcval2.bgcvaltools.bv2tools as bvt
 from bgcval2.bgcvaltools.pftnames import CMIP5models
 #####
 # These are availalble in the module:
@@ -125,27 +125,27 @@ class matchDataAndModel:
         self.compType = '-'.join([str(t) for t in ['MaredatMatched', self.model, self.jobID, self.year]])
 
         if workingDir == '':
-            self.workingDir = ukp.folder(
+            self.workingDir = bvt.folder(
                 '/data/euryale7/scratch/ledm/ukesm_postProcessed/ukesm/outNetCDF/'
                 + '/'.join([self.compType, self.dataType + self.depthLevel]))
         else:
             self.workingDir = workingDir
         self.grid = grid
         if gridFile == '':
-            self.gridFile = ukp.getGridFile(grid)
+            self.gridFile = bvt.getGridFile(grid)
         else:
             self.gridFile = gridFile
         print("matchDataAndModel:\tINFO:\tGrid:  \t", grid)
         print("matchDataAndModel:\tINFO:\tGrid File:  \t", gridFile)
 
-        self.matchedShelve = ukp.folder(
+        self.matchedShelve = bvt.folder(
             self.workingDir
         ) + self.model + '-' + self.jobID + '_' + self.year + '_' + '_' + self.dataType + '_' + self.depthLevel + '_matched.shelve'
-        self.matchesShelve = ukp.folder(
+        self.matchesShelve = bvt.folder(
             self.workingDir
         ) + self.model + '-' + self.jobID + '_' + self.year + '_' + '_' + self.dataType + '_' + self.depthLevel + '_matches.shelve'
 
-        self.workingDirTmp = ukp.folder(self.workingDir + 'tmp')
+        self.workingDirTmp = bvt.folder(self.workingDir + 'tmp')
         self.DataFile1D = self.workingDirTmp + 'Data_' + self.dataType + '_' + self.depthLevel + '_' + self.model + '-' + self.jobID + '-' + self.year + '_1D.nc'
         self.Model1D = self.workingDirTmp + 'Model_' + self.dataType + '_' + self.depthLevel + '_' + self.model + '-' + self.jobID + '-' + self.year + '_1D.nc'
 
@@ -166,9 +166,9 @@ class matchDataAndModel:
 	   One is designed to work with WOA formats, the other with MAREDAT formats.
 	   Other data formats are run manually.
 	"""
-        if not ukp.shouldIMakeFile(
+        if not bvt.shouldIMakeFile(
                 self.DataFile, self.MatchedDataFile,
-                debug=False) and not ukp.shouldIMakeFile(
+                debug=False) and not bvt.shouldIMakeFile(
                     self.ModelFile, self.MatchedModelFile, debug=False):
             print("matchDataAndModel:\trun:\talready created:\t",
                   self.maskedData1D, '\n\t\t\tand\t', self.Model1D)
@@ -184,7 +184,7 @@ class matchDataAndModel:
         """ This routine reduces the full 3d netcdfs by pruning the unwanted fields.
   	"""
 
-        if not ukp.shouldIMakeFile(self.ModelFile,
+        if not bvt.shouldIMakeFile(self.ModelFile,
                                self.ModelFileMerged,
                                debug=False):
             print(
@@ -230,7 +230,7 @@ class matchDataAndModel:
    		This routine reduces the In Situ data into a 1D array of data with its lat,lon,depth and time components.
   	"""
 
-        if not ukp.shouldIMakeFile(
+        if not bvt.shouldIMakeFile(
                 self.ModelFile, self.DataFile1D, debug=False):
             print(
                 "matchDataAndModel:\tconvertDataTo1D:\talready exists: (DataFile1D):\t",
@@ -283,7 +283,7 @@ class matchDataAndModel:
             if self.depthLevel == '2000m': z = 2000.
 
             if nc.variables[self.datacoords['z']].ndim == 1:
-                k = ukp.getORCAdepth(
+                k = bvt.getORCAdepth(
                     np.abs(z),
                     np.abs(nc.variables[self.datacoords['z']][:]),
                     debug=False,)
@@ -308,7 +308,7 @@ class matchDataAndModel:
             if self.depthLevel == 'PTransect': x = 200.
 
             if nc.variables[self.datacoords['lon']].ndim == 1:
-                k = ukp.getclosestlon(x,
+                k = bvt.getclosestlon(x,
                                       nc.variables[self.datacoords['lon']][:],
                                       debug=True)
                 if mmask.ndim == 4: mmask[:, :, :, k] = 0
@@ -329,7 +329,7 @@ class matchDataAndModel:
             if self.depthLevel == 'Equator': y = 0.
 
             if nc.variables[self.datacoords['lat']].ndim == 1:
-                k = ukp.getclosestlat(y,
+                k = bvt.getclosestlat(y,
                                       nc.variables[self.datacoords['lat']][:],
                                       debug=True)
                 if mmask.ndim == 4: mmask[:, :, k, :] = 0
@@ -403,7 +403,7 @@ class matchDataAndModel:
                                   for i in np.arange(numpoints)]  # lat,lon
 
             for (lat, lon) in sorted(transectcoords):
-                la, lo = ukp.getOrcaIndexCC(
+                la, lo = bvt.getOrcaIndexCC(
                     lat,
                     lon,
                     lat2d,
@@ -635,10 +635,10 @@ class matchDataAndModel:
             if self.depthcc.ndim ==1:
                 z = zdict.get(wz, None)
                 if z == None:
-                    z = ukp.getORCAdepth(wz, self.depthcc, debug=0)
+                    z = bvt.getORCAdepth(wz, self.depthcc, debug=0)
                     zdict[wz] = z
             else:
-                z = ukp.getORCAdepth(wz, self.depthcc[:, la, lo], debug=0)
+                z = bvt.getORCAdepth(wz, self.depthcc[:, la, lo], debug=0)
                 #zdict[wz] = z
 #            if self.debug:
 #                print("matchModelToData:\t", i, 'Found new depth:', wz,
@@ -759,7 +759,7 @@ class matchDataAndModel:
 #            print(k, (self.latcc[la,lo], self.loncc[la,lo]),
 
     def _convertModelToOneD_(self, ):
-        if not ukp.shouldIMakeFile(
+        if not bvt.shouldIMakeFile(
                 self.ModelFile, self.Model1D, debug=True):
             print("convertModelToOneD:\tconvertModelToOneD:\talready exists:",
                   self.Model1D)
@@ -804,7 +804,7 @@ class matchDataAndModel:
   	    Similarly, some data points fall into a masked grid cell in the model and need to be masked in the data.
   	"""
 
-        if not ukp.shouldIMakeFile(
+        if not bvt.shouldIMakeFile(
                 self.ModelFile, self.maskedData1D, debug=True):
             print("applyMaskToData:\tapplyMaskToData:\t", "already exists:",
                   self.maskedData1D)
@@ -957,8 +957,8 @@ class matchDataAndModel:
         km = 10.E20
         la_ind, lo_ind = -1, -1
 
-        lat = ukp.makeLatSafe(lat)
-        lon = ukp.makeLonSafe(lon)
+        lat = bvt.makeLatSafe(lat)
+        lon = bvt.makeLonSafe(lon)
 
         if not self._meshLoaded_:
             self.loadMesh(modelfile=self.ModelFileMerged)
