@@ -486,7 +486,7 @@ def makeLongNameDict():
     lnd['NorthPacificOcean'] = "North Pacific Ocean"
     lnd['SouthPacificOcean'] = "South Pacific Ocean"
     lnd['EquatorialAtlanticOcean'] = "Equatorial Atlantic Ocean"
-    lnd['ITCZ'] = '#Inter‐Tropical Convergence Zone'
+    lnd['ITCZ'] = 'Inter‐Tropical Convergence Zone'
     lnd['EquatorialPacificOcean'] = "Equatorial Pacific Ocean"
     lnd['IndianOcean'] = "Indian Ocean"
     lnd['NorthHemisphere'] = "North Hemisphere"
