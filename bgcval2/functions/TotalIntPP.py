@@ -76,9 +76,6 @@ def MA_TotalIntPP(nc, keys, **kwargs):
     """
     This function calculated the total primary production for the ERSEM  model.
     """
-    #areafile = get_kwarg_file(kwargs, 'areafile')
-    #if not loadedArea:
-    #    model_area = loadDataMask(areafile)
     # mg C/m^3/d (supposedly - but possibly /m2 ?)
     factor = 365.25 / 1000. / 1E15
     area_key = find_best_var(nc, ['area', 'area_grid_T'])
