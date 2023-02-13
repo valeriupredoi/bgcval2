@@ -63,7 +63,8 @@ def extractData(nc, details, key=['',], debug=False):
    
     #####
     # Mask places where x is exactly zero.
-    xd = np.ma.masked_where(xd.mask + (xd == 0.), xd)
+    if isinstance(xd, (list, tuple, np.ndarray)):
+        xd = np.ma.masked_where(xd.mask + (xd == 0.), xd)
  
     #####
     # Return masked array of the loaded data.
