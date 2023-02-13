@@ -81,6 +81,7 @@ def MA_TotalIntPP(nc, keys, **kwargs):
     area_key = find_best_var(nc, ['area', 'area_grid_T'])
     area = nc.variables[area_key][:]
     
+    # This will only work for NEMO models:
     thkfn = nc.filename.replace('diag_T', 'grid_T').replace('ptrc_T', 'grid_T')
     print('MA_TotalIntPP: opening:', thkfn)
     thknc = dataset(thkfn, 'r')
