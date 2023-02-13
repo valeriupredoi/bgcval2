@@ -1,12 +1,12 @@
 ---
 name            : MA_MLD_Sigma
-units           : m  
+units           : m
 dimensions      : 1
 model           : NEMO025-ERSEM
 modelgrid       : eORCA025
-modelFiles      : $BASEDIR_MODEL/$JOBID/SENEMO_S1_1m_*grid_T*.nc
+modelFiles      : $BASEDIR_MODEL/$JOBID/SENEMO_*_1m_*grid_T*.nc
 gridFile        : /data/proteus2/scratch/ledm/MissionAtlantic/SENEMO/eORCA025_mesh_mask_mes_v2.nc
-model_vars      : mldr10_1 
+model_vars      : mldr10_1
 layers          : layerless
 regions         : Global NorthAtlanticOcean SouthAtlanticOcean EquatorialAtlanticOcean ITCZ
 metrics         : mean #, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max
