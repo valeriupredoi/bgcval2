@@ -60,7 +60,11 @@ def extractData(nc, details, key=['',], debug=False):
     #####
     # Apply pre-specified convert function.
     xd = details['convert'](nc,details['vars'], **kwargs)
-
+   
+    #####
+    # Mask places where x is exactly zero.
+    xd = np.ma.masked_where(xd.mask + (xd == 0.), xd)
+ 
     #####
     # Return masked array of the loaded data.
     return np.ma.array(xd)

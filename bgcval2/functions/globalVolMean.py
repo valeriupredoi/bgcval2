@@ -53,13 +53,13 @@ def loadDataMask(gridfn):
     if not gridfn or not os.path.exists(gridfn):
         raise FileNotFoundError(errno.ENOENT, os.strerror(errno.ENOENT), gridfn)
 
-    print(gridfn)
+    print('loadDataMask, opening:', gridfn)
     nc = dataset(gridfn, 'r')
     tmask = nc.variables['tmask'][:].squeeze()
 
-    try:
+    if 'pvol' in nc.variables:
         pvol   = nc.variables['pvol'][:]
-    except:
+    else:
         area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
         if 'e3t_0' in nc.variables.keys():
             pvol = nc.variables['e3t_0'][:] * area
@@ -69,38 +69,49 @@ def loadDataMask(gridfn):
         pvol = np.ma.masked_where(tmask==0, pvol)
     nc.close()
     loaded_volume = True
+    assert 0
 
+
+def calc_vol(nc):
+    area = nc.variables['area'][:]
+    thkcello = nc.variables['thkcello'][:]
+    area = area[None, None,:, :]
+    return thkcello * area
 
 def globalVolumeMean(nc, keys, **kwargs):
     """
     Calculate the global volume mean.
     """
-    areafile = get_kwarg_file(kwargs, 'areafile')
+    #reafile = get_kwarg_file(kwargs, 'areafile')
 
     # To add a constant value to the data (usually Kelvin to Celcius)
     addvalue = kwargs.get('addvalue', 0.)
     multiplyBy = kwargs.get('multiplyBy', 1.)
     # Multiply the data by some factor (ie to change units)
 
-    if not loaded_volume:
-         loadDataMask(areafile)
+    #f not loaded_volume:
+    #    loadDataMask(areafile)
 
-    temp = choose_best_var(nc, keys).squeeze()
+    temp = choose_best_var(nc, keys) # .squeeze()
     temp = np.ma.masked_where((tmask==0) + (temp.mask), temp)
-
+    volume = calc_vol(nc)
+    volume = np.ma.masked_where(volume.mask + temp.mask, volume)
     temp = temp * multiplyBy + addvalue
 
-    if temp.shape == pvol.shape:
-        vol = np.ma.masked_where(temp.mask, pvol)
-        return (temp*vol).sum()/(vol.sum())
+    if temp.shape == volume.shape:
+        vol = np.ma.masked_where(temp.mask, volume)
+        return (temp*volume).sum()/(volume.sum())
 
-    elif temp.shape[1:] == pvol.shape:
-        # the temperature has a time dimension.
-        outvol = []
-        vol = np.ma.masked_where(temp[0].mask, pvol)
-        volsum = vol.sum()
-        for t in range(temp.shape[0]):
-            outvol.append((temp[t]*vol).sum()/volsum)
-        return outvol
+#    elif temp.shape[1:] == pvol.shape:
+#
+#        # the temperature has a time dimension.
+#        outvol = []
+#        vol = np.ma.masked_where(temp[0].mask, pvol)
+#        volsum = vol.sum()
+#        for t in range(temp.shape[0]):
+#            outvol.append((temp[t]*vol).sum()/volsum)
+#        return outvol
 
     raise ValueError(f"Data or mask has unexpected shape {temp.shape}, {pvol.shape}")
+
+
