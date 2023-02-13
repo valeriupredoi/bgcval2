@@ -150,6 +150,7 @@ class makePatternStatsPlots:
                 'ORCA1',
                 'ORCA025',
         ]:
+            raise ValueError('This is the wrong way to calculate volune - fix this like circulation.py')
             nc = Dataset(self.gridFile, 'r')
             pvol = nc.variables['pvol'][0, :, :]
             lat = nc.variables['nav_lat'][:]
@@ -171,6 +172,7 @@ class makePatternStatsPlots:
         ]:
             #####
             # No pvol in this mesh file
+            raise ValueError('This is the wrong way to calculate volune - fix this like circulation.py')
             nc = Dataset(self.gridFile, 'r')
             pvol = nc.variables['e1t'][:] * nc.variables['e2t'][:]
             lat = nc.variables['nav_lat'][:]
