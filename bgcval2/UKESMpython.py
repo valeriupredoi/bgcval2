@@ -494,6 +494,12 @@ def load_coords_from_netcdf(mdfile):
         intersection = sorted(list(set(coord_candidate_list) & nckeys))
         if special_cases.get(tuple(intersection), False):
             intersection = special_cases[tuple(intersection)]
+            # sometimes, time_counter doesn't have units.
+            if intersection == ['time_counter',]:
+                try:
+                    units = nctmp.variables['time_counter'].units
+                except:
+                    intersection = ['time_centered', ]
 
         if len(intersection) == 1:
             output_coords[coord] = intersection[0]
