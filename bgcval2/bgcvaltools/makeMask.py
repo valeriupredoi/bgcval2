@@ -33,7 +33,7 @@ from shelve import open as shOpen
 import os
 from bgcval2.Paths.paths import paths
 from netCDF4 import Dataset
-import bgcval2.UKESMpython as ukp
+import bgcval2.bgcvaltools.bv2tools as bvt
 
 
 def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
@@ -199,7 +199,7 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
             return np.ma.masked_where(mx + my, nmask).mask
 
     if newSlice == 'AMM':
-        return np.ma.masked_outside(ukp.makeLonSafeArr(xx), -20., 13.).mask + np.ma.masked_outside(xy, 40., 65.).mask
+        return np.ma.masked_outside(bvt.makeLonSafeArr(xx), -20., 13.).mask + np.ma.masked_outside(xy, 40., 65.).mask
 
 
     if newSlice == 'SouthernOcean':
@@ -215,15 +215,15 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
     if newSlice == 'ignoreExtraArtics':
         return np.ma.masked_outside(xy, -50., 50.).mask
     if newSlice == 'NorthAtlanticOcean':
-        return np.ma.masked_outside(ukp.makeLonSafeArr(xx), -80.,
+        return np.ma.masked_outside(bvt.makeLonSafeArr(xx), -80.,
                                     0.).mask + np.ma.masked_outside(
                                         xy, 10., 60.).mask
     if newSlice == 'SouthAtlanticOcean':
-        return np.ma.masked_outside(ukp.makeLonSafeArr(xx), -65.,
+        return np.ma.masked_outside(bvt.makeLonSafeArr(xx), -65.,
                                     20.).mask + np.ma.masked_outside(
                                         xy, -50., -10.).mask
     if newSlice == 'EquatorialAtlanticOcean':
-        return np.ma.masked_outside(ukp.makeLonSafeArr(xx), -65.,
+        return np.ma.masked_outside(bvt.makeLonSafeArr(xx), -65.,
                                     20.).mask + np.ma.masked_outside(
                                         xy, -15., 15.).mask
 
@@ -457,7 +457,7 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
             bathync.close()
             shelfDepth = 250.
 
-        shelveFn = ukp.folder(os.path.join(paths.shelvedir, "MatchingMasks/"))+ newSlice+"_diag_maskMask.shelve"
+        shelveFn = bvt.folder(os.path.join(paths.shelvedir, "MatchingMasks/"))+ newSlice+"_diag_maskMask.shelve"
 
         try:
             s = shOpen(shelveFn)
@@ -473,7 +473,7 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
             try:
                 la, lo = lldict[(xy[i], xx[i])]
             except:
-                la, lo = ukp.getOrcaIndexCC(xy[i],
+                la, lo = bvt.getOrcaIndexCC(xy[i],
                                         xx[i],
                                         latcc,
                                         loncc,

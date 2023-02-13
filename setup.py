@@ -157,7 +157,7 @@ setup(
     name='BGCVal2',
     version="1.0",
     author=read_authors(".zenodo.json"),
-    description="BGCVal 2.0",
+    description="BGCVal2: modernized version of BGCVal",
     long_description=Path('README.md').read_text(),
     long_description_content_type='text/markdown',
     url='https://github.com/valeriupredoi/bgcval2',

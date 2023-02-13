@@ -46,7 +46,7 @@ from getpass import getuser
 
 #####
 # Load specific local code:
-from . import UKESMpython as ukp
+from bgcval2.bgcvaltools import bv2tools as bvt
 from .timeseries import timeseriesAnalysis
 from .timeseries import profileAnalysis
 from .timeseries import timeseriesPlots as tsp
@@ -71,8 +71,8 @@ def analysis_omz(jobID=''):
     analysisKeys.append('VerticalCurrent')  # Vertical Veloctity
 
     analysisDict = {}
-    imagedir = ukp.folder(paths.imagedir + '/' + jobID + '/Level3/OMZ')
-    shelvedir = ukp.folder(paths.shelvedir + '/' + jobID + '/Level3/OMZ')
+    imagedir = bvt.folder(paths.imagedir + '/' + jobID + '/Level3/OMZ')
+    shelvedir = bvt.folder(paths.shelvedir + '/' + jobID + '/Level3/OMZ')
     if annual: WOAFolder = paths.WOAFolder_annual
     else: WOAFolder = paths.WOAFolder
 
@@ -169,7 +169,7 @@ def analysis_omz(jobID=''):
         'lat': 'lat',
         'lon': 'lon',
         'cal': 'standard',
-        'tdict': ukp.tdicts['ZeroToZero']
+        'tdict': bvt.tdicts['ZeroToZero']
     }
     godasCoords = {
         't': 'index_t',
@@ -180,7 +180,7 @@ def analysis_omz(jobID=''):
         'tdict': ['ZeroToZero']
     }
 
-    av = ukp.AutoVivification()
+    av = bvt.AutoVivification()
 
     if 'O2' in analysisKeys:
         name = 'Oxygen'
@@ -197,7 +197,7 @@ def analysis_omz(jobID=''):
             'vars': [
                 'OXY',
             ],
-            'convert': ukp.NoChange,
+            'convert': bvt.NoChange,
             'units': 'mmol O2/m^3'
         }
         av[name]['datadetails'] = {
@@ -205,7 +205,7 @@ def analysis_omz(jobID=''):
             'vars': [
                 'o_an',
             ],
-            'convert': ukp.oxconvert,
+            'convert': bvt.oxconvert,
             'units': 'mmol O2/m^3'
         }
 
@@ -519,7 +519,7 @@ def analysis_omz(jobID=''):
                             nc.variables['depth_bnds'][:, 1])
 
             for y, lat in enumerate(lats):
-                area = ukp.Area([latbnds[y, 0], 0.], [latbnds[y, 1], 1.])
+                area = bvt.Area([latbnds[y, 0], 0.], [latbnds[y, 1], 1.])
                 for z, thick in enumerate(zthick):
                     pvol[z, y, :] = np.ones_like(lons) * area * thick
 
@@ -590,7 +590,7 @@ def analysis_omz(jobID=''):
             'vars': [
                 'ucur',
             ],
-            'convert': ukp.NoChange,
+            'convert': bvt.NoChange,
             'units': 'mm/s'
         }
 
@@ -632,7 +632,7 @@ def analysis_omz(jobID=''):
             'vars': [
                 'vcur',
             ],
-            'convert': ukp.NoChange,
+            'convert': bvt.NoChange,
             'units': 'mm/s'
         }
 
@@ -674,7 +674,7 @@ def analysis_omz(jobID=''):
             'vars': [
                 'dzdt',
             ],
-            'convert': ukp.NoChange,
+            'convert': bvt.NoChange,
             'units': 'um/s'
         }
 
@@ -818,7 +818,7 @@ def analysis_omz(jobID=''):
             'Global',
         ],
         workingDir=shelvedir,
-        imageDir=ukp.folder(imagedir + 'ExtentMaps/Oxygen'),
+        imageDir=bvt.folder(imagedir + 'ExtentMaps/Oxygen'),
         contours=[
             20.,
         ],
@@ -849,7 +849,7 @@ def analysis_omz(jobID=''):
             'Global',
         ],
         workingDir=shelvedir,
-        imageDir=ukp.folder(imagedir + 'ExtentMaps/Oxygen50'),
+        imageDir=bvt.folder(imagedir + 'ExtentMaps/Oxygen50'),
         contours=[
             50.,
         ],
@@ -880,7 +880,7 @@ def analysis_omz(jobID=''):
             'Global',
         ],
         workingDir=shelvedir,
-        imageDir=ukp.folder(imagedir + 'ExtentMaps/Oxygen80'),
+        imageDir=bvt.folder(imagedir + 'ExtentMaps/Oxygen80'),
         contours=[
             50.,
         ],
@@ -909,7 +909,7 @@ def analysis_omz(jobID=''):
                         'Global',
                     ],
                     workingDir=shelvedir,
-                    imageDir=ukp.folder(imagedir + 'ExtentMaps/OMZ'),
+                    imageDir=bvt.folder(imagedir + 'ExtentMaps/OMZ'),
                     contours=[
                         1.,
                     ],

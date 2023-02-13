@@ -21,7 +21,7 @@
 # ledm@pml.ac.uk
 #
 """
-.. module:: UKESMpython
+.. module:: bv2tools
    :platform: Unix
    :synopsis: A swiss army knife of tools for BGCval.
 .. moduleauthor:: Lee de Mora <ledm@pml.ac.uk>
@@ -54,7 +54,7 @@ try:
     import yaml
 except:
     pass
-"""	UKESMpython is a catch all toolkit for the python methods and shorthands used in this code.
+"""	bv2tools is a catch all toolkit for the python methods and shorthands used in this code.
 """
 
 try:
@@ -381,8 +381,8 @@ def getGridFile(grid):
         try:
             if exists(gridFile): pass
         except:
-            print("UKESMpython:\tgetGridFile:\tERROR:\tIt's not possible to load the ORCA025 grid on this machine."+ \
-                  "\n\t\t\tPlease add the ORCA025 file to the orcafn getGridFile() list to UKESMpython.py")
+            print("bv2tools:\tgetGridFile:\tERROR:\tIt's not possible to load the ORCA025 grid on this machine."+ \
+                  "\n\t\t\tPlease add the ORCA025 file to the orcafn getGridFile() list to bv2tools.py")
             assert False
     return gridFile
 
@@ -748,7 +748,7 @@ def robinPlotPair(
     m1.drawmeridians(np.arange(0., 420., 60.))
 
     if doLog and rbmi * rbma <= 0.:
-        print("UKESMpython:\trobinPlotPair: \tMasking", end=' ')
+        print("bv2tools:\trobinPlotPair: \tMasking", end=' ')
         data1 = np.ma.masked_less_equal(ma.array(data1), 0.)
         data2 = np.ma.masked_less_equal(ma.array(data2), 0.)
     if scatter:
@@ -844,7 +844,7 @@ def robinPlotPair(
 
     pyplot.title(titles[1])
 
-    print("UKESMpython:\trobinPlotPair: \tSaving:", filename)
+    print("bv2tools:\trobinPlotPair: \tSaving:", filename)
     pyplot.savefig(filename, dpi=dpi)
     pyplot.close()
 
@@ -907,7 +907,7 @@ def robinPlotQuad(lons,
             rbmi, rbma = logsymetricAroundOne(data1, data2)
 
         if doLogs[i] and rbmi * rbma <= 0.:
-            print("UKESMpython:\trobinPlotQuad: \tMasking", end=' ')
+            print("bv2tools:\trobinPlotQuad: \tMasking", end=' ')
             data1 = np.ma.masked_less_equal(ma.array(data1), 0.)
             data2 = np.ma.masked_less_equal(ma.array(data2), 0.)
         data = ''
@@ -1076,7 +1076,7 @@ def robinPlotQuad(lons,
                  title,
                  horizontalalignment='center',
                  verticalalignment='top')
-    print("UKESMpython:\trobinPlotQuad: \tSaving:", filename)
+    print("bv2tools:\trobinPlotQuad: \tSaving:", filename)
     pyplot.savefig(filename, dpi=dpi)
     pyplot.close()
 
@@ -1164,7 +1164,7 @@ def HovPlotQuad(
             #rbmi = 0.0999
 
         if doLogs[i] and rbmi * rbma <= 0.:
-            print("UKESMpython:\tHovPlotQuad: \tMasking", end=' ')
+            print("bv2tools:\tHovPlotQuad: \tMasking", end=' ')
             data1 = np.ma.masked_less_equal(ma.array(data1), 0.)
             data2 = np.ma.masked_less_equal(ma.array(data2), 0.)
         data = ''
@@ -1322,7 +1322,7 @@ def HovPlotQuad(
     #####
     # Print and save
     pyplot.tight_layout()
-    print("UKESMpython:\tHovPlotQuad: \tSaving:", filename)
+    print("bv2tools:\tHovPlotQuad: \tSaving:", filename)
     pyplot.savefig(filename, dpi=dpi)
     pyplot.close()
 
@@ -1428,7 +1428,7 @@ def ArcticTransectPlotQuad(
 #           rbmi = 0.0999
 
         if doLogs[i] and rbmi * rbma <= 0.:
-            print("UKESMpython:\tArcticTransectPlotQuad: \tMasking", end=' ')
+            print("bv2tools:\tArcticTransectPlotQuad: \tMasking", end=' ')
             data1 = np.ma.masked_less_equal(ma.array(data1), 0.)
             data2 = np.ma.masked_less_equal(ma.array(data2), 0.)
         data = ''
@@ -1605,7 +1605,7 @@ def ArcticTransectPlotQuad(
     #####
     # Print and save
     pyplot.tight_layout()
-    print("UKESMpython:\tArcticTransectPlotQuad: \tSaving:", filename)
+    print("bv2tools:\tArcticTransectPlotQuad: \tSaving:", filename)
     pyplot.savefig(filename, dpi=dpi)
     pyplot.close()
 
@@ -1786,11 +1786,11 @@ def histPlot(datax,
 
     if datax.size < minNumPoints and datay.size < minNumPoints:
         print(
-            "UKESMpython:\thistPlot:\tThere aren't enough points for a sensible dataplot: ",
+            "bv2tools:\thistPlot:\tThere aren't enough points for a sensible dataplot: ",
             datax.size)
         return
 
-    print("UKESMpython:\thistplot:\t preparing", Title, datax.size, datay.size,
+    print("bv2tools:\thistplot:\t preparing", Title, datax.size, datay.size,
           (xmin, '-->', xmax))  
 
     if logx:
@@ -1885,7 +1885,7 @@ def histPlot(datax,
     pyplot.title(Title)
     pyplot.xlabel(xaxislabel)
 
-    print("UKESMpython:\thistPlot:\tSaving:", filename)
+    print("bv2tools:\thistPlot:\tSaving:", filename)
     pyplot.savefig(filename, dpi=dpi)
     pyplot.close()
 
@@ -1916,7 +1916,7 @@ def histsPlot(datax,
 
     if datax.size < minNumPoints and datay.size < minNumPoints:
         print(
-            "UKESMpython:\thistsPlot:\tThere aren't enough points for a sensible dataplot: ",
+            "bv2tools:\thistsPlot:\tThere aren't enough points for a sensible dataplot: ",
             datax.size)
         return
 
@@ -2021,7 +2021,7 @@ def histsPlot(datax,
                        label='Median Slope: ' + str(round(np.ma.median(d), 2)))
     pyplot.legend(loc='upper left')
 
-    print("UKESMpython:\thistPlot:\tSaving:", filename)
+    print("bv2tools:\thistPlot:\tSaving:", filename)
     pyplot.savefig(filename, dpi=dpi)
     pyplot.close()
 
@@ -2186,7 +2186,7 @@ def scatterPlot(datax,
     logy = dolog
 
     plotrange = [xmin, xmax, ymin, ymax]
-    print("UKESMpython:\tscatterPlot:\trange:", plotrange)
+    print("bv2tools:\tscatterPlot:\trange:", plotrange)
 
     if logx: ax.set_xscale('log')
     if logy: ax.set_yscale('log')
@@ -2232,7 +2232,7 @@ def scatterPlot(datax,
     pyplot.xlabel(labelx)
     pyplot.ylabel(labely)
 
-    print("UKESMpython:\tscatterPlot:\tSaving:", filename)
+    print("bv2tools:\tscatterPlot:\tSaving:", filename)
     pyplot.savefig(filename, dpi=dpi)
     pyplot.close()
 
@@ -2282,10 +2282,10 @@ def getORCAdepth(z, depth_arr, debug=True):
             d = d2
             best = i
             if debug:
-                print('UKESMPython.getORCAdepth:', i, z, zz, depth_arr.shape,
+                print('bv2tools.getORCAdepth:', i, z, zz, depth_arr.shape,
                       'best:', best)
     if debug:
-        print('UKESMPython.getORCAdepth:\tdepth: in situ:', z, 'index:', best,
+        print('bv2tools.getORCAdepth:\tdepth: in situ:', z, 'index:', best,
               'distance:', d, ', closest model:', depth_arr.shape,
               depth_arr[best])
     return best
@@ -2732,7 +2732,7 @@ def extractData(nc, details, key=[
     """ 	
   	This loads the data based on the instructions from details dictionairy.
   	If you want to do something funking to the data before plotting it, just create a new convert function in getMT().
-  	details dict usually contains: {'name': 'Chlorophylla', 'vars':['Chlorophylla',], 'convert': ukp.div1000,'units':'ug/L'}
+  	details dict usually contains: {'name': 'Chlorophylla', 'vars':['Chlorophylla',], 'convert': bvt.div1000,'units':'ug/L'}
   	"""
 
     if isinstance(details, dict):

@@ -34,7 +34,7 @@
 # from ..Paths.paths import orcaGridfn, WOAFolder_annual
 from netCDF4 import Dataset
 import numpy as np
-from .. import UKESMpython as ukp
+from bgcval2.bgcvaltools import bv2tools as bvt
 from matplotlib import pyplot
 import cartopy.crs as ccrs
 from cartopy import img_transform, feature as cfeature
@@ -102,7 +102,7 @@ def robinPlotCustom(lons,
         ax = pyplot.subplot(111,
                             projection=ccrs.PlateCarree(
                                 central_longitude=lon0, ))
-        fig, ax, im = ukp.makemapplot(fig,
+        fig, ax, im = bvt.makemapplot(fig,
                                       ax,
                                       lons,
                                       lats,
@@ -255,7 +255,7 @@ def robinPlotTransects(lons,
         ax = pyplot.subplot(111,
                             projection=ccrs.PlateCarree(
                                 central_longitude=lon0, ))
-        fig, ax, im = ukp.makemapplot(fig,
+        fig, ax, im = bvt.makemapplot(fig,
                                       ax,
                                       lons,
                                       lats,
@@ -319,7 +319,7 @@ def robinPlotTransects(lons,
 def makeRegionMap(regionList):
 
     plotAll = 0  #True	# make plots for all regions
-    imageFold = ukp.folder('images/maps')
+    imageFold = bvt.folder('images/maps')
     #####
     # Load data.
     nc = Dataset(orcaGridfn, 'r')
@@ -347,7 +347,7 @@ def makeRegionMap(regionList):
         data += (i + 1) * masks[r]
         if plotAll:
             fn = imageFold + 'Region_Legend_' + r + '.png'
-            ukp.robinPlotSingle(
+            bvt.robinPlotSingle(
                 xy,
                 xx,
                 masks[r],
@@ -383,7 +383,7 @@ def makeRegionMap(regionList):
 def makeRegionMapNA(regionList):
 
     plotAll = 0  #True	# make plots for all regions
-    imageFold = ukp.folder('images/maps')
+    imageFold = bvt.folder('images/maps')
     #####
     # Load data.
     nc = Dataset(orcaGridfn, 'r')
@@ -411,7 +411,7 @@ def makeRegionMapNA(regionList):
         data += (i + 1) * masks[r]
         if plotAll:
             fn = imageFold + 'Region_Legend_NA_' + r + '_robin.png'
-            ukp.robinPlotSingle(
+            bvt.robinPlotSingle(
                 xy,
                 xx,
                 masks[r],
@@ -455,7 +455,7 @@ def makeRegionMapPierce():
         'Weddel',
     ]
     plotAll = 1  #True	# make plots for all regions
-    imageFold = ukp.folder('images/maps')
+    imageFold = bvt.folder('images/maps')
     #####
     # Load data.
     nc = Dataset(orcaGridfn, 'r')
@@ -485,7 +485,7 @@ def makeRegionMapPierce():
         data = np.clip(data, 0, i + 1)
         if plotAll:
             fn = imageFold + 'Region_Legend_Pierce_' + r + '_robin.png'
-            ukp.robinPlotSingle(
+            bvt.robinPlotSingle(
                 xy,
                 xx,
                 masks[r],
@@ -534,7 +534,7 @@ def makeRegionMapSouthAtlantic():
         'SouthernOcean',
     ]
     plotAll = 0  # 1#True	# make plots for all regions
-    imageFold = ukp.folder('images/maps')
+    imageFold = bvt.folder('images/maps')
 
     #####
     # Load data.
@@ -570,7 +570,7 @@ def makeRegionMapSouthAtlantic():
 
         if plotAll:
             fn = imageFold + 'Region_Legend_SouthAtlantic_' + r + '_robin.png'
-            ukp.robinPlotSingle(
+            bvt.robinPlotSingle(
                 xy,
                 xx,
                 masks[r],
@@ -617,7 +617,7 @@ def makeRegionMapYevgeny():
     ]
 
     plotAll = 0  #True	# make plots for all regions
-    imageFold = ukp.folder('images/maps')
+    imageFold = bvt.folder('images/maps')
     #####
     # Load data.
     nc = Dataset(orcaGridfn, 'r')
@@ -667,7 +667,7 @@ def makeRegionMapYevgeny():
         data += (i + 1) * masks[r]
         if plotAll:
             fn = imageFold + 'Region_Legend_NA_' + r + '.png'
-            ukp.robinPlotSingle(
+            bvt.robinPlotSingle(
                 xy,
                 xx,
                 masks[r],
@@ -706,7 +706,7 @@ def makeTransectsMap(proj='robin'):
 	"""
 
     plotAll = 0  #True	# make plots for all regions
-    imageFold = ukp.folder('images/maps/')  #Transects')
+    imageFold = bvt.folder('images/maps/')  #Transects')
 
     #####
     # Load data.
@@ -735,14 +735,14 @@ def makeTransectsMap(proj='robin'):
         if transect in ['Transect', 'PTransect']:
             if transect == 'Transect': x = -28.
             if transect == 'PTransect': x = 200.
-            k = ukp.getclosestlon(x, lon, debug=True)
+            k = bvt.getclosestlon(x, lon, debug=True)
             maps[:, k] = i
             single_map[:, k] = i
 
         if transect in ['SOTransect', 'Equator']:
             if transect == 'SOTransect': y = -60.
             if transect == 'Equator': y = 0.
-            k = ukp.getclosestlat(y, lat, debug=True)
+            k = bvt.getclosestlat(y, lat, debug=True)
             maps[k, :] = i
             single_map[k, :] = i
         if transect in [
@@ -795,7 +795,7 @@ def makeTransectsMap(proj='robin'):
 
             lon2d, lat2d = np.meshgrid(lon, lat)
             for (ilat, ilon) in sorted(transectcoords):
-                la, lo = ukp.getOrcaIndexCC(
+                la, lo = bvt.getOrcaIndexCC(
                     ilat,
                     ilon,
                     lat2d,
@@ -808,10 +808,10 @@ def makeTransectsMap(proj='robin'):
         # Make plot
         singles = False
         if singles:
-            fn = ukp.folder(imageFold + 'Transects') + transect + '.png'
+            fn = bvt.folder(imageFold + 'Transects') + transect + '.png'
             single_map = np.clip(single_map, 0, i)
             single_map = np.ma.masked_where(single_map == 0, single_map)
-            ukp.robinPlotSingle(
+            bvt.robinPlotSingle(
                 lat,
                 lon,
                 single_map,

@@ -5,7 +5,6 @@ model           : MEDUSA
 modelgrid       : eORCA1
 dimensions      : 3
 
-
 # The filenames
 modelFiles      : $BASEDIR_MODEL/$JOBID/medusa*$JOBIDo_1y_*_ptrc-T.nc
 modelFile_p2p   : $BASEDIR_MODEL/$JOBID/medusa*$JOBIDo_1y_*$YEAR????_ptrc-T.nc
@@ -13,16 +12,6 @@ modelFile_p2p   : $BASEDIR_MODEL/$JOBID/medusa*$JOBIDo_1y_*$YEAR????_ptrc-T.nc
 # # Model coordinates/dimension names
 model_vars      : DIC
 model_convert   : NoChange
-
-#data
-#        av[name]['datadetails'] = {
-#                'name': 'DIC',
-#                'vars': ['tco2',]
-#                'convert': ukp.convertkgToM3,
-#                'units': 'mmol C/m^3'
-#                   }
-#        av[name]['dataFile'] = paths.GLODAPv2Dir + 'GLODAPv2.tco2.historic.nc'
-#        av[name]['datasource'] = 'GLODAP'
 
 
 layers          : Surface #50m #;100m 200m 500m 1000m 2000m

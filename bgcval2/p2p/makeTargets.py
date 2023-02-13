@@ -42,7 +42,7 @@ from sys import argv
 from shelve import open as shOpen
 from calendar import month_name
 
-from bgcval2 import UKESMpython as ukp
+from bgcval2.bgcvaltools import bv2tools as bvt
 from bgcval2.bgcvaltools.pftnames import AutoVivification, getLongName
 from bgcval2.bgcvaltools.StatsDiagram import TaylorDiagram, TargetDiagram, TaylorDiagramMulti
 from bgcval2.bgcvaltools.robust import TargetDiagram as robustTargetDiagram  
@@ -79,7 +79,7 @@ class makeTargets:
         runTargets = False
         for t in self.diagramTypes:
             filename = self.filename.replace('.png', '_' + t + '.png')
-            if ukp.shouldIMakeFile(self.matchedShelves, filename, debug=False):
+            if bvt.shouldIMakeFile(self.matchedShelves, filename, debug=False):
                 runTargets = True
 
         if not runTargets:
@@ -90,7 +90,7 @@ class makeTargets:
         self.determineLegend()
         self.dataLoaded = False
 
-        if len(self.matchedShelves) > 0 and ukp.shouldIMakeFile(
+        if len(self.matchedShelves) > 0 and bvt.shouldIMakeFile(
                 self.matchedShelves, self.filename, debug=False):
 
             self.makeDiagram()
@@ -175,7 +175,7 @@ class makeTargets:
             # order months chronologically instead of alphabetically
             months = {month_name[i]: i for i in range(1, 13)}
             if leg in list(months.keys()):
-                leg = ukp.mnStr(months[leg]) + ' ' + leg
+                leg = bvt.mnStr(months[leg]) + ' ' + leg
 
             s.close()
             breaks = 0
@@ -271,7 +271,7 @@ class makeTargets:
         for t in self.diagramTypes:
             print('makeDiagram: plottype:', t)
             filename = self.filename.replace('.png', '_' + t + '.png')
-            if not ukp.shouldIMakeFile(
+            if not bvt.shouldIMakeFile(
                     self.matchedShelves, filename, debug=False):
                 print('skipping:', filename)
                 continue

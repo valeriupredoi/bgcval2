@@ -28,7 +28,7 @@ import os
 from datetime import datetime, timedelta
 
 #Specific local code:
-from bgcval2 import UKESMpython as ukp
+from bgcval2.bgcvaltools import bv2tools as bvt
 from bgcval2.netcdf_manipulation import convertToOneDNC
 from bgcval2.bgcvaltools.dataset import dataset
 from bgcval2.bgcvaltools.makeMask import makeMask
@@ -178,7 +178,7 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
         if layer == '3000m': z = 3000.
         if layer == '4000m': z = 4000.
         print(z)
-        k = ukp.getORCAdepth(z, nc.variables[coords['z']][:], debug=False)
+        k = bvt.getORCAdepth(z, nc.variables[coords['z']][:], debug=False)
         if isinstance(data, str):
             data = std_extractData(nc, details)
         print("getHorizontalSlice:\tSpecific depth field requested",
@@ -189,10 +189,10 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
     elif layer in ['Surface - 1000m', 'Surface - 300m']:
         if layer == 'Surface - 300m': z = 300.
         if layer == 'Surface - 1000m': z = 1000.
-        k_surf = ukp.getORCAdepth(0.,
+        k_surf = bvt.getORCAdepth(0.,
                                   nc.variables[coords['z']][:],
                                   debug=False)
-        k_low = ukp.getORCAdepth(z, nc.variables[coords['z']][:], debug=False)
+        k_low = bvt.getORCAdepth(z, nc.variables[coords['z']][:], debug=False)
         print("getHorizontalSlice:\t", layer, "surface:", k_surf, '-->', k_low)
         if data == '':
             return ApplyDepthSlice(std_extractData(nc, details),
@@ -210,10 +210,10 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
         if layer == 'Surface to 700m': z = 700.
         if layer == 'Surface to 2000m': z = 2000.
 
-        k_surf = ukp.getORCAdepth(0.,
+        k_surf = bvt.getORCAdepth(0.,
                                   nc.variables[coords['z']][:],
                                   debug=False)
-        k_low = ukp.getORCAdepth(z, nc.variables[coords['z']][:], debug=False)
+        k_low = bvt.getORCAdepth(z, nc.variables[coords['z']][:], debug=False)
         print("getHorizontalSlice:\t", layer, "surface:", k_surf, '-->', k_low)
         if len(data) == 0:
             return ApplyDepthrange(std_extractData(nc, details), k_surf, k_low)
@@ -242,7 +242,7 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
 
     if layer in nc.variables[coords['z']][:]:
         z = layer
-        k = ukp.getORCAdepth(z, nc.variables[coords['z']][:], debug=False)
+        k = bvt.getORCAdepth(z, nc.variables[coords['z']][:], debug=False)
         if data == '':
             data = std_extractData(nc, details)
         print("getHorizontalSlice:\tSpecific depth requested", details['name'],
@@ -420,7 +420,7 @@ class DataLoader:
 
     def createOneDDataArray(self, layer):
         """ 	This is a relatively simple routine that takes a layer and makes a series of 1D arrays containing points.
-  		These output 1D arrays are then passed to UKESMpython.py's makemasks toolkit.
+  		These output 1D arrays are then passed to bv2tools.py's makemasks toolkit.
   	"""
 
         #####
@@ -437,7 +437,7 @@ class DataLoader:
             if self.coords['lat'] not in self.nc.variables or self.coords['lon'] not in self.nc.variables:
                 raise KeyError(f"ERROR: coordinates provided do not match coordinates in file: {self.coords['lat']}, {self.coords['lon']}")
             lat = self.nc.variables[self.coords['lat']][:]
-            lon = ukp.makeLonSafeArr(self.nc.variables[self.coords['lon']]
+            lon = bvt.makeLonSafeArr(self.nc.variables[self.coords['lon']]
                                      [:])  # makes sure it's between +/-180
             dims = choose_best_ncvar(self.nc, self.details['vars']).dimensions
             dat = self.__getlayerDat__(layer)
@@ -495,7 +495,7 @@ class DataLoader:
         # Different data has differnt shapes, and order or dimensions, this takes those differences into account.
         if dat.ndim > 2:
             if dims[-2].lower() in latnames and dims[-1].lower() in lonnames:
-                for index, v in ukp.maenumerate(dat):
+                for index, v in bvt.maenumerate(dat):
                     try:
                         (t, z, y, x) = index
                     except:
@@ -518,7 +518,7 @@ class DataLoader:
 
             elif dims[-2].lower() in lonnames and dims[-1].lower() in latnames:
 
-                for index, v in ukp.maenumerate(dat):
+                for index, v in bvt.maenumerate(dat):
                     try:
                         (t, z, x, y) = index
                     except:
@@ -604,7 +604,7 @@ def makeArea(fn, coordsdict):
         meanLonDiff = np.abs(lons[:-1] - lons[1:]).mean()
         for a in np.arange(len(lats)):
             print(a, area.shape, len(lats), len(lons))
-            area[a, :] = np.ones(len(lons)) * ukp.Area(
+            area[a, :] = np.ones(len(lons)) * bvt.Area(
                 [lats[a] - meanLatDiff / 2., -meanLonDiff / 2.],
                 [lats[a] + meanLatDiff / 2., meanLonDiff / 2.])
         return area

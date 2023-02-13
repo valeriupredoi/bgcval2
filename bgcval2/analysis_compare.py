@@ -57,7 +57,7 @@ import itertools
 
 #####
 # Load specific local code:
-from . import UKESMpython as ukp
+from .bgcvaltools import bv2tools as bvt
 from .timeseries import timeseriesAnalysis
 from .timeseries import profileAnalysis
 from .timeseries import timeseriesPlots as tsp
@@ -299,13 +299,13 @@ def timeseries_compare(jobs,
         #####
         # Location of images directory
         # the imagedir is where the analysis images will be saved.
-        imagedir = ukp.folder(paths.imagedir + '/' + jobID + '/timeseries')
-        shelvedir = ukp.folder(paths.shelvedir + "/timeseries/" + jobID)
+        imagedir = bvt.folder(paths.imagedir + '/' + jobID + '/timeseries')
+        shelvedir = bvt.folder(paths.shelvedir + "/timeseries/" + jobID)
 
         if jobID in list(ensembles.keys()): continue
         # ensembles names can not be the same as jobIDs
 
-        av = ukp.AutoVivification()
+        av = bvt.AutoVivification()
 
         # NEW STYLE keys from file:
         for key in analysisKeys:
@@ -415,7 +415,7 @@ def timeseries_compare(jobs,
                     arrD,  # model time series
                     data=-999,  # in situ data distribution
                     title=title,
-                    filename=ukp.folder(imageFolder) +
+                    filename=bvt.folder(imageFolder) +
                         '_'.join([name, region, layer, ts, ls + '.png']),
                     units=units,
                     plotStyle=ts,
@@ -443,7 +443,7 @@ def timeseries_compare(jobs,
     # Senmd everything to the comparison maker:
     comparehtml5Maker(
         jobIDs=jobs,
-        reportdir=ukp.folder('CompareReports2/' + analysisname),
+        reportdir=bvt.folder('CompareReports2/' + analysisname),
         files=AllImages,
         clean=False,
         doZip=False,
