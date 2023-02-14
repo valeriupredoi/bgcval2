@@ -30,10 +30,6 @@
 """
 
 import numpy as np
-from bgcval2.bgcvaltools.dataset import dataset
-import os, sys
-import errno
-from bgcval2.functions.get_kwarg_file import get_kwarg_file
 from bgcval2.functions.standard_functions import choose_best_var 
 
 
@@ -45,6 +41,7 @@ def calc_vol(nc):
     thkcello = nc.variables['thkcello'][:]
     area = area[None, None,:, :]
     return thkcello * area
+
 
 def globalVolumeMean(nc, keys, **kwargs):
     """
