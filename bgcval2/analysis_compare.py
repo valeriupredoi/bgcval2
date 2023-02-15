@@ -1562,11 +1562,12 @@ def timeseries_compare(jobs,
                 "analysis-Timeseries.py:\tBeginning to call timeseriesAnalysis for ",
                 name)
 
-            if len(av[name]['modelFiles']) == 0:
-                print(
-                    "analysis-Timeseries.py:\tWARNING:\tmodel files are not found:",
-                    av[name]['modelFiles'], jobID)
-                if strictFileCheck: assert 0
+            if not av[name]['modelFiles']:
+                file_err = "analysis-Timeseries.py:\tWARNING:\tmodel files are not " \
+                           f"found: {av[name]['modelFiles']} for {jobID}"
+                print(file_err)
+                if strictFileCheck:
+                    raise FileNotFoundError(file_err)
 
             modelfilesexists = [
                 os.path.exists(f) for f in av[name]['modelFiles']
@@ -1575,14 +1576,17 @@ def timeseries_compare(jobs,
                 print(
                     "analysis-Timeseries.py:\tWARNING:\tnot model files do not all exist:",
                     av[name]['modelFiles'])
-                if strictFileCheck: assert 0
+                if strictFileCheck:
+                    raise FileError('Model Files are not found jobID: %s, name: %s', jobID, name)
 
-            if 'dataFile' in av[name]:
-                if not os.path.exists(av[name]['dataFile']):
-                    print(
-                        "analysis-Timeseries.py:\tWARNING:\tdata file is not found:",
-                        av[name]['dataFile'])
-                    if strictFileCheck: assert 0
+
+            if 'dataFile' in av[name] and not os.path.exists(av[name]['dataFile']):
+                print(
+                    "analysis-Timeseries.py:\tWARNING:\tdata file is not found:",
+                    av[name]['dataFile'])
+                if strictFileCheck:
+                    raise FileError('Data Files are not found jobID: %s, name: %s', jobID, name)
+
 
             #####
             # time series and traffic lights.
@@ -1812,7 +1816,7 @@ def load_yml_and_run(compare_yml, config_user):
     timeranges = details['timeranges']
     suites = details['suites']
     auto_download = details['auto_download']
-
+    strictFileCheck = details.get('strictFileCheck', True)
     print('---------------------')
     print('timeseries_compare:',  analysis_name)
     print('job ids:', jobs.keys())
@@ -1836,7 +1840,8 @@ def load_yml_and_run(compare_yml, config_user):
             analysis_timeseries(
                 jobID=jobID,
                 suites=suites[jobID],
-                config_user=config_user
+                config_user=config_user,
+                strictFileCheck=strictFileCheck,
             )
 
     # Master suite leys:

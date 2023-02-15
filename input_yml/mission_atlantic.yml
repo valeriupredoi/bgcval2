@@ -1,0 +1,59 @@
+---
+# GC5 N96 ORCA1 spinup analysis
+name: MissionAtlantic_PML
+
+# Run the single job analysis
+do_analysis_timeseries: True 
+
+# Download from mass:
+do_mass_download: False
+
+# Strict file check (fails if True and files are missing)
+strictFileCheck: False
+
+# master analysis suite
+master_suites: missionatlantic
+
+# Auto download jobs (can also be set for individual jobs).
+auto_download: False
+
+# Job ID's suites as named by Rose/Cylc
+jobs:
+     test17: 
+        description: 'NEMO-ERSEM eORCA025 - revised rivers  '
+        colour: green  
+        thickness: 1.8
+        linestyle: '-'
+        shifttime: 0.
+        suite: missionatlantic
+     test17a:
+        description: 'NEMO-ERSEM eORCA025 - with iron deposition x0.1'
+        colour: red  
+        thickness: 1.7
+        linestyle: '-'
+        shifttime: 0.
+        suite: missionatlantic
+     test17aa:
+        description: 'NEMO-ERSEM eORCA025 - with iron deposition x0.59 spinup year 1'
+        colour: blue
+        thickness: 1.7
+        linestyle: '-'
+        shifttime: 0.
+        suite: missionatlantic
+     test17b:
+        description: 'NEMO-ERSEM eORCA025 - with iron deposition x0.59 spinup year 2'
+        colour: blue
+        thickness: 1.7
+        linestyle: '-'
+        shifttime: 1.
+        suite: missionatlantic
+     test17c:
+        description: 'NEMO-ERSEM eORCA025 - with iron deposition x0.59 spinup year 3'
+        colour: blue
+        thickness: 1.7
+        linestyle: '-'
+        shifttime: 2.
+        suite: missionatlantic
+
+
+

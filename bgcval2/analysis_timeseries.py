@@ -89,7 +89,7 @@ def listModelDataFiles(jobID, filekey, datafolder, annual):
     return model_files
 
 
-def list_input_files(files_path, key_dict, paths):
+def list_input_files(files_path, key_dict, paths, strictFileCheck=True):
     """
     Generate a list of files from a path, which may include
     several $PATH values.
@@ -111,7 +111,7 @@ def list_input_files(files_path, key_dict, paths):
     if not glob(basedir):
         raise OSError(f"Base {basedir} is not a valid directory.")
     input_files = sorted(glob(files_path))
-    if not input_files:
+    if strictFileCheck and not input_files:
         raise FileNotFoundError(f"Data dir {basedir} does not contain any file "
                                 f"that matches pattern {files_path}, {flag}")
     return input_files
@@ -252,7 +252,7 @@ def parse_list_from_string(list1):
     return list1.split(' ')
 
 
-def load_key_file(key, paths, jobID):
+def load_key_file(key, paths, jobID, strictFileCheck=True):
     """
     load_key_file:
         takes an input file from key_files directory
@@ -300,7 +300,7 @@ def load_key_file(key, paths, jobID):
     # Load Grid:
     gridFile = key_dict.get('gridFile', paths.orcaGridfn)
     output_dict['gridFile'] = list_input_files(gridFile, key_dict, paths)[0]
-
+    
     # load model or data specific parts:
     for model_or_data in ['model', 'data']:
         md_vars = key_dict.get(''.join([model_or_data, '_vars']), False)
@@ -329,18 +329,18 @@ def load_key_file(key, paths, jobID):
             }
         for kwarg, kwarg_value in kwargs.items():
             if isinstance(kwarg_value, str) and kwarg.lower().find('file')>-1:
-                output_dict[''.join([model_or_data,'details'])][kwarg] = list_input_files(kwarg_value, key_dict, paths)
+                output_dict[''.join([model_or_data,'details'])][kwarg] = list_input_files(kwarg_value, key_dict, paths, strictFileCheck=strictFileCheck)
             else:
                 output_dict[''.join([model_or_data,'details'])][kwarg] = kwarg_value
 
         if model_or_data == 'model':
             file_path = key_dict[''.join([model_or_data, 'Files'])]
-            mdfile = list_input_files(file_path, key_dict, paths)
+            mdfile = list_input_files(file_path, key_dict, paths, strictFileCheck=strictFileCheck)
             output_dict[''.join([model_or_data, 'Files'])] = mdfile
         else:
             # get data file path
             file_path = key_dict[''.join([model_or_data, 'File'])]
-            mdfile = list_input_files(file_path, key_dict, paths)
+            mdfile = list_input_files(file_path, key_dict, paths, strictFileCheck=strictFileCheck)
             if isinstance(mdfile, list) and len(mdfile) == 1:
                 mdfile = mdfile[0]
 
@@ -633,7 +633,7 @@ def analysis_timeseries(
     # NEW STYLE keys from file:
     av = bvt.AutoVivification()
     for key in analysisKeys:
-        av[key] = load_key_file(key, paths, jobID)
+        av[key] = load_key_file(key, paths, jobID, strictFileCheck=strictFileCheck)
 
     #####
     # Calling timeseriesAnalysis
