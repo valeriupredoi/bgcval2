@@ -1610,7 +1610,6 @@ def timeseries_compare(jobs,
                 gridFile=av[name]['gridFile'],
                 clean=False,
                 noNewFiles=True,
-#                strictFileCheck=strictFileCheck,
             )
             #dataD[(jobID,name )] = tsa.dataD
             modeldataD[(jobID, name)] = tsa.modeldataD
