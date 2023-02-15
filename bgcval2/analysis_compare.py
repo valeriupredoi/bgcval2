@@ -1562,12 +1562,13 @@ def timeseries_compare(jobs,
                 "analysis-Timeseries.py:\tBeginning to call timeseriesAnalysis for ",
                 name)
 
-            if len(av[name]['modelFiles']) == 0:
-                print(
-                    "analysis-Timeseries.py:\tWARNING:\tmodel files are not found:",
-                    av[name]['modelFiles'], jobID)
-                if strictFileCheck: 
-                    raise FileError('Model Files are not provided jobID: %s, name: %s', jobID, name)
+            if not av[name]['modelFiles']:
+                file_err = \
+                    f"analysis-Timeseries.py:\tWARNING:\tmodel files are not "
+                    f"found: {av[name]['modelFiles']} for {jobID}"
+                print(file_err)
+                if strictFileCheck:
+                    raise FileNotFoundError(file_err)
 
             modelfilesexists = [
                 os.path.exists(f) for f in av[name]['modelFiles']
