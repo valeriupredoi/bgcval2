@@ -1563,9 +1563,8 @@ def timeseries_compare(jobs,
                 name)
 
             if not av[name]['modelFiles']:
-                file_err = \
-                    f"analysis-Timeseries.py:\tWARNING:\tmodel files are not "
-                    f"found: {av[name]['modelFiles']} for {jobID}"
+                file_err = "analysis-Timeseries.py:\tWARNING:\tmodel files are not " \
+                           f"found: {av[name]['modelFiles']} for {jobID}"
                 print(file_err)
                 if strictFileCheck:
                     raise FileNotFoundError(file_err)
