@@ -10,4 +10,4 @@ model_vars      : O3_TA
 model_convert   : NoChange
 layers          : Surface 500m
 regions         : Global NorthAtlanticOcean SouthAtlanticOcean EquatorialAtlanticOcean
-metrics         : mean #, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max
+metrics         : mean, max #, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max

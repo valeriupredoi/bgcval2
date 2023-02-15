@@ -224,6 +224,7 @@ do_analysis_timeseries: <bool>
 do_mass_download: <bool>
 master_suites: <str>
 auto_download: <bool>
+strictFileCheck: <bool>
 
 jobs:
    <jobID1>:
@@ -261,6 +262,9 @@ These values are:
    - If the job is not run, older jobs are removed from the nightly download after some time.
    - This boolean flag can be set at the top level or for individual jobs.
    - Please set it to false if your job has completed and all relevant has been downloaded.
+ - `strictFileCheck`: 
+   - A boolean which when True will raise an error if input model files are missing. 
+   - Default is True, set to False to skip this check.
  - `jobs`:
    - A list of jobIDs, and some options on how they will appear in the final report.
    - The options are:

@@ -9,4 +9,4 @@ gridFile        : /data/proteus2/scratch/ledm/MissionAtlantic/SENEMO/eORCA025_me
 model_vars      : somxzint1
 layers          : layerless
 regions         : Global NorthAtlanticOcean SouthAtlanticOcean EquatorialAtlanticOcean ITCZ
-metrics         : mean #, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max
+metrics         : mean, max #, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max
