@@ -1,6 +1,6 @@
 ---
 # GC5 N96 ORCA1 spinup analysis
-name: MissionAtlantic_PML
+name: MissionAtlantic_PML_debug
 
 # Run the single job analysis
 do_analysis_timeseries: True 
@@ -9,19 +9,18 @@ do_analysis_timeseries: True
 do_mass_download: False
 
 # master analysis suite
-master_suites: missionatlantic
+master_suites: ma_debug
 
 # Auto download jobs (can also be set for individual jobs).
 auto_download: False
 
 # Job ID's suites as named by Rose/Cylc
 jobs:
-     test17: 
-        description: 'NEMO-ERSEM eORCA025 - revised rivers  '
-        colour: green  
+     test16:
+        description: 'NEMO-ERSEM eORCA025'
+        colour: purple
         thickness: 1.5
         linestyle: '-'
         shifttime: 0.
-        suite: missionatlantic
-
+        suite: ma_debug
 

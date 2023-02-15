@@ -75,6 +75,14 @@ def calc_total_airseafluxco2(nc, keys, **kwargs):
     return arr.sum()
 
 
-
-
-
+def calc_ma_total_airseafluxco2(nc, keys, **kwargs):
+    """
+    This function calculated the total Air Sea FLux for the ERSEM model in the eORCA025 grid.
+    Mission Atlantic code
+    """
+    factor =  365.25 * 12. / 1000. / 1.E15 # convert mmolC/m2/d to Pg/yr
+    if  keys[0] not in nc.variables: return 0.
+    arr = nc.variables[keys[0]][:].squeeze() * nc.variables['area'][:] *factor    # mmolC/m2/d
+    return arr.sum()
+    
+    

@@ -1,0 +1,13 @@
+---
+name            : TotalAirSeaFluxCO2
+units           : Pg C/yr
+model           : NEMO-ERSEM
+modelgrid       : eORCA025
+dimensions      : 1
+modelFiles      : $BASEDIR_MODEL/$JOBID/SENEMO_*_1m_*diag_T*.nc
+model_vars      : O3_fair
+model_convert   :
+    path: bgcval2/functions/AirSeaFluxCO2.py
+    function: calc_ma_total_airseafluxco2
+layers          : layerless
+regions         : regionless

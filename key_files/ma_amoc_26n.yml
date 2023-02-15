@@ -4,7 +4,7 @@ name: AMOC_26N
 units: Sv
 dimensions: 1
 model: NEMO
-modelFiles      : $BASEDIR_MODEL/$JOBID/SENEMO_S1_1m_*grid_V*.nc
+modelFiles      : $BASEDIR_MODEL/$JOBID/SENEMO_*_1m_*grid_V*.nc
 modelgrid       : eORCA025
 model_vars: vo
 model_convert:
@@ -12,6 +12,6 @@ model_convert:
   function: AMOC26N
   areafile: $PATHS_GRIDFILE
   altmaskfile: $PATHS_BGCVAL2/bgcval2/data/basinlandmask_eORCA1.nc
-  grid: eORCA025  
+  grid: eORCA025
 layers: layerless
 regions: regionless
