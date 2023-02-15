@@ -47,6 +47,10 @@ def globalVolumeMean(nc, keys, **kwargs):
     """
     Calculate the global volume mean.
     """
+    # first check kwargs
+    if not kwargs:
+        raise FileNotFoundError("No keyword args supplied to function.")
+
     # To add a constant value to the data (usually Kelvin to Celcius)
     addvalue = kwargs.get('addvalue', 0.)
 
