@@ -1566,7 +1566,8 @@ def timeseries_compare(jobs,
                 print(
                     "analysis-Timeseries.py:\tWARNING:\tmodel files are not found:",
                     av[name]['modelFiles'], jobID)
-                if strictFileCheck: assert 0
+                if strictFileCheck: 
+                    raise FileError('Model Files are not provided jobID: %s, name: %s', jobID, name)
 
             modelfilesexists = [
                 os.path.exists(f) for f in av[name]['modelFiles']
@@ -1575,14 +1576,17 @@ def timeseries_compare(jobs,
                 print(
                     "analysis-Timeseries.py:\tWARNING:\tnot model files do not all exist:",
                     av[name]['modelFiles'])
-                if strictFileCheck: assert 0
+                if strictFileCheck:
+                    raise FileError('Model Files are not found jobID: %s, name: %s', jobID, name)
 
-            if 'dataFile' in av[name]:
-                if not os.path.exists(av[name]['dataFile']):
-                    print(
-                        "analysis-Timeseries.py:\tWARNING:\tdata file is not found:",
-                        av[name]['dataFile'])
-                    if strictFileCheck: assert 0
+
+            if 'dataFile' in av[name] and not os.path.exists(av[name]['dataFile']):
+                print(
+                    "analysis-Timeseries.py:\tWARNING:\tdata file is not found:",
+                    av[name]['dataFile'])
+                if strictFileCheck:
+                    raise FileError('Data Files are not found jobID: %s, name: %s', jobID, name)
+
 
             #####
             # time series and traffic lights.
