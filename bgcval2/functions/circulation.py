@@ -146,6 +146,7 @@ def loadAtlanticMask(altmaskfile, maskname='tmaskatl', grid = 'eORCA1'):
     Load the atlantic ocean mask.
     """
     global alttmask_AMOC26N
+    global loadedAltMask
     if grid == 'eORCA1':
         latslice26Nnm = eORCA1_latslice26Nnm
     else:
@@ -235,9 +236,12 @@ def TwentySixNorth(nc,keys,**kwargs):
 
     else:
         # grid not recognised.
-        assert 0
+        raise ValueError('TwentySixNorth: grid not recognised: %s', grid)
+
     if not loadedAltMask:
         # Atlantic Mask not loaded
+        raise ValueError('TwentySixNorth: Mask not loaded: ed: %s', grid)
+
         assert 0 
 
 

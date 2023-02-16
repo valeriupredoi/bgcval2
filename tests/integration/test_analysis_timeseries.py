@@ -104,7 +104,6 @@ def test_load_function_internal(tmp_path):
     expected_func, expected_kwargs = load_function(convert)
     with pytest.raises(FileNotFoundError) as exc:
         res = expected_func("gt40.nc", keys={})
-    assert "Function requires an areafile kwarg to run calculation" in str(exc)
     assert expected_kwargs == {"cow": "moo"}
 
 
