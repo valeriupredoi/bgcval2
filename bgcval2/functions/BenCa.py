@@ -45,6 +45,8 @@ def load_area_and_mask(areafile):
     """Load area file and its mask."""
     if isinstance(areafile, list) and len(areafile)==1:
         areafile = areafile[0]
+    else:
+        raise ValueError(f"{areafile} must be a length=1 list containing a single file descriptor.")
     nc = dataset(areafile, 'r')
     area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
     nc.close()
@@ -73,8 +75,3 @@ def calc_total_benca(nc, keys, **kwargs):
         raise ValueError(f"TotalBenCa: {keys[0]} from {nc.filename} has an unexpected number of dimensions: {arr.ndim}")
 
     return arr.sum()
-
-
-
-
-
