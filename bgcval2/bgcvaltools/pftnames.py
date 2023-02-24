@@ -182,6 +182,23 @@ def makeLongNameDict():
     lnd['IntegratedPrimaryProduction_OSU'] = "Integrated Primary Production (OSU)"
     lnd['TotalIntegratedPrimaryProduction'] = "Total Integrated Primary Production"
 
+    # Ocean alkalinity enhancement additions
+    lnd['RiverineAlkalinity'] = 'Riverine flux of alkalinity'
+    lnd['Atmospheric_xCO2'] = 'Atmospheric xCO2'
+    lnd['TotalIntPP'] = 'Total integrated net primary production'
+    lnd['Calcium_carbonate_production'] = 'Net calcium carbonate production'
+    lnd['Surface_omega_aragonite'] = 'Surface omega aragonite'
+    lnd['Seafloor_omega_aragonite'] = 'Seafloor omega aragonite'
+    lnd['TotalInvtAlk'] = 'Vertically-integrated alkalinity'
+    lnd['TotalBenCa'] = 'Seafloor calcium carbonate'
+    lnd['CaCO3_production'] = 'Net calcium carbonate production'
+    lnd['Surface_omega_calcite'] = 'Surface omega calcite'
+    lnd['Seafloor_omega_calcite'] = 'Seafloor omega calcite'
+    lnd['Ocean_pCO2'] = 'Surface ocean pCO2'
+    lnd['Ocean_delta_pCO2'] = 'Surface air-sea delta pCO2'
+    lnd['CaCO3_export_100m'] = 'Particulate calcium carbonate export across 100m'
+    lnd['Corg_export_100m'] = 'Particulate organic carbon export across 100m'
+
     lnd['ZMI'] = 'Microzooplankton'
     lnd['ZME'] = 'Mesozooplankton'
     lnd['PHD'] = 'Diatoms'
