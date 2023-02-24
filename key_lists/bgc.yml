@@ -38,3 +38,5 @@ keys:
     # Misc.
     Dust: True  # Dust
     TotalDust: True                # Total Dust
+    DMS: True
+

@@ -1,0 +1,21 @@
+---
+name            : DMS
+units           : nmol/L
+model           : MEDUSA
+modelgrid       : eORCA1
+dimensions      : 2
+
+# The filenames
+modelFiles      : $BASEDIR_MODEL/$JOBID/medusa*$JOBIDo_1y_*_diad-T.nc
+modelFile_p2p   : $BASEDIR_MODEL/$JOBID/medusa*$JOBDo_1y_*$YEAR????_ptrc-T.nc
+gridFile        : $BASEDIR_MODEL/mesh_mask_eORCA1_wrk.nc
+
+# Model coordinates/dimension names
+model_vars      : DMS_SURF
+model_convert   : NoChange 
+
+layers          : layerless
+regions         : Global
+
+
+
