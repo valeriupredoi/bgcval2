@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - pin-nctoolkit
   schedule:
     - cron: '0 0 * * *'  # nightly
 
