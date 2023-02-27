@@ -1,0 +1,17 @@
+---
+name            : TotalInvtAlk
+units           : Peq
+model           : MEDUSA
+modelgrid       : eORCA1
+dimensions      : 1
+modelFiles      : $BASEDIR_MODEL/$JOBID/medusa*_$JOBIDo_1y_*_diad-T.nc
+model_vars      : INVTALK
+model_convert   :
+    path: bgcval2/functions/InvtAlk.py
+    function: calc_total_invtalk
+    areafile: $PATHS_GRIDFILE
+layers          : layerless
+regions         : regionless
+
+
+
