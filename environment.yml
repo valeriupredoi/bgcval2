@@ -9,7 +9,7 @@ dependencies:
   - basemap>=1.3.6
   - cartopy
   - matplotlib
-  - nctoolkit
+  - nctoolkit >=0.8.7  # use linux64 build
   - netcdf4
   - numpy
   - pip!=21.3
