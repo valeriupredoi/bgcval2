@@ -1,0 +1,13 @@
+---
+name            : Surface_omega_aragonite
+units           : ''
+model           : MEDUSA
+modelgrid       : eORCA1
+dimensions      : 2
+modelFiles      : $BASEDIR_MODEL/$JOBID/medusa*$JOBIDo_1y_*_diad-T.nc
+model_vars      : OM_ARG
+model_convert   : NoChange
+layers          : layerless
+regions         : Global OnShelf OffShelf ignoreInlandSeas SouthernOcean ArcticOcean Equator10 Remainder NorthernSubpolarAtlantic NorthernSubpolarPacific
+
+

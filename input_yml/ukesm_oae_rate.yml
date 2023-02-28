@@ -1,0 +1,52 @@
+---
+# GC5 N96 ORCA1 spinup analysis
+name: ukesm_oae_rate
+
+# Run the single job analysis
+do_analysis_timeseries: True 
+# Download from mass:
+do_mass_download: False
+
+# master analysis suite
+master_suites: kmf bgc alkalinity physics
+
+clean: True
+
+# Job ID's suites as named by Rose/Cylc
+# •     u-co094 - no alk added
+# •     u-cp799 - alk added at bathy - or 100m (if bathy deeper)
+# •     u-ct619 - alk added at double rate
+# •     u-ct620 - alk added at half rate
+#
+jobs:
+    u-co094:
+        description: 'no alk added'
+        colour: black
+        thickness: 0.7
+        linestyle: '-'
+        shifttime: 0.
+        suite: kmf bgc alkalinity physics
+#
+    u-ct619:
+       description: 'alk added at double default rate'
+       colour: red 
+       thickness: 2.0
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf bgc alkalinity physics
+#
+    u-cp799:
+       description: 'alk added at default rate'
+       colour: green
+       thickness: 2.0
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf bgc alkalinity physics
+#
+    u-ct620:
+       description: 'alk added at half default rate'
+       colour: blue
+       thickness: 2.0
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf bgc alkalinity physics
