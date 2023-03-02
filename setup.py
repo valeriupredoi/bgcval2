@@ -57,7 +57,8 @@ REQUIREMENTS = {
         'docformatter',
         'isort',
         'pre-commit',
-        'prospector[with_pyroma,with_mypy]!=1.1.6.3,!=1.1.6.4',
+        # prospector still doesn't support Python=3.11 (24/02/2023)
+        # 'prospector[with_pyroma,with_mypy]!=1.1.6.3,!=1.1.6.4',
         'sphinx>2',
         'sphinx_rtd_theme',
         'vprof',
