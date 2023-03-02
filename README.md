@@ -19,7 +19,7 @@ This work was funded through WP1 of the Terrafirma project.
 
 Current version notes:
 
-- Suport for Python 3.10 is now **enabled**.
+- Suport for the latest version Python 3.11 is now **enabled**.
 
 Environment and installation
 ============================
