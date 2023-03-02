@@ -1,0 +1,13 @@
+---
+name            : Seafloor_omega_calcite
+units           : ''
+model           : MEDUSA
+modelgrid       : eORCA1
+dimensions      : 2
+modelFiles      : $BASEDIR_MODEL/$JOBID/medusa*$JOBIDo_1y_*_diad-T.nc
+model_vars      : SFR_OCAL
+model_convert   : NoChange
+layers          : layerless
+regions         : Global OnShelf OffShelf ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthAtlanticOcean SouthAtlanticOcean NorthPacificOcean SouthPacificOcean #;Remainder NorthernSubpolarAtlantic NorthernSubpolarPacific
+
+
