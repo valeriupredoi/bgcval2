@@ -227,7 +227,7 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
     if type(layer) in [
             type(0),
             np.int64,
-            np.int,
+            int,
     ]:
         k = layer
         try:
