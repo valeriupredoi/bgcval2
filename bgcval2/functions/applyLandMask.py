@@ -40,7 +40,7 @@ tmask = {}
 def loadDataMask(areafile, maskname):
     global tmask
     nc = dataset(areafile, 'r')        
-    tmask[(areafile, maskname)] = np.array(nc.variables[maskname][:].squeeze(), dtype=np.bool)
+    tmask[(areafile, maskname)] = np.array(nc.variables[maskname][:].squeeze(), dtype=bool)
     nc.close()
     return tmask[(areafile, maskname)]
 
