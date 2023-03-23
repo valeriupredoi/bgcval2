@@ -31,7 +31,7 @@ import numpy as np
 from bgcval2.bgcvaltools.dataset import dataset
 from bgcval2.functions.get_kwarg_file import get_kwarg_file
 from bgcval2.functions.standard_functions import find_best_var
-from tools import load_area
+from bgcval2.functions.tools import load_area
 
 global loadedArea
 global model_area

@@ -32,7 +32,7 @@ import os
 import numpy as np
 from bgcval2.bgcvaltools.dataset import dataset
 from bgcval2.functions.get_kwarg_file import get_kwarg_file
-from tools import load_area
+from bgcval2.functions.tools import load_area
 
 global loaded_area_and_mask
 global tmask
