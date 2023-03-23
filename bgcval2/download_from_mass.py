@@ -425,7 +425,7 @@ def download_from_mass(
     except OSError:
         import getpass
         username = getpass.getuser()
-    download_script_path = ''.join([folder('mass_scripts/'), jobID,'_',username, '.sh'])
+    download_script_path = ''.join([folder('mass_scripts/'), jobID, '_', username, '.sh'])
     header_lines = ['# Run this script on mass-cli1.jasmin.ac.uk\n',]
     header_lines.append('# from login1.jasmin.ac.uk, ssh to the mass machine:\n#     ssh -X  mass-cli\n')
     header_lines.append(''.join(['# run script with:\n# source ', os.path.abspath(download_script_path),'\n']))
