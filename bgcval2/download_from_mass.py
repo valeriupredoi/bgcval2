@@ -410,7 +410,8 @@ def download_from_mass(
     # make this folder group writeable. 
     st = os.stat(outputFold)
 
-    try: os.chmod(outputFold, st.st_mode | stat.S_IWGRP)
+    try:
+        os.chmod(outputFold, st.st_mode | stat.S_IWGRP)
     except OSError:
         pass
 
