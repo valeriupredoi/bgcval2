@@ -42,7 +42,8 @@ def loadDataMask(gridfn):
     global loadedArea
     global masked_area
     nc = dataset(gridfn,'r')
-    masked_area = nc.variables['e2t'][:] * nc.variables['e1t'][:]*nc.variables['tmask'][0]
+    area = load_area(nc)
+    masked_area = area *nc.variables['tmask'][0]
     nc.close()
     loadedArea = True
 

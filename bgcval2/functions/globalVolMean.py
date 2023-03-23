@@ -31,15 +31,18 @@
 
 import numpy as np
 from bgcval2.functions.standard_functions import choose_best_var 
-
+from tools import load_area
 
 def calc_vol(nc):
     """
     Calculate volume from the (grid-T) netcdf file.
     """
-    area = nc.variables['area'][:]
+    area = load_area(area)
     thkcello = nc.variables['thkcello'][:]
-    area = area[None, None,:, :]
+    if area.ndim == 4:
+        area = area[None, None,:, :]
+    if area.ndim == 3:
+        area = area[None, :, :]
     return thkcello * area
 
 

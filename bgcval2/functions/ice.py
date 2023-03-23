@@ -32,6 +32,7 @@ import os
 import numpy as np
 from bgcval2.bgcvaltools.dataset import dataset
 from bgcval2.functions.get_kwarg_file import get_kwarg_file
+from tools import load_area
 
 global loaded_area_and_mask
 global tmask
@@ -50,7 +51,7 @@ def load_area_and_mask(gridfn, maskname,):
         gridfn = gridfn[0]
     nc = dataset(gridfn, 'r')
     tmask = nc.variables[maskname][0]
-    area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
+    area = load_area(nc)
     lat = nc.variables['nav_lat'][:]
     nc.close()
     loaded_area_and_mask = True
@@ -74,7 +75,7 @@ def calculate_ice_extent(nc, keys, **kwargs):
     if 'area' not in nc.variables and not loaded_area_and_mask:
         area, tmask, lat = load_area_and_mask(areafile, maskname)
     else:
-        area = nc.variables['area'][:]
+        area = load_area(nc)
         lat = nc.variables['nav_lat'][:]
         tmask = nc.variables[keys[0]][:].squeeze().mask
 

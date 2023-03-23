@@ -32,6 +32,7 @@
 import numpy as np
 from bgcval2.bgcvaltools.dataset import dataset
 from bgcval2.functions.get_kwarg_file import get_kwarg_file
+from tools import load_area
 
 global loaded_area_and_mask
 global tmask
@@ -46,7 +47,7 @@ def load_area_and_mask(areafile):
     if isinstance(areafile, list) and len(areafile)==1:
         areafile = areafile[0]
     nc = dataset(areafile, 'r')
-    area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
+    area = load_area(nc)
     nc.close()
     loaded_area_and_mask = True
     return area
