@@ -419,7 +419,11 @@ def download_from_mass(
     deleteBadLinksAndZeroSize(outputFold, jobID)
 
     # Set up a file to save command to a new file.
-    username = os.getlogin()
+    try:
+        username = os.getlogin()
+    except OSError:
+        import getpass
+        username = getpass.getuser()
     download_script_path = ''.join([folder('mass_scripts/'), jobID,'_',username, '.sh'])
     header_lines = ['# Run this script on mass-cli1.jasmin.ac.uk\n',]
     header_lines.append('# from login1.jasmin.ac.uk, ssh to the mass machine:\n#     ssh -X  mass-cli\n')
