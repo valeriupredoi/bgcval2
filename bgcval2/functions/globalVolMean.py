@@ -37,7 +37,7 @@ def calc_vol(nc):
     """
     Calculate volume from the (grid-T) netcdf file.
     """
-    area = load_area(area)
+    area = load_area(nc)
     thkcello = nc.variables['thkcello'][:]
     if area.ndim == 4:
         area = area[None, None,:, :]
