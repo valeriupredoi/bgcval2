@@ -411,7 +411,8 @@ def download_from_mass(
     st = os.stat(outputFold)
 
     try: os.chmod(outputFold, st.st_mode | stat.S_IWGRP)
-    except: pass
+    except OSError:
+        pass
 
     deleteBadLinksAndZeroSize(outputFold, jobID)
 
