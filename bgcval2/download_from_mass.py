@@ -413,7 +413,7 @@ def download_from_mass(
     try:
         os.chmod(outputFold, st.st_mode | stat.S_IWGRP)
     except OSError:
-        pass
+        print('Unable to change permissions:', outputFold)
 
     deleteBadLinksAndZeroSize(outputFold, jobID)
 
@@ -492,8 +492,10 @@ def download_from_mass(
     if auto_download:
         shared_file_path = os.path.join(paths.shared_mass_scripts, os.path.basename(download_script_path))
         print('writing file in shared path', shared_file_path)
-        try: shutil.copy(download_script_path, shared_file_path)
-        except: pass
+        try: 
+            shutil.copy(download_script_path, shared_file_path)
+        except EnvironmentError:
+            print('Error copying file', download_script_path, 'to', shared_file_path)
 
     fixFilePaths(outputFold, jobID, debug=False,)
     deleteBadLinksAndZeroSize(outputFold, jobID, debug=False,)
