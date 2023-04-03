@@ -410,8 +410,10 @@ def download_from_mass(
     # make this folder group writeable. 
     st = os.stat(outputFold)
 
-    try: os.chmod(outputFold, st.st_mode | stat.S_IWGRP)
-    except: pass
+    try:
+        os.chmod(outputFold, st.st_mode | stat.S_IWGRP)
+    except OSError:
+        pass
 
     deleteBadLinksAndZeroSize(outputFold, jobID)
 
@@ -419,8 +421,12 @@ def download_from_mass(
     deleteBadLinksAndZeroSize(outputFold, jobID)
 
     # Set up a file to save command to a new file.
-    username = os.getlogin()
-    download_script_path = ''.join([folder('mass_scripts/'), jobID,'_',username, '.sh'])
+    try:
+        username = os.getlogin()
+    except OSError:
+        import getpass
+        username = getpass.getuser()
+    download_script_path = ''.join([folder('mass_scripts/'), jobID, '_', username, '.sh'])
     header_lines = ['# Run this script on mass-cli1.jasmin.ac.uk\n',]
     header_lines.append('# from login1.jasmin.ac.uk, ssh to the mass machine:\n#     ssh -X  mass-cli\n')
     header_lines.append(''.join(['# run script with:\n# source ', os.path.abspath(download_script_path),'\n']))

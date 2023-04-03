@@ -44,6 +44,6 @@ def load_area(nc):
     elif set(['e1t', 'e2t']).intersection(set(nc.variables.keys())):
         area = nc.variables['e1t'][:]*nc.variables['e2t'][:]
     else:
-        raise ValueError('Unable to load or calculate area from this file.')
+        raise ValueError(f"Provided {nc} file doesn't contain any of permitted area variables {area_keys}")        
     return area
 
