@@ -240,7 +240,6 @@ def TwentySixNorth(nc,keys,**kwargs):
         # Atlantic Mask not loaded
         assert 0 
 
-
     zv = np.ma.array(nc.variables[keys[0]][..., latslice26Nnm, :]) # m/s
     atlmoc = np.array(np.zeros_like(zv[0, :, :, 0]))
     print('TwentySixNorth:', e3v_AMOC26N.shape, atlmoc.shape, zv.shape)
@@ -286,11 +285,35 @@ def twentysixnorth025(nc,keys,**kwargs):
     depths = np.ma.masked_where(thkcello.mask + np.abs(depths)<500., depths) # masked above 500m depth.
 
     e1v = e1v_AMOC26N[:,None, :, :]
-    flux = vo * depths * e1v_AMOC26N[:,None, :, :]/1.E06
-    
-    moc=np.ma.zeros_like(flux)
-    np.ma.cumsum(flux[:,::-1], axis=1, out=moc ) # sum floor to surface
-    return moc.max()
+#   flux = vo * thkcello * e1v_AMOC26N[:,None, :, :]/1.E06
+#   moc=np.ma.zeros_like(flux)
+#   np.ma.cumsum(flux[:,::-1], axis=1, out=moc ) # sum floor to surface
+#   return moc.max()
+    atlmoc = np.array(np.zeros_like(vo.squeeze()))
+    #print(atlmoc.shape, thkcello.shape, depths.shape, vo.shape, e1v_AMOC26N.shape, e3v_AMOC26N.shape)
+    # (75, 264) (1, 75, 1, 264) (1, 75, 1, 264) (1, 75, 1, 264) (1, 1, 264) (75, 264)
+
+    #assert 0 
+
+    for (t, z, la, lo), vox in np.ndenumerate(vo):
+        if not vox: 
+            continue
+        if not depths[t, z, la, lo] or np.ma.is_masked(depths[t, z, la, lo]):
+            continue
+#       if not alttmask_AMOC26N[la, lo]:
+#           continue
+#       if not tmask_AMOC26N[z, la, lo]:
+#           continue
+#       if np.ma.is_masked(zv[0, z, la, lo]):
+#           continue
+        atlmoc[z, la] = atlmoc[z, la] - e1v[t, 0, la, lo] * thkcello[t, z, la, lo] * vo[t, z, la, lo] / 1.E06
+
+    for z in range(thkcello.shape[1] -2, 1, -1): # add from the bottom up
+        atlmoc[z, :] = atlmoc[z+1, :] + atlmoc[z, :]
+    print('AMOC:', atlmoc.max())
+    #assert 0
+    return atlmoc.max()
+
 
  
 def AMOC26N(nc, keys, **kwargs):

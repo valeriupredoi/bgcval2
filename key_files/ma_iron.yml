@@ -4,7 +4,7 @@ units           : umol Fe/m^3
 dimensions      : 1
 model           : NEMO025-ERSEM
 modelgrid       : eORCA025
-modelFiles      : $BASEDIR_MODEL/$JOBID/SENEMO_*_1m_*ptrc_T*.nc
+modelFiles      : $BASEDIR_MODEL/$JOBID/SENEMO*_1m_*ptrc_T*.nc
 gridFile        : /data/proteus2/scratch/ledm/MissionAtlantic/SENEMO/eORCA025_mesh_mask_mes_v2.nc
 model_vars      : N7_f
 model_convert   : NoChange

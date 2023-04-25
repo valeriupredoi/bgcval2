@@ -1,0 +1,42 @@
+---
+# Mission Atlantic point to point fields.
+keys:
+  # Physics:
+  #
+  MA_SST: True
+  MA_SSS: True
+    #MA_AEU: True  
+    #MA_Drake: True
+    #MA_AMOC_26N: True
+    #MA_ZOS: True
+    # MA_MLD: True
+    #MA_MLD_Sigma: True
+
+  # Ice
+  #MA_SouthernTotalIceExtent: True
+  #MA_NorthernTotalIceExtent: True
+  #MA_TotalIceExtent: True
+
+  # BGC
+  # MA_Totalairseafluxco2: True # Not in test17
+  #  MA_TotalIntGPP: True
+  #MA_TotalIntNPP: True
+  MA_Nitrate: True
+    # MA_Ammonium: True
+  MA_Phosphate: True
+    #MA_Iron: True
+  MA_Silicate: True
+    # MA_TotalChlorophyll: True
+    #  MA_TotalPhytoC: True
+    #  MA_P1c: True  
+    #  MA_TotalZooC: True
+    #  MA_NPP: True
+    #  MA_GPP: True
+    #  MA_pH: True
+  MA_O2: True    
+    #  MA_DIC: True
+    #  MA_TA: True
+
+
+# what do we need here?
+# Air Sea Flux of CO2 - need new data.

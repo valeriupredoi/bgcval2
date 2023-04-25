@@ -26,34 +26,130 @@ jobs:
         linestyle: '-'
         shifttime: 0.
         suite: missionatlantic
-     test17a:
-        description: 'NEMO-ERSEM eORCA025 - with iron deposition x0.1'
-        colour: red  
+#     test17a:
+#        description: 'NEMO-ERSEM eORCA025 - with iron deposition x0.1'
+#        colour: red  
+#        thickness: 1.7
+#        linestyle: '-'
+#        shifttime: 0.
+#        suite: missionatlantic
+
+#    test17aa:
+#       description: 'NEMO-ERSEM eORCA025 - with iron deposition x0.59 spinup year 1'
+#       colour: blue
+#       thickness: 1.7
+#       linestyle: '-'
+#       shifttime: 0.
+#       suite: missionatlantic
+#    test17b:
+#       description: 'NEMO-ERSEM eORCA025 - with iron deposition x0.59 spinup year 2'
+#       colour: blue
+#       thickness: 1.7
+#       linestyle: '-'
+#       shifttime: 1.
+#       suite: missionatlantic
+#    test17c:
+#       description: 'NEMO-ERSEM eORCA025 - with iron deposition x0.59 spinup year 3'
+#       colour: blue
+#       thickness: 1.7
+#       linestyle: '-'
+#       shifttime: 2.
+#       suite: missionatlantic
+
+# Broken with weird DIC/pH
+#     test18a:
+#        description: 'NEMO-ERSEM eORCA025 - new river input - spinup year 1'
+#        colour: purple
+#        thickness: 1.7
+#        linestyle: '-'
+#        shifttime: 0.
+#        suite: missionatlantic
+#     test18b:
+#        description: 'NEMO-ERSEM eORCA025 - new river input - spinup year 2'
+#        colour: purple
+#        thickness: 1.7
+#        linestyle: '-'
+#        shifttime: 1.
+#        suite: missionatlantic
+#     test18c:
+#        description: 'NEMO-ERSEM eORCA025 - new river input - spinup year 3'
+#        colour: purple
+#        thickness: 1.7
+#        linestyle: '-'
+#        shifttime: 2.
+#        suite: missionatlantic
+
+#     test19_S1:
+#        description: 'NEMO-ERSEM eORCA025 - same as 18 but better - spinup year 1'
+#        colour: orange
+#        thickness: 1.7
+#        linestyle: '-'
+#        shifttime: 0.
+#        suite: missionatlantic
+#     test19_S2:
+#        description: 'NEMO-ERSEM eORCA025 - same as 18 but better - spinup year 2'
+#        colour: orange
+#        thickness: 1.7
+#        linestyle: '-'
+#        shifttime: 1.
+#        suite: missionatlantic
+#     test19_S3:
+#        description: 'NEMO-ERSEM eORCA025 - same as 18 but better - spinup year 3'
+#        colour: orange
+#        thickness: 1.7
+#        linestyle: '-'
+#        shifttime: 2.
+#         suite: missionatlantic
+
+     test19b_S1:
+        description: 'NEMO-ERSEM eORCA025 - same as 19 but better - spinup year 1'
+        colour: dodgerblue
         thickness: 1.7
         linestyle: '-'
         shifttime: 0.
         suite: missionatlantic
-     test17aa:
-        description: 'NEMO-ERSEM eORCA025 - with iron deposition x0.59 spinup year 1'
-        colour: blue
+#     test19b_S2:
+#        description: 'NEMO-ERSEM eORCA025 - same as 19 but better - spinup year 2'
+#        colour: dodgerblue
+#        thickness: 1.7
+#        linestyle: '-'
+#        shifttime: 1.
+#        suite: missionatlantic
+#     test19b_S3:
+#        description: 'NEMO-ERSEM eORCA025 - same as 19 but better - spinup year 3'
+#        colour: dodgerblue
+#        thickness: 1.7
+#        linestyle: '-'
+#        shifttime: 2.
+#        suite: missionatlantic
+
+     test25:
+        description: 'NEMO-ERSEM eORCA025 - stable(?!)'
+        colour: purple
         thickness: 1.7
         linestyle: '-'
-        shifttime: 0.
-        suite: missionatlantic
-     test17b:
-        description: 'NEMO-ERSEM eORCA025 - with iron deposition x0.59 spinup year 2'
-        colour: blue
-        thickness: 1.7
-        linestyle: '-'
-        shifttime: 1.
-        suite: missionatlantic
-     test17c:
-        description: 'NEMO-ERSEM eORCA025 - with iron deposition x0.59 spinup year 3'
-        colour: blue
-        thickness: 1.7
-        linestyle: '-'
-        shifttime: 2.
+        shifttime: 02.
         suite: missionatlantic
 
-
+#     test25S1:
+#        description: 'NEMO-ERSEM eORCA025 - stablE(?!) spinup s1'
+#        colour: purple
+#        thickness: 1.7
+#        linestyle: '-'
+#        shifttime: -3.
+#        suite: missionatlantic
+     test25S2:
+        description: 'NEMO-ERSEM eORCA025 - stable(?!) spinup 2'
+        colour: purple
+        thickness: 1.7
+        linestyle: '-'
+        shifttime: -2.
+        suite: missionatlantic
+     test25S3:
+        description: 'NEMO-ERSEM eORCA025 - stable(?!) spinup3'
+        colour: purple
+        thickness: 1.7
+        linestyle: '-'
+        shifttime: -1.
+        suite: missionatlantic
 

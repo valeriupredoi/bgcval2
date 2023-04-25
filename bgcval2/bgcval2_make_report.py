@@ -1004,7 +1004,7 @@ def html5Maker(
             for s in slices:
                 if s in [
                         'Surface',
-                        '1000m',
+                        '*',
                 ]:
                     vfiles.extend(
                         glob(imagedir + '/' + jobID + '/P2Pplots/*/*' + key +

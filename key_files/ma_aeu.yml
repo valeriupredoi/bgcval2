@@ -3,7 +3,7 @@ name: AEU #AtlanticEquatorialUndercurent
 units: Sv
 dimensions: 1
 model: NEMO
-modelFiles      : $BASEDIR_MODEL/$JOBID/SENEMO_*_1m_*grid_U*.nc
+modelFiles      : $BASEDIR_MODEL/$JOBID/SENEMO*_1m_*grid_U*.nc
 modelgrid       : eORCA025
 model_vars: uo
 model_convert:

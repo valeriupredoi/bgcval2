@@ -270,6 +270,7 @@ class matchDataAndModel:
                 '500m',
                 '1000m',
                 '2000m',
+                '4000m', 
         ]:
             print(
                 'matchDataAndModel:\tconvertDataTo1D:\tSlicing along depth direction.'
@@ -281,6 +282,7 @@ class matchDataAndModel:
             if self.depthLevel == '500m': z = 500.
             if self.depthLevel == '1000m': z = 1000.
             if self.depthLevel == '2000m': z = 2000.
+            if self.depthLevel == '4000m': z = 4000.
 
             if nc.variables[self.datacoords['z']].ndim == 1:
                 k = bvt.getORCAdepth(
