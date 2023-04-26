@@ -960,7 +960,7 @@ def html5Maker(
 
 
     if level2Physics or level2_auto:
-         if level2Physics: 
+        if level2Physics: 
             l2Fields = [
                 'Temperature',
                 'Salinity',
@@ -978,9 +978,9 @@ def html5Maker(
             region = 'Global'
 
         if level2_auto:
-            l2Fields = glob(imagedir + '/' + jobID + '/P2Pplots')
+            l2Fields = glob(imagedir + '/' + jobID + '/P2Pplots/*/*')
             l2Fields = [os.path.basename(fn) for fn in sorted(l2Fields)]
-            levels = ['Surface', '50m', '100m', '200m', '500m', '750m', '1000m', '1500m', '2000m', '4000m','Transect']
+            levels = ['Surface', '4000m', '2000m', '1000m', '750m','500m','200m', '100m', '50m', 'Transect']
             outdict = {}
             outlevels = {}
             for i, fn in enumerate(l2Fields):
@@ -1001,6 +1001,7 @@ def html5Maker(
         Descriptions = {}
         FileLists = {}
         FileOrder = {}
+        #print(l2Fields, slices)
 
         for key in sorted(l2Fields):
             #if key not in ['Alkalinity','Nitrate']: continue
@@ -1039,6 +1040,11 @@ def html5Maker(
                         glob(imagedir + '/' + jobID + '/P2Pplots/*/*' + key +
                              '*/*/*' + s + '*' + region + '*' + key + '*' +
                              year + '*robinquad-cartopy.png'))
+                    vfiles.extend(
+                        glob(imagedir + '/' + jobID + '/P2Pplots/*/*' + key +
+                             '*/*/*' + s + '*' + region + '*' + key + '*' +
+                             year + '*.png'))
+                        
                 if s in [
                         'Transect',
                 ]:

@@ -268,6 +268,7 @@ class matchDataAndModel:
                 '100m',
                 '200m',
                 '500m',
+                '750m',
                 '1000m',
                 '2000m',
                 '4000m', 
@@ -280,6 +281,7 @@ class matchDataAndModel:
             if self.depthLevel == '100m': z = 100.
             if self.depthLevel == '200m': z = 200.
             if self.depthLevel == '500m': z = 500.
+            if self.depthLevel == '750m': z = 750.
             if self.depthLevel == '1000m': z = 1000.
             if self.depthLevel == '2000m': z = 2000.
             if self.depthLevel == '4000m': z = 4000.
@@ -1124,6 +1126,8 @@ def var_to_datetime(ncvar):
     if units in ['months since 0000-01-01 00:00:00', ]:
         units = 'months since 2000-01-01 00:00:00'
         return num2date(ncvar[:], 'months since 2000-01-01 00:00:00', calendar='360_day') 
+    elif units.find('months since')>-1:
+        return num2date(ncvar[:], units, calendar='360_day') 
 
     return num2date(ncvar[:], ncvar.units, calendar=calendar)
 

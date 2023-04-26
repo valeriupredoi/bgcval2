@@ -8,6 +8,10 @@ modelFiles      : $BASEDIR_MODEL/$JOBID/SENEMO*_1m_*grid_T*.nc
 gridFile        : /data/proteus2/scratch/ledm/MissionAtlantic/SENEMO/eORCA025_mesh_mask_mes_v2.nc
 model_convert   : choose_best_var  
 model_vars      : somxzint1 mldr10_1
+dataFile        : $BASEDIR_OBS/WOA/annual/woa18_A5B7_M0200_01.nc
+data_vars       : M_an
+data_convert    : NoChange
+data_source     : WOA13
 layers          : layerless
 regions         : Global NorthAtlanticOcean SouthAtlanticOcean EquatorialAtlanticOcean ITCZ
 metrics         : mean, max #, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max
