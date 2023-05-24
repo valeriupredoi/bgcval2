@@ -38,7 +38,7 @@ REQUIREMENTS = {
     # Test dependencies
     # Execute 'python setup.py test' to run tests
     'test': [
-        'flake8<4',
+        'flake8',
         'pytest>=3.9,!=6.0.0rc1,!=6.0.0',
         'pytest-cov>=2.10.1',
         'pytest-env',
@@ -57,8 +57,7 @@ REQUIREMENTS = {
         'docformatter',
         'isort',
         'pre-commit',
-        # prospector still doesn't support Python=3.11 (24/02/2023)
-        # 'prospector[with_pyroma,with_mypy]!=1.1.6.3,!=1.1.6.4',
+        'prospector[with_pyroma,with_mypy]>=1.9.0',
         'sphinx>2',
         'sphinx_rtd_theme',
         'vprof',
@@ -176,6 +175,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Atmospheric Science',
         'Topic :: Scientific/Engineering :: GIS',

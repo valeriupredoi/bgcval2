@@ -12,7 +12,7 @@ dependencies:
   - netcdf4
   - numpy
   - pip!=21.3
-  - python>=3.8
+  - python>=3.9
   - pyyaml
   - scipy
   - scikit-learn
@@ -36,7 +36,6 @@ dependencies:
   - docformatter
   - isort
   - pre-commit
-  # prospector still doesn't support Python=3.11 (24/02/2023)
-  # - prospector!=1.1.6.3,!=1.1.6.4
+  - prospector >=1.9.0
   - yamllint
   - yapf
