@@ -29,7 +29,7 @@ REQUIREMENTS = {
         'matplotlib',
         'nctoolkit>=0.8.7',  # use linux64 build
         'netcdf4',
-        'numpy',
+        'numpy!=1.24.3',
         'pip!=21.3',
         'pyyaml',
         'scikit-learn',
