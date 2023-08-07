@@ -25,7 +25,8 @@ model_convert   :
 #data_convert_factor : 1000
 
 layers          : Surface #Transect ;CanRusTransect PTransect SOTransect Equator ArcTransect AntTransect ArcTransect AntTransect
-regions         : Global
+regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 Remainder NorthernSubpolarAtlantic NorthernSubpolarPacific # OnShelf OffShelf
+
 
 
 
