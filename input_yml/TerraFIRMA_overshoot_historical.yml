@@ -1,0 +1,69 @@
+---
+# GC5 N96 ORCA1 spinup analysis
+name: TerraFIRMA_overshoot_historical
+
+# Run the single job analysis
+do_analysis_timeseries: True 
+
+# Download from mass:
+do_mass_download: False
+
+# master analysis suite
+master_suites: physics bgc #alkalinity physics kmf1
+
+clean: True
+
+jobs:
+    u-ca306:
+       description: 'Reference '
+       colour: 'black'
+       thickness: 0.6
+       linestyle: '-'
+       shifttime: 0.
+       timerange: [1800, 1900]
+       suite: physics bgc #alkalinity physics
+
+    u-cy623:
+       description: 'interactive ice, started from picontrol yr 2277'
+       colour: red  
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: physics bgc #alkalinity physics
+
+    u-cy690: 
+       description: 'static ice sheets, started from picontrol yr 2277'
+       colour: purple
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: physics bgc #alkalinity physics
+
+    u-cy691:
+       description: 'static ice sheets, started from picontrol yr 2197'
+       colour: blue
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: physics bgc #alkalinity physics
+
+    u-cy692:
+       description: ' static ice sheets, started from picontrol yr 2237'
+       colour: green
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: physics  bgc #alkalinity physics kmf
+
+    u-cy693:
+       description: ' static ice sheets, started from picontrol yr 2317'
+       colour: goldenrod
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: physics  bgc #alkalinity physics kmf
+
+
+
+
+
