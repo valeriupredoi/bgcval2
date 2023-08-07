@@ -21,7 +21,7 @@ jobs:
        linestyle: '-'
        shifttime: 0.
        timerange: [1800, 1900]
-       suite: physics bgc #alkalinity physics
+       suite: kmf physics bgc #alkalinity physics
 
     u-cy623:
        description: 'interactive ice, started from picontrol yr 2277'
@@ -29,7 +29,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: physics bgc #alkalinity physics
+       suite: kmf physics bgc #alkalinity physics
 
     u-cy690: 
        description: 'static ice sheets, started from picontrol yr 2277'
@@ -37,7 +37,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: physics bgc #alkalinity physics
+       suite: kmf physics bgc #alkalinity physics
 
     u-cy691:
        description: 'static ice sheets, started from picontrol yr 2197'
@@ -45,7 +45,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: physics bgc #alkalinity physics
+       suite: kmf physics bgc #alkalinity physics
 
     u-cy692:
        description: ' static ice sheets, started from picontrol yr 2237'
@@ -53,7 +53,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: physics  bgc #alkalinity physics kmf
+       suite: kmf physics bgc #alkalinity physics kmf
 
     u-cy693:
        description: ' static ice sheets, started from picontrol yr 2317'
@@ -61,7 +61,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: physics  bgc #alkalinity physics kmf
+       suite: kmf physics bgc #alkalinity physics kmf
 
 
 

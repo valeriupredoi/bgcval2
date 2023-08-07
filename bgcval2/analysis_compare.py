@@ -541,7 +541,7 @@ def load_comparison_yml(master_compare_yml_fn):
     return details
 
 
-def load_yml_and_run(compare_yml, config_user, only_htmlreport):
+def load_yml_and_run(compare_yml, config_user, skip_timeseries):
     """
     Loads the comparison yaml file and run compare_yml.
 
@@ -555,8 +555,10 @@ def load_yml_and_run(compare_yml, config_user, only_htmlreport):
     do_mass_download = details['do_mass_download']
     master_suites = details['master_suites']
 
-    if only_htmlreport == True: # Skip time series analysis.
-        do_analysis_timeseries = False
+    if skip_timeseries == None:
+        pass
+    else:
+        do_analysis_timeseries = not skip_timeseries
 
     colours = details['colours']
     thicknesses = details['thicknesses']
@@ -642,11 +644,11 @@ def get_args():
                         help='User configuration file (for paths).',
                         required=False)
 
-    parser.add_argument('-r',
-                        '--only_htmlreport',
-                        default=False,
-                        type=bool, 
-                        help='Make the html report and skip the new timeseries analyses - overwrites the do_analysis_timeseries flag in input_yml.',
+    parser.add_argument('--skip_timeseries',
+                        '-s',
+                        default=None, 
+                        help='When True: skip the new timeseries analyses and make the html report. Overwrites the do_analysis_timeseries flag in input_yml.',
+                        action=argparse.BooleanOptionalAction,
                         required=False)
 
     args = parser.parse_args()
@@ -670,8 +672,8 @@ def main():
         if not os.path.isfile(compare_yml):
             print(f"analysis_timeseries: Could not find comparison config file {compare_yml}")
             sys.exit(1)
-        only_htmlreport = args.only_htmlreport  
-        load_yml_and_run(compare_yml, config_user, only_htmlreport)
+        skip_timeseries = args.skip_timeseries  
+        load_yml_and_run(compare_yml, config_user, skip_timeseries)
 
     print("Finished... ")
 
