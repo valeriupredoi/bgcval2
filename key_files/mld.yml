@@ -26,4 +26,5 @@ data_convert:
     maskname : mask
     areafile: $BASEDIR_OBS/IFREMER-MLD/mld_DT02_c1m_reg2.0-annual.nc
 layers          : Surface
-regions         : Global  SouthernOcean
+regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 Remainder NorthernSubpolarAtlantic NorthernSubpolarPacific # OnShelf OffShelf
+

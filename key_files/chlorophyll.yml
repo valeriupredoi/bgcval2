@@ -14,7 +14,7 @@ model_vars      : CHD CHN
 model_convert   : sum
 
 layers          : Surface
-regions         : Global #ignoreInlandSeas SouthernOcean ArcticOcean Equator10 Remainder NorthernSubpolarAtlantic NorthernSubpolarPacific
+regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 Remainder NorthernSubpolarAtlantic NorthernSubpolarPacific
 
 
 

@@ -21,5 +21,5 @@ data_convert:
     factor : 44.661
 
 layers          : Surface 100m 500m
-regions         : Global #gnoreInlandSeas SouthernOcean ArcticOcean Equator10 Remainder NorthernSubpolarAtlantic NorthernSubpolarPacific
+regions         : Global SouthernOcean Equator10 #gnoreInlandSeas SouthernOcean ArcticOcean Equator10 Remainder NorthernSubpolarAtlantic NorthernSubpolarPacific
 

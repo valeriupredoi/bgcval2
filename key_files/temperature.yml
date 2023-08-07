@@ -21,7 +21,7 @@ data_convert    : NoChange
 data_tdict      : ZeroToZero
 
 layers          : Surface
-regions         : Global #  OnShelf OffShelf #ignoreInlandSeas SouthernOcean ArcticOcean Equator10 Remainder NorthernSubpolarAtlantic NorthernSubpolarPacific
+regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 Remainder NorthernSubpolarAtlantic NorthernSubpolarPacific # OnShelf OffShelf
 
 
 
