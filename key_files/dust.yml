@@ -9,4 +9,4 @@ model_vars      : AEOLIAN
 model_convert:
     function: NoChange
 layers          : layerless
-regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean #orthernSubpolarAtlantic NorthernSubpolarPacific AtlanticSOcean  # OnShelf OffShelf
+regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean 

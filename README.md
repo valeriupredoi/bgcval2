@@ -295,10 +295,10 @@ A sample yaml exists in `input_yml/comparison_analysis_template.yml`,
 which can be adapted to additional analyses.
 
 In order to only run the report making part of the comparison analysis 
-(skip the `analysis_timeseries part`),
+(skip the `analysis_timeseries` part),
 either set the `do_analysis_timeseries` key to `False` in the `input_yml` file,
-or run `analysis_compare` with the command line argument: `-s` or --skip-timeseries.
-To force the analysis timeseries command to run use `--no-skip-timeseries`.
+or run `analysis_compare` with the command line argument: `-s` or `--skip-timeseries`.
+To skip the analysis timeseries command, use `--no-skip-timeseries`.
 Though without without either of these command line arguments, 
 bgcval2 will default to the value in your `input_yml` file.
 Also, the command line argument overwrites the value in `input_yml`.
