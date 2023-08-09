@@ -71,7 +71,7 @@ except:
     from .pftnames import getLongName
 from .bgcvaltools.mergeMonthlyFiles import mergeMonthlyFiles, meanDJF
 from .netcdf_manipulation.alwaysInclude import alwaysInclude
-from .bgcval2_make_report import comparehtml5Maker
+from .bgcval2_make_report import compare_html5_maker
 #from .Paths import paths
 
 #from .comparison.shifttimes import shifttimes as shifttimes_legacy
@@ -445,7 +445,7 @@ def timeseries_compare(jobs,
         jobs = list(ensembles.keys())
 
     # Senmd everything to the comparison maker:
-    comparehtml5Maker(
+    compare_html5_maker(
         jobIDs=jobs,
         reportdir=bvt.folder('CompareReports2/' + analysisname),
         files=AllImages,

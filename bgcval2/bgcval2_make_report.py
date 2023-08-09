@@ -64,7 +64,7 @@ def copytree(src, dst, symlinks=False, ignore=None):
                 pass
 
 
-def addImageToHtml(fn, imagesfold, reportdir, debug=True):
+def add_image_to_html(fn, imagesfold, reportdir, debug=True):
     #####
     # Note that we use three paths here.
     # fn: The original file path relative to here
@@ -108,7 +108,7 @@ def addImageToHtml(fn, imagesfold, reportdir, debug=True):
     return relfn
 
 
-def html5Maker(
+def html5_maker(
     jobID='u-ab749',
     reportdir='reports/tmp',
     year='*',
@@ -144,8 +144,8 @@ def html5Maker(
 
     imagesfold = folder(reportdir + 'images/')
 
-    def newImageLocation(fn):
-        return imagesfold + os.path.basename(fn)
+    def new_image_location(new_fn):
+        return imagesfold + os.path.basename(new_fn)
 
     #####
     #
@@ -307,7 +307,7 @@ def html5Maker(
                                                        layer=l,
                                                        metric=m,
                                                        paths=paths)
-                        if rdata == False: rdata = ''
+                        if not rdata: rdata = ''
                         else: rdata = round_sig(rdata, 4)
 
                     try:
@@ -355,7 +355,7 @@ def html5Maker(
                                                    layer='layerless',
                                                    metric='metricless',
                                                    paths=paths)
-                    if rdata == False: rdata = ''
+                    if not rdata: rdata = ''
                     else: rdata = round_sig(rdata, 4)
 
                 try:
@@ -540,7 +540,7 @@ def html5Maker(
                 #####
                 # Copy image to image folder and return relative path.
                 print('create plot headers:', fn)
-                relfn = addImageToHtml(fn, imagesfold, reportdir)
+                relfn = add_image_to_html(fn, imagesfold, reportdir)
 
                 ####
                 # WOA fields that also produce transects, etc.
@@ -676,7 +676,7 @@ def html5Maker(
                 #####
                 # Copy image to image folder and return relative path.
                 print('adding Level1 regional plot:', jobID, fn)
-                relfn = addImageToHtml(fn, imagesfold, reportdir)
+                relfn = add_image_to_html(fn, imagesfold, reportdir)
 
                 #####
                 # Create custom title by removing extra bits.
@@ -792,7 +792,7 @@ def html5Maker(
                     # Copy image to image folder and return relative path.
                     print('adding Level1 Profile plot:', jobID, fn)
 
-                    relfn = addImageToHtml(fn, imagesfold, reportdir)
+                    relfn = add_image_to_html(fn, imagesfold, reportdir)
 
                     #####
                     # Create custom title by removing extra bits.
@@ -933,7 +933,7 @@ def html5Maker(
                 #####
                 # Copy image to image folder and return relative path.
                 print('adding Level2  plot:', jobID, fn)
-                relfn = addImageToHtml(fn, imagesfold, reportdir)
+                relfn = add_image_to_html(fn, imagesfold, reportdir)
 
                 #####
                 # Create custom title by removing extra bits.
@@ -1047,7 +1047,7 @@ def html5Maker(
                 #####
                 # Copy image to image folder and return relative path.
                 print('adding Level2 Feilds plot:', jobID, fn)
-                relfn = addImageToHtml(fn, imagesfold, reportdir)
+                relfn = add_image_to_html(fn, imagesfold, reportdir)
 
                 #####
                 # Create custom title by removing extra bits.
@@ -1135,7 +1135,7 @@ def html5Maker(
                 #####
                 # Copy image to image folder and return relative path.
                 print('adding Level3 plot:', jobID, fn)
-                relfn = addImageToHtml(fn, imagesfold, reportdir)
+                relfn = add_image_to_html(fn, imagesfold, reportdir)
 
                 #####
                 # Create custom title by removing extra bits.
@@ -1228,7 +1228,7 @@ def html5Maker(
                 #####
                 # Copy image to image folder and return relative path.
                 print('adding Level3 regional plot:', fn)
-                relfn = addImageToHtml(fn, imagesfold, reportdir)
+                relfn = add_image_to_html(fn, imagesfold, reportdir)
 
                 #####
                 # Create custom title by removing extra bits.
@@ -1304,7 +1304,7 @@ def html5Maker(
                     #####
                     # Copy image to image folder and return relative path.
                     print('adding Level3 Hovmoeller:',  fn)
-                    relfn = addImageToHtml(fn, imagesfold, reportdir)
+                    relfn = add_image_to_html(fn, imagesfold, reportdir)
 
                     #####
                     # Create custom title by removing extra bits.
@@ -1330,7 +1330,7 @@ def html5Maker(
         vfiles.extend(glob(os.path.join(paths.bgcval2_repo,'bgcval2/html5/html5Assets/images/*Legend*.png')))
         print('adding Legend')
 
-        relfns = [addImageToHtml(fn, imagesfold, reportdir) for fn in vfiles]
+        relfns = [add_image_to_html(fn, imagesfold, reportdir) for fn in vfiles]
         print(relfns)
         href = 'regionMap_default'
         html5Tools.AddSubSections(
@@ -1363,7 +1363,7 @@ def html5Maker(
         subprocess.Popen(tar.split())
 
 
-def comparehtml5Maker(
+def compare_html5_maker(
     jobIDs=[],
     reportdir='reports/tmp',
     files=[],
@@ -1399,8 +1399,8 @@ def comparehtml5Maker(
 
     imagesfold = folder(reportdir + 'images/')
 
-    def newImageLocation(fn):
-        return imagesfold + os.path.basename(fn)
+    def new_image_location(new_fn):
+        return imagesfold + os.path.basename(new_fn)
 
     descriptionText = 'Comparison of the jobs: ' + ', '.join(jobIDs)
 
@@ -1574,7 +1574,7 @@ def comparehtml5Maker(
         # Copy image to image folder and return relative path.
         print('adding compare plots')
         relativeFiles = [
-            addImageToHtml(catfn, imagesfold, reportdir) for catfn in catfiles
+            add_image_to_html(catfn, imagesfold, reportdir) for catfn in catfiles
         ]
 
         ####
@@ -1678,7 +1678,7 @@ def comparehtml5Maker(
                 #####
                 # Copy image to image folder and return relative path.
                 print('Adding ', key, 'compare plots:', fn)
-                relfn = addImageToHtml(fn, imagesfold, reportdir)
+                relfn = add_image_to_html(fn, imagesfold, reportdir)
 
                 #####
                 # Create custom title by removing extra bits.
@@ -1706,7 +1706,7 @@ def comparehtml5Maker(
                 #####
                 # Copy image to image folder and return relative path.
                 print('Adding ', key, 'compare plots:', fn)
-                relfn = addImageToHtml(fn, imagesfold, reportdir)
+                relfn = add_image_to_html(fn, imagesfold, reportdir)
 
                 #####
                 # Create custom title by removing extra bits.
@@ -1740,7 +1740,7 @@ def comparehtml5Maker(
         vfiles = []
         vfiles.extend(glob(os.path.join(paths.bgcval2_repo,'bgcval2/html5/html5Assets/images/*Legend*.png')))
         print('Adding compare plots legend')
-        relfns = [addImageToHtml(fn, imagesfold, reportdir) for fn in vfiles]
+        relfns = [add_image_to_html(fn, imagesfold, reportdir) for fn in vfiles]
         print(relfns)
         href = 'regionMap_default'
         html5Tools.AddSubSections(
@@ -1856,7 +1856,7 @@ def main():
     # filter paths dict into an object that's usable below
     paths = paths_setter(paths_dict)
 
-    html5Maker(
+    html5_maker(
         jobID=jobID,
         reportdir=reportdir,
         year=year,
