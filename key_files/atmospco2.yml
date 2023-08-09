@@ -8,7 +8,7 @@ modelFiles      : $BASEDIR_MODEL/$JOBID/medusa*$JOBIDo_1y_*_diad-T.nc
 model_vars      : ATM_PCO2
 model_convert   : NoChange
 layers          : layerless
-regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 Remainder NorthernSubpolarAtlantic NorthernSubpolarPacific # OnShelf OffShelf
+regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean 
 
 
 
