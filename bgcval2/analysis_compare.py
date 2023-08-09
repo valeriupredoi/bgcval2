@@ -190,7 +190,8 @@ def timeseries_compare(jobs,
                        lineThicknesses=defaultdict(lambda: 1),
                        linestyles=defaultdict(lambda: '-'),
                        ensembles={},
-                       config_user=None):
+                       config_user=None,
+    ):
     """
     timeseries_compare:
         Suite of tools to take pre-analyses time series model data
@@ -445,6 +446,7 @@ def timeseries_compare(jobs,
         jobDescriptions=jobDescriptions,
         jobColours=colours,
         paths=paths,
+        analysisKeys=analysisKeys,
     )
     print('End of timeseries_compare')
 
@@ -619,7 +621,7 @@ def load_yml_and_run(compare_yml, config_user, skip_timeseries):
         analysisname=analysis_name,
         lineThicknesses=thicknesses,
         linestyles=linestyles,
-        config_user=config_user
+        config_user=config_user,
     )
 
 

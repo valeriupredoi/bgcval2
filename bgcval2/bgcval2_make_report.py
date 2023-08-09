@@ -1371,7 +1371,8 @@ def comparehtml5Maker(
     doZip=False,
     jobDescriptions={},
     jobColours={},
-    paths = {}
+    paths = {},
+    analysisKeys=[]
 ):
 
     if clean:
@@ -1498,7 +1499,7 @@ def comparehtml5Maker(
         'BGC Key Metrics': [],
         'Other Plots': [],
     }
-    extrafolds = []
+#    extrafolds = []
 
     for fn in files:
         found = False
@@ -1525,15 +1526,15 @@ def comparehtml5Maker(
                     ]
                 found = True
         if found: continue
-        for extracat in extrafolds:
-            if found: continue
-            if fn.find('/' + extracat + '/') > -1:
-                try:
-                    categories[extracat].append(fn)
-                except:
-                    categories[extracat] = [
-                        fn,
-                    ]
+#        for extracat in extrafolds:
+#            if found: continue
+#            if fn.find('/' + extracat + '/') > -1:
+#                try:
+#                    categories[extracat].append(fn)
+#                except:
+#                    categories[extracat] = [
+#                        fn,
+#                    ]
 
         if found: continue
         try:
@@ -1548,9 +1549,9 @@ def comparehtml5Maker(
         categoryOrder.append('Physics Key Metrics')
     if len(categories['BGC Key Metrics']):
         categoryOrder.append('BGC Key Metrics')
-    for exf in extrafolds:
-        if exf not in list(categories.keys()): continue
-        if len(categories[exf]): categoryOrder.append(exf)
+#    for exf in extrafolds:
+#        if exf not in list(categories.keys()): continue
+#        if len(categories[exf]): categoryOrder.append(exf)
 
     if len(categories['Other Plots']): categoryOrder.append('Other Plots')
     categories['Other Plots'] = sorted(categories['Other Plots'])
@@ -1598,57 +1599,67 @@ def comparehtml5Maker(
         FileLists = {}
         FileOrder = {}
 
-        names = [
-            'Chlorophyll',
-            'MLD',
-            'Nitrate',
-            'Phosphate',
-            'Salinity',
-            'Temperature',
-            'Current',
-            #'so',
-            'Ice',
-            'DIC',
-            'pH',
-            'DMS',
-            'DiaFrac',
-            'Dust',
-            'Iron',
-            'Silicate',
-            'Alkalinity',
-            'AMOC',
-            'ADRC',
-            'DrakePassage',
-            'AirSeaFlux',
-            'DTC',
-            'Oxygen',
-            'OMZ',
-            'Production',
-            'Export',
-            'FreshwaterFlux',
-            'HeatFlux',
-            'soga',
-            'scvoltot',
-            'thetaoga',
-            'scalarHeatContent',
-        ]
+        if analysisKeys:
+            names = analysisKeys
+        else:
+            names = [
+                'Chlorophyll',
+                'MLD',
+                'Nitrate',
+                'Phosphate',
+                'Salinity',
+                'Temperature',
+                'Current',
+                #'so',
+                'Ice',
+                'DIC',
+                'pH',
+                'DMS',
+                'DiaFrac',
+                'Dust',
+                'Iron',
+                'Silicate',
+                'Alkalinity',
+                'AMOC',
+                'ADRC',
+                'DrakePassage',
+                'AirSeaFlux',
+                'DTC',
+                'Oxygen',
+                'OMZ',
+                'Production',
+                'Export',
+                'FreshwaterFlux',
+                'HeatFlux',
+                'soga',
+                'scvoltot',
+                'thetaoga',
+                'scalarHeatContent',
+            ]
         # Add the rest of the names from key_lists directory.
-        key_lists_dir = os.path.join(paths.bgcval2_repo, 'key_lists')
-        for suite_yml in glob(os.path.join(key_lists_dir, '*.yml')):
-            # look for a list in keys_list directory:
-            # Open yml file:
-            with open(suite_yml, 'r') as openfile:
-                suite_dict = yaml.safe_load(openfile)
-
-            keys_dict = suite_dict.get('keys', {})
-            for key, key_bool in keys_dict.items():
-                if not key_bool:
-                    continue
-                if key in names:
-                    continue
-                names.append(key)
-
+#        key_lists_dir = os.path.join(paths.bgcval2_repo, 'key_lists')
+#        for suite_yml in glob(os.path.join(key_lists_dir, '*.yml')):
+#            # look for a list in keys_list directory:
+#            # Open yml file:
+#            with open(suite_yml, 'r') as openfile:
+#                suite_dict = yaml.safe_load(openfile)
+#            print('suite_yml', suite_yml)
+#            print('suite_dict',  suite_dict)
+#            keys_dict = suite_dict.get('keys', {})
+#            print('keys_dict',keys_dict)
+#            print('names (pre):', names)
+#            for key, key_bool in keys_dict.items():
+#                print(key,key_bool)
+#                if not key_bool:
+#                    continue
+#                if key in names:
+#                    continue
+#                names.append(key)
+#
+        print('names', names)
+#        assert 0
         for key in sorted(names):
+             
             #####
             # Determine the list of files:
             vfiles = []
@@ -1690,6 +1701,8 @@ def comparehtml5Maker(
                 print("Adding ", relfn, "to script")
 
         if len(otherFilenames):
+            # I think this is never happens anymore.
+            assert 0
             href = 'OtherPlots-others'
 
             hrefs.append(href)
