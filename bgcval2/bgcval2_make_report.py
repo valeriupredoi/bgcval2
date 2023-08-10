@@ -67,7 +67,7 @@ def copytree(src, dst, symlinks=False, ignore=None):
         d = os.path.join(dst, item)
         if os.path.isdir(s):
             try:
-                shutil.copytree(s, d, symlinks, ignore)
+                shutil.copytree(s, d, symlinks=symlinks, ignore=ignore)
             except:
                 pass
         else:
@@ -116,7 +116,7 @@ def add_image_to_html(fn, imagesfold, reportdir, debug=True):
         basedir = folder(os.path.dirname(newfn))
         # copytree(fn, newfn)
         if os.path.isdir(fn):
-            shutil.copytree(fn, newfn, symlinks, ignore)
+            shutil.copytree(fn, newfn)
         else:
             shutil.copy2(fn, newfn)
     else:
@@ -143,11 +143,28 @@ def html5_maker(
         reportdir='reports/tmp',
         year='*',
         clean=False,
-        doZip=False,
         physicsOnly=False,
         paths=None,
         config_user=None,
 ):
+    """Example function with PEP 484 type annotations.
+
+    The return type must be duplicated in the docstring to comply
+    with the NumPy docstring style.
+
+    Parameters
+    ----------
+    param1
+        The first parameter.
+    param2
+        The second parameter.
+
+    Returns
+    -------
+    bool
+        True if successful, False otherwise.
+
+    """
     if clean:
         #####
         # Delete old files
@@ -497,6 +514,7 @@ def html5_maker(
         SidebarTitles = {}
         Descriptions = {}
         FileLists = {}
+        imagedir = paths.imagedir
 
         # region = 'Global'
         for key in level1Fields:
@@ -528,7 +546,6 @@ def html5_maker(
             FileLists[href] = {}
             #####
             # Determine the list of files:
-            imagedir = paths.imagedir
             vfiles = glob(imagedir + '/' + jobID +
                           '/timeseries/*/percentiles*' + key + '*' +
                           'Global*10-90pc.png')
@@ -1150,17 +1167,6 @@ def html5_maker(
                 glob(imagedir + '/' + jobID +
                      '/Level3/OMZ/ExtentMaps/*/*_Global.png'))
 
-            #		vfiles.extend(glob(imagedir+'/'+jobID+'/Level3/OMZ/ExtendMaps/*/*.png'))
-            #			    if s in ['Transect',]:
-            #				vfiles.extend(glob(imagedir+'/'+jobID+'/Level3/OMZ/*'+key+'*Transect/*/*'+s+'*'+region+'*'+key+'*'+year+'*transect.png'))
-            # if key in [	'Chlorophyll_cci',
-            #	  	'IntegratedPrimaryProduction_OSU',
-            #		'AirSeaFluxCO2',
-            #		'MLD',
-            #	  ]:
-            #	vfiles.extend(glob(imagedir+'/'+jobID+'/P2Pplots/*/*'+key+'*/*/*'+region+'*'+key+'*'+year+'*robinquad.png'))
-            #	vfiles.extend(glob(imagedir+'/'+jobID+'/P2Pplots/*/*'+key+'*/*/*'+region+'*'+key+'*'+year+'*robinquad-cartopy.png'))
-
             #####
             # Create plot headers for each file.
             count = 0
@@ -1391,21 +1397,38 @@ def html5_maker(
 
     print("-------------\nSuccess\ntest with:\nfirefox", indexhtmlfn)
     print("To zip it up:\n", tar)
-    if doZip:
-        import subprocess
-        subprocess.Popen(tar.split())
 
 
 def compare_html5_maker(
-        jobIDs=[],
+        jobIDs=None,
         reportdir='reports/tmp',
         files=[],
         clean=False,
-        doZip=False,
         jobDescriptions={},
         jobColours={},
         paths={}
 ):
+    """Generate multijob comparison report.
+
+    Parameters
+    ----------
+    jobIDs
+        List of job IDs
+    reportdir
+        Path to output directory
+    files
+        List of image files
+    clean:
+
+    Returns
+    -------
+    bool
+        True if successful, False otherwise.
+
+    """
+    if not jobIDs:
+        return
+
     if clean:
         #####
         # Delete old files
@@ -1432,6 +1455,14 @@ def compare_html5_maker(
     imagesfold = folder(reportdir + 'images/')
 
     def new_image_location(new_fn):
+        """ Determine output location for image.
+
+        Returns
+        -------
+        str
+            path to new filename
+
+        """
         return imagesfold + os.path.basename(new_fn)
 
     descriptionText = 'Comparison of the jobs: ' + ', '.join(jobIDs)
@@ -1800,7 +1831,14 @@ def compare_html5_maker(
 
 
 def get_args():
-    """Parse command line arguments."""
+    """Parse command line arguments.
+
+    Returns
+    -------
+    args
+        dict
+
+    """
     parser = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -1842,7 +1880,10 @@ def get_args():
 
 
 def main():
-    """Run the html maker for a single job ID."""
+    """Run the html maker for a single job ID.
+
+    Takes several command line arguments.
+    """
     from ._version import __version__
     print(f'BGCVal2: {__version__}')
 
