@@ -1,6 +1,4 @@
 #!/usr/bin/env python
-########!/usr/bin/python
-
 #
 # Copyright 2015, Plymouth Marine Laboratory
 #
@@ -31,24 +29,19 @@
 .. moduleauthor:: Valeriu Predoi <valeriu.predoi@ncas.ac.uk>
 
 """
-
-import argparse
-import matplotlib
 # Force matplotlib to not use any Xwindows backend.
+
+import matplotlib
 matplotlib.use('Agg')
 
 #####
 # Load Standard Python modules:
-from calendar import month_name
-from socket import gethostname
-from netCDF4 import Dataset
+import argparse
 from glob import glob
-from scipy.interpolate import interp1d
 import numpy as np
 import os
 import sys
 import fnmatch
-from getpass import getuser
 from collections import defaultdict
 import yaml
 import random
@@ -56,28 +49,21 @@ import itertools
 
 
 #####
-# Load specific local code:
-from .bgcvaltools import bv2tools as bvt
-from .timeseries import timeseriesAnalysis
-from .timeseries import profileAnalysis
-from .timeseries import timeseriesPlots as tsp
+# Load local code:
+from bgcval2.bgcvaltools import bv2tools as bvt
+from bgcval2.timeseries import timeseriesAnalysis
+from bgcval2.timeseries import timeseriesPlots as tsp
 from bgcval2.analysis_timeseries import analysis_timeseries, build_list_of_suite_keys, load_key_file
 from bgcval2.download_from_mass import download_from_mass
 
+from bgcval2.bgcvaltools.pftnames import getLongName
 
-try:
-    from .bgcvaltools.pftnames import getLongName
-except:
-    from .pftnames import getLongName
-from .bgcvaltools.mergeMonthlyFiles import mergeMonthlyFiles, meanDJF
-from .netcdf_manipulation.alwaysInclude import alwaysInclude
-from .bgcval2_make_report import compare_html5_maker
-#from .Paths import paths
+# try:
+# except:
+#     from bgcval2.pftnames import getLongName
+from bgcval2.bgcval2_make_report import compare_html5_maker
 
-#from .comparison.shifttimes import shifttimes as shifttimes_legacy
 from .comparison.ensembles import build_ensemble
-from .config.configToDict import configToDict
-from .bgcvaltools.dataset import dataset
 from ._runtime_config import get_run_configuration
 
 #####
@@ -88,11 +74,12 @@ from .Paths.paths import paths_setter
 def titleify(ls):
     """
     Turnms a list into a title string.
+
     """
     return ' '.join([getLongName(i) for i in ls])
 
 
-def listModelDataFiles(jobID, filekey, datafolder, annual, year=''):
+def list_model_data_files(jobID, filekey, datafolder, annual, year=''):
     """
 
     """
@@ -108,7 +95,7 @@ def listModelDataFiles(jobID, filekey, datafolder, annual, year=''):
     else:
         if annual:
             print(datafolder + jobID + "/" + jobID + "o_1y_*" + year +
-                   "????_" + filekey + ".nc")
+                "????_" + filekey + ".nc")
             return sorted(
                 glob(datafolder + jobID + "/" + jobID + "o_1y_*" + year +
                      "????_" + filekey + ".nc"))
@@ -132,7 +119,7 @@ def apply_shifttimes(mdata, jobID, shifttimes):
     if not len(mdata.keys()):
         return [], []
 
-    t0 = float(sorted(mdata.keys())[0])
+    # t0 = float(sorted(mdata.keys())[0])
     for t in sorted(mdata.keys()):
         t1 = t + float(shifttimes[jobID])
         times.append(t1)
@@ -149,7 +136,7 @@ def apply_timerange(times, datas, jobID, timeranges):
     Outputs two lists: dates & data.
     """
     if 0 in [len(times), len(datas), ]:
-       return times, datas
+        return times, datas
 
     print('apply_timerange', jobID, timeranges)
 
@@ -157,12 +144,12 @@ def apply_timerange(times, datas, jobID, timeranges):
 
     print('apply_timerange', timerange)    
     if timerange is None: 
-       print('apply_timerange: timerange is', None) 
-       return times, datas
+        print('apply_timerange: timerange is', None)
+        return times, datas
 
     print(jobID, timerange, 'is not None', np.min(times), np.max(times))
     
-    n_times, n_datas = [], [] # to ensure they stay lists
+    n_times, n_datas = [], []  # to ensure they stay lists
     for ti, da in zip(times, datas):
         if ti < np.min(timerange):
             continue
@@ -182,7 +169,7 @@ def apply_timerange(times, datas, jobID, timeranges):
 
 def timeseries_compare(jobs,
                        colours,
-                       suites = [],
+                       suites=[],
                        analysisname='',
                        shifttimes={},
                        timeranges={},   
@@ -191,7 +178,7 @@ def timeseries_compare(jobs,
                        linestyles=defaultdict(lambda: '-'),
                        ensembles={},
                        config_user=None,
-    ):
+):
     """
     timeseries_compare:
         Suite of tools to take pre-analyses time series model data
@@ -199,11 +186,10 @@ def timeseries_compare(jobs,
         document.
 
     """
-    ### strategy here is a simple wrapper.
+    # strategy here is a simple wrapper.
     # It's a little cheat-y, as I'm copying straight from analysis_timeseries.py
 
     jobs = sorted(jobs)
-    #jobs = sorted(colours.keys())
 
     for ensemble in list(ensembles.keys()):
         # ensembles names can not be the same as jobIDs
@@ -221,29 +207,29 @@ def timeseries_compare(jobs,
         print('ERROR: please provide an name for this analsys')
         sys.exit(0)
     else:
-        imageFolder = paths.imagedir + '/TimeseriesCompare/' + analysisname
+        image_folder = paths.imagedir + '/TimeseriesCompare/' + analysisname
 
-    annual = True
-    strictFileCheck = False
+    # annual = True
+    strict_file_check = False
 
     if not isinstance(suites, list):
         ValueError(f"Suites need to be a list, got: {suites}")
         sys.exit(1)
 
-    analysisKeys = build_list_of_suite_keys(suites, debug=True)
-    print(f'Using analysis keys {str(analysisKeys)}')
+    analysis_keys = build_list_of_suite_keys(suites, debug=True)
+    print(f'Using analysis keys {str(analysis_keys)}')
 
-    layerList = [
-        'Surface',
-    ]
-    metricList = [
-        'mean',
-    ]
-    regionList = [
-        'Global',
-    ]
+    # layerList = [
+    #     'Surface',
+    # ]
+    # metricList = [
+    #     'mean',
+    # ]
+    # regionList = [
+    #     'Global',
+    # ]
 
-    PierceRegions = [
+    pierce_regions = [
         'Enderby',
         'Wilkes',
         'Ross',
@@ -251,7 +237,7 @@ def timeseries_compare(jobs,
         'Weddel',
     ]
 
-    vmtregionList = [
+    vmtregion_list = [
         'Global',
         'Depth_700m',
         'Depth_2000m',
@@ -267,36 +253,37 @@ def timeseries_compare(jobs,
         'WeddelSea',
         'Cornwall',
     ]
-    #vmtregionList = ['Global', 'ignoreInlandSeas','Equator10','AtlanticSOcean','SouthernOcean','ArcticOcean',  'Remainder','NorthernSubpolarAtlantic','NorthernSubpolarPacific','WeddelSea']
-    vmtregionList.extend(PierceRegions)
-    OMZRegions = [
-        'EquatorialPacificOcean', 'IndianOcean', 'EquatorialAtlanticOcean'
-    ]  #'Ross','Amundsen','Weddel',]
-    level3 = [
-        'DMS',
-    ]
+    # vmtregion_list = ['Global', 'ignoreInlandSeas','Equator10','AtlanticSOcean','SouthernOcean','ArcticOcean',  'Remainder','NorthernSubpolarAtlantic','NorthernSubpolarPacific','WeddelSea']
+    vmtregion_list.extend(pierce_regions)
+    # OMZRegions = [
+    #     'EquatorialPacificOcean', 'IndianOcean', 'EquatorialAtlanticOcean'
+    # ]  #'Ross','Amundsen','Weddel',]
+    # level3 = [
+    #     'DMS',
+    # ]
 
     #####
     # paths:
-    orcaGridfn = paths.orcaGridfn  #'/group_workspaces/jasmin4/esmeval/example_data/bgc/mesh_mask_eORCA1_wrk.nc'
-    if annual: WOAFolder = paths.WOAFolder_annual
-    else: WOAFolder = paths.WOAFolder
+    # orcaGridfn = paths.orcaGridfn  #'/group_workspaces/jasmin4/esmeval/example_data/bgc/mesh_mask_eORCA1_wrk.nc'
+    # if annual:
+    #     WOAFolder = paths.WOAFolder_annual
+    # else:
+    #     WOAFolder = paths.WOAFolder
 
     #####
     # Coordinate dictionairy
     # These are python dictionairies, one for each data source and model.
     # This is because each data provider seems to use a different set of standard names for dimensions and time.
     # The 'tdict' field is short for "time-dictionary".
-    #	This is a dictionary who's indices are the values on the netcdf time dimension.
-    #	The tdict indices point to a month number in python numbering (ie January = 0)
-    # 	An example would be, if a netcdf uses the middle day of the month as it's time value:
-    #		tdict = {15:0, 45:1 ...}
+    # This is a dictionary whose indices are the values on the netcdf time dimension.
+    # The tdict indices point to a month number in python numbering (ie January = 0)
+    # An example would be, if a netcdf uses the middle day of the month as it's time value:
+    # tdict = {15:0, 45:1 ...}
 
-    dataD = {}
+    # dataD = {}
     modeldataD = {}
-
+    av = bvt.AutoVivification()
     for jobID in jobs:
-
         #####
         # Location of images directory
         # the imagedir is where the analysis images will be saved.
@@ -306,10 +293,8 @@ def timeseries_compare(jobs,
         if jobID in list(ensembles.keys()): continue
         # ensembles names can not be the same as jobIDs
 
-        av = bvt.AutoVivification()
-
         # NEW STYLE keys from file:
-        for key in analysisKeys:
+        for key in analysis_keys:
             av[key] = load_key_file(key, paths, jobID)
 
         for name in list(av.keys()):
@@ -324,7 +309,7 @@ def timeseries_compare(jobs,
                 file_err = "analysis-Timeseries.py:\tWARNING:\tmodel files are not " \
                            f"found: {av[name]['modelFiles']} for {jobID}"
                 print(file_err)
-                if strictFileCheck:
+                if strict_file_check:
                     raise FileNotFoundError(file_err)
 
             modelfilesexists = [
@@ -334,14 +319,14 @@ def timeseries_compare(jobs,
                 print(
                     "analysis-Timeseries.py:\tWARNING:\tnot model files do not all exist:",
                     av[name]['modelFiles'])
-                if strictFileCheck:
+                if strict_file_check:
                     raise FileError('Model Files are not found jobID: %s, name: %s', jobID, name)
 
             if 'dataFile' in av[name] and not os.path.exists(av[name]['dataFile']):
                 print(
                     "analysis-Timeseries.py:\tWARNING:\tdata file is not found:",
                     av[name]['dataFile'])
-                if strictFileCheck:
+                if strict_file_check:
                     raise FileError('Data Files are not found jobID: %s, name: %s', jobID, name)
 
             #####
@@ -367,9 +352,6 @@ def timeseries_compare(jobs,
                 clean=False,
                 noNewFiles=True,
             )
-
-
-            #dataD[(jobID,name )] = tsa.dataD
             modeldataD[(jobID, name)] = tsa.modeldataD
 
     #####
@@ -382,15 +364,15 @@ def timeseries_compare(jobs,
         regions = av[name]['regions']
         layers = av[name]['layers']
         metrics = av[name]['metrics']
-        for region, layer, metric  in itertools.product(regions, layers, metrics):
+        for region, layer, metric in itertools.product(regions, layers, metrics):
             timesD = {}
             arrD = {}
+            title = titleify([region, layer, metric, name])
             for jobID in jobs:
                 try:
                     mdata = modeldataD[(jobID, name)][(region, layer, metric)]
                 except:
                     continue
-                title = titleify([region, layer, metric, name])
 
                 times, datas = apply_shifttimes(mdata, jobID, shifttimes)
                 print('post apply_shifttimes:', len(times), len(datas))
@@ -411,7 +393,7 @@ def timeseries_compare(jobs,
                     arrD,  # model time series
                     data=-999,  # in situ data distribution
                     title=title,
-                    filename=bvt.folder(imageFolder) +
+                    filename=bvt.folder(image_folder) +
                         '_'.join([name, region, layer, ts, ls + '.png']),
                     units=units,
                     plotStyle=ts,
@@ -423,15 +405,15 @@ def timeseries_compare(jobs,
 
     # Generate a list of comparison images:
     method_images = 'oswalk'
-    AllImages = []
+    all_images = []
     if method_images == 'glob':
-        AllImages = glob(imageFolder, recursive=True)
-        print('AllImages:','glob', AllImages)
+        all_images = glob(image_folder, recursive=True)
+        print('all_images:', 'glob', all_images)
     elif method_images == 'oswalk':
-        for root, dirnames, filenames in os.walk(imageFolder):
+        for root, dirnames, filenames in os.walk(image_folder):
             for filename in fnmatch.filter(filenames, '*.png'):
-                AllImages.append(os.path.join(root, filename))
-                print('AllImages:','fors', root, dirnames, filenames, filename)
+                all_images.append(os.path.join(root, filename))
+                print('all_images:', 'fors', root, dirnames, filenames, filename)
 
     if ensembles != {}:
         jobs = list(ensembles.keys())
@@ -440,25 +422,25 @@ def timeseries_compare(jobs,
     compare_html5_maker(
         jobIDs=jobs,
         reportdir=bvt.folder('CompareReports2/' + analysisname),
-        files=AllImages,
+        files=all_images,
         clean=False,
         jobDescriptions=jobDescriptions,
         jobColours=colours,
         paths=paths,
-        analysisKeys=analysisKeys,
+        analysisKeys=analysis_keys,
     )
     print('End of timeseries_compare')
 
 
-def flatten(lats, lons, dataA, dataB):
-    m = np.ma.array(dataA).mask
-    m += np.ma.array(dataB).mask
-    m += np.ma.masked_invalid(dataA / dataB).mask
+def flatten(lats, lons, data_a, data_b):
+    m = np.ma.array(data_a).mask
+    m += np.ma.array(data_b).mask
+    m += np.ma.masked_invalid(data_a / data_b).mask
 
-    return  np.ma.masked_where(m, lats).compressed(),\
-     np.ma.masked_where(m, lons).compressed(),\
-     np.ma.masked_where(m, dataA).compressed(),\
-     np.ma.masked_where(m, dataB).compressed()
+    return np.ma.masked_where(m, lats).compressed(),\
+    np.ma.masked_where(m, lons).compressed(),\
+    np.ma.masked_where(m, data_a).compressed(),\
+    np.ma.masked_where(m, data_b).compressed()
 
 
 def load_comparison_yml(master_compare_yml_fn):
@@ -513,7 +495,7 @@ def load_comparison_yml(master_compare_yml_fn):
     colours = {}
     suites = {}
     descriptions = {}
-    shifttimes = {} # number of years to shift time axis.
+    shifttimes = {}  # number of years to shift time axis.
     timeranges = {}
 
     for jobID, job_dict in details['jobs'].items():
@@ -569,14 +551,15 @@ def load_yml_and_run(compare_yml, config_user, skip_timeseries):
     timeranges = details['timeranges']
     suites = details['suites']
     auto_download = details['auto_download']
-    strictFileCheck = details.get('strictFileCheck', True)
+    strict_file_check = details.get('strictFileCheck', True)
+
     print('---------------------')
     print('timeseries_compare:',  analysis_name)
     print('job ids:', jobs.keys())
     for jobID in jobs:
-        print(jobID, 'description:',descriptions[jobID])
-        print(jobID, 'colour:',colours[jobID])
-        print(jobID, 'line thickness & style:',thicknesses[jobID], linestyles[jobID])
+        print(jobID, 'description:', descriptions[jobID])
+        print(jobID, 'colour:', colours[jobID])
+        print(jobID, 'line thickness & style:', thicknesses[jobID], linestyles[jobID])
         print(jobID, 'Shift time by', shifttimes[jobID])
         print(jobID, 'Time range (None means all):', timeranges.get(jobID, None))
         print(jobID, 'suite:', suites[jobID])
@@ -594,15 +577,15 @@ def load_yml_and_run(compare_yml, config_user, skip_timeseries):
                 jobID=jobID,
                 suites=suites[jobID],
                 config_user=config_user,
-                strictFileCheck=strictFileCheck,
+                strictFileCheck=strict_file_check,
             )
 
     # Master suite leys:
     if not master_suites:
-        master_suites=['physics', 'bgc']  # Defaults
+        master_suites = ['physics', 'bgc']  # Defaults
 
-    # make sure its a list:
-    if isinstance(master_suites, list) :
+    # make sure it is a list:
+    if isinstance(master_suites, list):
         master_suites = [m.lower() for m in master_suites]
     if isinstance(master_suites, str):
         master_suites = master_suites.lower()
@@ -612,8 +595,8 @@ def load_yml_and_run(compare_yml, config_user, skip_timeseries):
 
     timeseries_compare(
         jobs,
-        colours = colours,
-        suites = master_suites,
+        colours=colours,
+        suites=master_suites,
         shifttimes=shifttimes,
         timeranges=timeranges,
         jobDescriptions=descriptions,
@@ -662,7 +645,7 @@ def main():
     args = get_args()
 
     # This has a sensible default value.
-    config_user=args.config_file
+    config_user = args.config_file
 
     # This shouldn't fail as it's a required argument.
     compare_ymls = args.compare_yml
