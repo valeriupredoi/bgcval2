@@ -556,7 +556,7 @@ def load_yml_and_run(compare_yml, config_user, skip_timeseries):
     do_mass_download = details['do_mass_download']
     master_suites = details['master_suites']
 
-    if skip_timeseries == None:
+    if skip_timeseries is None:
         pass
     else:
         do_analysis_timeseries = not skip_timeseries
