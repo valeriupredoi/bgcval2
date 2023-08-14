@@ -190,7 +190,8 @@ def timeseries_compare(jobs,
                        lineThicknesses=defaultdict(lambda: 1),
                        linestyles=defaultdict(lambda: '-'),
                        ensembles={},
-                       config_user=None):
+                       config_user=None,
+    ):
     """
     timeseries_compare:
         Suite of tools to take pre-analyses time series model data
@@ -336,14 +337,12 @@ def timeseries_compare(jobs,
                 if strictFileCheck:
                     raise FileError('Model Files are not found jobID: %s, name: %s', jobID, name)
 
-
             if 'dataFile' in av[name] and not os.path.exists(av[name]['dataFile']):
                 print(
                     "analysis-Timeseries.py:\tWARNING:\tdata file is not found:",
                     av[name]['dataFile'])
                 if strictFileCheck:
                     raise FileError('Data Files are not found jobID: %s, name: %s', jobID, name)
-
 
             #####
             # time series and traffic lights.
@@ -368,6 +367,8 @@ def timeseries_compare(jobs,
                 clean=False,
                 noNewFiles=True,
             )
+
+
             #dataD[(jobID,name )] = tsa.dataD
             modeldataD[(jobID, name)] = tsa.modeldataD
 
@@ -378,12 +379,6 @@ def timeseries_compare(jobs,
 
     ####
     for name in av.keys():
-#   for name in [
-#           'Temperature', 'Salinity', 'MLD', 'FreshwaterFlux',
-#           'AirSeaFluxCO2', 'AirSeaFlux', 'Chlorophyll', 'Nitrate',
-#           'Alkalinity', 'pH'
-#   ]:
-#       if name not in list(av.keys()): continue
         regions = av[name]['regions']
         layers = av[name]['layers']
         metrics = av[name]['metrics']
@@ -397,14 +392,11 @@ def timeseries_compare(jobs,
                     continue
                 title = titleify([region, layer, metric, name])
 
-                    #timesD[jobID] 	= sorted(mdata.keys())
-                    #arrD[jobID]	= [mdata[t] for t in timesD[jobID]]
-                
                 times, datas = apply_shifttimes(mdata, jobID, shifttimes)
                 print('post apply_shifttimes:', len(times), len(datas))
                 times, datas = apply_timerange(times, datas, jobID, timeranges)
-                timesD[jobID] = times  #mdata.keys())
-                arrD[jobID] = datas  #t] for t in timesD[jobID]]
+                timesD[jobID] = times 
+                arrD[jobID] = datas  
                 print(jobID, region, layer, metric, len(times), len(datas))
             timesD, arrD = build_ensemble(timesD, arrD, ensembles)
 
@@ -413,7 +405,7 @@ def timeseries_compare(jobs,
             units = av[name]['modeldetails']['units']
 
             ts = 'Together'
-            for ls in ['DataOnly', ]: #  'movingav30years']
+            for ls in ['DataOnly', ]:
                 tsp.multitimeseries(
                     timesD,  # model times (in floats)
                     arrD,  # model time series
@@ -444,17 +436,18 @@ def timeseries_compare(jobs,
     if ensembles != {}:
         jobs = list(ensembles.keys())
 
-    # Senmd everything to the comparison maker:
+    # Send everything to the comparison maker:
     comparehtml5Maker(
         jobIDs=jobs,
         reportdir=bvt.folder('CompareReports2/' + analysisname),
         files=AllImages,
         clean=False,
-        doZip=False,
         jobDescriptions=jobDescriptions,
         jobColours=colours,
         paths=paths,
+        analysisKeys=analysisKeys,
     )
+    print('End of timeseries_compare')
 
 
 def flatten(lats, lons, dataA, dataB):
@@ -546,12 +539,10 @@ def load_comparison_yml(master_compare_yml_fn):
     details['timeranges'] = timeranges
     details['suites'] = suites
     details['auto_download'] = auto_download_dict
-#    print(details)
-#    assert 0
     return details
 
 
-def load_yml_and_run(compare_yml, config_user):
+def load_yml_and_run(compare_yml, config_user, skip_timeseries):
     """
     Loads the comparison yaml file and run compare_yml.
 
@@ -564,6 +555,11 @@ def load_yml_and_run(compare_yml, config_user):
     do_analysis_timeseries = details['do_analysis_timeseries']
     do_mass_download = details['do_mass_download']
     master_suites = details['master_suites']
+
+    if skip_timeseries is None:
+        pass
+    else:
+        do_analysis_timeseries = not skip_timeseries
 
     colours = details['colours']
     thicknesses = details['thicknesses']
@@ -624,7 +620,7 @@ def load_yml_and_run(compare_yml, config_user):
         analysisname=analysis_name,
         lineThicknesses=thicknesses,
         linestyles=linestyles,
-        config_user=config_user
+        config_user=config_user,
     )
 
 
@@ -649,6 +645,13 @@ def get_args():
                         help='User configuration file (for paths).',
                         required=False)
 
+    parser.add_argument('--skip_timeseries',
+                        '-s',
+                        default=None, 
+                        help='When True: skip the new timeseries analyses and make the html report. Overwrites the do_analysis_timeseries flag in input_yml.',
+                        action=argparse.BooleanOptionalAction,
+                        required=False)
+
     args = parser.parse_args()
 
     return args
@@ -670,8 +673,8 @@ def main():
         if not os.path.isfile(compare_yml):
             print(f"analysis_timeseries: Could not find comparison config file {compare_yml}")
             sys.exit(1)
-
-        load_yml_and_run(compare_yml, config_user)
+        skip_timeseries = args.skip_timeseries  
+        load_yml_and_run(compare_yml, config_user, skip_timeseries)
 
     print("Finished... ")
 

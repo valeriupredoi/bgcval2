@@ -11,12 +11,16 @@ modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*_$JOBIDo_1y_*$YEAR????_grid-T.nc
 dataFile        : $BASEDIR_OBS/IFREMER-MLD/mld_DT02_c1m_reg2.0-annual.nc
 
 # Model coordinates/dimension names
-model_vars      : somxl010 somxzint1
-model_convert:
-    path: bgcval2/functions/applyLandMask.py
-    function: applyLandMask
-    areafile: $PATHS_GRIDFILE
-    maskname : tmask
+model_vars      : mlotst
+model_convert   : NoChange
+layers          : layerless
+
+#model_vars      : somxl010 somxzint1
+#model_convert:
+#    path: bgcval2/functions/applyLandMask.py
+#    function: applyLandMask
+#    areafile: $PATHS_GRIDFILE
+#    maskname : tmask
 
 data_vars       : mld
 data_tdict      : ZeroToZero
@@ -25,5 +29,7 @@ data_convert:
     function: applyLandMask
     maskname : mask
     areafile: $BASEDIR_OBS/IFREMER-MLD/mld_DT02_c1m_reg2.0-annual.nc
-layers          : Surface
-regions         : Global  SouthernOcean
+#layers          : Surface
+#regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean 
+regions         : Global OnShelf OffShelf ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthAtlanticOcean SouthAtlanticOcean NorthPacificOcean SouthPacificOcean #;Remainder NorthernSubpolarAtlantic NorthernSubpolarPacific
+
