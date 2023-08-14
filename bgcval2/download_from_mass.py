@@ -409,7 +409,11 @@ def download_from_mass(
     outputFold = folder([paths.ModelFolder_pref,  jobID,] )
     # make this folder group writeable. 
     st = os.stat(outputFold)
-    os.chmod(outputFold, st.st_mode | stat.S_IWGRP)
+
+    try:
+        os.chmod(outputFold, st.st_mode | stat.S_IWGRP)
+    except OSError:
+        print('Unable to change permissions:', outputFold)
 
     deleteBadLinksAndZeroSize(outputFold, jobID)
 
@@ -417,7 +421,12 @@ def download_from_mass(
     deleteBadLinksAndZeroSize(outputFold, jobID)
 
     # Set up a file to save command to a new file.
-    download_script_path = ''.join([folder('mass_scripts/'), jobID,'.sh'])
+    try:
+        username = os.getlogin()
+    except OSError:
+        import getpass
+        username = getpass.getuser()
+    download_script_path = ''.join([folder('mass_scripts/'), jobID, '_', username, '.sh'])
     header_lines = ['# Run this script on mass-cli1.jasmin.ac.uk\n',]
     header_lines.append('# from login1.jasmin.ac.uk, ssh to the mass machine:\n#     ssh -X  mass-cli\n')
     header_lines.append(''.join(['# run script with:\n# source ', os.path.abspath(download_script_path),'\n']))
@@ -483,7 +492,10 @@ def download_from_mass(
     if auto_download:
         shared_file_path = os.path.join(paths.shared_mass_scripts, os.path.basename(download_script_path))
         print('writing file in shared path', shared_file_path)
-        shutil.copy(download_script_path, shared_file_path)
+        try: 
+            shutil.copy(download_script_path, shared_file_path)
+        except EnvironmentError:
+            print('Error copying file', download_script_path, 'to', shared_file_path)
 
     fixFilePaths(outputFold, jobID, debug=False,)
     deleteBadLinksAndZeroSize(outputFold, jobID, debug=False,)
