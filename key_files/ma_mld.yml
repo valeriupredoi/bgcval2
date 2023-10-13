@@ -11,7 +11,7 @@ model_vars      : somxzint1 mldr10_1
 dataFile        : $BASEDIR_OBS/WOA/annual/woa18_A5B7_M0200_01.nc
 data_vars       : M_an
 data_convert    : NoChange
-data_source     : WOA13
+data_source     : WOA18
 layers          : layerless
 regions         : Global NorthAtlanticOcean SouthAtlanticOcean EquatorialAtlanticOcean ITCZ
 metrics         : mean, max #, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max

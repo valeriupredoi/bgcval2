@@ -12,7 +12,7 @@ model_convert   : choose_best_var
 dataFile        : /data/sthenno1/scratch/ledm/Observations/WOA/annual/woa18_decav_t00_01.nc
 data_vars       : t_an
 data_convert    : NoChange
-data_source     : WOA13
+data_source     : WOA18
 layers          : Surface #50m 100m
 regions         : Global NorthAtlanticOcean SouthAtlanticOcean EquatorialAtlanticOcean ITCZ
 metrics         : mean #, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max

@@ -44,6 +44,7 @@ import nctoolkit
 # local imports
 import bgcval2.bgcvaltools.bv2tools as bvt
 from bgcval2.bgcvaltools.pftnames import CMIP5models
+
 #####
 # These are availalble in the module:
 #	https://gitlab.ecosystem-modelling.pml.ac.uk/ledm/netcdf_manip
@@ -925,6 +926,7 @@ class matchDataAndModel:
         if self.loncc.ndim == 1 and self.loncc.shape != self.latcc.shape:
             self.loncc, self.latcc = np.meshgrid(self.loncc, self.latcc)
 
+
 #        self.depthcc = choose_best_ncvar(ncER, depthNames)[:]
 #        if 'deptht' in list(ncER.variables.keys()):
 #            self.depthcc = ncER.variables['deptht'][:].squeeze()
@@ -934,7 +936,14 @@ class matchDataAndModel:
 #            self.depthcc = ncER.variables['lev'][:].squeeze()
 #        else:
 #        print(self.modelcoords['z'], ncER.variables.keys())
-        self.depthcc = ncER.variables[self.modelcoords['z']][:]
+        if self.modelcoords['z'] in ncER.variables.keys():
+            self.depthcc = ncER.variables[self.modelcoords['z']][:]
+        else:
+            print('load mesh:', self.modelcoords['z'], 'is missing', ncER.variables.keys())
+            if not set(ncER.variables.keys()).intersection(set(depthNames)):
+                print('load mesh: no depth field available in ', modelfile)
+                self.depthcc = np.array([0])
+#                assert 0
 
 #        self.depthcc = choose_best_ncvar(ncER, depthNames)[:]
         self.datescc = var_to_datetime(ncER.variables[self.modelcoords['t']])
