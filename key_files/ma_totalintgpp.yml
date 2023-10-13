@@ -2,7 +2,7 @@
 name            : TotalIntGPP
 units           : Gt/yr
 dimensions      : 1
-modelFiles      : $BASEDIR_MODEL/$JOBID/SENEMO*_1m_*diag_T*.nc
+modelFiles      : $BASEDIR_MODEL/$JOBID/*_1m_*diag_T*.nc
 model_vars      : Ptot_NPP_result
 model_convert   :
     path: bgcval2/functions/TotalIntPP.py

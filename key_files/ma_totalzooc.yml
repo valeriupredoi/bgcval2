@@ -4,7 +4,7 @@ units           : mg C/m^3
 dimensions      : 1
 model           : NEMO025-ERSEM
 modelgrid       : eORCA025
-modelFiles      : $BASEDIR_MODEL/$JOBID/SENEMO*_1m_*diag_T*.nc
+modelFiles      : $BASEDIR_MODEL/$JOBID/*_1m_*diag_T*.nc
 gridFile        : /data/proteus2/scratch/ledm/MissionAtlantic/SENEMO/eORCA025_mesh_mask_mes_v2.nc
 model_vars      : Ztot_c_result
 model_convert   : NoChange
