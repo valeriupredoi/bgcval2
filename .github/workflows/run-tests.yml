@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - main
+      - python312
   schedule:
     - cron: '0 0 * * *'  # nightly
 
@@ -13,7 +14,7 @@ jobs:
     runs-on: "ubuntu-latest"
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11"]
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
       fail-fast: false
     name: Linux Python ${{ matrix.python-version }}
     steps:
