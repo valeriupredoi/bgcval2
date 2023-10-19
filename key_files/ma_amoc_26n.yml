@@ -4,7 +4,7 @@ name: AMOC_26N
 units: Sv
 dimensions: 1
 model: NEMO
-modelFiles      : $BASEDIR_MODEL/$JOBID/**_1m_*grid_V*.nc
+modelFiles      : $BASEDIR_MODEL/$JOBID/*/*/*_1m_*grid_V*.nc
 modelgrid       : eORCA025
 model_vars: vo
 model_convert:

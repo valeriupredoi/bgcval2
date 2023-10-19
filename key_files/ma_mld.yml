@@ -4,7 +4,7 @@ units           : m
 dimensions      : 1
 model           : NEMO025-ERSEM
 modelgrid       : eORCA025
-modelFiles      : $BASEDIR_MODEL/$JOBID/*_1m_*grid_T*.nc
+modelFiles      : $BASEDIR_MODEL/$JOBID/*/*/*_1m_*grid_T*.nc
 gridFile        : /data/proteus2/scratch/ledm/MissionAtlantic/SENEMO/eORCA025_mesh_mask_mes_v2.nc
 model_convert   : choose_best_var  
 model_vars      : somxzint1 mldr10_1
