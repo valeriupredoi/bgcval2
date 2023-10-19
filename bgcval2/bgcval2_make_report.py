@@ -113,7 +113,6 @@ def html5Maker(
     reportdir='reports/tmp',
     year='*',
     clean=False,
-    doZip=False,
     physicsOnly=False,
     paths=None,
     config_user=None,
@@ -1389,9 +1388,6 @@ def html5Maker(
 
     print("-------------\nSuccess\ntest with:\nfirefox", indexhtmlfn)
     print("To zip it up:\n", tar)
-    if doZip:
-        import subprocess
-        subprocess.Popen(tar.split())
 
 
 def comparehtml5Maker(
@@ -1399,12 +1395,23 @@ def comparehtml5Maker(
     reportdir='reports/tmp',
     files=[],
     clean=False,
-    doZip=False,
     jobDescriptions={},
     jobColours={},
-    paths = {}
+    paths = {},
+    analysisKeys=[]
 ):
-
+    """
+    Generates the multi-job comparison report.
+    
+    jobIDs: list of job IDs
+    reportdir: output job direction
+    files: a list of paths to images
+    clean: bool to remove old report.
+    jobDescriptions: dict to describe eahc job
+    jobColours: dict for each jobs colour in the legend.
+    paths: bgcval.paths
+    analysisKeys: list of analysis keys (generated from the input_yml).
+    """
     if clean:
         #####
         # Delete old files
@@ -1483,6 +1490,8 @@ def comparehtml5Maker(
                                    Caption=Caption,
                                    tablehtml=htmltable)
 
+    # A curated list of specific plots to include in the headlines
+    # of the comparison report
     physicsKM = [
         'AMOC_26N',
         'ADRC_26N',
@@ -1500,7 +1509,6 @@ def comparehtml5Maker(
         'MA_Drake',
         'MA_AMOC_26N',
         'MA_AEU',
-
     ]
 
     bgcKM = [
@@ -1524,13 +1532,14 @@ def comparehtml5Maker(
         'MA_TotalPhytoC_Global_Surface',
         'MA_TotalZooC_Global_Surface',
     ]
+
     categories = {
         'Physics Key Metrics': [],
         'BGC Key Metrics': [],
         'Other Plots': [],
     }
-    extrafolds = []
 
+    
     for fn in files:
         found = False
         for key in physicsKM:
@@ -1556,17 +1565,6 @@ def comparehtml5Maker(
                     ]
                 found = True
         if found: continue
-        for extracat in extrafolds:
-            if found: continue
-            if fn.find('/' + extracat + '/') > -1:
-                try:
-                    categories[extracat].append(fn)
-                except:
-                    categories[extracat] = [
-                        fn,
-                    ]
-
-        if found: continue
         try:
             categories['Other Plots'].append(fn)
         except:
@@ -1579,9 +1577,6 @@ def comparehtml5Maker(
         categoryOrder.append('Physics Key Metrics')
     if len(categories['BGC Key Metrics']):
         categoryOrder.append('BGC Key Metrics')
-    for exf in extrafolds:
-        if exf not in list(categories.keys()): continue
-        if len(categories[exf]): categoryOrder.append(exf)
 
     if len(categories['Other Plots']): categoryOrder.append('Other Plots')
     categories['Other Plots'] = sorted(categories['Other Plots'])
@@ -1619,7 +1614,7 @@ def comparehtml5Maker(
                               Files=relativeFiles)
 
     if len(categories['Other Plots']):
-        otherFilenames = files[:]  #categories['Other Plots'][:]
+        otherFilenames = files[:]  
         SectionTitle = 'All Plots'
 
         hrefs = []
@@ -1629,57 +1624,7 @@ def comparehtml5Maker(
         FileLists = {}
         FileOrder = {}
 
-        names = [
-            'Chlorophyll',
-            'MLD',
-            'Nitrate',
-            'Phosphate',
-            'Salinity',
-            'Temperature',
-            'Current',
-            #'so',
-            'Ice',
-            'DIC',
-            'pH',
-            'DMS',
-            'DiaFrac',
-            'Dust',
-            'Iron',
-            'Silicate',
-            'Alkalinity',
-            'AMOC',
-            'ADRC',
-            'DrakePassage',
-            'AirSeaFlux',
-            'DTC',
-            'Oxygen',
-            'OMZ',
-            'Production',
-            'Export',
-            'FreshwaterFlux',
-            'HeatFlux',
-            'soga',
-            'scvoltot',
-            'thetaoga',
-            'scalarHeatContent',
-        ]
-        # Add the rest of the names from key_lists directory.
-        key_lists_dir = os.path.join(paths.bgcval2_repo, 'key_lists')
-        for suite_yml in glob(os.path.join(key_lists_dir, '*.yml')):
-            # look for a list in keys_list directory:
-            # Open yml file:
-            with open(suite_yml, 'r') as openfile:
-                suite_dict = yaml.safe_load(openfile)
-
-            keys_dict = suite_dict.get('keys', {})
-            for key, key_bool in keys_dict.items():
-                if not key_bool:
-                    continue
-                if key in names:
-                    continue
-                names.append(key)
-
-        for key in sorted(names):
+        for key in sorted(analysisKeys):
             #####
             # Determine the list of files:
             vfiles = []
@@ -1721,6 +1666,8 @@ def comparehtml5Maker(
                 print("Adding ", relfn, "to script")
 
         if len(otherFilenames):
+            # I think this is never happens anymore.
+            assert 0
             href = 'OtherPlots-others'
 
             hrefs.append(href)
@@ -1755,7 +1702,6 @@ def comparehtml5Maker(
         print(Descriptions)
         print(FileLists)
         print(FileOrder)
-        #		hrefs=[]
         if len(hrefs):
             html5Tools.AddSubSections(indexhtmlfn,
                                       hrefs,

@@ -27,21 +27,22 @@ REQUIREMENTS = {
         'basemap>=1.3.6',
         'cartopy',
         'matplotlib',
-        'netcdf4!=1.6.1',  # https://github.com/ESMValGroup/ESMValCore/pull/1724
-        'numpy',
+        'nctoolkit>=0.8.7',  # use linux64 build
+        'netcdf4',
+        'numpy>1.24.3,<1.25',  # basemap 1.3.7 needs <1.25
         'pip!=21.3',
         'pyyaml',
         'scikit-learn',
-        'scipy',
+        'scipy>=1.6',
     ],
     # Test dependencies
     # Execute 'python setup.py test' to run tests
     'test': [
-        'flake8<4',
+        'flake8',
+        'scitools-iris>=3.4.0',
         'pytest>=3.9,!=6.0.0rc1,!=6.0.0',
         'pytest-cov>=2.10.1',
         'pytest-env',
-        'pytest-flake8>=1.0.6',
         'pytest-html!=2.1.0',
         'pytest-metadata>=1.5.1',
         'pytest-mypy',
@@ -56,8 +57,8 @@ REQUIREMENTS = {
         'docformatter',
         'isort',
         'pre-commit',
-        'prospector[with_pyroma,with_mypy]!=1.1.6.3,!=1.1.6.4',
-        'sphinx>2',
+        'prospector[with_pyroma,with_mypy]>=1.9.0',
+        'sphinx>=5',
         'sphinx_rtd_theme',
         'vprof',
         'yamllint',
@@ -174,6 +175,7 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Atmospheric Science',
         'Topic :: Scientific/Engineering :: GIS',

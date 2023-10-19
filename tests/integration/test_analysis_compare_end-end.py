@@ -49,3 +49,25 @@ def test_run_analysis_compare():
     bgcval2_test_data()
     with arguments('analysis_compare', '-y', 'input_yml/integration_testing.yml'):
         main()
+
+
+@patch('bgcval2.analysis_compare.main', new=wrapper(bgcval2.analysis_compare.main))
+@pytest.mark.usefixtures('test_create_files')
+def test_run_analysis_compare_with_skip_timeseries():
+    """Patch and run the whole thing."""
+    bgcval2_test_data()
+    with arguments('analysis_compare', '-y',
+                   'input_yml/integration_testing.yml',
+                   '--skip_timeseries'):
+        main()
+
+
+@patch('bgcval2.analysis_compare.main', new=wrapper(bgcval2.analysis_compare.main))
+@pytest.mark.usefixtures('test_create_files')
+def test_run_analysis_compare_with_no_skip_timeseries():
+    """Patch and run the whole thing."""
+    bgcval2_test_data()
+    with arguments('analysis_compare', '-y',
+                   'input_yml/integration_testing.yml',
+                   '--no-skip_timeseries'):
+        main()

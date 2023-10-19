@@ -494,6 +494,12 @@ def load_coords_from_netcdf(mdfile):
         intersection = sorted(list(set(coord_candidate_list) & nckeys))
         if special_cases.get(tuple(intersection), False):
             intersection = special_cases[tuple(intersection)]
+            # sometimes, time_counter doesn't have units.
+            if intersection == ['time_counter',]:
+                try:
+                    units = nctmp.variables['time_counter'].units
+                except:
+                    intersection = ['time_centered', ]
 
         if len(intersection) == 1:
             output_coords[coord] = intersection[0]
@@ -947,10 +953,10 @@ def robinPlotQuad(lons,
 
             if scatter:
                 if doLogs[i] and spl in [221, 222]:
-                    rbmi = np.int(np.log10(rbmi))
+                    rbmi = np.int32(np.log10(rbmi))
                     rbma = np.log10(rbma)
-                    if rbma > np.int(rbma): rbma += 1
-                    rbma = np.int(rbma)
+                    if rbma > np.int32(rbma): rbma += 1
+                    rbma = np.int32(rbma)
 
                 if doLogs[i]:
                     ims.append(bms[i].scatter(
@@ -1193,10 +1199,10 @@ def HovPlotQuad(
         axs.append(fig.add_subplot(spl))
         if scatter:
             if doLogs[i] and spl in [221, 222]:
-                rbmi = np.int(np.log10(rbmi))
+                rbmi = np.int32(np.log10(rbmi))
                 rbma = np.log10(rbma)
-                if rbma > np.int(rbma): rbma += 1
-                rbma = np.int(rbma)
+                if rbma > np.int32(rbma): rbma += 1
+                rbma = np.int32(rbma)
 
             if doLogs[i]:
                 ims.append(
@@ -1457,10 +1463,10 @@ def ArcticTransectPlotQuad(
         axs.append(fig.add_subplot(spl))
         if scatter:
             if doLogs[i] and spl in [221, 222]:
-                rbmi = np.int(np.log10(rbmi))
+                rbmi = np.int32(np.log10(rbmi))
                 rbma = np.log10(rbma)
-                if rbma > np.int(rbma): rbma += 1
-                rbma = np.int(rbma)
+                if rbma > np.int32(rbma): rbma += 1
+                rbma = np.int32(rbma)
 
             if doLogs[i]:
                 ims.append(
@@ -1983,7 +1989,7 @@ def histsPlot(datax,
 
     if logx:
         maxd = np.ma.power(10.,
-                           np.int(np.ma.max(np.ma.abs(np.ma.log10(d))) + 1))
+                           np.int32(np.ma.max(np.ma.abs(np.ma.log10(d))) + 1))
         print(maxd, 1 / maxd)
         n, bins, patchesx = pyplot.hist(d,
                                         histtype='stepfilled',

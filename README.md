@@ -19,7 +19,7 @@ This work was funded through WP1 of the Terrafirma project.
 
 Current version notes:
 
-- Suport for Python 3.10 is now **enabled**.
+- Suported versions of Python: 3.9, 3.10 and 3.11
 
 Environment and installation
 ============================
@@ -248,6 +248,7 @@ These values are:
  - `do_analysis_timeseries`:
    -  A Boolean value to run or skip the single model timeseries.
    -  Set to False if the single model analysis has already completed.
+   -  This value is overwritten by the `analysis_compare -s` which skips new timeseries analyses.
  - `do_mass_download`:
    - A boolean value to run the mass download.
    - This is not currently possible as we can only download mass file from mass-cli1 on jasmin.
@@ -292,6 +293,15 @@ These values are:
 
 A sample yaml exists in `input_yml/comparison_analysis_template.yml`,
 which can be adapted to additional analyses.
+
+In order to only run the report making part of the comparison analysis 
+(skip the `analysis_timeseries` part),
+either set the `do_analysis_timeseries` key to `False` in the `input_yml` file,
+or run `analysis_compare` with the command line argument: `-s` or `--skip-timeseries`.
+To skip the analysis timeseries command, use `--no-skip-timeseries`.
+Though without without either of these command line arguments, 
+bgcval2 will default to the value in your `input_yml` file.
+Also, the command line argument overwrites the value in `input_yml`.
 
 Once the comparison suite has been run, members of the esmeval group workspace on JASMIN
 can copy the html report to a web-visible directory, using the script:

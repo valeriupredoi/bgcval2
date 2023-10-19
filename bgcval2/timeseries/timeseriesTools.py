@@ -67,11 +67,9 @@ def getTimes(nc, coords):
         cal = nc.variables[coords['t']].calendar
     except:
         cal = coords['cal']
-
     dtimes = num2date(nc.variables[coords['t']][:],
                       nc.variables[coords['t']].units,
                       calendar=cal)
-    print(dtimes)
     try:
         ts = np.array([float(dt.year) + dt.dayofyr / 365. for dt in dtimes])
         return ts
@@ -223,7 +221,7 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
     if type(layer) in [
             type(0),
             np.int64,
-            np.int,
+            int,
     ]:
         k = layer
         try:
