@@ -412,7 +412,7 @@ def download_from_mass(
     st = os.stat(outputFold)
     
     # Case one:
-    # I just created this folder and I own it: 
+    # I created this folder and I own it: 
     i_can_write_this = os.access(outputFold, os.W_OK)
     if i_can_write_this:
         os.chmod(outputFold, st.st_mode | stat.S_IWGRP)
@@ -494,8 +494,7 @@ def download_from_mass(
         shared_file_path = os.path.join(paths.shared_mass_scripts, os.path.basename(download_script_path))
         print('writing file in shared path', shared_file_path)
 
-        # Case one:
-        # I just created this folder and I own it:
+        # I created this file and I own it:
         i_can_write_this = os.access(shared_file_path, os.W_OK)
         if i_can_write_this:
             os.chmod(download_script_path, st.st_mode | stat.S_IWGRP)
