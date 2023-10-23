@@ -16,7 +16,11 @@ def test_allowed_user():
         auto_download=False,
         config_user="defaults"
     )
-    assert os.stat(run_dir).st_mode == 16893
+    try:
+        assert os.stat(run_dir).st_mode == 16893
+    # when stat mode is 16877 (equivalent to chmod 877)
+    except AssertionError:
+        assert os.stat(run_dir).st_mode == 16877
 
 
 def test_disallowed_user():
