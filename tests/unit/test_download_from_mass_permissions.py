@@ -19,11 +19,13 @@ def test_allowed_user():
 
 def test_disallowed_user():
     user_home = os.path.expanduser('~')
-    output_folder = "bgcval2/local_test/BGC_data/u-xxx/"
+    output_folder = "bgcval2/local_test/BGC_data/u-yyy/"
     run_dir = os.path.join(user_home, output_folder)
+    if not os.path.exists(run_dir):
+        os.makedirs(run_dir)
     st = os.stat(run_dir)
     os.chmod(run_dir, False)
-    dfm(jobID="u-xxx",
+    dfm(jobID="u-yyy",
         doMoo=False,
         auto_download=False,
         config_user="defaults"
