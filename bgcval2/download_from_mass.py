@@ -409,7 +409,7 @@ def download_from_mass(
     paths = get_paths(config_user)
     outputFold = folder([paths.ModelFolder_pref,  jobID,] )
     st = os.stat(outputFold)
-   
+
     # Check permissions on the output folder 
     i_can_write_this = os.access(outputFold, os.W_OK)
     if i_can_write_this:
