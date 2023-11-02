@@ -833,6 +833,60 @@ def multitimeseries(
                 lw=thicknesses[jobID],
             )
 
+        if smoothing.lower() == '5and30':
+            arr_new5 = movingaverage_DT(arr,
+                                       times,
+                                       window_len=5.,
+                                       window_units='years')
+
+            arr_new30 = movingaverage_DT(arr,
+                                       times,
+                                       window_len=30.,
+                                       window_units='years')
+
+            pyplot.plot(
+                times,
+                arr_new5,
+                c=colours[jobID],
+                ls=linestyles[jobID],
+                lw=thicknesses[jobID]/2.,
+            )
+            pyplot.plot(
+                times,
+                arr_new30,
+                c=colours[jobID],
+                ls=linestyles[jobID],
+                lw=thicknesses[jobID],
+                label=label,
+            )
+        if smoothing.lower() == '30and100':
+            arr_new5 = movingaverage_DT(arr,
+                                       times,
+                                       window_len=30.,
+                                       window_units='years')
+
+            arr_new30 = movingaverage_DT(arr,
+                                       times,
+                                       window_len=100.,
+                                       window_units='years')
+
+            pyplot.plot(
+                times,
+                arr_new5,
+                c=colours[jobID],
+                ls=linestyles[jobID],
+                lw=thicknesses[jobID]/2.,
+            )
+            pyplot.plot(
+                times,
+                arr_new30,
+                c=colours[jobID],
+                ls=linestyles[jobID],
+                lw=thicknesses[jobID],
+                label=label,
+            )
+
+
         if smoothing.lower() in [
                 'movingav1year',
         ]:
