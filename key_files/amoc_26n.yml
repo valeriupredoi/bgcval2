@@ -13,3 +13,4 @@ model_convert:
   altmaskfile: $PATHS_BGCVAL2/bgcval2/data/basinlandmask_eORCA1.nc
 layers: layerless
 regions: regionless
+smoothings: DataOnly both5 both30 movingav30years

@@ -702,9 +702,10 @@ def multitimeseries(
             'lime',
         ],
         plotStyle='Together',
-        lineStyle='',
+        smoothing='', 
         thicknesses=defaultdict(lambda: 1),
         linestyles=defaultdict(lambda: '-'),
+        labels={},
 ):
 
     if 0 in [len(timesD), len(list(timesD.keys()))]: return
@@ -783,7 +784,8 @@ def multitimeseries(
         if np.min(arr) < ylims[0]: ylims[0] = np.min(arr)
         if np.max(arr) > ylims[1]: ylims[1] = np.max(arr)
 
-        if lineStyle.lower() in ['spline', 'all']:
+        label = labels.get(jobID, jobID)
+        if smoothing.lower() in ['spline', 'all']:
             tnew = np.linspace(times[0], times[-1], 60)
             arr_smooth = interpolate.spline(times, arr, tnew)
             pyplot.plot(
@@ -792,10 +794,10 @@ def multitimeseries(
                 c=colours[jobID],
                 ls=linestyles[jobID],
                 lw=thicknesses[jobID],
-                label=jobID + ' spline',
+                label=label + ' spline',
             )
 
-        if lineStyle.lower() in ['movingaverage', 'both', 'all']:
+        if smoothing.lower() in ['movingaverage', 'both', 'all']:
             if len(times) > 100.: window = 30
             elif len(times) > 30.: window = 15
             elif len(times) > 10.: window = 4
@@ -810,10 +812,10 @@ def multitimeseries(
                 c=colours[jobID],
                 ls=linestyles[jobID],
                 lw=thicknesses[jobID],
-                label=jobID,
+                label=label,
             )
 
-        if lineStyle.lower() in [
+        if smoothing.lower() in [
                 'movingaverage5',
         ]:
             window = 5
@@ -827,11 +829,11 @@ def multitimeseries(
                 arr_new,
                 c=colours[jobID],
                 ls=linestyles[jobID],
-                label=jobID,
+                label=label,
                 lw=thicknesses[jobID],
             )
 
-        if lineStyle.lower() in [
+        if smoothing.lower() in [
                 'movingav1year',
         ]:
             arr_new = movingaverage_DT(arr,
@@ -844,10 +846,10 @@ def multitimeseries(
                 c=colours[jobID],
                 ls=linestyles[jobID],
                 lw=thicknesses[jobID],
-                label=jobID,
+                label=label,
             )
-        if lineStyle.lower() in [
-                'movingav5years',
+        if smoothing.lower() in [
+                'movingav5years', 'both5'
         ]:
             arr_new = movingaverage_DT(arr,
                                        times,
@@ -859,11 +861,11 @@ def multitimeseries(
                 c=colours[jobID],
                 ls=linestyles[jobID],
                 lw=thicknesses[jobID],
-                label=jobID,
+                label=label,
             )
 
-        if lineStyle.lower() in [
-                'movingav30years',
+        if smoothing.lower() in [
+                'movingav30years', 'both30'
         ]:
             pyplot.plot(times,
                         arr,
@@ -881,11 +883,11 @@ def multitimeseries(
                 c=colours[jobID],
                 ls=linestyles[jobID],
                 lw=thicknesses[jobID],
-                label=jobID,
+                label=label,
             )
 
-        if lineStyle.lower() in [
-                'movingav100years',
+        if smoothing.lower() in [
+                'movingav100years', 'both100',
         ]:
             pyplot.plot(times,
                         arr,
@@ -903,10 +905,10 @@ def multitimeseries(
                 c=colours[jobID],
                 ls=linestyles[jobID],
                 lw=thicknesses[jobID],
-                label=jobID,
+                label=label,
             )
 
-        if lineStyle.lower() in [
+        if smoothing.lower() in [
                 'movingaverage12',
         ]:
             window = 12
@@ -921,10 +923,10 @@ def multitimeseries(
                     c=colours[jobID],
                     ls=linestyles[jobID],
                     lw=2.,
-                    label=jobID,
+                    label=label,
                 )
 
-        if lineStyle.lower() in [
+        if smoothing.lower() in [
                 'movingaverage60',
         ]:
             window = 60
@@ -939,13 +941,14 @@ def multitimeseries(
                     c=colours[jobID],
                     ls=linestyles[jobID],
                     lw=2.,
-                    label=jobID,
+                    label=label,
                 )
 
-        if lineStyle.lower() in [
+        if smoothing.lower() in [
                 '',
                 'both',
                 'all',
+                'both5', 'both30', 'both100',
         ]:
             pyplot.plot(times,
                         arr,
@@ -953,14 +956,14 @@ def multitimeseries(
                         ls=linestyles[jobID],
                         lw=0.25)
 
-        if lineStyle.lower() in ['dataonly']:
+        if smoothing.lower() in ['dataonly']:
             pyplot.plot(
                 times,
                 arr,
                 c=colours[jobID],
                 ls=linestyles[jobID],
                 lw=thicknesses[jobID],
-                label=jobID,
+                label=label,
             )
 
     if type(data) == type(10.):
