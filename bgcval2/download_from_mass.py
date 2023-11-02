@@ -412,15 +412,22 @@ def download_from_mass(
 
     # Check permissions on the output folder 
     i_can_write_this = os.access(outputFold, os.W_OK)
-    if i_can_write_this:
+    owner = getpwuid(st.st_uid).pw_name
+    my_username = os.environ.get('USERNAME')
+    
+    i_own_this = my_username == owner
+    #group_can_write_this = os.access(outputFold, os.W_OK)
+    if i_can_write_this and i_own_this:
         # I created this folder and I own it.
-        # make this folder group writeable.
+        # make this folder group writeable.:
         os.chmod(outputFold, st.st_mode | stat.S_IWGRP)
+    elif i_can_write_this and not i_own_this:
+        pass
     else:
         # Someone else created it and they own it,
         # so I can't change permissions.
-        uname = getpwuid(st.st_uid).pw_name
-        print('WARNING: someone else (', uname, ') owns this directory, so you may not be able to download files.')
+        owner = getpwuid(st.st_uid).pw_name
+        print('WARNING: someone else (', owner, ') owns this directory, so you may not be able to download files.')
         print('WARNING: Ask them politely to run "chmod g+w ',outputFold,'"')
 
     deleteBadLinksAndZeroSize(outputFold, jobID)
@@ -503,11 +510,12 @@ def download_from_mass(
             # make local copy group writable:
             os.chmod(download_script_path, st.st_mode | stat.S_IWGRP)
            
-            # copy local to shared folder: 
-            shutil.copy(download_script_path, shared_file_path)
+            # copy local to shared folder:
+            if not os.path.exists(shared_file_path): 
+                shutil.copy(download_script_path, shared_file_path)
 
-            # make shared copy group writable: (possibly overkill)
-            os.chmod(shared_file_path, st.st_mode | stat.S_IWGRP)
+                # make shared copy group writable: (possibly overkill)
+                os.chmod(shared_file_path, st.st_mode | stat.S_IWGRP)
         else:
             # I don't have permission to edit this file. Someone else does:
             uname = getpwuid(os.stat(shared_file_path).st_uid).pw_name
