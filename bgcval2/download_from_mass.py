@@ -503,8 +503,14 @@ def download_from_mass(
         shared_file_path = os.path.join(paths.shared_mass_scripts, os.path.basename(download_script_path))
         print('writing file in shared path', shared_file_path)
 
-        # check destination permissions:
-        i_can_write_this = os.access(shared_file_path, os.W_OK)
+        # check destination existance and permissions
+        if os.path.exists(shared_file_path):
+            # check destination permissions
+            i_can_write_this = os.access(shared_file_path, os.W_OK)
+        else:
+            # File doesn't exist!
+            i_can_write_this = True
+ 
         if i_can_write_this:
             # I created this file and I own it:
             # make local copy group writable:
