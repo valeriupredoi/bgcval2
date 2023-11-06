@@ -702,7 +702,7 @@ def multitimeseries(
             'lime',
         ],
         plotStyle='Together',
-        smoothing='', 
+        smoothing='',
         thicknesses=defaultdict(lambda: 1),
         linestyles=defaultdict(lambda: '-'),
         labels={},
