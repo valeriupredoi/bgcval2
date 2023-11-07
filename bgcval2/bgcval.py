@@ -43,7 +43,7 @@ from .analysis_timeseries import analysis_timeseries, singleTimeSeries, singleTi
 # these modules are no more and break the tests
 # from .analysis_timeseries import level1KeysDict, physKeysDict, bgcKeysDict, keymetricsfirstDict
 from .analysis_p2p import analysis_p2p, p2pDict_level2, p2pDict_physics, single_p2p
-from .bgcval2_make_report import html5Maker
+from .bgcval2_make_report import html5_maker
 from .bv2tools import folder
 
 
@@ -240,11 +240,11 @@ def theWholePackage(jobID, year=False, suite='level1'):
 
     if suite == 'physics': physicsOnly = True
     else: physicsOnly = False
-    html5Maker(jobID=jobID,
-               reportdir=folder('reports/' + jobID),
-               year=year,
-               clean=True,
-               physicsOnly=physicsOnly)
+    html5_maker(jobID=jobID,
+                reportdir=folder('reports/' + jobID),
+                year=year,
+                clean=True,
+                physicsOnly=physicsOnly)
 
 
 def get_args():

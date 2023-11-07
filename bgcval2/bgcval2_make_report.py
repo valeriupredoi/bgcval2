@@ -31,30 +31,41 @@
 #####
 # Load Standard Python modules:
 import argparse
-import sys
-
-from glob import glob
 import os
 import shutil
-import yaml
+from glob import glob
 
 #####
 # Load specific local code:
-from bgcval2.bgcvaltools.bv2tools import folder, shouldIMakeFile, round_sig
-from bgcval2.html5 import html5Tools, htmltables
-from bgcval2.bgcvaltools.pftnames import getLongName
-from bgcval2.timeseries.analysis_level0 import analysis_level0, analysis_level0_insitu
-from bgcval2._runtime_config import get_run_configuration
 from bgcval2.Paths.paths import paths_setter
+from bgcval2._runtime_config import get_run_configuration
+from bgcval2.bgcvaltools.bv2tools import folder, shouldIMakeFile, round_sig
+from bgcval2.bgcvaltools.pftnames import getLongName
+from bgcval2.html5 import html5Tools, htmltables
+from bgcval2.timeseries.analysis_level0 import analysis_level0, analysis_level0_insitu
 
 
 def copytree(src, dst, symlinks=False, ignore=None):
+    """
+    Makes a copy of the src image directory to dst
+
+    Parameters
+    ----------
+    src: str
+        Source directory
+    dst: str
+        Destination directory
+    symlinks: bool
+        symbolic links in the source tree are represented as symbolic links in the Destination tree
+    ignore
+        Ignore as in copytree
+    """
     for item in os.listdir(src):
         s = os.path.join(src, item)
         d = os.path.join(dst, item)
         if os.path.isdir(s):
             try:
-                shutil.copytree(s, d, symlinks, ignore)
+                shutil.copytree(s, d, symlinks=symlinks, ignore=ignore)
             except:
                 pass
         else:
@@ -64,60 +75,95 @@ def copytree(src, dst, symlinks=False, ignore=None):
                 pass
 
 
-def addImageToHtml(fn, imagesfold, reportdir, debug=True):
-    #####
-    # Note that we use three paths here.
-    # fn: The original file path relative to here
-    # newfn: The location of the new copy of the file relative to here
-    # relfn: The location of the new copy relative to the index.html
+def add_image_to_html(fn, imagesfold, reportdir, debug=True):
+    """
+    Makes a copy of the image directory to reportdir
 
+    Note that we use three paths here.
+    fn: The original file path relative to here
+    newfn: The location of the new copy of the file relative to here
+    relfn: The location of the new copy relative to the index.html
+
+    Parameters
+    ----------
+    fn: str
+        image file
+    imagesfold: str
+        Destination directory
+    reportdir: str
+        html report directory
+    debug: bool
+        If True, print more debug statements.
+
+    Returns
+    -------
+    string: new relative image path
+    """
     newfn = imagesfold + os.path.basename(fn)
     relfn = newfn.replace(reportdir, './')
 
     if debug:
-        print("addImageToHtml:\tfn:", fn, 
-            "\n\timagesfold:", imagesfold, 
-            "\n\treportdir:", reportdir,
-            "\n\tnewfn:", newfn,
-            "\n\trelfn:", relfn)
+        print("addImageToHtml:\tfn:", fn,
+              "\n\timagesfold:", imagesfold,
+              "\n\treportdir:", reportdir,
+              "\n\tnewfn:", newfn,
+              "\n\trelfn:", relfn)
 
-    
     if not os.path.exists(newfn):
-        if debug: print("addImageToHtml:\tcopytree", fn, newfn)
-        basedir = folder(os.path.dirname(newfn))
-        #copytree(fn, newfn)
+        if debug:
+            print("addImageToHtml:\tcopytree", fn, newfn)
+        # basedir = folder(os.path.dirname(newfn))
+        # copytree(fn, newfn)
         if os.path.isdir(fn):
-            shutil.copytree(fn, newfn, symlinks, ignore)
+            shutil.copytree(fn, newfn)
         else:
             shutil.copy2(fn, newfn)
     else:
         ####
         # Check if the newer file is the same one from images.
-        if os.path.getmtime(fn) == os.path.getmtime(newfn): return relfn
+        if os.path.getmtime(fn) == os.path.getmtime(newfn):
+            return relfn
+
         ####
         # Check if file is newer than the one in images.
         if shouldIMakeFile(
                 fn,
                 newfn,
         ):
-            if debug: print("addImageToHtml:\tremoving old file", fn)
+            if debug:
+                print("addImageToHtml:\tremoving old file", fn)
             os.remove(newfn)
             shutil.copy2(fn, newfn)
-            if debug: 
+            if debug:
                 print("addImageToHtml:\t copy2", fn, newfn)
     return relfn
 
 
-def html5Maker(
-    jobID='u-ab749',
-    reportdir='reports/tmp',
-    year='*',
-    clean=False,
-    physicsOnly=False,
-    paths=None,
-    config_user=None,
+def html5_maker(
+        jobID='u-ab749',
+        reportdir='reports/tmp',
+        year='*',
+        clean=False,
+        physicsOnly=False,
+        paths=None,
 ):
+    """html report maker for a single job.
 
+    Parameters
+    ----------
+    jobID
+        The first parameter.
+    reportdir
+        The output report directory
+    year
+        The year for p2p analysis
+    clean
+        Bool to delete old files
+    physicsOnly
+        Run physics only
+    paths
+        bvgcval2.paths
+    """
     if clean:
         #####
         # Delete old files
@@ -134,7 +180,7 @@ def html5Maker(
     # Copy all necceasiry objects and templates to the report location:
     print("Copying html and js assets to", reportdir)
     basedir = os.path.dirname(__file__)
-    copytree(os.path.join(basedir, os.path.join(paths.bgcval2_repo,'bgcval2/html5/html5Assets')), reportdir)
+    copytree(os.path.join(basedir, os.path.join(paths.bgcval2_repo, 'bgcval2/html5/html5Assets')), reportdir)
     indexhtmlfn = reportdir + "index.html"
     try:
         os.rename(reportdir + 'index-template.html', indexhtmlfn)
@@ -143,13 +189,11 @@ def html5Maker(
 
     imagesfold = folder(reportdir + 'images/')
 
-    def newImageLocation(fn):
-        return imagesfold + os.path.basename(fn)
-
     #####
     #
     descriptionText = 'Validation of the job: ' + jobID
-    if year != '*': descriptionText += ', in the year: ' + year
+    if year != '*':
+        descriptionText += ', in the year: ' + year
 
     html5Tools.writeDescription(
         indexhtmlfn,
@@ -164,9 +208,9 @@ def html5Maker(
     Level1Profiles = True
     level2Horizontal = True
     level2Physics = False
-    summarySections = False
-    level3OMZ = False
-    Level3Salinity = False
+    # summarySections = False
+    # level3OMZ = False
+    # Level3Salinity = False
     regionMap = True
 
     #####
@@ -178,7 +222,7 @@ def html5Maker(
         'Iron'] = 'Note that there is no suitable historic data set for this variable.'
     ListofCaveats[
         'MLD'] = 'Note that the Model MLD is calculated with based on a sigma_0 difference of 0.01 with the surface where as data uses as \
-			sigma_0 difference of +/- 0.2 degrees from a depth on 10m.'
+         sigma_0 difference of +/- 0.2 degrees from a depth on 10m.'
 
     ListofCaveats[
         'Nitrate'] = 'Note that MEDUSA uses Dissolved Inorganic Nitrogen (DIN) rather than nitrate. We assume that non-nitrate parts of DIN are of relatively minor importance and so assume that WOA nitrate is comparable to model DIN.'
@@ -223,7 +267,7 @@ def html5Maker(
             'DIC': '',
             'Alkalinity': '',
             'AMOC_26N': 'Target: 10-20',
-            'DrakePassageTransport': '136.7 	&#177; 7.8 ',  #	&#177; is +/-
+            'DrakePassageTransport': '136.7 	&#177; 7.8 ',  # &#177; is +/-
             'NorthernTotalIceExtent': '14.9 	&#177; 0.3',
             'SouthernTotalIceExtent': '19.8 	&#177; 0.6',
             'TotalOMZVolume': '',
@@ -238,11 +282,11 @@ def html5Maker(
             'Alkalinity': '',
             'AMOC_26N': '',
             'DrakePassageTransport':
-            'Cunningham, S. A., S. G. Alderson, B. A. King, and M. A. Brandon (2003), Transport and variability of the Antarctic Circumpolar Current in Drake Passage, J. Geophys. Res., 108, 8084, doi:10.1029/2001JC001147, C5.',
+                'Cunningham, S. A., S. G. Alderson, B. A. King, and M. A. Brandon (2003), Transport and variability of the Antarctic Circumpolar Current in Drake Passage, J. Geophys. Res., 108, 8084, doi:10.1029/2001JC001147, C5.',
             'NorthernTotalIceExtent':
-            'HadISST: Rayner, N. A.; et al (2003) Global analyses of sea surface temperature, sea ice, and night marine air temperature since the late nineteenth century J. Geophys. Res.Vol. 108, No. D14, 4407 10.1029/2002JD002670',
+                'HadISST: Rayner, N. A.; et al (2003) Global analyses of sea surface temperature, sea ice, and night marine air temperature since the late nineteenth century J. Geophys. Res.Vol. 108, No. D14, 4407 10.1029/2002JD002670',
             'SouthernTotalIceExtent':
-            'HadISST: Rayner, N. A.; et al (2003) Global analyses of sea surface temperature, sea ice, and night marine air temperature since the late nineteenth century J. Geophys. Res.Vol. 108, No. D14, 4407 10.1029/2002JD002670',
+                'HadISST: Rayner, N. A.; et al (2003) Global analyses of sea surface temperature, sea ice, and night marine air temperature since the late nineteenth century J. Geophys. Res.Vol. 108, No. D14, 4407 10.1029/2002JD002670',
             'TotalOMZVolume': 'World Ocean Atlas',
         }
         units_dict = {
@@ -256,7 +300,7 @@ def html5Maker(
             'AMOC_26N': 'Sv',
             'DrakePassageTransport': 'Sv',
             'NorthernTotalIceExtent':
-            'x 1E6 km&#178;',  # &#178; is superscript 2
+                'x 1E6 km&#178;',  # &#178; is superscript 2
             'SouthernTotalIceExtent': 'x 1E6 km&#178;',
             'TotalOMZVolume': 'm&#179;',
         }
@@ -286,8 +330,8 @@ def html5Maker(
         for field in fields:
             if physicsOnly and field not in physFields: continue
             if field in [
-                    'Nitrate', 'Phosphate', 'Silicate', 'DIC', 'Alkalinity', 'Temperature',
-                    'Salinity'
+                'Nitrate', 'Phosphate', 'Silicate', 'DIC', 'Alkalinity', 'Temperature',
+                'Salinity'
             ]:
                 for (r, l, m) in [('Global', 'Surface', 'mean'),
                                   ('SouthernOcean', 'Surface', 'mean'),
@@ -306,8 +350,10 @@ def html5Maker(
                                                        layer=l,
                                                        metric=m,
                                                        paths=paths)
-                        if rdata == False: rdata = ''
-                        else: rdata = round_sig(rdata, 4)
+                        if not rdata:
+                            rdata = ''
+                        else:
+                            rdata = round_sig(rdata, 4)
 
                     try:
                         u = ' ' + units_dict[field]
@@ -330,7 +376,8 @@ def html5Maker(
                         table_data.append([longname, '', datcol])
                         continue
 
-                    if timestr not in timestrs: timestrs.append(timestr)
+                    if timestr not in timestrs:
+                        timestrs.append(timestr)
 
                     modcol = str(round_sig(mdata, 4)) + u
 
@@ -354,8 +401,10 @@ def html5Maker(
                                                    layer='layerless',
                                                    metric='metricless',
                                                    paths=paths)
-                    if rdata == False: rdata = ''
-                    else: rdata = round_sig(rdata, 4)
+                    if not rdata:
+                        rdata = ''
+                    else:
+                        rdata = round_sig(rdata, 4)
 
                 try:
                     u = ' ' + units_dict[field]
@@ -370,12 +419,13 @@ def html5Maker(
                     jobID=jobID,
                     field=field,
                     paths=paths,
-                )  #region='regionless', layer='layerless', metric='metricless')
+                )  # region='regionless', layer='layerless', metric='metricless'
                 longname = getLongName(name, debug=1)
                 if False in [name, mdata, timestr]:
                     table_data.append([longname, '', datcol])
                     continue
-                if timestr not in timestrs: timestrs.append(timestr)
+                if timestr not in timestrs:
+                    timestrs.append(timestr)
 
                 longname = getLongName(name, debug=1)
                 modcol = str(round_sig(mdata, 4)) + u
@@ -417,8 +467,8 @@ def html5Maker(
             'Chlorophyll_cci',
             'DiaFrac',
             'TotalDust',
-            #'DiatomChlorophyll',
-            #'NonDiatomChlorophyll',
+            # 'DiatomChlorophyll',
+            # 'NonDiatomChlorophyll',
             'TotalOMZVolume',
             'Temperature',
             'GlobalMeanTemperature',
@@ -463,43 +513,44 @@ def html5Maker(
         SidebarTitles = {}
         Descriptions = {}
         FileLists = {}
+        imagedir = paths.imagedir
 
-        #region = 'Global'
+        # region = 'Global'
         for key in level1Fields:
-            #print "Make Report\tLevel 1:",key
-            if physicsOnly and key not in lev1physFields: continue
-            #print "Make Report\tLevel 1:",key
+            # print "Make Report\tLevel 1:",key
+            if physicsOnly and key not in lev1physFields:
+                continue
+            # print "Make Report\tLevel 1:",key
             #####
             # href is the name used for the html
             href = 'L1' + key + '-global'
             hrefs.append(href)
-            #print "Make Report\tLevel 1:",key, href
+            # print "Make Report\tLevel 1:",key, href
             #####
-            # Title is the main header, SidebarTitles is the side bar title.
+            # Title is the main header, SidebarTitles is the sidebar title.
             Titles[href] = getLongName(key)
             SidebarTitles[href] = getLongName(key)
-            #print "Make Report\tLevel 1:",key, Titles[href]
+            # print "Make Report\tLevel 1:",key, Titles[href]
 
             #####
             # Descriptions is a small sub-header
             desc = ''
             if key in list(ListofCaveats.keys()):
                 desc += ListofCaveats[key] + '\n'
-            #if region in ListofCaveats_regions.keys():	desc +=ListofCaveats_regions[key]+'\n'
+            # if region in ListofCaveats_regions.keys():	desc +=ListofCaveats_regions[key]+'\n'
             Descriptions[href] = desc
-            #print "Make Report\tLevel 1:",key, desc
+            # print "Make Report\tLevel 1:",key, desc
 
             #####
             # A list of files to put in this group.
             FileLists[href] = {}
             #####
             # Determine the list of files:
-            imagedir = paths.imagedir
             vfiles = glob(imagedir + '/' + jobID +
                           '/timeseries/*/percentiles*' + key + '*' +
                           'Global*10-90pc.png')
-            #vfiles.extend(glob(imagedir+'/'+jobID+'/timeseries/*/profile*'+key+'*'+region+'*median.png'))
-            #vfiles.extend(glob(imagedir+'/'+jobID+'/timeseries/*/Sum*'+key+'*'+region+'*sum.png'))
+            # vfiles.extend(glob(imagedir+'/'+jobID+'/timeseries/*/profile*'+key+'*'+region+'*median.png'))
+            # vfiles.extend(glob(imagedir+'/'+jobID+'/timeseries/*/Sum*'+key+'*'+region+'*sum.png'))
             vfiles.extend(
                 glob(imagedir + '/' + jobID + '/timeseries/*/sum*' + key +
                      '*' + 'Global*sum.png'))
@@ -520,7 +571,7 @@ def html5Maker(
             #####
             # Exceptions:
             if key in [
-                    'AirSeaFluxCO2',
+                'AirSeaFluxCO2',
             ]:
                 vfiles.extend(
                     glob(
@@ -528,35 +579,35 @@ def html5Maker(
                         '/timeseries/*/sum*NoCaspianAirSeaFluxCO2_ignoreCaspian_layerless_sum.png'
                     ))
 
-        #vfiles.extend(glob(imagedir+'/'+jobID+'/P2Pplots/*/*'+key+'*/*/*'+region+'*'+key+'*'+year+'*hist.png'))
-        #vfiles.extend(glob(imagedir+'/'+jobID+'/P2Pplots/*/*'+key+'*/*/*'+region+'*'+key+'*'+year+'*robinquad.png'))
-        #vfiles.extend(glob(imagedir+'/'+jobID+'/P2Pplots/*/*'+key+'*/*/*'+region+'*'+key+'*'+year+'*scatter.png'))
-        #vfiles.extend(glob(imagedir+'/'+jobID+'/Targets/'+year+'/*'+key+'*/BGCVal/*.png'))
+            # vfiles.extend(glob(imagedir+'/'+jobID+'/P2Pplots/*/*'+key+'*/*/*'+region+'*'+key+'*'+year+'*hist.png'))
+            # vfiles.extend(glob(imagedir+'/'+jobID+'/P2Pplots/*/*'+key+'*/*/*'+region+'*'+key+'*'+year+'*robinquad.png'))
+            # vfiles.extend(glob(imagedir+'/'+jobID+'/P2Pplots/*/*'+key+'*/*/*'+region+'*'+key+'*'+year+'*scatter.png'))
+            # vfiles.extend(glob(imagedir+'/'+jobID+'/Targets/'+year+'/*'+key+'*/BGCVal/*.png'))
 
-        #####
-        # Create plot headers for each file.
+            #####
+            # Create plot headers for each file.
             for fn in vfiles:
                 #####
                 # Copy image to image folder and return relative path.
                 print('create plot headers:', fn)
-                relfn = addImageToHtml(fn, imagesfold, reportdir)
+                relfn = add_image_to_html(fn, imagesfold, reportdir)
 
                 ####
                 # WOA fields that also produce transects, etc.
                 if key in [
-                        'Nitrate', 'Phosphate', 'Silicate', 'Temperature', 'Salinity',
-                        'Oxygen', 'DIC', 'Alkalinity'
+                    'Nitrate', 'Phosphate', 'Silicate', 'Temperature', 'Salinity',
+                    'Oxygen', 'DIC', 'Alkalinity'
                 ] and fn.lower().find('surface') < 0:
                     continue
                 if key in ['ExportRatio'] and fn.find('_' + key) < 0:
                     continue  # make sure it's the global one, not the local one.
                 #####
                 # Create custom title by removing extra bits.
-                #title = filenameToTitle(relfn)
+                # title = filenameToTitle(relfn)
 
                 FileLists[href][relfn] = html5Tools.fnToTitle(relfn)
                 print("Adding ", relfn, "to script")
-        #print "Make Report\tLevel 1:",key, FileLists[href]
+        # print "Make Report\tLevel 1:",key, FileLists[href]
 
         html5Tools.AddSubSections(
             indexhtmlfn,
@@ -592,8 +643,8 @@ def html5Maker(
             'pH',
             'DiaFrac',
             'Dust',
-            #'DiatomChlorophyll',
-            #'NonDiatomChlorophyll',
+            # 'DiatomChlorophyll',
+            # 'NonDiatomChlorophyll',
             'OMZThickness',
             'OMZMeanDepth',
             'Temperature',
@@ -603,7 +654,7 @@ def html5Maker(
             'VerticalCurrent',
             'MaxMonthlyMLD',
             'MinMonthlyMLD',
-            #'TotalIceArea'
+            # 'TotalIceArea'
         ]
         physregionalFields = [
             'Temperature',
@@ -624,15 +675,16 @@ def html5Maker(
         FileLists = {}
         FileOrder = {}
         for key in regionalFields:
-            if physicsOnly and key not in physregionalFields: continue
-            #if key not in ['Alkalinity','Nitrate']: continue
+            if physicsOnly and key not in physregionalFields:
+                continue
+            # if key not in ['Alkalinity','Nitrate']: continue
 
-            href = 'L1region' + key  #+'-'+region
+            href = 'L1region' + key  # +'-'+region
 
             desc = ''
             if key in list(ListofCaveats.keys()):
                 desc += ListofCaveats[key] + '\n'
-            #if region in ListofCaveats_regions.keys():	desc +=ListofCaveats_regions[key]+'\n'
+            # if region in ListofCaveats_regions.keys():	desc +=ListofCaveats_regions[key]+'\n'
 
             hrefs.append(href)
             Titles[href] = getLongName(key)
@@ -656,26 +708,28 @@ def html5Maker(
                     key + '*' + region + '*10-90pc.png')
                 vfiles.extend(regfiles)
 
-                if len(regfiles): continue
+                if len(regfiles):
+                    continue
 
                 vfiles.extend(
                     glob(imagedir + '/' + jobID + '/timeseries/*/mean*' + key +
-                         '*' + region + '*mean.png'))
+                    '*' + region + '*mean.png'))
                 print(
                     "Adding", imagedir + '/' + jobID + '/timeseries/*/mean*' +
                     key + '*' + region + '*mean.png')
-        #####
-        # Create plot headers for each file.
+            #####
+            # Create plot headers for each file.
             count = 0
             for fn in vfiles:
                 #####
                 # Skip transects, they'll be added below.
-                if fn.find('Transect') > -1: continue
-                #if fn.lower().find('surface')<0 or fn.lower().find('layerless')<0:continue
+                if fn.find('Transect') > -1:
+                    continue
+                # if fn.lower().find('surface')<0 or fn.lower().find('layerless')<0:continue
                 #####
                 # Copy image to image folder and return relative path.
                 print('adding Level1 regional plot:', jobID, fn)
-                relfn = addImageToHtml(fn, imagesfold, reportdir)
+                relfn = add_image_to_html(fn, imagesfold, reportdir)
 
                 #####
                 # Create custom title by removing extra bits.
@@ -697,9 +751,9 @@ def html5Maker(
             FileOrder=FileOrder)
 
     if Level1Profiles:
-        #for plottype in ['profile','profilehov']:	# with Hovs
+        # for plottype in ['profile','profilehov']:	# with Hovs
         for plottype in [
-                'profile',
+            'profile',
         ]:  # without hovs.
             l1regions = [
                 'Global',
@@ -737,9 +791,12 @@ def html5Maker(
                 'VerticalCurrent',
             ]
 
-            if plottype == 'profile': SectionTitle = 'Level 1 - Profiles'
-            if plottype == 'profilehov':
+            if plottype == 'profile':
+                SectionTitle = 'Level 1 - Profiles'
+            elif plottype == 'profilehov':
                 SectionTitle = 'Level 1 - Hovmoeller plots'
+            else:
+                SectionTitle = 'Level 1'
             hrefs = []
             Titles = {}
             SidebarTitles = {}
@@ -747,15 +804,16 @@ def html5Maker(
             FileLists = {}
             FileOrder = {}
             for key in regionalFields:
-                if physicsOnly and key not in physregionalFields: continue
-                #if key not in ['Alkalinity','Nitrate']: continue
+                if physicsOnly and key not in physregionalFields:
+                    continue
+                # if key not in ['Alkalinity','Nitrate']: continue
 
-                href = 'L1' + plottype + '-' + key  #+'-'+region
+                href = 'L1' + plottype + '-' + key  # +'-'+region
 
                 desc = ''
                 if key in list(ListofCaveats.keys()):
                     desc += ListofCaveats[key] + '\n'
-                #if region in ListofCaveats_regions.keys():	desc +=ListofCaveats_regions[key]+'\n'
+                # if region in ListofCaveats_regions.keys():	desc +=ListofCaveats_regions[key]+'\n'
 
                 hrefs.append(href)
                 Titles[href] = getLongName(key)
@@ -767,7 +825,7 @@ def html5Maker(
                 # Determine the list of files:
                 vfiles = []
                 for region in l1regions:
-                    #vfiles.extend(glob(imagedir+'/'+jobID+'/timeseries/*/percentiles*'+key+'*'+region+'*10-90pc.png'))
+                    # vfiles.extend(glob(imagedir+'/'+jobID+'/timeseries/*/percentiles*'+key+'*'+region+'*10-90pc.png'))
                     if plottype == 'profile':
                         vfiles.extend(
                             glob(imagedir + '/' + jobID +
@@ -778,20 +836,21 @@ def html5Maker(
                             glob(imagedir + '/' + jobID +
                                  '/timeseries/*/profilehov_*' + key + '*' +
                                  region + '*mean.png'))
-            #####
-            # Create plot headers for each file.
+                #####
+                # Create plot headers for each file.
                 count = 0
                 for fn in vfiles:
                     #####
                     # Skip transects, they'll be added below.
-                    if fn.find('Transect') > -1: continue
-                    #if fn.lower().find('surface')<0:continue
+                    if fn.find('Transect') > -1:
+                        continue
+                    # if fn.lower().find('surface')<0:continue
 
                     #####
                     # Copy image to image folder and return relative path.
                     print('adding Level1 Profile plot:', jobID, fn)
 
-                    relfn = addImageToHtml(fn, imagesfold, reportdir)
+                    relfn = add_image_to_html(fn, imagesfold, reportdir)
 
                     #####
                     # Create custom title by removing extra bits.
@@ -822,12 +881,12 @@ def html5Maker(
             'Alkalinity',
             'Oxygen',
             'Chlorophyll_cci',
-            #'TotalIntegratedPrimaryProduction',
+            # 'TotalIntegratedPrimaryProduction',
             'IntegratedPrimaryProduction_OSU',
             'AirSeaFluxCO2',
             'Dust',
-            #'TotalOMZVolume',
-            #'TotalAirSeaFluxCO2' ,
+            # 'TotalOMZVolume',
+            # 'TotalAirSeaFluxCO2' ,
             'Temperature',
             'Salinity',
             'MLD',
@@ -858,8 +917,9 @@ def html5Maker(
         FileOrder = {}
 
         for key in l2Fields:
-            if physicsOnly and key not in physl2Fields: continue
-            #if key not in ['Alkalinity','Nitrate']: continue
+            if physicsOnly and key not in physl2Fields:
+                continue
+            # if key not in ['Alkalinity','Nitrate']: continue
 
             href = 'l2-' + key + '-' + region
 
@@ -878,19 +938,19 @@ def html5Maker(
             #####
             # Determine the list of files:
             vfiles = []
-            #vfiles = glob(imagedir+'/'+jobID+'/timeseries/*/percentiles*'+key+'*'+region+'*10-90pc.png')
-            #vfiles.extend(glob(imagedir+'/'+jobID+'/timeseries/*/profile*'+key+'*'+region+'*median.png'))
-            #vfiles.extend(glob(imagedir+'/'+jobID+'/timeseries/*/Sum*'+key+'*'+region+'*sum.png'))
-            #vfiles.extend(glob(imagedir+'/'+jobID+'/P2Pplots/*/*'+key+'*/*/*'+region+'*'+key+'*'+year+'*hist.png'))
+            # vfiles = glob(imagedir+'/'+jobID+'/timeseries/*/percentiles*'+key+'*'+region+'*10-90pc.png')
+            # vfiles.extend(glob(imagedir+'/'+jobID+'/timeseries/*/profile*'+key+'*'+region+'*median.png'))
+            # vfiles.extend(glob(imagedir+'/'+jobID+'/timeseries/*/Sum*'+key+'*'+region+'*sum.png'))
+            # vfiles.extend(glob(imagedir+'/'+jobID+'/P2Pplots/*/*'+key+'*/*/*'+region+'*'+key+'*'+year+'*hist.png'))
             for s in slices:
                 if s in [
-                        'Surface',
-                        '1000m',
+                    'Surface',
+                    '1000m',
                 ]:
                     print(
                         "looking for", imagedir + '/' + jobID +
-                        '/P2Pplots/*/*' + key + '*/*/*' + s + '*' + region +
-                        '*' + key + '*' + year + '*robinquad.png')
+                                       '/P2Pplots/*/*' + key + '*/*/*' + s + '*' + region +
+                                       '*' + key + '*' + year + '*robinquad.png')
                     vfiles.extend(
                         glob(imagedir + '/' + jobID + '/P2Pplots/*/*' + key +
                              '*/*/*' + s + '*' + region + '*' + key + '*' +
@@ -900,17 +960,17 @@ def html5Maker(
                              '*/*/*' + s + '*' + region + '*' + key + '*' +
                              year + '*robinquad-cartopy.png'))
                 if s in [
-                        'Transect',
+                    'Transect',
                 ]:
                     vfiles.extend(
                         glob(imagedir + '/' + jobID + '/P2Pplots/*/*' + key +
                              '*Transect/*/*' + s + '*' + region + '*' + key +
                              '*' + year + '*transect.png'))
             if key in [
-                    'Chlorophyll_cci',
-                    'IntegratedPrimaryProduction_OSU',
-                    'AirSeaFluxCO2',
-                    'MLD',
+                'Chlorophyll_cci',
+                'IntegratedPrimaryProduction_OSU',
+                'AirSeaFluxCO2',
+                'MLD',
             ]:
                 vfiles.extend(
                     glob(imagedir + '/' + jobID + '/P2Pplots/*/*' + key +
@@ -921,18 +981,18 @@ def html5Maker(
                          '*/*/*' + region + '*' + key + '*' + year +
                          '*robinquad-cartopy.png'))
 
-        #####
-        # Create plot headers for each file.
+            #####
+            # Create plot headers for each file.
             count = 0
             for fn in vfiles:
                 #####
                 # Skip transects, they'll be added below.
-                #if fn.find('Transect') >-1: continue
+                # if fn.find('Transect') >-1: continue
 
                 #####
                 # Copy image to image folder and return relative path.
                 print('adding Level2  plot:', jobID, fn)
-                relfn = addImageToHtml(fn, imagesfold, reportdir)
+                relfn = add_image_to_html(fn, imagesfold, reportdir)
 
                 #####
                 # Create custom title by removing extra bits.
@@ -977,7 +1037,7 @@ def html5Maker(
         FileOrder = {}
 
         for key in sorted(l2Fields):
-            #if key not in ['Alkalinity','Nitrate']: continue
+            # if key not in ['Alkalinity','Nitrate']: continue
 
             href = 'l2p-' + key + '-' + region
 
@@ -996,14 +1056,14 @@ def html5Maker(
             #####
             # Determine the list of files:
             vfiles = []
-            #vfiles = glob(imagedir+'/'+jobID+'/timeseries/*/percentiles*'+key+'*'+region+'*10-90pc.png')
-            #vfiles.extend(glob(imagedir+'/'+jobID+'/timeseries/*/profile*'+key+'*'+region+'*median.png'))
-            #vfiles.extend(glob(imagedir+'/'+jobID+'/timeseries/*/Sum*'+key+'*'+region+'*sum.png'))
-            #vfiles.extend(glob(imagedir+'/'+jobID+'/P2Pplots/*/*'+key+'*/*/*'+region+'*'+key+'*'+year+'*hist.png'))
+            # vfiles = glob(imagedir+'/'+jobID+'/timeseries/*/percentiles*'+key+'*'+region+'*10-90pc.png')
+            # vfiles.extend(glob(imagedir+'/'+jobID+'/timeseries/*/profile*'+key+'*'+region+'*median.png'))
+            # vfiles.extend(glob(imagedir+'/'+jobID+'/timeseries/*/Sum*'+key+'*'+region+'*sum.png'))
+            # vfiles.extend(glob(imagedir+'/'+jobID+'/P2Pplots/*/*'+key+'*/*/*'+region+'*'+key+'*'+year+'*hist.png'))
             for s in slices:
                 if s in [
-                        'Surface',
-                        '1000m',
+                    'Surface',
+                    '1000m',
                 ]:
                     vfiles.extend(
                         glob(imagedir + '/' + jobID + '/P2Pplots/*/*' + key +
@@ -1014,17 +1074,17 @@ def html5Maker(
                              '*/*/*' + s + '*' + region + '*' + key + '*' +
                              year + '*robinquad-cartopy.png'))
                 if s in [
-                        'Transect',
+                    'Transect',
                 ]:
                     vfiles.extend(
                         glob(imagedir + '/' + jobID + '/P2Pplots/*/*' + key +
                              '*Transect/*/*' + s + '*' + region + '*' + key +
                              '*' + year + '*transect.png'))
             if key in [
-                    'Chlorophyll_cci',
-                    'IntegratedPrimaryProduction_OSU',
-                    'AirSeaFluxCO2',
-                    'MLD',
+                'Chlorophyll_cci',
+                'IntegratedPrimaryProduction_OSU',
+                'AirSeaFluxCO2',
+                'MLD',
             ]:
                 vfiles.extend(
                     glob(imagedir + '/' + jobID + '/P2Pplots/*/*' + key +
@@ -1041,12 +1101,12 @@ def html5Maker(
             for fn in vfiles:
                 #####
                 # Skip transects, they'll be added below.
-                #if fn.find('Transect') >-1: continue
+                # if fn.find('Transect') >-1: continue
 
                 #####
                 # Copy image to image folder and return relative path.
                 print('adding Level2 Feilds plot:', jobID, fn)
-                relfn = addImageToHtml(fn, imagesfold, reportdir)
+                relfn = add_image_to_html(fn, imagesfold, reportdir)
 
                 #####
                 # Create custom title by removing extra bits.
@@ -1067,269 +1127,254 @@ def html5Maker(
             FileLists=FileLists,
             FileOrder=FileOrder)
 
-    if level3OMZ:
+    # if level3OMZ:
+    #     l3omzFields = [
+    #         'ExtentMaps'
+    #     ]
+    #     hrefs = []
+    #     Titles = {}
+    #     SidebarTitles = {}
+    #     Descriptions = {}
+    #     FileLists = {}
+    #     SectionTitle = 'Level 3 - Oxygen Minimum Zone'
+    #     region = 'Global'
+    #     #slices = [
+    #     #    '500m',
+    #     #    '1000m',
+    #     #    'Transect',
+    #     #    'Surface',
+    #     #]
+    #     FileOrder = {}
+    #
+    #     for key in sorted(l3omzFields):
+    #         # if key not in ['Alkalinity','Nitrate']: continue
+    #
+    #         href = 'l3omz-' + key + '-' + region
+    #
+    #         desc = ''
+    #         if key in list(ListofCaveats.keys()):
+    #             desc += ListofCaveats[key] + '\n'
+    #         if region in list(ListofCaveats_regions.keys()):
+    #             desc += ListofCaveats_regions[key] + '\n'
+    #
+    #         hrefs.append(href)
+    #         Titles[href] = getLongName(region) + ' ' + getLongName(key)
+    #         SidebarTitles[href] = getLongName(key)
+    #         Descriptions[href] = desc
+    #         FileLists[href] = {}
+    #         FileOrder[href] = {}
+    #         #####
+    #         # Determine the list of files:
+    #         vfiles = []
+    #         #	for s in slices:
+    #         #	    if s in ['Surface','1000m','500m']:
+    #         vfiles.extend(
+    #             glob(imagedir + '/' + jobID +
+    #                  '/Level3/OMZ/ExtentMaps/*/*_Global.png'))
+    #
+    #         #####
+    #         # Create plot headers for each file.
+    #         count = 0
+    #         for fn in vfiles:
+    #             #####
+    #             # Copy image to image folder and return relative path.
+    #             print('adding Level3 plot:', jobID, fn)
+    #             relfn = add_image_to_html(fn, imagesfold, reportdir)
+    #
+    #             #####
+    #             # Create custom title by removing extra bits.
+    #             title = html5Tools.fnToTitle(relfn)
+    #
+    #             FileLists[href][relfn] = title
+    #             FileOrder[href][count] = relfn
+    #             count += 1
+    #             print("Adding ", relfn, "to script")
+    #
+    #     html5Tools.AddSubSections(
+    #         indexhtmlfn,
+    #         hrefs,
+    #         SectionTitle,
+    #         SidebarTitles=SidebarTitles,  #
+    #         Titles=Titles,
+    #         Descriptions=Descriptions,
+    #         FileLists=FileLists,
+    #         FileOrder=FileOrder)
 
-        l3omzFields = [
-            'ExtentMaps'
-            #			  'O2',
-            #			  'OMZ',
-            #                          'ZonalCurrent','MeridionalCurrent','VerticalCurrent',
-        ]
-        hrefs = []
-        Titles = {}
-        SidebarTitles = {}
-        Descriptions = {}
-        FileLists = {}
-        SectionTitle = 'Level 3 - Oxygen Minimum Zone'
-        region = 'Global'
-        slices = [
-            '500m',
-            '1000m',
-            'Transect',
-            'Surface',
-        ]
-        FileOrder = {}
-
-        for key in sorted(l3omzFields):
-            #if key not in ['Alkalinity','Nitrate']: continue
-
-            href = 'l3omz-' + key + '-' + region
-
-            desc = ''
-            if key in list(ListofCaveats.keys()):
-                desc += ListofCaveats[key] + '\n'
-            if region in list(ListofCaveats_regions.keys()):
-                desc += ListofCaveats_regions[key] + '\n'
-
-            hrefs.append(href)
-            Titles[href] = getLongName(region) + ' ' + getLongName(key)
-            SidebarTitles[href] = getLongName(key)
-            Descriptions[href] = desc
-            FileLists[href] = {}
-            FileOrder[href] = {}
-            #####
-            # Determine the list of files:
-            vfiles = []
-            #	for s in slices:
-            #	    if s in ['Surface','1000m','500m']:
-            vfiles.extend(
-                glob(imagedir + '/' + jobID +
-                     '/Level3/OMZ/ExtentMaps/*/*_Global.png'))
-
-            #		vfiles.extend(glob(imagedir+'/'+jobID+'/Level3/OMZ/ExtendMaps/*/*.png'))
-            #			    if s in ['Transect',]:
-            #				vfiles.extend(glob(imagedir+'/'+jobID+'/Level3/OMZ/*'+key+'*Transect/*/*'+s+'*'+region+'*'+key+'*'+year+'*transect.png'))
-            #if key in [	'Chlorophyll_cci',
-            #	  	'IntegratedPrimaryProduction_OSU',
-            #		'AirSeaFluxCO2',
-            #		'MLD',
-            #	  ]:
-            #	vfiles.extend(glob(imagedir+'/'+jobID+'/P2Pplots/*/*'+key+'*/*/*'+region+'*'+key+'*'+year+'*robinquad.png'))
-            #	vfiles.extend(glob(imagedir+'/'+jobID+'/P2Pplots/*/*'+key+'*/*/*'+region+'*'+key+'*'+year+'*robinquad-cartopy.png'))
-
-            #####
-            # Create plot headers for each file.
-            count = 0
-            for fn in vfiles:
-                #####
-                # Copy image to image folder and return relative path.
-                print('adding Level3 plot:', jobID, fn)
-                relfn = addImageToHtml(fn, imagesfold, reportdir)
-
-                #####
-                # Create custom title by removing extra bits.
-                title = html5Tools.fnToTitle(relfn)
-
-                FileLists[href][relfn] = title
-                FileOrder[href][count] = relfn
-                count += 1
-                print("Adding ", relfn, "to script")
-
-        html5Tools.AddSubSections(
-            indexhtmlfn,
-            hrefs,
-            SectionTitle,
-            SidebarTitles=SidebarTitles,  #
-            Titles=Titles,
-            Descriptions=Descriptions,
-            FileLists=FileLists,
-            FileOrder=FileOrder)
-
-    if Level3Salinity:
-        l3sal_regions = [
-            'NordicSea',
-            'LabradorSea',
-            'NorwegianSea',
-        ]
-
-        regionalFields = [
-            'Salinity', 'Temperature', 'MLD', 'sowaflup', 'sohefldo',
-            'sofmflup', 'sosfldow', 'soicecov', 'MaxMonthlyMLD'
-        ]
-        profileFields = [
-            'Salinity',
-            'Temperature',
-        ]
-        SectionTitle = 'Level 3 - Salinity time series'
-        hrefs = []
-        Titles = {}
-        SidebarTitles = {}
-        Descriptions = {}
-        FileLists = {}
-        FileOrder = {}
-        for key in regionalFields:
-            #if physicsOnly and key not in physregionalFields:continue
-            #if key not in ['Alkalinity','Nitrate']: continue
-            href = 'L3nassalinity' + key  #+'-'+region
-
-            desc = ''
-            if key in list(ListofCaveats.keys()):
-                desc += ListofCaveats[key] + '\n'
-
-            hrefs.append(href)
-            Titles[href] = getLongName(key)
-            SidebarTitles[href] = getLongName(key)
-            Descriptions[href] = desc
-            FileLists[href] = {}
-            FileOrder[href] = {}
-
-            #####
-            # Determine the list of files:
-            # It preferentially plots
-
-            vfiles = []
-            for region in l3sal_regions:
-                regfiles = glob(imagedir + '/' + jobID +
-                                '/timeseries/*/percentiles*' + key + '*' +
-                                region + '*10-90pc.png')
-                print(
-                    "Adding",
-                    imagedir + '/' + jobID + '/timeseries/*/percentiles*' +
-                    key + '*' + region + '*10-90pc.png')
-                vfiles.extend(regfiles)
-
-                if len(regfiles): continue
-
-                vfiles.extend(
-                    glob(imagedir + '/' + jobID + '/timeseries/*/mean*' + key +
-                         '*' + region + '*mean.png'))
-                print(
-                    "Adding", imagedir + '/' + jobID + '/timeseries/*/mean*' +
-                    key + '*' + region + '*mean.png')
-            #####
-            # Create plot headers for each file.
-            count = 0
-            for fn in vfiles:
-                #####
-                # Skip transects, they'll be added below.
-                if fn.find('Transect') > -1: continue
-                #if fn.lower().find('surface')<0 or fn.lower().find('layerless')<0:continue
-                #####
-                # Copy image to image folder and return relative path.
-                print('adding Level3 regional plot:', fn)
-                relfn = addImageToHtml(fn, imagesfold, reportdir)
-
-                #####
-                # Create custom title by removing extra bits.
-                title = html5Tools.fnToTitle(relfn)
-
-                FileLists[href][relfn] = title
-                FileOrder[href][count] = relfn
-                count += 1
-                print("Adding ", relfn, "to script")
-
-        html5Tools.AddSubSections(
-            indexhtmlfn,
-            hrefs,
-            SectionTitle,
-            SidebarTitles=SidebarTitles,  #
-            Titles=Titles,
-            Descriptions=Descriptions,
-            FileLists=FileLists,
-            FileOrder=FileOrder)
-
-        #for plottype in ['profile','profilehov']:	# with Hovs
-        for plottype in [
-                'profile',
-        ]:  # without hovs.
-            if plottype == 'profile':
-                SectionTitle = 'Level 3 - Salininty Profiles'
-            hrefs = []
-            Titles = {}
-            SidebarTitles = {}
-            Descriptions = {}
-            FileLists = {}
-            FileOrder = {}
-            for key in profileFields:
-                #if key not in ['Alkalinity','Nitrate']: continue
-
-                href = 'L3nas' + plottype + '-' + key  #+'-'+region
-
-                desc = ''
-                if key in list(ListofCaveats.keys()):
-                    desc += ListofCaveats[key] + '\n'
-                #if region in ListofCaveats_regions.keys():	desc +=ListofCaveats_regions[key]+'\n'
-
-                hrefs.append(href)
-                Titles[href] = getLongName(key)
-                SidebarTitles[href] = getLongName(key)
-                Descriptions[href] = desc
-                FileLists[href] = {}
-                FileOrder[href] = {}
-                #####
-                # Determine the list of files:
-                vfiles = []
-                for region in l3sal_regions:
-                    #vfiles.extend(glob(imagedir+'/'+jobID+'/timeseries/*/percentiles*'+key+'*'+region+'*10-90pc.png'))
-                    if plottype == 'profile':
-                        vfiles.extend(
-                            glob(imagedir + '/' + jobID +
-                                 '/timeseries/*/profile_*' + key + '*' +
-                                 region + '*mean.png'))
-                    if plottype == 'profilehov':
-                        vfiles.extend(
-                            glob(imagedir + '/' + jobID +
-                                 '/timeseries/*/profilehov_*' + key + '*' +
-                                 region + '*mean.png'))
-                #####
-                # Create plot headers for each file.
-                count = 0
-                for fn in vfiles:
-                    #####
-                    # Skip transects, they'll be added below.
-                    if fn.find('Transect') > -1: continue
-                    #if fn.lower().find('surface')<0:continue
-
-                    #####
-                    # Copy image to image folder and return relative path.
-                    print('adding Level3 Hovmoeller:',  fn)
-                    relfn = addImageToHtml(fn, imagesfold, reportdir)
-
-                    #####
-                    # Create custom title by removing extra bits.
-                    title = html5Tools.fnToTitle(relfn)
-
-                    FileLists[href][relfn] = title
-                    FileOrder[href][count] = relfn
-                    count += 1
-                    print("Adding ", relfn, "to script")
-
-            html5Tools.AddSubSections(
-                indexhtmlfn,
-                hrefs,
-                SectionTitle,
-                SidebarTitles=SidebarTitles,  #
-                Titles=Titles,
-                Descriptions=Descriptions,
-                FileLists=FileLists,
-                FileOrder=FileOrder)
+    # if Level3Salinity:
+    #     l3sal_regions = [
+    #         'NordicSea',
+    #         'LabradorSea',
+    #         'NorwegianSea',
+    #     ]
+    #
+    #     regionalFields = [
+    #         'Salinity', 'Temperature', 'MLD', 'sowaflup', 'sohefldo',
+    #         'sofmflup', 'sosfldow', 'soicecov', 'MaxMonthlyMLD'
+    #     ]
+    #     profileFields = [
+    #         'Salinity',
+    #         'Temperature',
+    #     ]
+    #     SectionTitle = 'Level 3 - Salinity time series'
+    #     hrefs = []
+    #     Titles = {}
+    #     SidebarTitles = {}
+    #     Descriptions = {}
+    #     FileLists = {}
+    #     FileOrder = {}
+    #     for key in regionalFields:
+    #         # if physicsOnly and key not in physregionalFields:continue
+    #         # if key not in ['Alkalinity','Nitrate']: continue
+    #         href = 'L3nassalinity' + key  # +'-'+region
+    #
+    #         desc = ''
+    #         if key in list(ListofCaveats.keys()):
+    #             desc += ListofCaveats[key] + '\n'
+    #
+    #         hrefs.append(href)
+    #         Titles[href] = getLongName(key)
+    #         SidebarTitles[href] = getLongName(key)
+    #         Descriptions[href] = desc
+    #         FileLists[href] = {}
+    #         FileOrder[href] = {}
+    #
+    #         #####
+    #         # Determine the list of files:
+    #         # It preferentially plots
+    #
+    #         vfiles = []
+    #         for region in l3sal_regions:
+    #             regfiles = glob(imagedir + '/' + jobID +
+    #                             '/timeseries/*/percentiles*' + key + '*' +
+    #                             region + '*10-90pc.png')
+    #             print(
+    #                 "Adding",
+    #                 imagedir + '/' + jobID + '/timeseries/*/percentiles*' +
+    #                 key + '*' + region + '*10-90pc.png')
+    #             vfiles.extend(regfiles)
+    #
+    #             if len(regfiles): continue
+    #
+    #             vfiles.extend(
+    #                 glob(imagedir + '/' + jobID + '/timeseries/*/mean*' + key +
+    #                      '*' + region + '*mean.png'))
+    #             print(
+    #                 "Adding", imagedir + '/' + jobID + '/timeseries/*/mean*' +
+    #                           key + '*' + region + '*mean.png')
+    #         #####
+    #         # Create plot headers for each file.
+    #         count = 0
+    #         for fn in vfiles:
+    #             #####
+    #             # Skip transects, they'll be added below.
+    #             if fn.find('Transect') > -1: continue
+    #             # if fn.lower().find('surface')<0 or fn.lower().find('layerless')<0:continue
+    #             #####
+    #             # Copy image to image folder and return relative path.
+    #             print('adding Level3 regional plot:', fn)
+    #             relfn = add_image_to_html(fn, imagesfold, reportdir)
+    #
+    #             #####
+    #             # Create custom title by removing extra bits.
+    #             title = html5Tools.fnToTitle(relfn)
+    #
+    #             FileLists[href][relfn] = title
+    #             FileOrder[href][count] = relfn
+    #             count += 1
+    #             print("Adding ", relfn, "to script")
+    #
+    #     html5Tools.AddSubSections(
+    #         indexhtmlfn,
+    #         hrefs,
+    #         SectionTitle,
+    #         SidebarTitles=SidebarTitles,  #
+    #         Titles=Titles,
+    #         Descriptions=Descriptions,
+    #         FileLists=FileLists,
+    #         FileOrder=FileOrder)
+    #
+    #     # for plottype in ['profile','profilehov']:	# with Hovs
+    #     for plottype in [
+    #         'profile',
+    #     ]:  # without hovs.
+    #         if plottype == 'profile':
+    #             SectionTitle = 'Level 3 - Salininty Profiles'
+    #         hrefs = []
+    #         Titles = {}
+    #         SidebarTitles = {}
+    #         Descriptions = {}
+    #         FileLists = {}
+    #         FileOrder = {}
+    #         for key in profileFields:
+    #             # if key not in ['Alkalinity','Nitrate']: continue
+    #
+    #             href = 'L3nas' + plottype + '-' + key  # +'-'+region
+    #
+    #             desc = ''
+    #             if key in list(ListofCaveats.keys()):
+    #                 desc += ListofCaveats[key] + '\n'
+    #             # if region in ListofCaveats_regions.keys():	desc +=ListofCaveats_regions[key]+'\n'
+    #
+    #             hrefs.append(href)
+    #             Titles[href] = getLongName(key)
+    #             SidebarTitles[href] = getLongName(key)
+    #             Descriptions[href] = desc
+    #             FileLists[href] = {}
+    #             FileOrder[href] = {}
+    #             #####
+    #             # Determine the list of files:
+    #             vfiles = []
+    #             for region in l3sal_regions:
+    #                 # vfiles.extend(glob(imagedir+'/'+jobID+'/timeseries/*/percentiles*'+key+'*'+region+'*10-90pc.png'))
+    #                 if plottype == 'profile':
+    #                     vfiles.extend(
+    #                         glob(imagedir + '/' + jobID +
+    #                              '/timeseries/*/profile_*' + key + '*' +
+    #                              region + '*mean.png'))
+    #                 if plottype == 'profilehov':
+    #                     vfiles.extend(
+    #                         glob(imagedir + '/' + jobID +
+    #                              '/timeseries/*/profilehov_*' + key + '*' +
+    #                              region + '*mean.png'))
+    #             #####
+    #             # Create plot headers for each file.
+    #             count = 0
+    #             for fn in vfiles:
+    #                 #####
+    #                 # Skip transects, they'll be added below.
+    #                 if fn.find('Transect') > -1: continue
+    #                 # if fn.lower().find('surface')<0:continue
+    #
+    #                 #####
+    #                 # Copy image to image folder and return relative path.
+    #                 print('adding Level3 Hovmoeller:', fn)
+    #                 relfn = add_image_to_html(fn, imagesfold, reportdir)
+    #
+    #                 #####
+    #                 # Create custom title by removing extra bits.
+    #                 title = html5Tools.fnToTitle(relfn)
+    #
+    #                 FileLists[href][relfn] = title
+    #                 FileOrder[href][count] = relfn
+    #                 count += 1
+    #                 print("Adding ", relfn, "to script")
+    #
+    #         html5Tools.AddSubSections(
+    #             indexhtmlfn,
+    #             hrefs,
+    #             SectionTitle,
+    #             SidebarTitles=SidebarTitles,  #
+    #             Titles=Titles,
+    #             Descriptions=Descriptions,
+    #             FileLists=FileLists,
+    #             FileOrder=FileOrder)
 
     if regionMap:
         vfiles = []
-        vfiles.extend(glob(os.path.join(paths.bgcval2_repo,'bgcval2/html5/html5Assets/images/*Legend*.png')))
+        vfiles.extend(glob(os.path.join(paths.bgcval2_repo, 'bgcval2/html5/html5Assets/images/*Legend*.png')))
         print('adding Legend')
 
-        relfns = [addImageToHtml(fn, imagesfold, reportdir) for fn in vfiles]
+        relfns = [add_image_to_html(fn, imagesfold, reportdir) for fn in vfiles]
         print(relfns)
         href = 'regionMap_default'
         html5Tools.AddSubSections(
@@ -1346,7 +1391,7 @@ def html5Maker(
             },
             Descriptions={
                 href:
-                'Maps showing the boundaries of the regions and transects used in this report.',
+                    'Maps showing the boundaries of the regions and transects used in this report.',
             },
             FileLists={
                 href: relfns,
@@ -1359,28 +1404,42 @@ def html5Maker(
     print("To zip it up:\n", tar)
 
 
-def comparehtml5Maker(
-    jobIDs=[],
-    reportdir='reports/tmp',
-    files=[],
-    clean=False,
-    jobDescriptions={},
-    jobColours={},
-    paths = {},
-    analysisKeys=[]
+def compare_html5_maker(
+        jobIDs=None,
+        reportdir='reports/tmp',
+        files=[],
+        clean=False,
+        jobDescriptions={},
+        jobColours={},
+        paths={},
+        analysisKeys=[]
 ):
-    """
+    """Generate multi-job comparison report.
+
+    Parameters
+    ----------
+    jobIDs
+        List of job IDs
+    reportdir
+        Path to output directory
+    files
+        List of image files
+    clean:
+        Bool to remove old report
+    jobDescriptions
+        Dict to describe each job
+    jobColours
+        dict for each jobs colour in the legend
+    paths
+        bgcval2.paths
+    analysisKeys
+         list of analysis keys (generated from the input_yml)
+
     Generates the multi-job comparison report.
-    
-    jobIDs: list of job IDs
-    reportdir: output job direction
-    files: a list of paths to images
-    clean: bool to remove old report.
-    jobDescriptions: dict to describe eahc job
-    jobColours: dict for each jobs colour in the legend.
-    paths: bgcval.paths
-    analysisKeys: list of analysis keys (generated from the input_yml).
     """
+    if not jobIDs:
+        return
+
     if clean:
         #####
         # Delete old files
@@ -1395,9 +1454,9 @@ def comparehtml5Maker(
     ####
     # Copy all necceasiry objects and templates to the report location:
     print("Copying html and js assets to", reportdir)
-    #html5Assets_dir = 
+    # html5Assets_dir =
 
-    copytree(os.path.join(paths.bgcval2_repo,'bgcval2/html5/html5Assets'), reportdir)
+    copytree(os.path.join(paths.bgcval2_repo, 'bgcval2/html5/html5Assets'), reportdir)
     indexhtmlfn = reportdir + "index.html"
     try:
         os.rename(reportdir + 'index-compare-template.html', indexhtmlfn)
@@ -1405,9 +1464,6 @@ def comparehtml5Maker(
         pass
 
     imagesfold = folder(reportdir + 'images/')
-
-    def newImageLocation(fn):
-        return imagesfold + os.path.basename(fn)
 
     descriptionText = 'Comparison of the jobs: ' + ', '.join(jobIDs)
 
@@ -1496,7 +1552,7 @@ def comparehtml5Maker(
         'Iron_Global_Surface',
         'MA_Nitrate_Global_Surface',
         'MA_Phosphate_Global_Surface',
-        'MA_TotalIntNPP', 
+        'MA_TotalIntNPP',
         'MA_TotalIntGPP',
         'MA_TotalPhytoC_Global_Surface',
         'MA_TotalZooC_Global_Surface',
@@ -1512,7 +1568,8 @@ def comparehtml5Maker(
     for fn in files:
         found = False
         for key in physicsKM:
-            if found: continue
+            if found:
+                continue
             sectionTitle = 'Physics Key Metrics'
             if fn.find(key) > -1:
                 try:
@@ -1523,7 +1580,8 @@ def comparehtml5Maker(
                     ]
                 found = True
         for key in bgcKM:
-            if found: continue
+            if found:
+                continue
             sectionTitle = 'BGC Key Metrics'
             if fn.find(key) > -1:
                 try:
@@ -1533,7 +1591,8 @@ def comparehtml5Maker(
                         fn,
                     ]
                 found = True
-        if found: continue
+        if found:
+            continue
         try:
             categories['Other Plots'].append(fn)
         except:
@@ -1547,7 +1606,8 @@ def comparehtml5Maker(
     if len(categories['BGC Key Metrics']):
         categoryOrder.append('BGC Key Metrics')
 
-    if len(categories['Other Plots']): categoryOrder.append('Other Plots')
+    if len(categories['Other Plots']):
+        categoryOrder.append('Other Plots')
     categories['Other Plots'] = sorted(categories['Other Plots'])
 
     for cat in categoryOrder:
@@ -1555,12 +1615,13 @@ def comparehtml5Maker(
         #####
         # These plots get added below.
         if cat in [
-                'Other Plots',
+            'Other Plots',
         ]:
             continue
 
         catfiles = categories[cat]
-        if not len(catfiles): continue
+        if not len(catfiles):
+            continue
 
         href = cat.replace(' ', '')
         Title = cat
@@ -1569,7 +1630,7 @@ def comparehtml5Maker(
         # Copy image to image folder and return relative path.
         print('adding compare plots')
         relativeFiles = [
-            addImageToHtml(catfn, imagesfold, reportdir) for catfn in catfiles
+            add_image_to_html(catfn, imagesfold, reportdir) for catfn in catfiles
         ]
 
         ####
@@ -1604,7 +1665,8 @@ def comparehtml5Maker(
             for ofn in vfiles:
                 otherFilenames.remove(ofn)
 
-            if len(vfiles) == 0: continue
+            if len(vfiles) == 0:
+                continue
 
             href = 'OtherPlots-' + key
             desc = ''
@@ -1623,7 +1685,7 @@ def comparehtml5Maker(
                 #####
                 # Copy image to image folder and return relative path.
                 print('Adding ', key, 'compare plots:', fn)
-                relfn = addImageToHtml(fn, imagesfold, reportdir)
+                relfn = add_image_to_html(fn, imagesfold, reportdir)
 
                 #####
                 # Create custom title by removing extra bits.
@@ -1635,34 +1697,8 @@ def comparehtml5Maker(
                 print("Adding ", relfn, "to script")
 
         if len(otherFilenames):
-            # I think this is never happens anymore.
+            # This should never happens.
             assert 0
-            href = 'OtherPlots-others'
-
-            hrefs.append(href)
-            Titles[href] = 'Everything Else'
-            SidebarTitles[href] = 'Everything Else'
-            Descriptions[href] = ''
-            FileLists[href] = {}
-            FileOrder[href] = {}
-
-            #####
-            # Create plot headers for each file.
-            count = 0
-            for fn in sorted(otherFilenames):
-                #####
-                # Copy image to image folder and return relative path.
-                print('Adding ', key, 'compare plots:', fn)
-                relfn = addImageToHtml(fn, imagesfold, reportdir)
-
-                #####
-                # Create custom title by removing extra bits.
-                title = html5Tools.fnToTitle(relfn)
-
-                FileLists[href][relfn] = title
-                FileOrder[href][count] = relfn
-                count += 1
-                print("Adding ", relfn, "to script")
 
         print(hrefs)
         print(SectionTitle)
@@ -1684,9 +1720,9 @@ def comparehtml5Maker(
     legend = True
     if legend:
         vfiles = []
-        vfiles.extend(glob(os.path.join(paths.bgcval2_repo,'bgcval2/html5/html5Assets/images/*Legend*.png')))
+        vfiles.extend(glob(os.path.join(paths.bgcval2_repo, 'bgcval2/html5/html5Assets/images/*Legend*.png')))
         print('Adding compare plots legend')
-        relfns = [addImageToHtml(fn, imagesfold, reportdir) for fn in vfiles]
+        relfns = [add_image_to_html(fn, imagesfold, reportdir) for fn in vfiles]
         print(relfns)
         href = 'regionMap_default'
         html5Tools.AddSubSections(
@@ -1703,7 +1739,7 @@ def comparehtml5Maker(
             },
             Descriptions={
                 href:
-                'Maps showing the boundaries of the regions and transects used in this report.',
+                    'Maps showing the boundaries of the regions and transects used in this report.',
             },
             FileLists={
                 href: relfns,
@@ -1714,7 +1750,14 @@ def comparehtml5Maker(
 
 
 def get_args():
-    """Parse command line arguments."""
+    """Parse command line arguments.
+
+    Returns
+    -------
+    args
+        dict
+
+    """
     parser = argparse.ArgumentParser(
         description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -1756,12 +1799,15 @@ def get_args():
 
 
 def main():
-    """Run the html maker for a single job ID."""
+    """Run the html maker for a single job ID.
+
+    Takes several command line arguments.
+    """
     from ._version import __version__
     print(f'BGCVal2: {__version__}')
 
     args = get_args()
-    jobID = args.job_id 
+    jobID = args.job_id
 
     if args.config_file:
         config_user = os.path.join(os.getcwd(), args.config_file)
@@ -1773,7 +1819,7 @@ def main():
         print(f"analysis_timeseries: Could not find configuration file {config_user}")
         config_user = None
 
-    #defaults:
+    # defaults:
     clean = False
     physicsOnly = False
     year = '*'
@@ -1802,14 +1848,13 @@ def main():
     # filter paths dict into an object that's usable below
     paths = paths_setter(paths_dict)
 
-    html5Maker(
+    html5_maker(
         jobID=jobID,
         reportdir=reportdir,
         year=year,
         clean=clean,
         physicsOnly=physicsOnly,
         paths=paths,
-        config_user=config_user
     )
 
 
