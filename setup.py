@@ -29,20 +29,20 @@ REQUIREMENTS = {
         'matplotlib',
         'nctoolkit>=0.8.7',  # use linux64 build
         'netcdf4',
-        'numpy!=1.24.3',
+        'numpy>1.24.3,<1.25',  # basemap 1.3.7 needs <1.25
         'pip!=21.3',
         'pyyaml',
         'scikit-learn',
-        'scipy',
+        'scipy>=1.6',
     ],
     # Test dependencies
     # Execute 'python setup.py test' to run tests
     'test': [
         'flake8',
+        'scitools-iris>=3.4.0',
         'pytest>=3.9,!=6.0.0rc1,!=6.0.0',
         'pytest-cov>=2.10.1',
         'pytest-env',
-        'pytest-flake8>=1.0.6',
         'pytest-html!=2.1.0',
         'pytest-metadata>=1.5.1',
         'pytest-mypy',
@@ -58,7 +58,7 @@ REQUIREMENTS = {
         'isort',
         'pre-commit',
         'prospector[with_pyroma,with_mypy]>=1.9.0',
-        'sphinx>2',
+        'sphinx>=5',
         'sphinx_rtd_theme',
         'vprof',
         'yamllint',

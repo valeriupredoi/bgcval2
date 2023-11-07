@@ -37,6 +37,7 @@ import subprocess
 from socket import gethostname
 import shutil
 import os
+from pwd import getpwuid
 import stat
 from glob import glob
 from re import findall
@@ -407,9 +408,27 @@ def download_from_mass(
 
     paths = get_paths(config_user)
     outputFold = folder([paths.ModelFolder_pref,  jobID,] )
-    # make this folder group writeable. 
     st = os.stat(outputFold)
-    os.chmod(outputFold, st.st_mode | stat.S_IWGRP)
+
+    # Check permissions on the output folder 
+    i_can_write_this = os.access(outputFold, os.W_OK)
+    owner = getpwuid(st.st_uid).pw_name
+    my_username = os.environ.get('USERNAME')
+    
+    i_own_this = my_username == owner
+    #group_can_write_this = os.access(outputFold, os.W_OK)
+    if i_can_write_this and i_own_this:
+        # I created this folder and I own it.
+        # make this folder group writeable.:
+        os.chmod(outputFold, st.st_mode | stat.S_IWGRP)
+    elif i_can_write_this and not i_own_this:
+        pass
+    else:
+        # Someone else created it and they own it,
+        # so I can't change permissions.
+        owner = getpwuid(st.st_uid).pw_name
+        print('WARNING: someone else (', owner, ') owns this directory, so you may not be able to download files.')
+        print('WARNING: Ask them politely to run "chmod g+w ',outputFold,'"')
 
     deleteBadLinksAndZeroSize(outputFold, jobID)
 
@@ -483,8 +502,32 @@ def download_from_mass(
     if auto_download:
         shared_file_path = os.path.join(paths.shared_mass_scripts, os.path.basename(download_script_path))
         print('writing file in shared path', shared_file_path)
-        shutil.copy(download_script_path, shared_file_path)
 
+        # check destination existance and permissions
+        if os.path.exists(shared_file_path):
+            # check destination permissions
+            i_can_write_this = os.access(shared_file_path, os.W_OK)
+        else:
+            # File doesn't exist!
+            i_can_write_this = True
+ 
+        if i_can_write_this:
+            # I created this file and I own it:
+            # make local copy group writable:
+            os.chmod(download_script_path, st.st_mode | stat.S_IWGRP)
+           
+            # copy local to shared folder:
+            if not os.path.exists(shared_file_path): 
+                shutil.copy(download_script_path, shared_file_path)
+
+                # make shared copy group writable: (possibly overkill)
+                os.chmod(shared_file_path, st.st_mode | stat.S_IWGRP)
+        else:
+            # I don't have permission to edit this file. Someone else does:
+            uname = getpwuid(os.stat(shared_file_path).st_uid).pw_name
+            print('WARNING: someone else (', shared_file_path, ') owns this directory, so you may not be able to download files.')
+            print('WARNING: Ask them politely to run "chmod g+w ', shared_file_path,'"')
+        
     fixFilePaths(outputFold, jobID, debug=False,)
     deleteBadLinksAndZeroSize(outputFold, jobID, debug=False,)
 
@@ -598,13 +641,14 @@ def deleteBadLinksAndZeroSize(outputFold, jobID, debug=True):
     bashCommand1 = "find " + outputFold + "/. -size 0 -print -delete"
     bashCommand2 = "find -L " + outputFold + "/. -type l -delete  -print"
 
-    if debug: print("deleteBadLinksAndZeroSize:\t", bashCommand1)
+    bashCommand1 = bashCommand1.replace('//', '/')
+    bashCommand2 = bashCommand2.replace('//', '/')
 
+    print("deleteBadLinksAndZeroSize:\t", bashCommand1)
     process1 = subprocess.Popen(bashCommand1.split(), stdout=subprocess.PIPE)
     output1 = process1.communicate()[0]
 
-    if debug: print("deleteBadLinksAndZeroSize:\t", bashCommand2)
-
+    print("deleteBadLinksAndZeroSize:\t", bashCommand2)
     process2 = subprocess.Popen(bashCommand2.split(), stdout=subprocess.PIPE)
     output2 = process2.communicate()[0]
 
