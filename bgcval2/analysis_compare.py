@@ -189,6 +189,7 @@ def timeseries_compare(jobs,
                        jobDescriptions={},
                        lineThicknesses=defaultdict(lambda: 1),
                        linestyles=defaultdict(lambda: '-'),
+                       labels = {},
                        ensembles={},
                        config_user=None,
     ):
@@ -382,6 +383,7 @@ def timeseries_compare(jobs,
         regions = av[name]['regions']
         layers = av[name]['layers']
         metrics = av[name]['metrics']
+        smoothings = av[name]['smoothings']
         for region, layer, metric  in itertools.product(regions, layers, metrics):
             timesD = {}
             arrD = {}
@@ -405,20 +407,22 @@ def timeseries_compare(jobs,
             units = av[name]['modeldetails']['units']
 
             ts = 'Together'
-            for ls in ['DataOnly', ]:
+            for smoothing in smoothings:
+            #or ls in ['DataOnly', ]:
                 tsp.multitimeseries(
                     timesD,  # model times (in floats)
                     arrD,  # model time series
                     data=-999,  # in situ data distribution
                     title=title,
                     filename=bvt.folder(imageFolder) +
-                        '_'.join([name, region, layer, ts, ls + '.png']),
+                        '_'.join([name, region, layer, ts, smoothing + '.png']),
                     units=units,
                     plotStyle=ts,
-                    lineStyle=ls,
+                    smoothing=smoothing,
                     colours=colours,
                     thicknesses=lineThicknesses,
                     linestyles=linestyles,
+                    labels=labels,
                 )
 
     # Generate a list of comparison images:
@@ -515,7 +519,8 @@ def load_comparison_yml(master_compare_yml_fn):
     descriptions = {}
     shifttimes = {} # number of years to shift time axis.
     timeranges = {}
-
+    labels = {}
+   
     for jobID, job_dict in details['jobs'].items():
         if job_dict.get('colour', False):
             colours[jobID] = job_dict['colour']
@@ -530,6 +535,8 @@ def load_comparison_yml(master_compare_yml_fn):
         timeranges[jobID] = job_dict.get('timerange', None)
         suites[jobID] = job_dict.get('suite', default_suite)
         auto_download_dict[jobID] = job_dict.get('auto_download', auto_download_dict[jobID]) 
+        labels[jobID] = job_dict.get('label', jobID)
+       
 
     details['colours'] = colours
     details['descriptions'] = descriptions
@@ -537,6 +544,7 @@ def load_comparison_yml(master_compare_yml_fn):
     details['linestyles'] = linestyles
     details['shifttimes'] = shifttimes
     details['timeranges'] = timeranges
+    details['labels'] = labels
     details['suites'] = suites
     details['auto_download'] = auto_download_dict
     return details
@@ -567,6 +575,7 @@ def load_yml_and_run(compare_yml, config_user, skip_timeseries):
     descriptions = details['descriptions']
     shifttimes = details['shifttimes']
     timeranges = details['timeranges']
+    labels = details['labels']
     suites = details['suites']
     auto_download = details['auto_download']
     strictFileCheck = details.get('strictFileCheck', True)
@@ -578,6 +587,7 @@ def load_yml_and_run(compare_yml, config_user, skip_timeseries):
         print(jobID, 'colour:',colours[jobID])
         print(jobID, 'line thickness & style:',thicknesses[jobID], linestyles[jobID])
         print(jobID, 'Shift time by', shifttimes[jobID])
+        print(jobID, 'Label: ', labels[jobID])
         print(jobID, 'Time range (None means all):', timeranges.get(jobID, None))
         print(jobID, 'suite:', suites[jobID])
         print(jobID, 'auto_download', auto_download[jobID])
@@ -620,6 +630,7 @@ def load_yml_and_run(compare_yml, config_user, skip_timeseries):
         analysisname=analysis_name,
         lineThicknesses=thicknesses,
         linestyles=linestyles,
+        labels=labels,
         config_user=config_user,
     )
 

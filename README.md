@@ -229,6 +229,7 @@ strictFileCheck: <bool>
 jobs:
    <jobID1>:
       description: <descrption of the first job>
+      label: 'Job info'
       colour: red
       thickness: 0.7
       linestyle: '-'
@@ -271,6 +272,10 @@ These values are:
    - The options are:
      - `description`:
        - A description of job, which helps people differentiate the jobs in the final report.
+     - `label`:
+       - A short description of the job which will appear in the plot legend.
+       - If you make it too long, it won't fit on the plot.  
+       - Optional: Default behaviour is the jobID.
      - `colour`:
        - The colour of this jobs line in the report plots.
        - Default colour is a randomly generated hex colour.
@@ -447,6 +452,8 @@ units: Units
 dimensions: 1,2 or  3 # The number of dimensions after the calculations are performed
 layers          : Surface
 regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 Remainder NorthernSubpolarAtlantic NorthernSubpolarPacific
+smoothings      : DataOnly both5 both30 movingav30years 5and30 30and100
+
 
 #paths:
 modelFiles      : $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_grid-T.nc
@@ -499,6 +506,27 @@ Simiarly, the `bgcval2/functions/standard_functions.py` contains several
 basic functions such as multiply by or add to, or `noChange`, which can all be
 called without providing the `path`, and which may have their own key word
 arguments.
+
+Some of the other options for each analysis include:
+  - `layers`:
+    - The z axis layers that you want to use.
+    - Typically include things like `Surface`, `500m`, `1000m` etc.
+    - Note that this is a pre-curated list, so you can't use it to select a specific depth (like `327m` or something)
+  - `regions`:
+    - A list of regions to investigate.
+    - This is a pre-curated list, and they are defined in so you can't.
+    - These regions are defined in the file `bgcval2/bgcvaltools/makeMask.py`.
+  -  `smoothings`:
+    - This is the smoothing function (if any) to apply to the data before plotting it.
+    - The smoothing it added before plotting, but after saving the shelve file, so it doesn't impact the data.
+    - No smoothing is `DataOnly`, which is also the default behaviour. 
+    - If several smoothing options are added here, bgcval2 will generate a comparison plot for each one.
+    - The smoothings are defined and performed in `bgcval2/timeseries/timeseriesPlots.py`
+    - Other modes exist:
+      - `movingav30years`: A 30 year moving average
+      - `both5`: Both no smoothing and a 5 year moving average
+      - `both30`: Both no smoothing and a 30 year moving average
+      - `5and30`: a 5 year moving average and a 30 year moving average.
 
 Clearing the Cache
 ------------------
