@@ -11,3 +11,5 @@ model_convert:
   areafile: $PATHS_GRIDFILE
 layers: layerless
 regions: regionless
+smoothings: DataOnly 5and30 30and100
+
