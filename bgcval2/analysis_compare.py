@@ -412,7 +412,7 @@ def timeseries_compare(jobs,
                     data=-999,  # in situ data distribution
                     title=title,
                     filename=bvt.folder(imageFolder) +
-                        '_'.join([name, region, layer, ts, ls + '.png']),
+                        '_'.join([name, region, layer, ts, metric, ls + '.png']),
                     units=units,
                     plotStyle=ts,
                     lineStyle=ls,
