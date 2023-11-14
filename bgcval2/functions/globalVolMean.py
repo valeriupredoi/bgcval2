@@ -31,17 +31,27 @@
 
 import numpy as np
 from bgcval2.functions.standard_functions import choose_best_var 
+from bgcval2.functions.standard_functions import find_best_var
 
+#def calc_vol(nc):
+#    """
+#    Calculate volume from the (grid-T) netcdf file.
+#    """
+#    area = nc.variables['area'][:]
+#    thkcello = nc.variables['thkcello'][:]
+#    area = area[None, None,:, :]
+#    return thkcello * area
 
 def calc_vol(nc):
     """
     Calculate volume from the (grid-T) netcdf file.
     """
-    area = nc.variables['area'][:]
-    thkcello = nc.variables['thkcello'][:]
+    area_key = find_best_var(nc, ['area', 'area_grid_T'])
+    thkcello_key = find_best_var(nc, ['thkcello', 'thkcello_grid_T'])
+    area = nc.variables[area_key][:]
+    thkcello = nc.variables[thkcello_key][:]
     area = area[None, None,:, :]
     return thkcello * area
-
 
 def globalVolumeMean(nc, keys, **kwargs):
     """
