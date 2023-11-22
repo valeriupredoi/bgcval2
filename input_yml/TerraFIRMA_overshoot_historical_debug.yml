@@ -1,0 +1,28 @@
+---
+# GC5 N96 ORCA1 spinup analysis
+name: TerraFIRMA_overshoot_historical_debug
+
+# Run the single job analysis
+do_analysis_timeseries: True 
+
+# Download from mass:
+do_mass_download: False
+
+# master analysis suite
+master_suites: physics bgc #alkalinity physics kmf1
+
+clean: True
+
+jobs:
+    u-cy693:
+       description: ' static ice sheets, started from picontrol yr 2317'
+       colour: goldenrod
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf physics bgc #alkalinity physics kmf
+
+
+
+
+

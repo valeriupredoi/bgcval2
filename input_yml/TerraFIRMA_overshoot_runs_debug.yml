@@ -1,0 +1,67 @@
+---
+# GC5 N96 ORCA1 spinup analysis
+name: TerraFIRMA_overshoot_runs
+
+# Run the single job analysis
+do_analysis_timeseries: False 
+
+# Download from mass:
+do_mass_download: False
+
+# master analysis suite
+master_suites: physics bgc #alkalinity physics kmf1
+
+# Run without strick check (if True, breaks if job has no years.)
+strict_file_check: False
+
+clean: True
+
+jobs:
+    u-cx209:
+       description: 'E-mode free ice RAMP UP 8GtC/yr #1'
+       colour: 'red'
+       thickness: 0.6
+       linestyle: '-'
+       shifttime: 0.
+       #timerange: [1800, 2050]
+       suite: kmf physics bgc #alkalinity physics
+
+    u-cw988:
+       description: 'E-mode free ice RAMP UP 8GtC/yr #2'
+       colour: '#0000FF'
+       thickness: 0.6
+       linestyle: '-'
+       shifttime: 0.
+       #timerange: [1800, 2050]
+       suite: kmf physics bgc #alkalinity physics
+           
+    u-cw989:
+       description: 'E-mode free ice RAMP UP 8GtC/yr #3'
+       colour: 'orange'
+       thickness: 0.6
+       linestyle: '-'
+       shifttime: 0.
+       #timerange: [1800, 2050]
+       suite: kmf physics bgc #alkalinity physics
+
+    u-cw990:
+       description: 'E-mode free ice RAMP UP 8GtC/yr #4'
+       colour: 'goldenrod'
+       thickness: 0.6
+       linestyle: '-'
+       shifttime: 0.
+       #timerange: [1800, 2050]
+       suite: kmf physics bgc #alkalinity physics
+
+    # 1.5k Stabilisation
+    u-cy837:
+       description: '1.5K Stabilisation from u-cx209 (#1)'
+       colour: 'darkred'
+       thickness: 0.6
+       linestyle: ':'
+       shifttime: 0.
+       #timerange: [1800, 2050]
+       suite: kmf physics bgc #alkalinity physics   
+
+
+
