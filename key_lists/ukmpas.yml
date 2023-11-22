@@ -1,0 +1,35 @@
+---
+# UK MPAS
+# A short list of key metrics to study MPAs.
+keys:
+    # Useful metrics for everything
+    GlobalMeanTemperature: True
+    DrakePassageTransport: True
+    AMOC_26N: True
+    TotalAirSeaFluxCO2: True
+    TotalIceExtent: True
+
+    # Nutrients
+    MPA_Nitrate: True                          # WOA Nitrate
+    MPA_Silicate: True                         # WOA Siliate
+    MPA_Iron: True                       # Iron
+
+    # Chlorophyll, Production, Export and DMS
+    MPA_Chlorophyll: True                        # Total Chlorophyll
+    MPA_IntPP: True                 # Global Total Integrated Primary Production
+
+    # Carbonate system:
+    MPA_Alkalinity: True                        # Glodap Alkalinity
+    MPA_pH: True
+    MPA_DIC: True                        # Globap dissolved inorganic carbon
+    MPA_AirSeaFluxCO2: True              # Air Sea Flux of CO2
+    # Oxygen:
+    MPA_Oxygen: True                         # WOA Oxygen
+
+    MPA_Temperature: True  # WOA Temperature
+    MPA_Salinity: True  # WOA Salinity
+    MPA_MLD: True  # iFERMER Mixed Layer Depth
+
+
+
+
