@@ -275,6 +275,20 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
         mx += np.ma.masked_outside(xy, -10.813, -5.053).mask # Lattitue
         return mx
 
+    if newSlice == 'TristandaCunha': # MPA covers two islands. This is very approximate
+        # Edinburgh of 7 seas: -37.10646514207477 South,, -12.297874143783694  West
+        # Gough island: -40.322968275628654 South, -9.935193569988446 West
+        mx = np.ma.masked_outside(xx, -12.3 - 3., -9.9 + 3.).mask # longitude # West
+        mx += np.ma.masked_outside(xy, -40.3 -3, -37.1 + 3.).mask # Lattitue  # South
+        return mx
+
+    if newSlice == 'Pitcairn': # MPA covers several islands. This is very approximate
+        # Ducie Island:  24.66 S 124.75 W (Eastern most)
+        # Oeno island: 23.9 S 130.74 W (western most) (Western boundary is not the full EEZ)
+        mx = np.ma.masked_outside(xx, -130.74 - 1.5., 124.75 + 3.).mask # longitude # West
+        mx += np.ma.masked_outside(xy, -24.66 -3, -23.9 + 3.).mask # Lattitue  # South
+        return mx
+
 
     if newSlice == 'WeddelSea':
         mx = np.ma.masked_outside(xx, -60., -20.).mask
