@@ -31,6 +31,7 @@
 """
 import argparse
 import subprocess
+from getpass import getuser
 
 from bgcval2.analysis_compare import load_comparison_yml
 
@@ -75,17 +76,23 @@ def submits_lotus(compare_yml, config_user, dry_run=False):
     details = load_comparison_yml(compare_yml)
     jobs = details['jobs']
 
-    user='ldemora'
+    user = getuser()
     out = str(subprocess.check_output(["squeue", "--user="+user]))
 
     for job in jobs:
         suites = details['suites'][job]
+
         if out.find(job) > -1:
             print("That job exists already: skipping", job)
+
+        command_txt = ['sbatch', '-J', job, 'lotus_timeseries.sh', job]
+        for suite in suites:
+            command_txt.append(suite)
         if dry_run:
-            print(' '.join(['sbatch', 'lotus_timeseries.sh', job, suites]) )
+            print(' '.join(command_txt))
         else:
-            command1 = subprocess.Popen(['sbatch', 'lotus_timeseries.sh', job, suites])
+            # Submit job:
+            command1 = subprocess.Popen(command_txt)
 
 
 def main():

@@ -7,25 +7,10 @@
 
 
 ######################
-# First make a copy of this file:
-# rysnc -av lotus_bgcval2.sh lotus_bgcval2_$USER.sh
+# This script runs a single time series job.
 #
-# Then edit your new copy (lotus_bgcval2_$USER.sh):
-#
-#  1. Check the name of your conda environment: CONDA_ENV
-#     "bgcval2" is the default, but may have a different one.
-#
-#  2. Check the path to your bgcval2 directory: BGCVAL2_PATH
-#
-#  3. Change the analyses to run: BGCVAL2_SUITE
-#     You can add several suites here if needed.
-#
-#  4. Submit this script with with:
-#     sbatch lotus_bgcval2_$USER.sh
-#
-#  5. Monitor progress with:
-#     squeue | grep $USER
-#
+# Runs:
+#    lotus_timeseries.sh jobID suite1 suite2 etc...
 #########################
 
 
@@ -61,11 +46,15 @@ conda activate ${CONDA_ENV}
 #cd $BGCVAL2_PATH
 #pwd
 
-jobID=$1
-keys=$2
+##########################
+# Load command line arguments:
+args=$@
+jobID="${a%% *}"
+suites="${@:2}"
+echo $suites
 
-echo "analysis timeseries -j $jobID -k $2"
-#analysis_timeseries -j $jobID -k $2
+echo "analysis timeseries -j $jobID -k $suites"
+#analysis_timeseries -j $jobID -k $suites
 #########################
 # Add one or more input_yml files here
 #cho analysis_timeseries -y $BGCVAL2_SUITE
