@@ -22,9 +22,9 @@
 # ledm@pml.ac.uk
 #
 """
-.. module:: analysis_timeseries
+.. module:: parrallel_timeseries
    :platform: Unix
-   :synopsis: A script to produce analysis for time series.
+   :synopsis: A script to submit slurm scripts time series.
 
 .. moduleauthor:: Lee de Mora <ledm@pml.ac.uk>
 
@@ -32,6 +32,7 @@
 import argparse
 import subprocess
 import os
+import sys
 
 from getpass import getuser
 
@@ -67,34 +68,45 @@ def get_args():
                         required=False)
 
     args = parser.parse_args()
-
     return args
+
 
 def submits_lotus(compare_yml, config_user, dry_run=False):
     """
      Loads the yaml file and submits individual time series to sbatch.
      """
-    # Below here is analysis
+    # Load details from yml file
     details = load_comparison_yml(compare_yml)
+
+    # list of job IDS
     jobs = details['jobs']
 
+    # username
     user = getuser()
+
+    # Load current on-going list of this users slurm jobs:
     out = str(subprocess.check_output(["squeue", "--user="+user]))
 
+    # loop over jobs:
     for job in jobs:
-        suites = details['suites'][job]
-        print(suites)
-        if isinstance(suites, str):
-            suites = suites.split(' ')
-
+        # Check whether there's already a job running for this jobID
         if out.find(job) > -1:
             print("That job exists already: skipping", job)
             continue
 
+        # Get list of suites for each job
+        suites = details['suites'][job]
+
+        # Make it a list:
+        if isinstance(suites, str):
+            suites = suites.split(' ')
+
+        # prepare the command
         command_txt = ['sbatch', '-J', job, 'lotus_timeseries.sh', job]
         for suite in suites:
             command_txt.append(suite)
-        print(' '.join(command_txt))
+
+        # Send it!
         if dry_run:
             print('Not submitting (dry-run):', ' '.join(command_txt))
         else:

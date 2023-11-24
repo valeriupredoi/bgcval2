@@ -47,12 +47,12 @@ conda activate ${CONDA_ENV}
 ##########################
 # Load command line arguments:
 args=$@
-jobID="${a%% *}"
+jobID=$1
 suites="${@:2}"
 echo $suites
 
-echo "analysis timeseries -j $jobID -k $suites"
-#analysis_timeseries -j $jobID -k $suites
+echo "analysis_timeseries -j $jobID -k $suites"
+analysis_timeseries -j ${jobID} -k ${suites}
 #########################
 # Add one or more input_yml files here
 #cho analysis_timeseries -y $BGCVAL2_SUITE
