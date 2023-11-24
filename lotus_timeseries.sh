@@ -1,23 +1,21 @@
 #!/bin/bash
-#SBATCH --job-name=bgcval2
 #SBATCH --partition=short-serial
 #SBATCH --time 6:00:00
 #SBATCH -o logs/log_bgcval2_ts_%J.out
 #SBATCH -e logs/log_bgcval3_ts_%J.err
 
+# slurm job name should be set in the command line with -J option to the jobID
 
 ######################
 # This script runs a single time series job.
 #
 # Runs:
-#    lotus_timeseries.sh jobID suite1 suite2 etc...
+#    sbatch -J jobID lotus_timeseries.sh jobID suite1 suite2 etc...
+#
 #########################
 
 
-
 #########################
-# Edit these bits:
-
 # Change this to your bgcval2 conda environment name
 CONDA_ENV=bgcval2
 

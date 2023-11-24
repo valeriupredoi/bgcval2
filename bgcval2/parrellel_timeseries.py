@@ -31,6 +31,8 @@
 """
 import argparse
 import subprocess
+import os
+
 from getpass import getuser
 
 from bgcval2.analysis_compare import load_comparison_yml
@@ -81,17 +83,23 @@ def submits_lotus(compare_yml, config_user, dry_run=False):
 
     for job in jobs:
         suites = details['suites'][job]
+        print(suites)
+        if isinstance(suites, str):
+            suites = suites.split(' ')
 
         if out.find(job) > -1:
             print("That job exists already: skipping", job)
+            continue
 
         command_txt = ['sbatch', '-J', job, 'lotus_timeseries.sh', job]
         for suite in suites:
             command_txt.append(suite)
+        print(' '.join(command_txt))
         if dry_run:
-            print(' '.join(command_txt))
+            print('Not submitting (dry-run):', ' '.join(command_txt))
         else:
             # Submit job:
+            print('Submitting:', ' '.join(command_txt))
             command1 = subprocess.Popen(command_txt)
 
 
@@ -112,7 +120,7 @@ def main():
         if not os.path.isfile(compare_yml):
             print(f"analysis_timeseries: Could not find comparison config file {compare_yml}")
             sys.exit(1)
-        dry_run = compare_yml.dry_run
+        dry_run = args.dry_run
         submits_lotus(compare_yml, config_user, dry_run)
 
 
