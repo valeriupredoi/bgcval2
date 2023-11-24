@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=$1
+#SBATCH --job-name=bgcval2
 #SBATCH --partition=short-serial
 #SBATCH --time 6:00:00
 #SBATCH -o logs/log_bgcval2_ts_%J.out
