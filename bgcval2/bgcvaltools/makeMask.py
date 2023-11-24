@@ -45,13 +45,13 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
 	:param xy: A one-dimensional array of the dataset latitudes.
 	:param xx: A one-dimensional array of the dataset longitudes.
 	:param xd: A one-dimensional array of the data.
-	
+
 	This function produces a mask to hides all points that are not in the requested region.
-	
-	Note that xt,xz,xy,xx,xd should all be the same shape and size. 
-	
+
+	Note that xt,xz,xy,xx,xd should all be the same shape and size.
+
 	This functional can call itself, if two regional masks are needed.
-	
+
 	Please add your own regions, at the bottom of the list, if needed.
 	"""
     if debug:
@@ -270,6 +270,26 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
         mx += np.ma.masked_outside(xy, 49., 52.).mask
         return mx
 
+    if newSlice == 'Ascension':
+        mx = np.ma.masked_outside(xx, -17.246, -11.487).mask # longitude
+        mx += np.ma.masked_outside(xy, -10.813, -5.053).mask # Lattitue
+        return mx
+
+    if newSlice == 'TristandaCunha': # MPA covers two islands. This is very approximate
+        # Edinburgh of 7 seas: -37.10646514207477 South,, -12.297874143783694  West
+        # Gough island: -40.322968275628654 South, -9.935193569988446 West
+        mx = np.ma.masked_outside(xx, -12.3 - 3., -9.9 + 3.).mask # longitude # West
+        mx += np.ma.masked_outside(xy, -40.3 -3, -37.1 + 3.).mask # Lattitue  # South
+        return mx
+
+    if newSlice == 'Pitcairn': # MPA covers several islands. This is very approximate
+        # Ducie Island:  24.66 S 124.75 W (Eastern most)
+        # Oeno island: 23.9 S 130.74 W (western most) (Western boundary is not the full EEZ)
+        mx = np.ma.masked_outside(xx, -130.74 - 1.5, 124.75 + 3.).mask # longitude # West
+        mx += np.ma.masked_outside(xy, -24.66 -3, -23.9 + 3.).mask # Lattitue  # South
+        return mx
+
+
     if newSlice == 'WeddelSea':
         mx = np.ma.masked_outside(xx, -60., -20.).mask
         mx += np.ma.masked_outside(xy, -80., -64.).mask
@@ -487,13 +507,13 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
                 print("Corner case:", la, lo, bathy[la, lo])
                 nmask[i] = 1
             if newSlice == "maskBelowBathy":
-                if (bathy[la, lo] - 10.) > abs(z): 
+                if (bathy[la, lo] - 10.) > abs(z):
                     nmask[i] = 1
             elif newSlice in ["OnShelf", 'AMM_Shelf']:
-                if bathy[la, lo] >= shelfDepth: 
+                if bathy[la, lo] >= shelfDepth:
                     nmask[i] = 1
             elif newSlice in ["OffShelf", 'AMM_OffShelf']:
-                if bathy[la, lo] < shelfDepth: 
+                if bathy[la, lo] < shelfDepth:
                     nmask[i] = 1
         if i > 0:
             try:

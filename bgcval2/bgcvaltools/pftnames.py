@@ -209,7 +209,7 @@ def makeLongNameDict():
     lnd['Chlorophylla'] = 'Chlorophyll'
     lnd['Chlorophyll_cci'] = "Chlorophyll (CCI)"
     lnd['Chlorophyll_pig'] = "Chlorophyll (Pigments)"
-    lnd['TotalChlorophyll'] = 'Total Chlorophyll' 
+    lnd['TotalChlorophyll'] = 'Total Chlorophyll'
     lnd['CHD'] = "Diatom Chlorophyll"
     lnd['CHN'] = "Non-Diatom Chlorophyll"
     lnd['DiatomChlorophyll'] = "Diatom Chlorophyll"
@@ -247,7 +247,7 @@ def makeLongNameDict():
 
     lnd['VolumeMeanTemperature'] = "Volume-weighted Mean Temperature"
     lnd['GlobalMeanSalinity'] = "Global Volume-weighted Mean Salinity"
-   
+
 
     lnd['TotalHeatFlux'] = "Global Total Heat Flux"
     lnd['HeatFlux'] = "Heat Flux"
@@ -326,7 +326,7 @@ def makeLongNameDict():
     lnd['SSS'] = 'Sea Surface Salinty'
 
     lnd['MA_DraKE'] = 'Drake Passage Current'
-    lnd['MA_AMOC_26N'] = 'AMOC at 26.5N' 
+    lnd['MA_AMOC_26N'] = 'AMOC at 26.5N'
     lnd['MA_ZOS'] = 'Sea Surface Height'
     lnd['MA_MLD'] = 'Mixed Layer Depth'
     lnd['MA_MLD_Sigma'] = 'Mixed Layer Depth (Sigma)'
@@ -400,6 +400,10 @@ def makeLongNameDict():
     lnd['LabradorSea'] = "Labrador Sea"
     lnd['NorwegianSea'] = "Norwegian Sea"
     lnd['Cornwall'] = "Cornwall"
+    lnd['Ascension'] = "Ascension Island"
+    lnd['TristandaCunha'] = "Tristan da Cunha"
+    lnd['Pitcairn'] = "Pitcairn"
+
 
     lnd['100m'] = "100m deep"
     lnd['200m'] = "200m deep"
@@ -732,7 +736,7 @@ def getLongName(text, debug=False):
 
 
 def fancyUnits(units, debug=False):
-    """	
+    """
 	Converts ascii units string into latex style formatting.
 	"""
     units = units.replace('[', '').replace(']', '')

@@ -1,0 +1,32 @@
+---
+name            : Iron
+units           : mmol Fe/m^3
+datasource      : Initial Conditions
+model           : MEDUSA
+modelgrid       : eORCA1
+dimensions      : 3
+
+# The filenames
+modelFiles      : $BASEDIR_MODEL/$JOBID/medusa*$JOBIDo_1y_*_ptrc-T.nc
+modelFile_p2p   : $BASEDIR_MODEL/$JOBID/medusa*$JOBDo_1y_*$YEAR????_ptrc-T.nc
+#dataFile        : /data/euryale7/backup/ledm/UKESM/InitialConditions/UKESM_fields_1860_eORCA1_small.nc
+gridFile        : $BASEDIR_MODEL/mesh_mask_eORCA1_wrk.nc
+
+# Model coordinates/dimension names
+model_vars      : FER
+model_convert   : 
+    function: multiplyBy
+    factor : 1000
+
+# Data coordinates names
+#data_vars       : FER
+#data_tdict      : ZeroToZero
+#data_convert    : multiplyBy
+#data_convert_factor : 1000
+
+layers          : Surface #Transect ;CanRusTransect PTransect SOTransect Equator ArcTransect AntTransect ArcTransect AntTransect
+regions         : Global Ascension TristandaCunha Pitcairn Cornwall
+
+
+
+
