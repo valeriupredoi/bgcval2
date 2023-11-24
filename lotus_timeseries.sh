@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=bgcval2
+#SBATCH --job-name=$1
 #SBATCH --partition=short-serial
 #SBATCH --time 6:00:00
 #SBATCH -o logs/log_bgcval2_ts_%J.out
@@ -65,7 +65,7 @@ jobID=$1
 keys=$2
 
 echo "analysis timeseries -j $jobID -k $2"
-analysis_timeseries -j $jobID -k $2
+#analysis_timeseries -j $jobID -k $2
 #########################
 # Add one or more input_yml files here
 #cho analysis_timeseries -y $BGCVAL2_SUITE
