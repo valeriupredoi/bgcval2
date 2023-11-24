@@ -1,0 +1,120 @@
+---
+# GC5 N96 ORCA1 spinup analysis
+name: TerraFIRMA_overshoot_MPAs
+
+# Run the single job analysis
+do_analysis_timeseries: True  
+
+# Download from mass:
+do_mass_download: False
+
+# master analysis suite
+master_suites: kmf mpas # physics bgc #alkalinity physics kmf1
+
+# Run without strick check (if True, breaks if job has no years.)
+strict_file_check: False
+
+clean: True
+
+jobs:
+    u-cs495:
+       description: 'PI-Control'
+       label: 'Pi-Control'
+       colour: 'blue' 
+       thickness: 1.2
+       linestyle: '-'
+       shifttime: -100.
+       timerange: [1850, 2200]
+       suite: kmf mpas #physics bgc #alkalinity physics
+         
+ 
+    u-cx209:
+       description: 'E-mode free ice RAMP UP 8GtC/yr #1'
+       label: 'Ramp-up'
+       colour: 'black'
+       thickness: 1.2
+       linestyle: '-'
+       shifttime: 0.
+       #timerange: [1800, 2050]
+       suite: kmf mpas #physics bgc #alkalinity physics
+
+    # 1.5k Stabilisation
+    u-cy837:
+       description: '1.5K Stabilisation from u-cx209 (#1)'
+       label: '1.5K Stable'
+       colour: 'lawngreen'
+       thickness: 1.2
+       linestyle: '-'
+       shifttime: 0.
+       #timerange: [1800, 2050]
+       suite: kmf mpas # physics bgc #alkalinity physics
+    
+
+    # 2k Stabilisation
+    u-cy838:
+       description: '2.0K Stabilisation from u-cx209 (#1)'
+       label: '2K Stable'
+       colour: 'goldenrod'
+       thickness: 1.2
+       linestyle: '-'
+       shifttime: 0.
+       #timerange: [1800, 2050]
+       suite: kmf mpas # physics bgc #alkalinity physics
+
+
+    # other Stabilisations
+    u-cz375:
+       description: '3.0K Stabilisation from u-cx209 (#1)'
+       label: '3K Stable'
+       colour: 'red'     #
+       thickness: 1.2
+       linestyle: '-'
+       shifttime: 0.
+       #timerange: [1800, 2050]
+       suite: kmf mpas # physics bgc #alkalinity physics
+    u-cz376:
+       description: '4.0K Stabilisation from u-cx209 (#1)'
+       label: '4K Stable'
+       colour: 'sienna'
+       thickness: 1.2
+       linestyle: '-'
+       shifttime: 0.
+       #timerange: [1800, 2050]
+       suite: kmf mpas # physics bgc #alkalinity physics
+    u-cz377:
+       description: '5.0K Stabilisation from u-cx209 (#1)'
+       label: '5K Stable'
+       colour: 'maroon'
+       thickness: 1.2
+       linestyle: '-'
+       shifttime: 0.
+       #timerange: [1800, 2050]
+       suite: kmf mpas # physics bgc #alkalinity physics
+
+    # Ramp downs
+    u-da697:
+       description: '1.5K Rampdown from u-cx209 (#1)'
+       label: '1.5K Rampdown'
+       colour: 'lawngreen'
+       thickness: 1.2
+       linestyle: ':'
+       shifttime: 0.
+       #timerange: [1800, 2050]
+       suite: kmf mpas # physics bgc #alkalinity physics
+
+    u-cz944:
+       description: 'Ramp down from cy838 (- 2.0K Stabilisation from u-cx209) (#1)'
+       label: '2K Rampdown' 
+       colour: 'goldenrod'
+       thickness: 1.2
+       linestyle: 'dashed'
+       shifttime: 0.
+       #timerange: [1800, 2050]
+       suite: kmf mpas #physics bgc #alkalinity physics
+
+
+
+
+
+
+
