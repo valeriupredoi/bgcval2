@@ -16,7 +16,7 @@ keys:
 
     # Chlorophyll, Production, Export and DMS
     MPA_Chlorophyll: True                        # Total Chlorophyll
-    MPA_IntPP: True                 # Global Total Integrated Primary Production
+    #MPA_IntPP: True                 # Global Total Integrated Primary Production
 
     # Carbonate system:
     MPA_Alkalinity: True                        # Glodap Alkalinity

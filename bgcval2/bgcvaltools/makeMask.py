@@ -285,7 +285,7 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
     if newSlice == 'Pitcairn': # MPA covers several islands. This is very approximate
         # Ducie Island:  24.66 S 124.75 W (Eastern most)
         # Oeno island: 23.9 S 130.74 W (western most) (Western boundary is not the full EEZ)
-        mx = np.ma.masked_outside(xx, -130.74 - 1.5., 124.75 + 3.).mask # longitude # West
+        mx = np.ma.masked_outside(xx, -130.74 - 1.5, 124.75 + 3.).mask # longitude # West
         mx += np.ma.masked_outside(xy, -24.66 -3, -23.9 + 3.).mask # Lattitue  # South
         return mx
 

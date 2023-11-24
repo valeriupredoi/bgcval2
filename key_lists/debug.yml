@@ -8,9 +8,9 @@ keys:
 #    SouthernTotalIceExtent: True
 #    DrakePassageTransport: True
 #    AMOC_26N: True
-#    GlobalMeanTemperature: True
+    GlobalMeanTemperature: True
 #     Temperature: True
-   Iron: True
+#   Iron: True
 #    GlobalMeanSalinity: True
 #    Salinity: True
     # MLD: True
