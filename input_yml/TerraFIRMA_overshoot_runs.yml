@@ -118,6 +118,16 @@ jobs:
        #timerange: [1800, 2050]
        suite: kmf physics bgc #alkalinity physics
 
+    u-da266:
+       description: '2.0K Stabilisation from cw988 (#3)'
+       label: '2K Stable #3'
+       colour: 'goldenrod'
+       thickness: 1.2
+       linestyle: '-'
+       shifttime: 0.
+       #timerange: [1800, 2050]
+       suite: kmf physics bgc #alkalinity physics
+       #
            
     # 2.5k Stabilisation
     u-cz374:
@@ -140,7 +150,7 @@ jobs:
        suite: kmf physics bgc #alkalinity physics
 
 
-    # other Stabilisations
+    # 3.0K Stabilisations
     u-cz375:
        description: '3.0K Stabilisation from u-cx209 (#1)'
        label: '3K Stable #1'
@@ -150,6 +160,28 @@ jobs:
        shifttime: 0.
        #timerange: [1800, 2050]
        suite: kmf physics bgc #alkalinity physics          
+
+    u-db587:
+       description: '3.0K Stabilisation from u-cx209 (#2)'
+       label: '3K Stable #2'
+       colour: 'red'     #
+       thickness: 1.2
+       linestyle: '-'
+       shifttime: 0.
+       #timerange: [1800, 2050]
+       suite: kmf physics bgc #alkalinity physics  
+
+    u-db597:
+       description: '3.0K Stabilisation from u-cx209 (#3)'
+       label: '3K Stable #3'
+       colour: 'red'     #
+       thickness: 1.2
+       linestyle: '-'
+       shifttime: 0.
+       #timerange: [1800, 2050]
+       suite: kmf physics bgc #alkalinity physics         #       
+
+    # other Stabilisations
     u-cz376:
        description: '4.0K Stabilisation from u-cx209 (#1)'
        label: '4K Stable #1'
