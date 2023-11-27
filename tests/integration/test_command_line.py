@@ -15,7 +15,8 @@ from bgcval2 import (
     analysis_timeseries,
     download_from_mass,
     bgcval2_make_report,
-    analysis_compare
+    analysis_compare,
+    batch_timeseries
 )
 from bgcval2.analysis_timeseries import main as analysis_timeseries_main
 from bgcval2.download_from_mass import main as download_from_mass_main
@@ -23,6 +24,7 @@ from bgcval2.download_from_mass import main as download_from_mass_main
 # from bgcval2.bgcval import run as bgcval_main
 from bgcval2.bgcval2_make_report import main as bgcval2_make_report_main
 from bgcval2.analysis_compare import main as analysis_compare_main
+from bgcval2.batch_timeseries import main as bgcval2_batch_timeseries
 
 
 def wrapper(f):
@@ -141,4 +143,28 @@ def test_bgcval2_make_report_command():
         with pytest.raises(SystemExit) as cm, capture_sys_output() \
             as (stdout, stderr):
             bgcval2_make_report_main()
+        assert err in str(stderr.getvalue())
+
+
+@patch('bgcval2.batch_timeseries.main', new=wrapper(bgcval2_batch_timeseries))
+def test_bgcval2_make_report_command():
+    """Test run command."""
+    with arguments('batch_timeseries', '--help'):
+        with pytest.raises(SystemExit) as pytest_wrapped_e:
+            bgcval2_batch_timeseries()
+        assert pytest_wrapped_e.type == SystemExit
+        assert pytest_wrapped_e.value.code == 0
+
+    err = "the following arguments are required: -y/--compare_yml"
+    with arguments('bgcval2_batch_timeseries'):
+        with pytest.raises(SystemExit) as cm, capture_sys_output() \
+            as (stdout, stderr):
+            bgcval2_batch_timeseries()
+        assert err in  str(stderr.getvalue())
+
+    err = "argument -y/--compare_yml: expected at least one argument"
+    with arguments('bgcval2_batch_timeseries', '--compare_yml'):
+        with pytest.raises(SystemExit) as cm, capture_sys_output() \
+            as (stdout, stderr):
+            bgcval2_batch_timeseries()
         assert err in str(stderr.getvalue())
