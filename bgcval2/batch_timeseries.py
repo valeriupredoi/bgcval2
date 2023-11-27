@@ -22,7 +22,7 @@
 # ledm@pml.ac.uk
 #
 """
-.. module:: parrallel_timeseries
+.. module:: batch_timeseries
    :platform: Unix
    :synopsis: A script to submit slurm scripts time series.
 
