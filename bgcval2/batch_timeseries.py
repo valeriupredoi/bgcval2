@@ -113,6 +113,7 @@ def submits_lotus(compare_yml, config_user, dry_run=False):
             # Submit job:
             print('Submitting:', ' '.join(command_txt))
             command1 = subprocess.Popen(command_txt)
+               
 
 
 def main():
