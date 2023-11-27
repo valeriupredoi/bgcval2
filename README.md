@@ -1,73 +1,4 @@
-[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
-[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
-[![Github Actions Test](https://github.com/valeriupredoi/bgcval2/actions/workflows/run-tests.yml/badge.svg)](https://github.com/valeriupredoi/bgcval2/actions/workflows/run-tests.yml)
-
-![bgcval2logo](https://github.com/valeriupredoi/bgcval2/blob/main/doc/figures/BGCVal2-logo-2.png)
-
-bgcval2
-=======
-
-
-bgcval2 is the updated and modernised version of BGC-val.
-There are several updates over the previously published version of [BGCVal](https://gmd.copernicus.org/articles/11/4215/2018/).
-The primary improvements are to the user interface, the ease of use, ease of installation,
-and a general modernisation of the core approach, including the move to python3, 
-and using a conda enviroment.
-
-This work was funded through WP1 of the Terrafirma project.
-
-
-Current version notes:
-
-- Suported versions of Python: 3.9, 3.10 and 3.11
-
-Environment and installation
-============================
-
-**Supported Operating Systems so far**: Linux/UNIX
-
-To install locally:
-
-- get the `git` file of this repository:
-
-```
-git clone https://github.com/valeriupredoi/bgcval2.git
-```
-
-- then grab [miniconda3](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html).
-- This can be installed using (bearing in mind that your file name may differ), and follow the on screen instructions:
-```
-  bash Miniconda3-py39_4.12.0-Linux-x86_64.sh
-```
-
-- Once you have a local version of miniconda3 installed, install `mamba` in the `base` environment:
-
-```
-conda install -c conda-forge mamba
-```
-
-- mamba is a replacement for conda that is faster, but works exactly the same way. Ie the command “conda env” -> becomes “mamba env”. However, this step is somewhat optional. If you can’t install mamba, but have conda working, just replace “mamba” with “conda” below.
-
-
-- then create the `bgcval2` environment and activate it:
-
-```
-cd bgcval2
-mamba env create -n bgcval2 -f environment.yml
-conda activate bgcval2
-```
-
-- then install the development dependencies and the tool itself
-  (note that all our dependencies are from `conda-forge` so there
-  is no risk of mixing Conda and PyPI packages):
-
-```
-pip install -e .[develop]
-```
-
-Test that the tool has been installed correctly with:
-```
-analysis_compare -h
+compare -h
 ```
 which should print the module information and instructions on how to run the tool.
 
@@ -115,6 +46,7 @@ Executable name | What it does | Command
 `bgcval` | runs time series and point to point. | bgcval jobID
 `bgcval2_make_report` | makes the single model HTML report. | bgcval2_make_report jobID
 `analysis_compare` | runs comparison of multiple single jobs  | analysis_compare
+`batch_timeseries` | Submits single job time series analysis to slurm | batch_timeseries
 
 
 ### Checking out development branches
@@ -317,6 +249,36 @@ can copy the html report to a web-visible directory, using the script:
 
 then the report will appear on the [JASMIN public facing page](https://gws-access.jasmin.ac.uk/public/esmeval/CompareReports/bgcval2/),
 which is public facing but password protected.
+
+
+Batch times series Analysis
+===========================
+
+The `batch_timeseries` tool can take an `analysis_compare` input yaml file,
+and instead of running the time series analysis for each job on
+the interactive shell terminal in series, it uses slurm to submit
+each job as an independent job. 
+
+On jasmin, users can run up to five jobs simulataneously,
+so this can singnificantly boost the speed of the analysis. 
+
+The command to run it is:
+```
+batch_timeseries - y comparison_recipe.yml
+```
+
+There is also an optional flag `-d` or `--dry_run` to test the batch_timeseries,
+which outputs the submission command to screen but does not submit the jobs.
+
+Note that this task does not run the `analysis_compare` suite so it will 
+not generate the html report. However, the html report can be generated more quickly
+with the `-s` skip the `analysis_timeseries` section 
+described above. 
+
+In addition, note that this will not run the `download_from_mass`
+script, so jobs added here will not be included in the automated download.
+However, these jobs are added for automated download when `analysis_compare` 
+is used. 
 
 
 Downloading data using MASS
