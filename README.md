@@ -1,3 +1,73 @@
+[![Maintenance](https://img.shields.io/badge/Maintained%3F-yes-green.svg)](https://GitHub.com/Naereen/StrapDown.js/graphs/commit-activity)
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
+[![Github Actions Test](https://github.com/valeriupredoi/bgcval2/actions/workflows/run-tests.yml/badge.svg)](https://github.com/valeriupredoi/bgcval2/actions/workflows/run-tests.yml)
+
+![bgcval2logo](https://github.com/valeriupredoi/bgcval2/blob/main/doc/figures/BGCVal2-logo-2.png)
+
+bgcval2
+=======
+
+
+bgcval2 is the updated and modernised version of BGC-val.
+There are several updates over the previously published version of [BGCVal](https://gmd.copernicus.org/articles/11/4215/2018/).
+The primary improvements are to the user interface, the ease of use, ease of installation,
+and a general modernisation of the core approach, including the move to python3, 
+and using a conda enviroment.
+
+This work was funded through WP1 of the Terrafirma project.
+
+
+Current version notes:
+
+- Suported versions of Python: 3.9, 3.10 and 3.11
+
+Environment and installation
+============================
+
+**Supported Operating Systems so far**: Linux/UNIX
+
+To install locally:
+
+- get the `git` file of this repository:
+
+```
+git clone https://github.com/valeriupredoi/bgcval2.git
+```
+
+- then grab [miniconda3](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html).
+- This can be installed using (bearing in mind that your file name may differ), and follow the on screen instructions:
+```
+  bash Miniconda3-py39_4.12.0-Linux-x86_64.sh
+```
+
+- Once you have a local version of miniconda3 installed, install `mamba` in the `base` environment:
+
+```
+conda install -c conda-forge mamba
+```
+
+- mamba is a replacement for conda that is faster, but works exactly the same way. Ie the command “conda env” -> becomes “mamba env”. However, this step is somewhat optional. If you can’t install mamba, but have conda working, just replace “mamba” with “conda” below.
+
+
+- then create the `bgcval2` environment and activate it:
+
+```
+cd bgcval2
+mamba env create -n bgcval2 -f environment.yml
+conda activate bgcval2
+```
+
+- then install the development dependencies and the tool itself
+  (note that all our dependencies are from `conda-forge` so there
+  is no risk of mixing Conda and PyPI packages):
+
+```
+pip install -e .[develop]
+```
+
+Test that the tool has been installed correctly with:
+```
+analysis_compare -h
 compare -h
 ```
 which should print the module information and instructions on how to run the tool.
