@@ -336,7 +336,15 @@ The command to run it is:
 batch_timeseries - y comparison_recipe.yml
 ```
 
-There is also an optional flag `-d` or `--dry_run` to test the batch_timeseries,
+This will submit a time-series analysis for each job, using a command which looks like this:
+```
+sbatch -J u-aa111 --error=logs/u-aa111.err --output=logs/u-aa111.out lotus_timeseries.sh u-aa111 kmf physics bgc
+```
+The output and error messages will be in the `logs` directory which the jobID as the file prefix.
+The job name on slurm will also be the jobID, so it's easy to tell which jobs are running.
+The analysis suites will be apended as a list to the end of the command.
+
+There is also an optional flag `-d` or `--dry_run` to test `batch_timeseries`, 
 which outputs the submission command to screen but does not submit the jobs.
 
 Note that this task does not run the `analysis_compare` suite so it will 
