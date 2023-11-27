@@ -733,7 +733,8 @@ def analysis_timeseries(
                 gridFile=av[name]['gridFile'],
                 clean=False,
             )
-
+    print("analysis_timeseries:\tINFO:\tEnd of the timeseries analysis", jobID, suites)
+ 
 
 def get_args():
     """Parse command line arguments. """

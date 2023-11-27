@@ -521,6 +521,7 @@ Some of the other options for each analysis include:
     - The smoothing it added before plotting, but after saving the shelve file, so it doesn't impact the data.
     - No smoothing is `DataOnly`, which is also the default behaviour. 
     - If several smoothing options are added here, bgcval2 will generate a comparison plot for each one.
+    - The smoothings are defined and performed in `bgcval2/timeseries/timeseriesPlots.py`
     - Other modes exist:
       - `movingav30years`: A 30 year moving average
       - `both5`: Both no smoothing and a 5 year moving average

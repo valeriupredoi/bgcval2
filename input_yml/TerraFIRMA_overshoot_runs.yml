@@ -118,6 +118,7 @@ jobs:
        #timerange: [1800, 2050]
        suite: kmf physics bgc #alkalinity physics
 
+<<<<<<< HEAD
     u-da266:
        description: '2.0K Stabilisation from cw988 (#3)'
        label: '2K Stable #3'
@@ -128,6 +129,8 @@ jobs:
        #timerange: [1800, 2050]
        suite: kmf physics bgc #alkalinity physics
        #
+=======
+>>>>>>> origin/dev_parrallel_ts
            
     # 2.5k Stabilisation
     u-cz374:
