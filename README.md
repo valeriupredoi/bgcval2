@@ -68,7 +68,6 @@ pip install -e .[develop]
 Test that the tool has been installed correctly with:
 ```
 analysis_compare -h
-compare -h
 ```
 which should print the module information and instructions on how to run the tool.
 
