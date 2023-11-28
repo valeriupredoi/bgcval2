@@ -355,7 +355,7 @@ which outputs the submission command to screen but does not submit the jobs.
 
 Note that this task does not run the `analysis_compare` suite so it will 
 not generate the html report. However, the html report can be generated more quickly
-with the `-s` skip the `analysis_timeseries` section 
+with the `-s` argument to skip the `analysis_timeseries` section 
 described above. 
 
 In addition, note that this will not run the `download_from_mass`
