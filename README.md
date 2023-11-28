@@ -340,7 +340,7 @@ This will submit a time-series analysis for each job, using a command which look
 ```
 sbatch -J jobID --error=logs/jobID .err --output=logs/jobID .out lotus_timeseries.sh jobID  kmf physics bgc
 ```
-The output and error messages will be in the `logs` directory which the jobID as the file prefix.
+The output and error messages will be in the `logs` directory with the jobID as the file prefix.
 The job name on slurm will also be the jobID, so it's easy to tell which jobs are running.
 The analysis suites will be apended as a list to the end of the command.
 
