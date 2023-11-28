@@ -137,7 +137,7 @@ class timeseriesAnalysis:
         if self.debug: print("timeseriesAnalysis:\tloadModel.")
         ####
         # load and calculate the model info
-        if glob.glob(self.shelvefn):
+        if glob.glob(self.shelvefn+'*'): # shelve files have .bak .dat .dir files now
             sh = shOpen(self.shelvefn)
             print('seems fine:', self.shelvefn)
             sh = shOpen(self.shelvefn)
