@@ -342,7 +342,13 @@ sbatch -J jobID --error=logs/jobID .err --output=logs/jobID .out lotus_timeserie
 ```
 The output and error messages will be in the `logs` directory with the jobID as the file prefix.
 The job name on slurm will also be the jobID, so it's easy to tell which jobs are running.
-The analysis suites will be apended as a list to the end of the command.
+The analysis suites will be appended as a list to the end of the command.
+In order to reduce the chance of analysing the same jobID twice, `batch_timeseries`
+checks whether a job exists, either currently running or in the queue before submitting.
+If a jobID exists, it is not re-submitted. However, this means that
+if two versions of the same jobID are submitted one after the other
+with different suite lists (`kmf`, `physics`, `bgc`), then only the first 
+set of suites will be run. 
 
 There is also an optional flag `-d` or `--dry_run` to test `batch_timeseries`, 
 which outputs the submission command to screen but does not submit the jobs.
