@@ -338,7 +338,7 @@ batch_timeseries - y comparison_recipe.yml
 
 This will submit a time-series analysis for each job, using a command which looks like this:
 ```
-sbatch -J u-aa111 --error=logs/u-aa111.err --output=logs/u-aa111.out lotus_timeseries.sh u-aa111 kmf physics bgc
+sbatch -J jobID --error=logs/jobID .err --output=logs/jobID .out lotus_timeseries.sh jobID  kmf physics bgc
 ```
 The output and error messages will be in the `logs` directory which the jobID as the file prefix.
 The job name on slurm will also be the jobID, so it's easy to tell which jobs are running.
