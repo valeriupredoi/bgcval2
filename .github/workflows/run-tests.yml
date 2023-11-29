@@ -41,6 +41,7 @@ jobs:
           analysis_level3_sameYear --help
           analysis_p2p --help
           analysis_timeseries --help
+          batch_timeseries --help
           bgcval2_make_report --help
           download_from_mass --help
       - shell: bash -l {0}

@@ -102,7 +102,11 @@ def submits_lotus(compare_yml, config_user, dry_run=False):
             suites = suites.split(' ')
 
         # prepare the command
-        command_txt = ['sbatch', '-J', job, 'lotus_timeseries.sh', job]
+        command_txt = ['sbatch', 
+             '-J', job, 
+              ''.join(['--error=logs/', job,'.err']),
+              ''.join(['--output=logs/', job,'.out']),
+             'lotus_timeseries.sh', job]
         for suite in suites:
             command_txt.append(suite)
 
@@ -112,8 +116,13 @@ def submits_lotus(compare_yml, config_user, dry_run=False):
         else:
             # Submit job:
             print('Submitting:', ' '.join(command_txt))
-            command1 = subprocess.Popen(command_txt)
-
+            #command1 = subprocess.Popen(command_txt)
+            command1 = subprocess.Popen(
+                  command_txt,
+                  stdout=subprocess.PIPE,
+                  stderr=subprocess.STDOUT,
+            )
+      
 
 def main():
 
