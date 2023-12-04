@@ -297,6 +297,11 @@ def load_key_file(key, paths, jobID, strictFileCheck=True):
     output_dict['metrics'] = key_dict.get('metrics', metricList)
     output_dict['metrics'] = parse_list_from_string(output_dict['metrics'])
 
+    # Smoothings:
+    default_smoothings = ['DataOnly', ]
+    output_dict['smoothings'] = key_dict.get('smoothings', default_smoothings)
+    output_dict['smoothings'] = parse_list_from_string(output_dict['smoothings'])
+
     # Load Grid:
     gridFile = key_dict.get('gridFile', paths.orcaGridfn)
     output_dict['gridFile'] = list_input_files(gridFile, key_dict, paths)[0]
@@ -728,7 +733,8 @@ def analysis_timeseries(
                 gridFile=av[name]['gridFile'],
                 clean=False,
             )
-
+    print("analysis_timeseries:\tINFO:\tEnd of the timeseries analysis", jobID, suites)
+ 
 
 def get_args():
     """Parse command line arguments. """

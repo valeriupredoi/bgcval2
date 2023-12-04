@@ -201,6 +201,7 @@ setup(
             'analysis_level3_sameYear = bgcval2.analysis_level3_sameYear:main',
             'analysis_p2p = bgcval2.analysis_p2p:run',
             'analysis_timeseries = bgcval2.analysis_timeseries:main',
+            'batch_timeseries = bgcval2.batch_timeseries:main',
             'download_from_mass = bgcval2.download_from_mass:main',   
             'bgcval2_make_report = bgcval2.bgcval2_make_report:main',
         ],

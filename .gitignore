@@ -20,3 +20,8 @@ _sidebar.rst.inc
 local_test/BGC_data/valeriu
 mass_scripts
 CompareReports2
+.idea/workspace.xml
+*.iml
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/misc.xml
+.idea/vcs.xml
