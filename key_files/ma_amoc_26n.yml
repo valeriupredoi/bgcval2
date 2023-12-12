@@ -15,3 +15,5 @@ model_convert:
   grid: eORCA025
 layers: layerless
 regions: regionless
+smoothings      : DataOnly both5 
+

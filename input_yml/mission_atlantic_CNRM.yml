@@ -25,7 +25,7 @@ jobs:
         thickness: 1.8
         linestyle: '-'
         shifttime: 0.
-        suite: missionatlantic
+        suite: missionatlantic missionatlantic_kmf
 
   CNRM_ssp370:
         description: 'CNRM SSP3-7.0'
@@ -33,7 +33,7 @@ jobs:
         thickness: 1.8
         linestyle: '-'
         shifttime: 0.
-        suite: missionatlantic
+        suite: missionatlantic missionatlantic_kmf
 
   CNRM_ssp126:
         description: 'CNRM SSP1-2.6'
@@ -41,6 +41,6 @@ jobs:
         thickness: 1.8
         linestyle: '-'
         shifttime: 0.
-        suite: missionatlantic
+        suite: missionatlantic missionatlantic_kmf
 
 

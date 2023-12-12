@@ -1504,8 +1504,8 @@ def comparehtml5Maker(
         'Salinty_Global_Surface',
         'FreshwaterFlux_Global',
         'TotalHeatFlux',
-        'MA_SST',
-        'MA_SSS',
+        'MA_SST_Global_Surface',
+        'MA_SSS_Global_Surface',
         'MA_Drake',
         'MA_AMOC_26N',
         'MA_AEU',
@@ -1546,6 +1546,8 @@ def comparehtml5Maker(
             if found: continue
             sectionTitle = 'Physics Key Metrics'
             if fn.find(key) > -1:
+#               if key in ['MA_SST', 'MA_SSS', 'MA_Nitrate',] and fn.find('Global_Surface') < 0:
+#                   continue
                 try:
                     categories[sectionTitle].append(fn)
                 except:

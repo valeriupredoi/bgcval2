@@ -8,6 +8,6 @@ modelFiles      : $BASEDIR_MODEL/$JOBID/*/*/*_1m_*ptrc_T*.nc
 gridFile        : /data/proteus2/scratch/ledm/MissionAtlantic/SENEMO/eORCA025_mesh_mask_mes_v2.nc
 model_vars      : O3_pH
 model_convert   : NoChange
-layers          : Surface 500m
+layers          : Surface #500m
 regions         : Global NorthAtlanticOcean SouthAtlanticOcean EquatorialAtlanticOcean
-metrics         : mean, min  #, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max
+metrics         : mean #, min  #, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max

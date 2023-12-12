@@ -12,6 +12,7 @@ dataFile        : /data/sthenno1/scratch/ledm/Observations/WOA/annual/woa18_deca
 data_vars       : s_an
 data_convert    : NoChange
 data_source     : WOA18
-layers          : Surface 50m 100m 200m 500m 1000m 2000m 4000m
-regions         : Global NorthAtlanticOcean SouthAtlanticOcean EquatorialAtlanticOcean ITCZ
+layers          : Surface #50m 100m 200m 500m 1000m 2000m 
+  #layers          : Surface 50m 100m 200m 500m 1000m 2000m 4000m
+regions         : Global NorthAtlanticOcean SouthAtlanticOcean EquatorialAtlanticOcean #TCZ
 metrics         : mean #, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max

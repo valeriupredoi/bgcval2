@@ -14,3 +14,5 @@ model_convert:
   max_depth: 500. 
 layers: layerless
 regions: regionless
+smoothings      : DataOnly both5 
+

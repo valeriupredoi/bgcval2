@@ -5,7 +5,7 @@
 keys:
   # Physics:
   #
-  #  MA_SST: True
+  MA_SST_KMF: True
   #MA_SSS: True
   MA_AEU: True  
   MA_Drake: True
@@ -23,6 +23,7 @@ keys:
   # MA_Totalairseafluxco2: True # Not in test17
   #  MA_TotalIntGPP: True
   MA_TotalIntNPP: True
+  MA_Nitrate_KMF: True
     #MA_Nitrate: True
     # MA_Ammonium: True
     #  MA_Phosphate: True
