@@ -115,7 +115,7 @@ Executable name | What it does | Command
 `bgcval` | runs time series and point to point. | bgcval jobID
 `bgcval2_make_report` | makes the single model HTML report. | bgcval2_make_report jobID
 `analysis_compare` | runs comparison of multiple single jobs  | analysis_compare
-
+`revert_shelves` | Removes specific years or months from processed shelves | revert_shelves -j jobID -y years -m months
 
 ### Checking out development branches
 
@@ -561,6 +561,31 @@ The third place that these plots are kept is on the public facing jasmin directo
 ```
 
 This is where the report is hosted.
+
+
+
+Fixing mistakes
+---------------
+
+The `revert_shelves` tool is built to remove erroneous processed data from bgcval2
+shelves (where processed data is stored.
+This is useful for processed updated simulations, new runs, post hoc fixes
+and for debugging. 
+
+The revert Shelves tool is set up to remove for a given jobID, year, and even month.
+ 
+A typical useage would be:
+```
+revert_shelves -j jobID1 jobID2 -y 2009 2010 -m 02 11 -k AMOC
+```
+
+This would remove all AMOC data from February and November from the 
+years 2009 and 2010. 
+The default behaviour for the `-k` argument is to run this over all keys.
+
+Test this command using the dry run argument `-d`.
+
+
 
 Point to point analysis
 -----------------------
