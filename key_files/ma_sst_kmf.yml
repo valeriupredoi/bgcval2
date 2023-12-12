@@ -1,0 +1,20 @@
+---
+name            : MA_SST
+units           : degrees C
+dimensions      : 1
+model           : NEMO025-ERSEM
+modelgrid       : eORCA025
+modelFiles      : $BASEDIR_MODEL/$JOBID/*/*/*_1m_*grid_T*.nc
+gridFile        : /data/proteus2/scratch/ledm/MissionAtlantic/SENEMO/eORCA025_mesh_mask_mes_v2.nc
+model_vars      : thetao thetao_con votemper
+model_convert   : choose_best_var
+  #dataFile        : /data/sthenno1/scratch/ledm/Observations/WOA/annual/woa13_decav_t00_01v2_AMM.nc
+dataFile        : /data/sthenno1/scratch/ledm/Observations/WOA/annual/woa18_decav_t00_01.nc
+data_vars       : t_an
+data_convert    : NoChange
+data_source     : WOA18
+layers          : Surface #50m 100m
+regions         : Global 
+metrics         : mean 
+smoothings      : DataOnly both5 
+

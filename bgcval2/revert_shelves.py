@@ -5,6 +5,8 @@ In this script, we remove years of data from a shelve
 from shelve import open as shOpen
 import glob
 import os
+import argparse
+
 
 from bgcval2.bgcvaltools import bv2tools as bvt
 from bgcval2._runtime_config import get_run_configuration
@@ -38,6 +40,8 @@ def load_all_datatypes(shelvedir, jobID):
     files = glob.glob(wildcards)
     datatypes = []
     for fn in files:
+        if fn.find('insitu') > -1:
+            continue
         basename = os.path.basename(fn)
         basename = basename.replace(jobID+'_', '')
         basename = basename.replace('.shelve.dat', '')
@@ -64,15 +68,11 @@ def remove_data(jobID,
     if dataTypes == ['all', ]:
         dataTypes = load_all_datatypes(shelvedir, jobID)
 
-    print(dataTypes)
-    return
     for dataType in dataTypes:
         shelvefn = shelvedir + '_'.join([
             jobID,
             dataType,
         ]) + '.shelve'
-
-        print(shelvefn)
 
         if glob.glob(shelvefn+'*'):
             sh = shOpen(shelvefn)
@@ -82,7 +82,13 @@ def remove_data(jobID,
             modeldataD      = sh['modeldata']
             sh.close()
 
-        if month: 
+        # generate a time key from year/month.
+        if month:
+            if isinstance(month, str) and len(month) ==1:
+                month = int(month)
+            if isinstance(month, int):
+                month = bvt.mnStr(month)
+            
             time_key = year+month
         else:
             time_key = year
@@ -96,7 +102,7 @@ def remove_data(jobID,
         
         if not changes:
             print('Nothing to remove')
-            return
+            continue
 
         # Remove files from list
         for remove_file in remove_files:
@@ -140,15 +146,79 @@ def remove_data(jobID,
            print('Not saving (dry_run):', shelvefn)
 
 
+def get_args():
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument('-c',
+                        '--config-file',
+                        default=os.path.join(os.getcwd(),
+                                             'config-user.yml'),
+                        help='User configuration file',
+                        required=False)
+
+    parser.add_argument('-j',
+                        '--jobids',
+                        default=None,
+                        nargs='+',
+                        type=str,
+                        help='One or more jobIDs (required)',
+                        required=True)
+
+    parser.add_argument('-y',
+                        '--years',
+                        default=None,
+                        nargs='+',
+                        type=str,
+                        help='One or more years (required)',
+                        required=True)
+    parser.add_argument('-m',
+                        '--months',
+                        default=[None, ],
+                        nargs='+',
+                        type=str,
+                        help='One or more months - default is all months',
+                        required=False)
+
+    parser.add_argument('-k',
+                        '--keys',
+                        default=['all',],
+                        nargs='+',
+                        type=str,
+                        help='One or more datasets - default is everything. ',
+                        required=False)
+
+    parser.add_argument('-d',
+                        '--dry-run',
+                        action='store_true',
+                        help='Dry run: Do not edit any files.',
+                        required=False
+                        )
+
+
+    args = parser.parse_args()
+
+    return args
+
+
+
 def main():
-    jobID = 'GFDL_hist'
-    years = ['2007', ]
-    months = ['07', ]
-    dataTypes = ['all', ]
-    dry_run = True 
-    for year in years:
-        for month in months:
-            remove_data(jobID, year, month=month,dataTypes=dataTypes, dry_run=dry_run) #, month)
+    args = get_args()
+    jobIDs = args.jobids
+    years = args.years
+    months = args.months
+    dataTypes = args.keys
+    dry_run = args.dry_run
+
+    for jobID in jobIDs:
+        for year in years:
+            for month in months:
+                print('start: remove_data', jobID, year,month, dataTypes, dry_run)
+                remove_data(jobID, year, month=month,dataTypes=dataTypes, dry_run=dry_run) 
 
 
-main()
+
+if __name__ == "__main__":
+    main()
+

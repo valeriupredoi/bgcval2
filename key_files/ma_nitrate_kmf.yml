@@ -1,0 +1,18 @@
+---
+name            : MA_Nitrate
+units           : mmol N/m^3
+dimensions      : 1
+model           : NEMO025-ERSEM
+modelgrid       : eORCA025
+modelFiles      : $BASEDIR_MODEL/$JOBID/*/*/*_1m_*ptrc_T*.nc
+gridFile        : /data/proteus2/scratch/ledm/MissionAtlantic/SENEMO/eORCA025_mesh_mask_mes_v2.nc
+model_vars      : N3_n
+model_convert   : NoChange
+  #dataFile        : $BASEDIR_OBS/WOA/annual/woa13_all_n00_01.nc
+dataFile        : $BASEDIR_OBS/WOA/annual/woa18_all_n00_01.nc
+data_vars       : n_an
+data_convert    : NoChange
+data_source     : WOA18
+layers          : Surface 
+regions         : Global
+metrics         : mean 

@@ -203,6 +203,7 @@ setup(
             'analysis_timeseries = bgcval2.analysis_timeseries:main',
             'download_from_mass = bgcval2.download_from_mass:main',   
             'bgcval2_make_report = bgcval2.bgcval2_make_report:main',
+            'revert_shelves = bgcval2.revert_shelves:main',
         ],
     },
     cmdclass={
