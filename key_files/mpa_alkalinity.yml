@@ -1,0 +1,23 @@
+---
+name            : Alkalinity
+units           : meq/m^3
+model           : MEDUSA
+modelgrid       : eORCA1
+dimensions      : 3
+
+# The filenames
+modelFiles      : $BASEDIR_MODEL/$JOBID/medusa*$JOBID*_1y_*_ptrc-T.nc
+modelFile_p2p   : $BASEDIR_MODEL/$JOBID/medusa*$JOBID*_1y_*$YEAR????_ptrc-T.nc
+#dataFile        : $BASEDIR_OBS/Alk.nc
+
+# # Model coordinates/dimension names
+model_vars      : ALK
+model_convert   : NoChange
+
+#data_vars : Alk
+#data_convert:
+#    function: convertmeqm3TOumolkg
+
+layers          : Surface #50m #;100m 200m 500m 1000m 2000m
+regions         : Global Ascension TristandaCunha Pitcairn Cornwall
+

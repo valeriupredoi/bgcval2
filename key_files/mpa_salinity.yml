@@ -1,0 +1,23 @@
+---
+name            : Salinity
+units           : PSU
+dimensions      : 3
+model           : NEMO
+datasource      : WOA
+# The filenames
+modelFiles      : $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_grid-T.nc
+modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*$JOBIDo_1y_*$YEAR????_grid-T.nc
+dataFile        : $BASEDIR_OBS/WOA/annual/woa13_decav_s00_01v2.nc
+gridFile        : $PATHS_GRIDFILE
+
+# Model coordinates/dimension names
+model_vars      : so_abs so
+model_convert   : choose_best_var
+
+# Data coordinates names
+data_vars       : s_an
+data_convert    : NoChange
+data_tdict      : ZeroToZero
+
+layers          : Surface
+regions         : Global Ascension TristandaCunha Pitcairn Cornwall

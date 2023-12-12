@@ -2,7 +2,7 @@
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/)
 [![Github Actions Test](https://github.com/valeriupredoi/bgcval2/actions/workflows/run-tests.yml/badge.svg)](https://github.com/valeriupredoi/bgcval2/actions/workflows/run-tests.yml)
 
-![bgcval2logo](https://github.com/valeriupredoi/bgcval2/blob/main/doc/figures/BGCVal2-logo-2.png)
+![bgcval2logo](https://github.com/valeriupredoi/bgcval2/blob/main/doc/figures/bgcval2_logo_v_small.png)
 
 bgcval2
 =======
@@ -115,7 +115,9 @@ Executable name | What it does | Command
 `bgcval` | runs time series and point to point. | bgcval jobID
 `bgcval2_make_report` | makes the single model HTML report. | bgcval2_make_report jobID
 `analysis_compare` | runs comparison of multiple single jobs  | analysis_compare
+`batch_timeseries` | Submits single job time series analysis to slurm | batch_timeseries
 `revert_shelves` | Removes specific years or months from processed shelves | revert_shelves -j jobID -y years -m months
+
 
 ### Checking out development branches
 
@@ -317,6 +319,50 @@ can copy the html report to a web-visible directory, using the script:
 
 then the report will appear on the [JASMIN public facing page](https://gws-access.jasmin.ac.uk/public/esmeval/CompareReports/bgcval2/),
 which is public facing but password protected.
+
+
+Batch times series Analysis
+===========================
+
+The `batch_timeseries` tool can take an `analysis_compare` input yaml file,
+and instead of running the time series analysis for each job on
+the interactive shell terminal in series, it uses slurm to submit
+each job as an independent job. 
+
+On jasmin, users can run up to five jobs simulataneously,
+so this can singnificantly boost the speed of the analysis. 
+
+The command to run it is:
+```
+batch_timeseries - y comparison_recipe.yml
+```
+
+This will submit a time-series analysis for each job, using a command which looks like this:
+```
+sbatch -J jobID --error=logs/jobID .err --output=logs/jobID .out lotus_timeseries.sh jobID  kmf physics bgc
+```
+The output and error messages will be in the `logs` directory with the jobID as the file prefix.
+The job name on slurm will also be the jobID, so it's easy to tell which jobs are running.
+The analysis suites will be appended as a list to the end of the command.
+In order to reduce the chance of analysing the same jobID twice, `batch_timeseries`
+checks whether a job exists, either currently running or in the queue before submitting.
+If a jobID exists, it is not re-submitted. However, this means that
+if two versions of the same jobID are submitted one after the other
+with different suite lists (`kmf`, `physics`, `bgc`), then only the first 
+set of suites will be run. 
+
+There is also an optional flag `-d` or `--dry_run` to test `batch_timeseries`, 
+which outputs the submission command to screen but does not submit the jobs.
+
+Note that this task does not run the `analysis_compare` suite so it will 
+not generate the html report. However, the html report can be generated more quickly
+with the `-s` argument to skip the `analysis_timeseries` section 
+described above. 
+
+In addition, note that this will not run the `download_from_mass`
+script, so jobs added here will not be included in the automated download.
+However, these jobs are added for automated download when `analysis_compare` 
+is used. 
 
 
 Downloading data using MASS
