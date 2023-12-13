@@ -13,8 +13,6 @@ from bgcval2._runtime_config import get_run_configuration
 from bgcval2.Paths.paths import paths_setter
 
 
-
-
 def get_paths(
         config_user=None
     ):
@@ -84,12 +82,12 @@ def remove_data(jobID,
 
         # generate a time key from year/month.
         if month:
-            if isinstance(month, str) and len(month) ==1:
+            if isinstance(month, str) and len(month) == 1:
                 month = int(month)
             if isinstance(month, int):
                 month = bvt.mnStr(month)
             
-            time_key = year+month
+            time_key = year + month
         else:
             time_key = year
 
@@ -186,7 +184,7 @@ def get_args():
                         default=['all',],
                         nargs='+',
                         type=str,
-                        help='One or more datasets - default is everything. ',
+                        help='One or more datasets - default is everything (all available keys). ',
                         required=False)
 
     parser.add_argument('-d',

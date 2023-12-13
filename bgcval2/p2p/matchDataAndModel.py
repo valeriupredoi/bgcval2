@@ -943,7 +943,6 @@ class matchDataAndModel:
             if not set(ncER.variables.keys()).intersection(set(depthNames)):
                 print('load mesh: no depth field available in ', modelfile)
                 self.depthcc = np.array([0])
-#                assert 0
 
 #        self.depthcc = choose_best_ncvar(ncER, depthNames)[:]
         self.datescc = var_to_datetime(ncER.variables[self.modelcoords['t']])
@@ -1135,7 +1134,7 @@ def var_to_datetime(ncvar):
     if units in ['months since 0000-01-01 00:00:00', ]:
         units = 'months since 2000-01-01 00:00:00'
         return num2date(ncvar[:], 'months since 2000-01-01 00:00:00', calendar='360_day') 
-    elif units.find('months since')>-1:
+    elif units.find('months since') > -1:
         return num2date(ncvar[:], units, calendar='360_day') 
 
     return num2date(ncvar[:], ncvar.units, calendar=calendar)

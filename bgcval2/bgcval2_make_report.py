@@ -984,10 +984,10 @@ def html5Maker(
             outlevels = {}
             for i, fn in enumerate(l2Fields):
                 for lv in levels:
-                    if fn.find(lv)>-1:
-                        outlevels[lv]= True
+                    if fn.find(lv) > -1:
+                        outlevels[lv] = True
                     fn = fn.replace(lv, '')
-                outdict[fn]= True
+                outdict[fn] = True
                 
             l2Fields = [key for key, v in outdict.items()]
             slices = [key for key, v in outlevels.items()]
@@ -1000,7 +1000,6 @@ def html5Maker(
         Descriptions = {}
         FileLists = {}
         FileOrder = {}
-        #print(l2Fields, slices)
 
         for key in sorted(l2Fields):
             #if key not in ['Alkalinity','Nitrate']: continue
@@ -1546,8 +1545,6 @@ def comparehtml5Maker(
             if found: continue
             sectionTitle = 'Physics Key Metrics'
             if fn.find(key) > -1:
-#               if key in ['MA_SST', 'MA_SSS', 'MA_Nitrate',] and fn.find('Global_Surface') < 0:
-#                   continue
                 try:
                     categories[sectionTitle].append(fn)
                 except:

@@ -304,18 +304,11 @@ def twentysixnorth025(nc,keys,**kwargs):
             continue
         if not depths[t, z, la, lo] or np.ma.is_masked(depths[t, z, la, lo]):
             continue
-#       if not alttmask_AMOC26N[la, lo]:
-#           continue
-#       if not tmask_AMOC26N[z, la, lo]:
-#           continue
-#       if np.ma.is_masked(zv[0, z, la, lo]):
-#           continue
         atlmoc[z, la] = atlmoc[z, la] - e1v[t, 0, la, lo] * thkcello[t, z, la, lo] * vo[t, z, la, lo] / 1.E06
 
     for z in range(thkcello.shape[1] -2, 1, -1): # add from the bottom up
         atlmoc[z, :] = atlmoc[z+1, :] + atlmoc[z, :]
     print('AMOC:', atlmoc.max())
-    #assert 0
     return atlmoc.max()
 
 
