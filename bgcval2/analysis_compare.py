@@ -192,6 +192,8 @@ def timeseries_compare(jobs,
                        labels = {},
                        ensembles={},
                        config_user=None,
+                       dpi=None,
+                       savepdf=False,
     ):
     """
     timeseries_compare:
@@ -423,6 +425,8 @@ def timeseries_compare(jobs,
                     thicknesses=lineThicknesses,
                     linestyles=linestyles,
                     labels=labels,
+                    dpi=dpi,
+                    savepdf=savepdf,
                 )
 
     # Generate a list of comparison images:
@@ -504,6 +508,12 @@ def load_comparison_yml(master_compare_yml_fn):
     details['do_mass_download'] = input_yml_dict.get('do_mass_download', False)
     details['master_suites'] = input_yml_dict.get('master_suites', [])
 
+    # Image output settings:
+    # dpi: pixels per inch (image resolution)
+    # savepdf: also save the image as a pdf. 
+    details['dpi'] = input_yml_dict.get('dpi', None)
+    details['savepdf'] = input_yml_dict.get('savepdf', False)
+
     # auto download, can differ for each job.
     auto_download = input_yml_dict.get('auto_download', True)
     auto_download_dict = {jobID: auto_download for jobID in details['jobs'].keys()}
@@ -579,6 +589,9 @@ def load_yml_and_run(compare_yml, config_user, skip_timeseries):
     suites = details['suites']
     auto_download = details['auto_download']
     strictFileCheck = details.get('strictFileCheck', True)
+    dpi = details.get('dpi', None)
+    savepdf = details.get('savepdf', False)
+
     print('---------------------')
     print('timeseries_compare:',  analysis_name)
     print('job ids:', jobs.keys())
@@ -632,6 +645,9 @@ def load_yml_and_run(compare_yml, config_user, skip_timeseries):
         linestyles=linestyles,
         labels=labels,
         config_user=config_user,
+        dpi=dpi,
+        savepdf=savepdf,
+
     )
 
 

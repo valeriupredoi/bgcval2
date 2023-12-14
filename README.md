@@ -226,6 +226,8 @@ do_mass_download: <bool>
 master_suites: <str>
 auto_download: <bool>
 strictFileCheck: <bool>
+dpi: <int>
+savepdf: <bool>
 
 jobs:
    <jobID1>:
@@ -268,6 +270,12 @@ These values are:
  - `strictFileCheck`: 
    - A boolean which when True will raise an error if input model files are missing. 
    - Default is True, set to False to skip this check.
+ - `dpi`:
+   - Output images Dots per inch (dpi)
+   - dpi=100 is fine for most purposes but 300 is needed for highres posters/publications.
+ - `savepdf`:
+   - Outpout the image as a pdf in addition to the standard png. 
+   - This doesn't replace the image in the report, but saves a pdf version of the image in the images directory.
  - `jobs`:
    - A list of jobIDs, and some options on how they will appear in the final report.
    - The options are:
