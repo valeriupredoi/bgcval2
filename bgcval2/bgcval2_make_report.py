@@ -1636,7 +1636,6 @@ def comparehtml5Maker(
 
         if len(otherFilenames):
             # I think this is never happens anymore.
-            #assert 0
             href = 'OtherPlots-others'
 
             hrefs.append(href)
