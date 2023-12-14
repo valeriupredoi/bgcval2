@@ -271,10 +271,10 @@ These values are:
    - A boolean which when True will raise an error if input model files are missing. 
    - Default is True, set to False to skip this check.
  - `dpi`:
-   - Output images Dots per inch (dpi)
+   - The resolution in dots per inch (dpi) of the output image.
    - dpi=100 is fine for most purposes but 300 is needed for highres posters/publications.
  - `savepdf`:
-   - Outpout the image as a pdf in addition to the standard png. 
+   - Output the image as a pdf in addition to the standard png. 
    - This doesn't replace the image in the report, but saves a pdf version of the image in the images directory.
    - The pdfs will be web-visible in the report image directory, but will not linked in the html.
    - To view a pdf from a report, simply click the image, and replace the `png` extension with `pdf` in the browser path. 
