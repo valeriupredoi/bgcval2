@@ -81,11 +81,25 @@ def addImageToHtml(fn, imagesfold, reportdir, debug=True):
             "\n\tnewfn:", newfn,
             "\n\trelfn:", relfn)
 
-    
+    # sending a pdf as well.
+    pdf_fn = fn.replace('.png', '.pdf')
+    if os.path.exists(pdf_fn):
+        new_pdf_fn = newfn.replace('.png', '.pdf')
+        # Check if file is newer than the one in images.
+        if shouldIMakeFile(
+                pdf_fn,
+                new_pdf_fn,
+        ):
+            if debug:
+                print("addImageToHtml:\tAdding new pdf to report.", new_pdf_fn)
+            if os.path.exists(new_pdf_fn):
+                os.remove(new_pdf_fn)
+            shutil.copy2(pdf_fn, new_pdf_fn)
+
     if not os.path.exists(newfn):
-        if debug: print("addImageToHtml:\tcopytree", fn, newfn)
+        if debug: 
+            print("addImageToHtml:\tcopytree", fn, newfn)
         basedir = folder(os.path.dirname(newfn))
-        #copytree(fn, newfn)
         if os.path.isdir(fn):
             shutil.copytree(fn, newfn, symlinks, ignore)
         else:
@@ -93,14 +107,16 @@ def addImageToHtml(fn, imagesfold, reportdir, debug=True):
     else:
         ####
         # Check if the newer file is the same one from images.
-        if os.path.getmtime(fn) == os.path.getmtime(newfn): return relfn
+        if os.path.getmtime(fn) == os.path.getmtime(newfn): 
+            return relfn
         ####
         # Check if file is newer than the one in images.
         if shouldIMakeFile(
                 fn,
                 newfn,
         ):
-            if debug: print("addImageToHtml:\tremoving old file", fn)
+            if debug: 
+                print("addImageToHtml:\tremoving old file", fn)
             os.remove(newfn)
             shutil.copy2(fn, newfn)
             if debug: 
@@ -1636,7 +1652,6 @@ def comparehtml5Maker(
 
         if len(otherFilenames):
             # I think this is never happens anymore.
-            assert 0
             href = 'OtherPlots-others'
 
             hrefs.append(href)

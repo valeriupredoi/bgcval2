@@ -16,6 +16,9 @@ strict_file_check: False
 
 clean: True
 
+dpi: 300
+savepdf: True
+
 jobs:
     u-cs495:
        description: 'PI-Control'
