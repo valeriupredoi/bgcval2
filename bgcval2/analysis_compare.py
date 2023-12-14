@@ -503,6 +503,7 @@ def load_comparison_yml(master_compare_yml_fn):
     details['do_analysis_timeseries'] = input_yml_dict.get('do_analysis_timeseries', False)
     details['do_mass_download'] = input_yml_dict.get('do_mass_download', False)
     details['master_suites'] = input_yml_dict.get('master_suites', [])
+    details['strictFileCheck'] = input_yml_dict.get('strict_file_check', True)
 
     # auto download, can differ for each job.
     auto_download = input_yml_dict.get('auto_download', True)

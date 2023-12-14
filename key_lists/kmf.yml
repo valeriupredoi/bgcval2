@@ -4,6 +4,7 @@
 # of how a model is working.
 keys:
     GlobalMeanTemperature: True
+    SST: True
     DrakePassageTransport: True
     AMOC_26N: True
     TotalAirSeaFluxCO2: True
