@@ -514,6 +514,12 @@ def load_comparison_yml(master_compare_yml_fn):
     details['dpi'] = input_yml_dict.get('dpi', None)
     details['savepdf'] = input_yml_dict.get('savepdf', False)
 
+    try: 
+        int(details['dpi']) 
+    except: 
+        raise ValueError(''.join(["Loading yml error: `dpi` needs to be an integer. Current value:",
+                                  str(details['dpi'])]))
+
     # auto download, can differ for each job.
     auto_download = input_yml_dict.get('auto_download', True)
     auto_download_dict = {jobID: auto_download for jobID in details['jobs'].keys()}
