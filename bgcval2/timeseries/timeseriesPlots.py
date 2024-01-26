@@ -35,6 +35,8 @@ from matplotlib.colors import LogNorm
 import matplotlib.patches as mpatches
 import cartopy
 import numpy as np
+import pathlib
+
 from numpy import hanning, hamming, bartlett, blackman
 from scipy import interpolate
 from collections import defaultdict
@@ -706,6 +708,8 @@ def multitimeseries(
         thicknesses=defaultdict(lambda: 1),
         linestyles=defaultdict(lambda: '-'),
         labels={},
+        dpi=None,
+        savepdf=False,
 ):
 
     if 0 in [len(timesD), len(list(timesD.keys()))]: return
@@ -1053,7 +1057,16 @@ def multitimeseries(
         pyplot.suptitle(title)
 
     print("multitimeseries:\tsimpletimeseries:\tSaving:", filename)
-    pyplot.savefig(filename)
+    if not dpi:
+        pyplot.savefig(filename)
+    imext = pathlib.Path(filename).suffix
+
+    # save image as pdf (publication?)
+    if savepdf:
+        pyplot.savefig(filename.replace(imext, '.pdf'))
+
+    if pathlib.Path(filename).suffix in ['.png', '.jpg', '.jpeg']:
+        pyplot.savefig(filename, dpi=dpi)
     pyplot.close()
 
 
