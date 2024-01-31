@@ -15,7 +15,7 @@
 
 
 # delete files older than 2 weeks
-find /gws/nopw/j04/esmeval/bgcval2/shared_mass_scripts -mindepth 1 -mtime +15 -print -delete
+find /gws/nopw/j04/esmeval/bgcval2/shared_mass_scripts -mindepth 1 -mtime +15 -print -delete -name 'u-*.sh'
 
 # run all files:
 find /gws/nopw/j04/esmeval/bgcval2/shared_mass_scripts/*.sh -exec bash {} \;

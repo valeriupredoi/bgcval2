@@ -248,4 +248,32 @@ jobs:
        shifttime: 0.
        suite: kmf physics bgc #alkalinity physics
 
+    u-dc032:
+       description: 'ramp-down from yr 50 of 3.0 stab #1, free ice, -4GtC/yr (#1)'
+       label: '3K Rampdown #1'
+       colour: 'red'
+       thickness: 1.2
+       linestyle: ':'
+       shifttime: 0.
+       #timerange: [1800, 2050]
+       suite: kmf physics bgc #alkalinity physics
+    u-dc123:
+       description: 'ramp-down from yr 50 of 4.0 stab #1, free ice, -4GtC/yr (#1)'
+       label: '4K Rampdown #1'
+       colour: 'sienna'
+       thickness: 1.2
+       linestyle: ':'
+       shifttime: 0.
+       #timerange: [1800, 2050]
+       suite: kmf physics bgc #alkalinity physics
+    u-dc130:
+       description: 'ramp-down from yr 50 of 5.0 stab #1, free ice, -4GtC/yr (#1)'
+       label: '5K Rampdown #1'
+       colour: 'maroon'
+       thickness: 1.2
+       linestyle: ':'
+       shifttime: 0.
+       #timerange: [1800, 2050]
+       suite: kmf physics bgc #alkalinity physics
+
 
