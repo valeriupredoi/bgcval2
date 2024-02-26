@@ -1,0 +1,282 @@
+---
+# GC5 N96 ORCA1 spinup analysis
+name: TerraFIRMA_overshoot_recovery
+
+# Run the single job analysis
+do_analysis_timeseries: True  
+
+# Download from mass:
+do_mass_download: False
+
+# master analysis suite
+master_suites: physics bgc kmf #alkalinity physics kmf1
+
+# Run without strick check (if True, breaks if job has no years.)
+strict_file_check: False
+
+clean: True
+
+jobs:
+    u-cs495:
+       description: 'PI-Control'
+       label: 'PIcontrol'
+       colour: 'blue' 
+       thickness: 1.2
+       linestyle: '-'
+       shifttime: -2094
+       timerange: [-50., 100.]
+       suite: kmf physics bgc #alkalinity physics
+         
+ 
+#    u-cx209:
+#       description: 'E-mode free ice RAMP UP 8GtC/yr #1'
+#       label: 'Ramp-up #1'
+#       colour: 'black'
+#       thickness: 1.2
+#       linestyle: '-'
+#       shifttime: 0.
+#       #timerange: [1800, 2050]
+#       suite: kmf physics bgc #alkalinity physics
+#
+#    u-cw988:
+#       description: 'E-mode free ice RAMP UP 8GtC/yr #2'
+#       label: 'Ramp-up #2'
+#       colour: 'black'
+#       thickness: 1.2
+#       linestyle: '-'
+#       shifttime: 0.
+#       #timerange: [1800, 2050]
+#       suite: kmf physics bgc #alkalinity physics
+#           
+#    u-cw989:
+#       description: 'E-mode free ice RAMP UP 8GtC/yr #3'
+#       label: 'Ramp-up #3'
+#       colour: 'black'
+#       thickness: 1.2
+#       linestyle: '-'
+#       shifttime: 0.
+#       #timerange: [1800, 2050]
+#       suite: kmf physics bgc #alkalinity physics
+#
+#    u-cw990:
+#       description: 'E-mode free ice RAMP UP 8GtC/yr #4'
+#       label: 'Ramp-up #4'
+#       colour: 'black'
+#       thickness: 1.2
+#       linestyle: '-'
+#       shifttime: 0.
+#       #timerange: [1800, 2050]
+#       suite: kmf physics bgc #alkalinity physics
+
+    # 1.5k Stabilisation
+#    u-cy837:
+#       description: '1.5K Stabilisation from u-cx209 (#1)'
+#       label: '1.5K Stable #1'
+#       colour: 'lawngreen'
+#       thickness: 1.2
+#       linestyle: '-'
+#       shifttime: 0.
+#       #timerange: [1800, 2050]
+#       suite: kmf physics bgc #alkalinity physics   
+#    u-cz834:
+#       description: '1.5K Stabilisation from u-cw988 (#2)'
+#       label: '1.5K Stable #2'
+#       colour: 'lawngreen'
+#       thickness: 1.2
+#       linestyle: '-'
+#       shifttime: 0.
+#       #timerange: [1800, 2050]
+#       suite: kmf physics bgc #alkalinity physics
+#    u-da087:
+#       description: '1.5K Stabilisation from u-cw989 (#3)'
+#       label: '1.5K Stable #3'
+#       colour: 'lawngreen' 
+#       thickness: 1.2
+#       linestyle: '-'
+#       shifttime: 0.
+#       #timerange: [1800, 2050]
+#       suite: kmf physics bgc #alkalinity physics
+#           
+#    # 2k Stabilisation
+#    u-cy838:
+#       description: '2.0K Stabilisation from u-cx209 (#1)'
+#       label: '2K Stable #1'
+#       colour: 'goldenrod'
+#       thickness: 1.2
+#       linestyle: '-'
+#       shifttime: 0.
+#       #timerange: [1800, 2050]
+#       suite: kmf physics bgc #alkalinity physics   
+#
+#    u-cz855:
+#       description: '2.0K Stabilisation from cw988 (#2)'
+#       label: '2K Stable #2'
+#       colour: 'goldenrod'
+#       thickness: 1.2
+#       linestyle: '-'
+#       shifttime: 0.
+#       #timerange: [1800, 2050]
+#       suite: kmf physics bgc #alkalinity physics
+
+#    u-da266:
+#       description: '2.0K Stabilisation from cw988 (#3)'
+#       label: '2K Stable #3'
+#       colour: 'goldenrod'
+#       thickness: 1.2
+#       linestyle: '-'
+#       shifttime: 0.
+#       #timerange: [1800, 2050]
+#       suite: kmf physics bgc #alkalinity physics
+#           
+#    # 2.5k Stabilisation
+#    u-cz374:
+#       description: '2.5K Stabilisation from u-cx209 (#1)'
+#       label: '2.5K Stable #1'
+#       colour: 'orange'
+#       thickness: 1.2
+#       linestyle: '-'
+#       shifttime: 0.
+#       #timerange: [1800, 2050]
+#       suite: kmf physics bgc #alkalinity physics   
+#    u-cz859:
+#       description: '2.5K Stabilisation from cw988 (#2)'
+#       label: '2.5K Stable #2'
+#       colour: 'orange' 
+#       thickness: 1.2
+#       linestyle: '-'
+#       shifttime: 0.
+#       #timerange: [1800, 2050]
+#       suite: kmf physics bgc #alkalinity physics
+
+
+#    # 3.0K Stabilisations
+#    u-cz375:
+#       description: '3.0K Stabilisation from u-cx209 (#1)'
+#       label: '3K Stable #1'
+#       colour: 'red'     #
+#       thickness: 1.2
+#       linestyle: '-'
+#       shifttime: 0.
+#       #timerange: [1800, 2050]
+#       suite: kmf physics bgc #alkalinity physics          
+#
+#    u-db587:
+#       description: '3.0K Stabilisation from u-cx209 (#2)'
+#       label: '3K Stable #2'
+#       colour: 'red'     #
+#       thickness: 1.2
+#       linestyle: '-'
+#       shifttime: 0.
+#       #timerange: [1800, 2050]
+#       suite: kmf physics bgc #alkalinity physics  
+#
+#    u-db597:
+#       description: '3.0K Stabilisation from u-cx209 (#3)'
+#       label: '3K Stable #3'
+#       colour: 'red'     #
+#       thickness: 1.2
+#       linestyle: '-'
+#       shifttime: 0.
+#       #timerange: [1800, 2050]
+#       suite: kmf physics bgc #alkalinity physics         #       
+#
+#    # other Stabilisations
+#    u-cz376:
+#       description: '4.0K Stabilisation from u-cx209 (#1)'
+#       label: '4K Stable #1'
+#       colour: 'sienna'
+#       thickness: 1.2
+#       linestyle: '-'
+#       shifttime: 0.
+#       #timerange: [1800, 2050]
+#       suite: kmf physics bgc #alkalinity physics  
+#    u-cz377:
+#       description: '5.0K Stabilisation from u-cx209 (#1)'
+#       label: '5K Stable #1'
+#       colour: 'maroon'
+#       thickness: 1.2
+#       linestyle: '-'
+#       shifttime: 0.
+#       #timerange: [1800, 2050]
+#       suite: kmf physics bgc #alkalinity physics 
+           
+    # Ramp downs
+    u-cz944:
+       description: 'Ramp down from cy838 (- 2.0K Stabilisation from u-cx209) (#1)'
+       label: '2K Rampdown #1'
+       colour: 'goldenrod'
+       thickness: 1.2
+       linestyle: ':' 
+       shifttime: -1994.
+       #timerange: [1800, 2050]
+       suite: kmf physics bgc #alkalinity physics   
+
+    u-da800:
+       description: 'Ramp down from cy838 (- 2.0K Stabilisation from u-cx209) (#1)'
+       label: '2K Rampdown #1'
+       colour: 'goldenrod'
+       thickness: 1.2
+       linestyle: ':'
+       shifttime: -2144.
+       #timerange: [1800, 2050]
+       suite: kmf physics bgc #alkalinity physics   
+
+    u-da697:
+       description: '1.5K Rampdown from u-cx209 (#1)'
+       label: '1.5K Rampdown #1'
+       colour: 'lawngreen'
+       thickness: 1.2
+       linestyle: ':'
+       shifttime: -1969.
+       #timerange: [1800, 2050]
+       suite: kmf physics bgc #alkalinity physics
+
+    u-da892:
+       description: '4.K Rampdown (#1)'
+       label: '4.K Rampdown #1'
+       colour: 'sienna'
+       thickness: 1.2
+       linestyle: ':'
+       shifttime: -2094.
+       suite: kmf physics bgc #alkalinity physics
+
+    u-db223:
+       description: '3.K Rampdown (#1)'
+       label: '3.K Rampdown #1'
+       colour: 'red'
+       thickness: 1.2
+       linestyle: ':'
+       shifttime: -2032.
+       suite: kmf physics bgc #alkalinity physics
+
+    u-dc032:
+       description: 'ramp-down from yr 50 of 3.0 stab #1, free ice, -4GtC/yr (#1)'
+       label: '3K Rampdown #1'
+       colour: 'red'
+       thickness: 1.2
+       linestyle: ':'
+       shifttime: -2023.
+       #timerange: [1800, 2050]
+       suite: kmf physics bgc #alkalinity physics
+
+    u-dc123:
+       description: 'ramp-down from yr 50 of 4.0 stab #1, free ice, -4GtC/yr (#1)'
+       label: '4K Rampdown #1'
+       colour: 'sienna'
+       thickness: 1.2
+       linestyle: ':'
+       shifttime: -2096.
+       #timerange: [1800, 2050]
+       suite: kmf physics bgc #alkalinity physics
+
+    u-dc130:
+       description: 'ramp-down from yr 50 of 5.0 stab #1, free ice, -4GtC/yr (#1)'
+       label: '5K Rampdown #1'
+       colour: 'maroon'
+       thickness: 1.2
+       linestyle: ':'
+       shifttime: -2133.
+       #timerange: [1800, 2050]
+       suite: kmf physics bgc #alkalinity physics
+
+

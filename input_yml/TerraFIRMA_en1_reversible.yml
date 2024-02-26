@@ -1,0 +1,80 @@
+---
+# GC5 N96 ORCA1 spinup analysis
+name: TerraFIRMA_en1_reversible
+
+# Run the single job analysis
+do_analysis_timeseries: True 
+
+# Download from mass:
+do_mass_download: False
+
+# master analysis suite
+master_suites: physics
+
+clean: True
+
+jobs:
+    u-cy837:
+       description: '1.5C branch'
+       colour: purple  
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf physics
+
+    u-cy838: 
+       description: '2.0C branch'
+       colour: violet
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf physics
+
+    u-cz374:
+       description: '2.5C branch'
+       colour: blue
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf physics
+
+    u-cz375:
+       description: '3.0C branch'
+       colour: cyan
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf physics
+
+    u-cz376:
+       description: '4.0C branch'
+       colour: green
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf physics
+
+    u-cz377:
+       description: '5.0C branch'
+       colour: goldenrod
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf physics
+
+    u-cx209:
+       description: 'Ramp up'
+       colour: 'red'
+       thickness: 0.6
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf physics
+
+    u-cs495:
+       description: 'piControl'
+       colour: 'black'
+       thickness: 0.6
+       linestyle: '-'
+       shifttime: -100.
+       suite: kmf physics
+
