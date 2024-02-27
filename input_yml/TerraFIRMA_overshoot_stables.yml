@@ -17,70 +17,71 @@ strict_file_check: False
 clean: True
 
 
+
 jobs:
    # PI CONTROL
-   u-cs495:
-      description: 'PI-Control'
-      label: 'PIcontrol'
-      colour: 'blue' 
-      thickness: 1.2
-      linestyle: '-'
-      shifttime: -100.
-      timerange: [1850, 2300]
-      suite: kmf physics bgc #alkalinity physics
+   # u-cs495:
+   #    description: 'PI-Control'
+   #    label: 'PIcontrol'
+   #    colour: 'blue' 
+   #    thickness: 1.2
+   #    linestyle: '-'
+   #    shifttime: -100.
+   #    timerange: [1850, 2300]
+   #    suite: kmf physics bgc #alkalinity physics
          
-   # ramp up
-   u-cx209:
-      description: 'E-mode free ice RAMP UP 8GtC/yr #1'
-      label: 'Ramp-up #1'
-      colour: 'black'
-      thickness: 1.2
-      linestyle: '-'
-      shifttime: 0.
-      #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics
+   # # ramp ups
+   # u-cx209:
+   #    description: 'E-mode free ice RAMP UP 8GtC/yr #1'
+   #    label: 'Ramp-up #1'
+   #    colour: 'black'
+   #    thickness: 1.2
+   #    linestyle: '-'
+   #    shifttime: 0.
+   #    #timerange: [1800, 2050]
+   #    suite: kmf physics bgc #alkalinity physics
 
-   u-cw988:
-      description: 'E-mode free ice RAMP UP 8GtC/yr #2'
-      label: 'Ramp-up #2'
-      colour: 'black'
-      thickness: 1.2
-      linestyle: '-'
-      shifttime: 0.
-      #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics
+   # u-cw988:
+   #    description: 'E-mode free ice RAMP UP 8GtC/yr #2'
+   #    label: 'Ramp-up #2'
+   #    colour: 'black'
+   #    thickness: 1.2
+   #    linestyle: '-'
+   #    shifttime: 0.
+   #    #timerange: [1800, 2050]
+   #    suite: kmf physics bgc #alkalinity physics
            
-   u-cw989:
-      description: 'E-mode free ice RAMP UP 8GtC/yr #3'
-      label: 'Ramp-up #3'
-      colour: 'black'
-      thickness: 1.2
-      linestyle: '-'
-      shifttime: 0.
-      #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics
+   # u-cw989:
+   #    description: 'E-mode free ice RAMP UP 8GtC/yr #3'
+   #    label: 'Ramp-up #3'
+   #    colour: 'black'
+   #    thickness: 1.2
+   #    linestyle: '-'
+   #    shifttime: 0.
+   #    #timerange: [1800, 2050]
+   #    suite: kmf physics bgc #alkalinity physics
 
-   u-cw990:
-      description: 'E-mode free ice RAMP UP 8GtC/yr #4'
-      label: 'Ramp-up #4'
-      colour: 'black'
-      thickness: 1.2
-      linestyle: '-'
-      shifttime: 0.
-      #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics
+   # u-cw990:
+   #    description: 'E-mode free ice RAMP UP 8GtC/yr #4'
+   #    label: 'Ramp-up #4'
+   #    colour: 'black'
+   #    thickness: 1.2
+   #    linestyle: '-'
+   #    shifttime: 0.
+   #    #timerange: [1800, 2050]
+   #    suite: kmf physics bgc #alkalinity physics
 
-   u-cz826:
-      description: 'like cx209 but static ice sheet geometry 8GtC/yr #5'
-      label: 'Ramp-up #5'
-      colour: 'black'
-      thickness: 1.2
-      linestyle: '-'
-      shifttime: 0.
-      #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics
+   # u-cz826:
+   #    description: 'like cx209 but static ice sheet geometry 8GtC/yr #5'
+   #    label: 'Ramp-up #5'
+   #    colour: 'black'
+   #    thickness: 1.2
+   #    linestyle: '-'
+   #    shifttime: 0.
+   #    #timerange: [1800, 2050]
+   #    suite: kmf physics bgc #alkalinity physics
 
-    # 1.5k Stabilisation
+   # 1.5k Stabilisation
    u-cy837:
       description: '1.5K Stabilisation from u-cx209 (#1)'
       label: '1.5K Stable #1'
@@ -260,139 +261,137 @@ jobs:
       #timerange: [1800, 2050]
       suite: kmf physics bgc #alkalinity physics 
 								
-    # Ramp downs
-   u-cz944:
-      description: 'Ramp down from cy838 (- 2.0K Stabilisation from u-cx209) (#1)'
-      label: '2K Rampdown #1'
-      colour: 'goldenrod'
-      thickness: 1.2
-      linestyle: ':' 
-      shifttime: 0.
-      #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics   
-   u-da800:
-      description: 'Ramp down from cy838 (- 2.0K Stabilisation from u-cx209) (#1)'
-      label: '2K Rampdown #1'
-      colour: 'goldenrod'
-      thickness: 1.2
-      linestyle: ':'
-      shifttime: 0.
-      #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics   
+   #  # Ramp downs
+   # u-cz944:
+   #    description: 'Ramp down from cy838 (- 2.0K Stabilisation from u-cx209) (#1)'
+   #    label: '2K Rampdown #1'
+   #    colour: 'goldenrod'
+   #    thickness: 1.2
+   #    linestyle: ':' 
+   #    shifttime: 0.
+   #    #timerange: [1800, 2050]
+   #    suite: kmf physics bgc #alkalinity physics   
+   # u-da800:
+   #    description: 'Ramp down from cy838 (- 2.0K Stabilisation from u-cx209) (#1)'
+   #    label: '2K Rampdown #1'
+   #    colour: 'goldenrod'
+   #    thickness: 1.2
+   #    linestyle: ':'
+   #    shifttime: 0.
+   #    #timerange: [1800, 2050]
+   #    suite: kmf physics bgc #alkalinity physics   
 
-   u-da697:
-      description: '1.5K Rampdown from u-cx209 (#1)'
-      label: '1.5K Rampdown #1'
-      colour: 'lawngreen'
-      thickness: 1.2
-      linestyle: ':'
-      shifttime: 0.
-      #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics
+   # u-da697:
+   #    description: '1.5K Rampdown from u-cx209 (#1)'
+   #    label: '1.5K Rampdown #1'
+   #    colour: 'lawngreen'
+   #    thickness: 1.2
+   #    linestyle: ':'
+   #    shifttime: 0.
+   #    #timerange: [1800, 2050]
+   #    suite: kmf physics bgc #alkalinity physics
 
-   u-da892:
-      description: '4.K Rampdown (#1)'
-      label: '4.K Rampdown #1'
-      colour: 'sienna'
-      thickness: 1.2
-      linestyle: ':'
-      shifttime: 0.
-      suite: kmf physics bgc #alkalinity physics
+   # u-da892:
+   #    description: '4.K Rampdown (#1)'
+   #    label: '4.K Rampdown #1'
+   #    colour: 'sienna'
+   #    thickness: 1.2
+   #    linestyle: ':'
+   #    shifttime: 0.
+   #    suite: kmf physics bgc #alkalinity physics
 
-   u-db223:
-      description: '3.K Rampdown (#1)'
-      label: '3.K Rampdown #1'
-      colour: 'red'
-      thickness: 1.2
-      linestyle: ':'
-      shifttime: 0.
-      suite: kmf physics bgc #alkalinity physics
+   # u-db223:
+   #    description: '3.K Rampdown (#1)'
+   #    label: '3.K Rampdown #1'
+   #    colour: 'red'
+   #    thickness: 1.2
+   #    linestyle: ':'
+   #    shifttime: 0.
+   #    suite: kmf physics bgc #alkalinity physics
 
+   # u-dc051:
+   #    description: 'Rampdown from yr 50 of 1.5 stab #1, -4GtC/yr (#1)'
+   #    label: '1.5K Rampdown #1'
+   #    colour: 'lawngreen'
+   #    thickness: 1.2
+   #    linestyle: ':'
+   #    shifttime: 0.
+   #    #timerange: [1800, 2050]
+   #    suite: kmf physics bgc #alkalinity physics  
 
+   # u-dc052:
+   #    description: 'Rampdown from yr 200 of 1.5deg, -4GtC/yr (#1)'
+   #    label: '1.5K Rampdown #1'
+   #    colour: 'lawngreen'
+   #    thickness: 1.2
+   #    linestyle: ':'
+   #    shifttime: 0
+   #    #timerange: [1800, 2050]
+   #    suite: kmf physics bgc #alkalinity physics  
 
-   u-dc051:
-      description: 'Rampdown from yr 50 of 1.5 stab #1, -4GtC/yr (#1)'
-      label: '1.5K Rampdown #1'
-      colour: 'lawngreen'
-      thickness: 1.2
-      linestyle: ':'
-      shifttime: 0.
-      #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics  
+   # u-dc248:
+   #    description: '1.5K Rampdown -4GtC/yr, (#1)'
+   #    label: '1.5K Rampdown #1'
+   #    colour: 'lawngreen'
+   #    thickness: 1.2
+   #    linestyle: ':'
+   #    shifttime: 0.
+   #    suite: kmf physics bgc #alkalinity physics
 
-   u-dc052:
-      description: 'Rampdown from yr 200 of 1.5deg, -4GtC/yr (#1)'
-      label: '1.5K Rampdown #1'
-      colour: 'lawngreen'
-      thickness: 1.2
-      linestyle: ':'
-      shifttime: 0
-      #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics  
+   # u-dc249:
+   #    description: '3.K Rampdown -4GtC/yr, 200 years, (#1)'
+   #    label: '3.K Rampdown #1'
+   #    colour: 'red'
+   #    thickness: 1.2
+   #    linestyle: ':'
+   #    shifttime: 0.
+   #    suite: kmf physics bgc #alkalinity physics
 
-   u-dc248:
-      description: '1.5K Rampdown -4GtC/yr, (#1)'
-      label: '1.5K Rampdown #1'
-      colour: 'lawngreen'
-      thickness: 1.2
-      linestyle: ':'
-      shifttime: 0.
-      suite: kmf physics bgc #alkalinity physics
+   # u-dc251:
+   #    description: '5K Rampdown -8GtC/yr, 50 years, (#1)'
+   #    label: '5K Rampdown #1'
+   #    colour: 'maroon'
+   #    thickness: 1.2
+   #    linestyle: ':'
+   #    shifttime: 0.
+   #    suite: kmf physics bgc #alkalinity physics
 
-   u-dc249:
-      description: '3.K Rampdown -4GtC/yr, 200 years, (#1)'
-      label: '3.K Rampdown #1'
-      colour: 'red'
-      thickness: 1.2
-      linestyle: ':'
-      shifttime: 0.
-      suite: kmf physics bgc #alkalinity physics
+   # u-db956:
+   #    description: '1.5K Rampdown -8GtC/yr, 0 years, (#1)'
+   #    label: '1.5K Rampdown #1'
+   #    colour: 'lawngreen'
+   #    thickness: 1.2
+   #    linestyle: ':'
+   #    shifttime: 0.
+   #    suite: kmf physics bgc #alkalinity physics
 
-   u-dc251:
-      description: '5K Rampdown -8GtC/yr, 50 years, (#1)'
-      label: '5K Rampdown #1'
-      colour: 'maroon'
-      thickness: 1.2
-      linestyle: ':'
-      shifttime: 0.
-      suite: kmf physics bgc #alkalinity physics
-
-   u-db956:
-      description: '1.5K Rampdown -8GtC/yr, 0 years, (#1)'
-      label: '1.5K Rampdown #1'
-      colour: 'lawngreen'
-      thickness: 1.2
-      linestyle: ':'
-      shifttime: 0.
-      suite: kmf physics bgc #alkalinity physics
-
-   u-dc032:
-      description: 'ramp-down from yr 50 of 3.0 stab #1, free ice, -4GtC/yr (#1)'
-      label: '3K Rampdown #1'
-      colour: 'red'
-      thickness: 1.2
-      linestyle: ':'
-      shifttime: 0.
-      #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics
-   u-dc123:
-      description: 'ramp-down from yr 50 of 4.0 stab #1, free ice, -4GtC/yr (#1)'
-      label: '4K Rampdown #1'
-      colour: 'sienna'
-      thickness: 1.2
-      linestyle: ':'
-      shifttime: 0.
-      #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics
-   u-dc130:
-      description: 'ramp-down from yr 50 of 5.0 stab #1, free ice, -4GtC/yr (#1)'
-      label: '5K Rampdown #1'
-      colour: 'maroon'
-      thickness: 1.2
-      linestyle: ':'
-      shifttime: 0.
-      #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics
+   # u-dc032:
+   #    description: 'ramp-down from yr 50 of 3.0 stab #1, free ice, -4GtC/yr (#1)'
+   #    label: '3K Rampdown #1'
+   #    colour: 'red'
+   #    thickness: 1.2
+   #    linestyle: ':'
+   #    shifttime: 0.
+   #    #timerange: [1800, 2050]
+   #    suite: kmf physics bgc #alkalinity physics
+   # u-dc123:
+   #    description: 'ramp-down from yr 50 of 4.0 stab #1, free ice, -4GtC/yr (#1)'
+   #    label: '4K Rampdown #1'
+   #    colour: 'sienna'
+   #    thickness: 1.2
+   #    linestyle: ':'
+   #    shifttime: 0.
+   #    #timerange: [1800, 2050]
+   #    suite: kmf physics bgc #alkalinity physics
+   # u-dc130:
+   #    description: 'ramp-down from yr 50 of 5.0 stab #1, free ice, -4GtC/yr (#1)'
+   #    label: '5K Rampdown #1'
+   #    colour: 'maroon'
+   #    thickness: 1.2
+   #    linestyle: ':'
+   #    shifttime: 0.
+   #    #timerange: [1800, 2050]
+   #    suite: kmf physics bgc #alkalinity physics
 
    # Ramp down stables.
    u-dc163:
