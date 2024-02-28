@@ -1,6 +1,6 @@
 ---
 # GC5 N96 ORCA1 spinup analysis
-name: TerraFIRMA_overshoot_runs
+name: TerraFIRMA_overshoot_stables
 
 # Run the single job analysis
 do_analysis_timeseries: True  
@@ -20,15 +20,15 @@ clean: True
 
 jobs:
    # PI CONTROL
-   # u-cs495:
-   #    description: 'PI-Control'
-   #    label: 'PIcontrol'
-   #    colour: 'blue' 
-   #    thickness: 1.2
-   #    linestyle: '-'
-   #    shifttime: -100.
-   #    timerange: [1850, 2300]
-   #    suite: kmf physics bgc #alkalinity physics
+   u-cs495:
+       description: 'PI-Control'
+       label: 'PIcontrol'
+       colour: 'blue'
+       thickness: 1.2
+       linestyle: '-'
+       shifttime: -2094
+       timerange: [-50., 200.]
+       suite: kmf physics bgc #alkalinity physics
          
    # # ramp ups
    # u-cx209:
@@ -129,7 +129,7 @@ jobs:
       linestyle: '-'
       shifttime: 0.
       #timerange: [1800, 2050]
-       suite: kmf physics bgc #alkalinity physics
+      suite: kmf physics bgc #alkalinity physics
 
    u-da266:
       description: '2.0K Stabilisation from cw988 (#3)'
@@ -254,13 +254,13 @@ jobs:
    u-cz378:
       description: '6.0K Stabilisation from u-cx209 (#1)'
       label: '6K Stable #1'
-      colour: 'darkbrown'
+      colour: 'indigo'
       thickness: 1.2
       linestyle: '-'
       shifttime: 0.
       #timerange: [1800, 2050]
       suite: kmf physics bgc #alkalinity physics 
-								
+
    #  # Ramp downs
    # u-cz944:
    #    description: 'Ramp down from cy838 (- 2.0K Stabilisation from u-cx209) (#1)'
