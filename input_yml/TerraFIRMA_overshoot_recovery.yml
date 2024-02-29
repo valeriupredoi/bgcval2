@@ -201,12 +201,15 @@ jobs:
 #       suite: kmf physics bgc #alkalinity physics 
            
     # Ramp downs
+    # -8: dotted
+    # -4: dashed
+    # -2 dashdot
     u-cz944:
        description: 'Ramp down from cy838 (- 2.0K Stabilisation from u-cx209) (#1)'
        label: '2K Rampdown #1'
        colour: 'goldenrod'
-       thickness: 1.2
-       linestyle: ':' 
+       thickness: 1.7
+       linestyle: 'dotted' 
        shifttime: -1994.
        #timerange: [1800, 2050]
        suite: kmf physics bgc #alkalinity physics   
@@ -215,8 +218,8 @@ jobs:
        description: 'Ramp down from cy838 (- 2.0K Stabilisation from u-cx209) (#1)'
        label: '2K Rampdown #1'
        colour: 'goldenrod'
-       thickness: 1.2
-       linestyle: ':'
+       thickness: 1.7
+       linestyle: 'dotted'
        shifttime: -2144.
        #timerange: [1800, 2050]
        suite: kmf physics bgc #alkalinity physics   
@@ -225,8 +228,8 @@ jobs:
        description: '1.5K Rampdown from u-cx209 (#1)'
        label: '1.5K Rampdown #1'
        colour: 'lawngreen'
-       thickness: 1.2
-       linestyle: ':'
+       thickness: 1.7
+       linestyle: 'dotted'
        shifttime: -1969.
        #timerange: [1800, 2050]
        suite: kmf physics bgc #alkalinity physics
@@ -235,8 +238,8 @@ jobs:
        description: '4.K Rampdown (#1)'
        label: '4.K Rampdown #1'
        colour: 'sienna'
-       thickness: 1.2
-       linestyle: ':'
+       thickness: 1.7
+       linestyle: 'dotted'
        shifttime: -2094.
        suite: kmf physics bgc #alkalinity physics
 
@@ -244,8 +247,8 @@ jobs:
        description: '3.K Rampdown (#1)'
        label: '3.K Rampdown #1'
        colour: 'red'
-       thickness: 1.2
-       linestyle: ':'
+       thickness: 1.7
+       linestyle: 'dotted'
        shifttime: -2032.
        suite: kmf physics bgc #alkalinity physics
 
@@ -255,8 +258,8 @@ jobs:
        description: 'Rampdown from yr 50 of 1.5 stab #1, -4GtC/yr (#1)'
        label: '1.5K Rampdown #1'
        colour: 'lawngreen'
-       thickness: 1.2
-       linestyle: ':'
+       thickness: 1.7
+       linestyle: 'dashed'
        shifttime: -1995.
        #timerange: [1800, 2050]
        suite: kmf physics bgc #alkalinity physics  
@@ -265,8 +268,8 @@ jobs:
        description: 'Rampdown from yr 200 of 1.5deg, -4GtC/yr (#1)'
        label: '1.5K Rampdown #1'
        colour: 'lawngreen'
-       thickness: 1.2
-       linestyle: ':'
+       thickness: 1.7
+       linestyle: 'dashed'
        shifttime: -1969
        #timerange: [1800, 2050]
        suite: kmf physics bgc #alkalinity physics  
@@ -275,8 +278,8 @@ jobs:
        description: '1.5K Rampdown -4GtC/yr, (#1)'
        label: '1.5K Rampdown #1'
        colour: 'lawngreen'
-       thickness: 1.2
-       linestyle: ':'
+       thickness: 1.7
+       linestyle: 'dashed'
        shifttime: -2119.
        suite: kmf physics bgc #alkalinity physics
 
@@ -284,8 +287,8 @@ jobs:
        description: '3.K Rampdown -4GtC/yr, 200 years, (#1)'
        label: '3.K Rampdown #1'
        colour: 'red'
-       thickness: 1.2
-       linestyle: ':'
+       thickness: 1.7
+       linestyle: 'dashed'
        shifttime: -2182.
        suite: kmf physics bgc #alkalinity physics
 
@@ -293,8 +296,8 @@ jobs:
        description: '5K Rampdown -8GtC/yr, 50 years, (#1)'
        label: '5K Rampdown #1'
        colour: 'maroon'
-       thickness: 1.2
-       linestyle: ':'
+       thickness: 1.7
+       linestyle: 'dotted'
        shifttime: -2132.
        suite: kmf physics bgc #alkalinity physics
 
@@ -302,8 +305,8 @@ jobs:
 #       description: '1.5K Rampdown -8GtC/yr, 0 years, (#1)'
 #       label: '1.5K Rampdown #1'
 #       colour: 'lawngreen'
-#       thickness: 1.2
-#       linestyle: ':'
+#       thickness: 1.7
+#       linestyle: '-'
 #       shifttime: -1919.
 #       suite: kmf physics bgc #alkalinity physics
        
@@ -311,8 +314,8 @@ jobs:
        description: 'ramp-down from yr 50 of 3.0 stab #1, free ice, -4GtC/yr (#1)'
        label: '3K Rampdown #1'
        colour: 'red'
-       thickness: 1.2
-       linestyle: ':'
+       thickness: 1.7
+       linestyle: 'dashed'
        shifttime: -2023.
        #timerange: [1800, 2050]
        suite: kmf physics bgc #alkalinity physics
@@ -321,8 +324,8 @@ jobs:
        description: 'ramp-down from yr 50 of 4.0 stab #1, free ice, -4GtC/yr (#1)'
        label: '4K Rampdown #1'
        colour: 'sienna'
-       thickness: 1.2
-       linestyle: ':'
+       thickness: 1.7
+       linestyle: 'dashed'
        shifttime: -2096.
        #timerange: [1800, 2050]
        suite: kmf physics bgc #alkalinity physics
@@ -331,8 +334,8 @@ jobs:
        description: 'ramp-down from yr 50 of 5.0 stab #1, free ice, -4GtC/yr (#1)'
        label: '5K Rampdown #1'
        colour: 'maroon'
-       thickness: 1.2
-       linestyle: ':'
+       thickness: 1.7
+       linestyle: 'dashed'
        shifttime: -2133.
        #timerange: [1800, 2050]
        suite: kmf physics bgc #alkalinity physics
