@@ -27,7 +27,7 @@ jobs:
        thickness: 1.2
        linestyle: '-'
        shifttime: -2094
-       timerange: [-50., 200.]
+       timerange: [-50., 400.]
        suite: kmf physics bgc #alkalinity physics
          
    # # ramp ups

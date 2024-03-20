@@ -442,6 +442,8 @@ def download_from_mass(
     header_lines.append(''.join(['# run script with:\n# source ', os.path.abspath(download_script_path),'\n']))
     header_lines.append('# moo passwd -r # if mass password is expired\n')
     header_lines.append('source /etc/bashrc\n') # make sure script can access moo tools.
+    header_lines.append('echo "\n\nDownloading '+jobID+' on mass-cli1"\n') # make sure script can access moo tools.
+
     download_script_txt = ''.join(header_lines)
 
     # moo ls:
