@@ -29,7 +29,7 @@ REQUIREMENTS = {
         'matplotlib',
         'nctoolkit>=0.8.7',  # use linux64 build
         'netcdf4',
-        'numpy>1.24.3,<1.25',  # basemap 1.3.7 needs <1.25
+        'numpy>1.24.3',
         'pip!=21.3',
         'pyyaml',
         'scikit-learn',
@@ -176,6 +176,7 @@ setup(
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Atmospheric Science',
         'Topic :: Scientific/Engineering :: GIS',
