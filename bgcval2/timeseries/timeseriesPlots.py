@@ -795,7 +795,8 @@ def multitimeseries(
             label = None
         else:
             label = labels.get(jobID, jobID)
-        
+            final_labels.append(final_labels)
+
         if smoothing.lower() in ['spline', 'all']:
             tnew = np.linspace(times[0], times[-1], 60)
             arr_smooth = interpolate.spline(times, arr, tnew)
@@ -1043,7 +1044,7 @@ def multitimeseries(
 
         #####
         # Add legend:
-        legendSize = len(list(timesD.keys()))
+        legendSize = len(final_labels)
         ncols = int(legendSize / 25) + 1
         box = ax.get_position()
         ax.set_position(
