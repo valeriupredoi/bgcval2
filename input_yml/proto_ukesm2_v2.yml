@@ -1,0 +1,36 @@
+---
+# GC5 N96 ORCA1 spinup analysis
+name: proto_ukesm2_v2
+
+# Run the single job analysis
+do_analysis_timeseries: True 
+# Download from mass:
+do_mass_download: False
+
+# master analysis suite
+master_suites: kmf_phys physics_no_mld
+
+clean: True
+
+# Job ID's suites as named by Rose/Cylc
+# •     u-ct200 - GC5
+# •     u-ct739 - GC5-ESMproto
+#
+jobs:
+#
+    u-ct200:
+       description: 'GC5'
+       colour: red 
+       thickness: 2.0
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf_phys physics_no_mld
+#
+    u-ct739:
+       description: 'GC5-ESM-proto'
+       colour: blue
+       thickness: 2.0
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf_phys physics_no_mld
+#

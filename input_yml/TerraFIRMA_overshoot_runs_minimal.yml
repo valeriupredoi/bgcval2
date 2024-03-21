@@ -27,7 +27,7 @@ jobs:
        thickness: 1.2
        linestyle: '-'
        shifttime: -100.
-       timerange: [1850, 2200]
+       timerange: [1850, 2400]
        suite: kmf #physics bgc #alkalinity physics
          
  

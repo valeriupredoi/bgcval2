@@ -12,4 +12,4 @@ model_convert   :
     areafile: $PATHS_GRIDFILE
 layers          : layerless
 regions         : regionless
-
+smoothings      : DataOnly both5 both30 movingav30years 5and30 30and100
