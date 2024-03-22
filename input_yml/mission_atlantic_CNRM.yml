@@ -1,0 +1,46 @@
+---
+# GC5 N96 ORCA1 spinup analysis
+name: MissionAtlantic_CNRM
+
+# Run the single job analysis
+do_analysis_timeseries: True 
+
+# Download from mass:
+do_mass_download: False
+
+# Strict file check (fails if True and files are missing)
+strictFileCheck: False
+
+# master analysis suite
+master_suites: missionatlantic
+
+# Auto download jobs (can also be set for individual jobs).
+auto_download: False
+
+# Job ID's suites as named by Rose/Cylc
+jobs:
+  CNRM_hist:
+        description: 'CNRM historical run.'
+        colour: green  
+        thickness: 1.8
+        linestyle: '-'
+        shifttime: 0.
+        suite: missionatlantic missionatlantic_kmf
+
+  CNRM_ssp370:
+        description: 'CNRM SSP3-7.0'
+        colour: purple
+        thickness: 1.8
+        linestyle: '-'
+        shifttime: 0.
+        suite: missionatlantic missionatlantic_kmf
+
+  CNRM_ssp126:
+        description: 'CNRM SSP1-2.6'
+        colour: dodgerblue
+        thickness: 1.8
+        linestyle: '-'
+        shifttime: 0.
+        suite: missionatlantic missionatlantic_kmf
+
+

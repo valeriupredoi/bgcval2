@@ -4,5 +4,7 @@
 # of how a model is working.
 keys:
   # BGC
-  MA_TotalIntGPP: True
-  MA_TotalIntNPP: True
+  MA_SST: True
+
+    # MA_TotalIntGPP: True
+    # MA_TotalIntNPP: True

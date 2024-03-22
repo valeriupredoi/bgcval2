@@ -27,6 +27,7 @@
 
 """
 #Standard Python modules:
+import os
 from sys import argv, exit
 from os.path import exists
 from calendar import month_name
@@ -162,6 +163,9 @@ def testsuite_p2p(
             # Match observations and model.
             # Does not produce and plots.
             #annual = True
+            if not os.path.exists(av[name].get('dataFiles', '')):
+                print('Data file missing:', name, av[name].get('dataFiles', ''))
+                assert 0
             b = matchDataAndModel(av[name]['dataFiles'],
                                   av[name]['modelFiles'],
                                   dataType=name,

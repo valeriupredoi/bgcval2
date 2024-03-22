@@ -3,7 +3,7 @@ name            : NorthernTotalIceExtent
 units           : 1E6 km^2
 dimensions      : 1
 model           : CICE
-modelFiles      : $BASEDIR_MODEL/$JOBID/SENEMO_*_1m_*grid_T*.nc   
+modelFiles      : $BASEDIR_MODEL/$JOBID/*/*/*_1m_*grid_T*.nc
 model_vars      : soicecov
 model_convert:
     path: bgcval2/functions/ice.py

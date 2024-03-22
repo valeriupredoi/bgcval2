@@ -44,6 +44,7 @@ import nctoolkit
 # local imports
 import bgcval2.bgcvaltools.bv2tools as bvt
 from bgcval2.bgcvaltools.pftnames import CMIP5models
+
 #####
 # These are availalble in the module:
 #	https://gitlab.ecosystem-modelling.pml.ac.uk/ledm/netcdf_manip
@@ -268,8 +269,10 @@ class matchDataAndModel:
                 '100m',
                 '200m',
                 '500m',
+                '750m',
                 '1000m',
                 '2000m',
+                '4000m', 
         ]:
             print(
                 'matchDataAndModel:\tconvertDataTo1D:\tSlicing along depth direction.'
@@ -279,8 +282,10 @@ class matchDataAndModel:
             if self.depthLevel == '100m': z = 100.
             if self.depthLevel == '200m': z = 200.
             if self.depthLevel == '500m': z = 500.
+            if self.depthLevel == '750m': z = 750.
             if self.depthLevel == '1000m': z = 1000.
             if self.depthLevel == '2000m': z = 2000.
+            if self.depthLevel == '4000m': z = 4000.
 
             if nc.variables[self.datacoords['z']].ndim == 1:
                 k = bvt.getORCAdepth(
@@ -921,6 +926,7 @@ class matchDataAndModel:
         if self.loncc.ndim == 1 and self.loncc.shape != self.latcc.shape:
             self.loncc, self.latcc = np.meshgrid(self.loncc, self.latcc)
 
+
 #        self.depthcc = choose_best_ncvar(ncER, depthNames)[:]
 #        if 'deptht' in list(ncER.variables.keys()):
 #            self.depthcc = ncER.variables['deptht'][:].squeeze()
@@ -930,7 +936,13 @@ class matchDataAndModel:
 #            self.depthcc = ncER.variables['lev'][:].squeeze()
 #        else:
 #        print(self.modelcoords['z'], ncER.variables.keys())
-        self.depthcc = ncER.variables[self.modelcoords['z']][:]
+        if self.modelcoords['z'] in ncER.variables.keys():
+            self.depthcc = ncER.variables[self.modelcoords['z']][:]
+        else:
+            print('load mesh:', self.modelcoords['z'], 'is missing', ncER.variables.keys())
+            if not set(ncER.variables.keys()).intersection(set(depthNames)):
+                print('load mesh: no depth field available in ', modelfile)
+                self.depthcc = np.array([0])
 
 #        self.depthcc = choose_best_ncvar(ncER, depthNames)[:]
         self.datescc = var_to_datetime(ncER.variables[self.modelcoords['t']])
@@ -1122,6 +1134,8 @@ def var_to_datetime(ncvar):
     if units in ['months since 0000-01-01 00:00:00', ]:
         units = 'months since 2000-01-01 00:00:00'
         return num2date(ncvar[:], 'months since 2000-01-01 00:00:00', calendar='360_day') 
+    elif units.find('months since') > -1:
+        return num2date(ncvar[:], units, calendar='360_day') 
 
     return num2date(ncvar[:], ncvar.units, calendar=calendar)
 

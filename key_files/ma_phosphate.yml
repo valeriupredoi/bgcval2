@@ -4,14 +4,15 @@ units           : mmol P/m^3
 dimensions      : 1
 model           : NEMO025-ERSEM
 modelgrid       : eORCA025
-modelFiles      : $BASEDIR_MODEL/$JOBID/SENEMO_*_1m_*ptrc_T*.nc
+modelFiles      : $BASEDIR_MODEL/$JOBID/*/*/*_1m_*ptrc_T*.nc
 gridFile        : /data/proteus2/scratch/ledm/MissionAtlantic/SENEMO/eORCA025_mesh_mask_mes_v2.nc
 model_vars      : N1_p
 model_convert   : NoChange
-dataFile        : $BASEDIR_OBS/WOA/annual/woa13_all_p00_01.nc
+  #dataFile        : $BASEDIR_OBS/WOA/annual/woa13_all_p00_01.nc
+dataFile        : $BASEDIR_OBS/WOA/annual/woa18_all_p00_01.nc  
 data_vars       : p_an
 data_convert    : NoChange
-data_source     : WOA13
-layers          : Surface 500m
+data_source     : WOA18
+layers          : Surface #500m
 regions         : Global NorthAtlanticOcean SouthAtlanticOcean EquatorialAtlanticOcean
 metrics         : mean #, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max

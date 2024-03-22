@@ -180,6 +180,7 @@ def html5Maker(
     Level1Profiles = True
     level2Horizontal = True
     level2Physics = False
+    level2_auto = True
     summarySections = False
     level3OMZ = False
     Level3Salinity = False
@@ -969,27 +970,51 @@ def html5Maker(
             FileLists=FileLists,
             FileOrder=FileOrder)
 
-    if level2Physics:
-        l2Fields = [
-            'Temperature',
-            'Salinity',
-            'MLD',
-            'ZonalCurrent',
-            'MeridionalCurrent',
-            'VerticalCurrent',
-        ]
+
+
+
+
+    if level2Physics or level2_auto:
+        if level2Physics: 
+            l2Fields = [
+                'Temperature',
+                'Salinity',
+                'MLD',
+                'ZonalCurrent',
+                'MeridionalCurrent',
+                'VerticalCurrent',
+            ]
+            slices = [
+                'Surface',
+                '1000m',
+                'Transect',
+            ]
+            SectionTitle = 'Level 2 - Physics'
+            region = 'Global'
+
+        if level2_auto:
+            l2Fields = glob(imagedir + '/' + jobID + '/P2Pplots/*/*')
+            l2Fields = [os.path.basename(fn) for fn in sorted(l2Fields)]
+            levels = ['Surface', '4000m', '2000m', '1000m', '750m','500m','200m', '100m', '50m', 'Transect']
+            outdict = {}
+            outlevels = {}
+            for i, fn in enumerate(l2Fields):
+                for lv in levels:
+                    if fn.find(lv) > -1:
+                        outlevels[lv] = True
+                    fn = fn.replace(lv, '')
+                outdict[fn] = True
+                
+            l2Fields = [key for key, v in outdict.items()]
+            slices = [key for key, v in outlevels.items()]
+            SectionTitle = 'Level 2'
+            region = '*'
+
         hrefs = []
         Titles = {}
         SidebarTitles = {}
         Descriptions = {}
         FileLists = {}
-        SectionTitle = 'Level 2 - Physics'
-        region = 'Global'
-        slices = [
-            'Surface',
-            '1000m',
-            'Transect',
-        ]
         FileOrder = {}
 
         for key in sorted(l2Fields):
@@ -1019,7 +1044,7 @@ def html5Maker(
             for s in slices:
                 if s in [
                         'Surface',
-                        '1000m',
+                        '*',
                 ]:
                     vfiles.extend(
                         glob(imagedir + '/' + jobID + '/P2Pplots/*/*' + key +
@@ -1029,6 +1054,11 @@ def html5Maker(
                         glob(imagedir + '/' + jobID + '/P2Pplots/*/*' + key +
                              '*/*/*' + s + '*' + region + '*' + key + '*' +
                              year + '*robinquad-cartopy.png'))
+                    vfiles.extend(
+                        glob(imagedir + '/' + jobID + '/P2Pplots/*/*' + key +
+                             '*/*/*' + s + '*' + region + '*' + key + '*' +
+                             year + '*.png'))
+                        
                 if s in [
                         'Transect',
                 ]:
@@ -1489,8 +1519,8 @@ def comparehtml5Maker(
         'Salinty_Global_Surface',
         'FreshwaterFlux_Global',
         'TotalHeatFlux',
-        'MA_SST',
-        'MA_SSS',
+        'MA_SST_Global_Surface',
+        'MA_SSS_Global_Surface',
         'MA_Drake',
         'MA_AMOC_26N',
         'MA_AEU',

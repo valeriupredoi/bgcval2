@@ -31,6 +31,8 @@ import numpy as np
 from bgcval2.bgcvaltools.dataset import dataset
 from bgcval2.functions.get_kwarg_file import get_kwarg_file
 from bgcval2.functions.standard_functions import find_best_var
+import os
+
 
 global loadedArea
 global model_area
@@ -84,6 +86,10 @@ def MA_TotalIntPP(nc, keys, **kwargs):
     # This will only work for NEMO models:
     thkfn = nc.filename.replace('diag_T', 'grid_T').replace('ptrc_T', 'grid_T')
     print('MA_TotalIntPP: opening:', thkfn)
+    if not os.path.exists(thkfn):
+       print('MA_TotalIntPP: ERROR: does not exist:', thkfn)  
+       return np.ma.masked
+
     thknc = dataset(thkfn, 'r')
     thick = thknc.variables['thkcello'][:]
     thknc.close()

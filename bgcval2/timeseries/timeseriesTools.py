@@ -162,22 +162,16 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
             '200m',
             '300m',
             '500m',
+            '750m',
             '1000m',
             '2000m',
             '3000m',
             '4000m',
     ]:
-        if layer == 'Surface': z = 0.
-        if layer == '50m': z = 50.
-        if layer == '100m': z = 100.
-        if layer == '200m': z = 200.
-        if layer == '300m': z = 300.
-        if layer == '500m': z = 500.
-        if layer == '1000m': z = 1000.
-        if layer == '2000m': z = 2000.
-        if layer == '3000m': z = 3000.
-        if layer == '4000m': z = 4000.
-        print(z)
+        if layer == 'Surface': 
+            z = 0.
+        else:
+            z = float(layer.replace('m', ''))
         k = bvt.getORCAdepth(z, nc.variables[coords['z']][:], debug=False)
         if isinstance(data, str):
             data = std_extractData(nc, details)

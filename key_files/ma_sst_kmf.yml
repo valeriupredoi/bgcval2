@@ -14,5 +14,7 @@ data_vars       : t_an
 data_convert    : NoChange
 data_source     : WOA18
 layers          : Surface #50m 100m
-regions         : Global NorthAtlanticOcean SouthAtlanticOcean EquatorialAtlanticOcean ITCZ
-metrics         : mean #, median, 10pc, 20pc, 30pc, 40pc, 50pc, 60pc, 70pc, 80pc, 90pc, min, max
+regions         : Global 
+metrics         : mean 
+smoothings      : DataOnly both5 
+

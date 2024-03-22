@@ -70,7 +70,7 @@ standard-paths:
       p2p_ppDir: "/local1/data/scratch/ledm/bgcval2_postProcessed"
       imagedir: "images"
         #ModelFolder_pref: "gle/dare_baseline" #AMM7
-      ModelFolder_pref: "ledm/MissionAtlantic/SENEMO"
+      ModelFolder_pref: "ledm/MissionAtlantic/"
       orcaGridfn: "/data/proteus2/scratch/ledm/MissionAtlantic/SENEMO/eORCA025_mesh_mask_mes_v2.nc"
       amm7Gridfn: "/users/modellers/ledm/workspace/coast/AMM7_grid/mesh_mask.nc"  
       ObsFolder: "/data/sthenno1/scratch/ledm/Observations/"
