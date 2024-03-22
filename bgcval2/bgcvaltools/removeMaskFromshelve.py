@@ -31,13 +31,13 @@
 
 """
 
-from shelve import open as shopen
+from shelve import open as shOpen
 from glob import glob
 
 
 def removeFromShelves(fn, removeRegions):
     print('removing:', removeRegions, 'from', fn)
-    sh = shopen(fn)
+    sh = shOpen(fn)
 
     modeldata = sh['modeldata']
 
