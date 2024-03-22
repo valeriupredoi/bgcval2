@@ -139,8 +139,7 @@ class timeseriesAnalysis:
         # load and calculate the model info
         if glob.glob(self.shelvefn+'*'): # shelve files have .bak .dat .dir files now
             sh = shOpen(self.shelvefn)
-            print('seems fine:', self.shelvefn)
-            sh = shOpen(self.shelvefn)
+            print('Shelf opens fine:', self.shelvefn)
             print (sh.keys())
             readFiles       = sh['readFiles']
             modeldataD      = sh['modeldata']
