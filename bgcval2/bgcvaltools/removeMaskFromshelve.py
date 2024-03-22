@@ -37,21 +37,19 @@ from glob import glob
 
 def removeFromShelves(fn, removeRegions):
     print('removing:', removeRegions, 'from', fn)
-    sh = shOpen(fn)
+    with shOpen(fn) as sh:
+        modeldata = sh['modeldata']
+        for key in list(modeldata.keys()):
+            try:
+                (r, l, m) = key
+            except:
+                continue
+            if r in removeRegions:
+                print('modeldata[', (r, l, m), '] will be deleted')
+                del modeldata[(r, l, m)]
 
-    modeldata = sh['modeldata']
-
-    for key in list(modeldata.keys()):
-        try:
-            (r, l, m) = key
-        except:
-            continue
-        if r in removeRegions:
-            print('modeldata[', (r, l, m), '] will be deleted')
-            del modeldata[(r, l, m)]
-
-    sh['modeldata'] = modeldata
-    sh.close()
+        sh['modeldata'] = modeldata
+    # sh.close()
 
 
 removeRegions = [

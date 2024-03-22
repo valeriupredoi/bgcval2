@@ -185,11 +185,13 @@ class profileAnalysis:
             if self.clean:
                 print("profileAnalysis:\tloadModel:\tUser requested clean run. Wiping old data.")
                 assert 0
-            sh = shOpen(self.shelvefn)
-            readFiles = sh['readFiles']
-            modeldataD = sh['modeldata']
-            sh.close()
-
+            with shOpen(self.shelvefn) as sh:
+                readFiles = sh['readFiles']
+                modeldataD = sh['modeldata']
+            # sh = shOpen(self.shelvefn)
+            # readFiles = sh['readFiles']
+            # modeldataD = sh['modeldata']
+            # sh.close()
             print("OprofileAnalysis:\tloadModel:\tpened shelve:", self.shelvefn, '\tread', len(
                 readFiles))
         except:
@@ -300,19 +302,25 @@ class profileAnalysis:
             if openedFiles:
                 print("Saving shelve:", self.dataType, self.shelvefn, '\tread', len(
                     readFiles))
-                sh = shOpen(self.shelvefn)
-                sh['readFiles'] = readFiles
-                sh['modeldata'] = modeldataD
-                sh.close()
+                with shOpen(self.shelvefn) as sh:
+                    sh['readFiles'] = readFiles
+                    sh['modeldata'] = modeldataD
+                # sh = shOpen(self.shelvefn)
+                # sh['readFiles'] = readFiles
+                # sh['modeldata'] = modeldataD
+                # sh.close()                
                 openedFiles = 0
         if openedFiles:
             print("Saving shelve:", self.dataType, self.shelvefn, '\tread', len(
                 readFiles))
-            sh = shOpen(self.shelvefn)
-            sh['readFiles'] = readFiles
-            sh['modeldata'] = modeldataD
-            sh.close()
+            with shOpen(self.shelvefn) as sh:
+                sh['readFiles'] = readFiles
+                sh['modeldata'] = modeldataD
 
+            # sh = shOpen(self.shelvefn)
+            # sh['readFiles'] = readFiles
+            # sh['modeldata'] = modeldataD
+            # sh.close()
         self.modeldataD = modeldataD
         if self.debug:
             print("profileAnalysis:\tloadModel.\t Model loaded:", list(self.modeldataD.keys(
@@ -375,9 +383,11 @@ class profileAnalysis:
             if self.clean:
                 print("profileAnalysis:\t loadData\tUser requested clean run. Wiping old data.")
                 assert 0
-            sh = shOpen(self.shelvefn_insitu)
-            dataD = sh['dataD']
-            sh.close()
+            with shOpen(self.shelvefn_insitu) as sh:
+                dataD = sh['dataD']
+            # sh = shOpen(self.shelvefn_insitu)
+            # dataD = sh['dataD']
+            # sh.close()            
             print("profileAnalysis:\t loadData\tOpened shelve:", self.shelvefn_insitu)
             self.dataD = dataD
         except:
@@ -488,18 +498,20 @@ class profileAnalysis:
                         r, l), 'mean:\t', meandatad)
 
             print("profileAnalysis:\t loadData.\tSaving shelve: (layer", l, ")", self.shelvefn_insitu)
-            sh = shOpen(self.shelvefn_insitu)
-            sh['dataD'] = dataD
-            sh.close()
-
+            with shOpen(self.shelvefn_insitu) as sh:
+                sh['dataD'] = dataD
+            # sh = shOpen(self.shelvefn_insitu)
+            # sh['dataD'] = dataD
+            # sh.close()
         ###############
         # Savng shelve
         print("profileAnalysis:\t loadData.\tSaving shelve:", self.shelvefn_insitu)
         try:
-            sh = shOpen(self.shelvefn_insitu)
-            sh['dataD'] = dataD
-            sh.close()
-
+            with shOpen(self.shelvefn_insitu) as sh:
+                sh['dataD'] = dataD
+            # sh = shOpen(self.shelvefn_insitu)
+            # sh['dataD'] = dataD
+            # sh.close()
             print("profileAnalysis:\t loadData.\tSaved shelve:", self.shelvefn_insitu)
 
         except:
@@ -509,18 +521,17 @@ class profileAnalysis:
             for key in sorted(dataD.keys()):
 
                 print(key, ':\t', dataD[key])
-                sh = shOpen(bvt.folder('./tmpshelves') + 'tmshelve.shelve')
-                sh['dataD'] = dataD[key]
-                sh.close()
+                with shOpen(bvt.folder('./tmpshelves') + 'tmshelve.shelve') as sh:
+                    sh['dataD'] = dataD[key]
+                # sh = shOpen(bvt.folder('./tmpshelves') + 'tmshelve.shelve')
+                # sh['dataD'] = dataD[key]
+                # sh.close()                
                 print("saved fine:\t./tmpshelves/tmshelve.shelve")
 
             shutil.move(self.shelvefn_insitu, self.shelvefn_insitu + '.broken')
 
-            #		try:
-            sh = shOpen(self.shelvefn_insitu)
-            sh['dataD'] = dataD
-            sh.close()
-
+            with  shOpen(self.shelvefn_insitu) as sh:
+                sh['dataD'] = dataD
 
 #		except:
 #			print "profileAnalysis:\t WARNING.\tUnable to Save in situ shelve.\tYou'll have to input it each time.",self.shelvefn_insitu

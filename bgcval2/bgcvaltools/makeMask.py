@@ -484,9 +484,12 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
         shelveFn = bvt.folder(os.path.join(paths.shelvedir, "MatchingMasks/"))+ newSlice+"_diag_maskMask.shelve"
 
         try:
-            s = shOpen(shelveFn)
-            lldict = s['lldict']
-            s.close()
+            with shOpen(shelveFn) as sh:
+                lldict = sh['lldict']
+            # s = shOpen(shelveFn)
+            # lldict = s['lldict']
+            # s.close()
+
         except:
             lldict = {}
 
@@ -517,9 +520,11 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
                     nmask[i] = 1
         if i > 0:
             try:
-                s = shOpen(shelveFn)
-                s['lldict'] = lldict
-                s.close()
+                # s = shOpen(shelveFn)
+                # s['lldict'] = lldict
+                # s.close()                
+                with shOpen(shelveFn) as sh:
+                    sh['lldict'] = lldict
             except:
                 print(
                     "makeMask:\tWARNING:\tUnable to save lldict at this time")
