@@ -565,7 +565,6 @@ class timeseriesAnalysis:
 
         ###############
         # load and calculate the real data info
-        try:
         if self.clean:
             print(
                 "timeseriesAnalysis:\t loadData\tUser requested clean run. Wiping old data."
