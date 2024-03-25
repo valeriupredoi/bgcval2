@@ -42,7 +42,7 @@ def removeFromShelves(fn, removeRegions):
         for key in list(modeldata.keys()):
             try:
                 (r, l, m) = key
-            except:
+            except ValueError:
                 continue
             if r in removeRegions:
                 print('modeldata[', (r, l, m), '] will be deleted')

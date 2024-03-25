@@ -492,9 +492,6 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
         try:
             with shOpen(shelveFn) as sh:
                 lldict = sh['lldict']
-            # s = shOpen(shelveFn)
-            # lldict = s['lldict']
-            # s.close()
 
         except:
             lldict = {}
@@ -526,9 +523,6 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
                     nmask[i] = 1
         if i > 0:
             try:
-                # s = shOpen(shelveFn)
-                # s['lldict'] = lldict
-                # s.close()                
                 with shOpen(shelveFn) as sh:
                     sh['lldict'] = lldict
             except:
