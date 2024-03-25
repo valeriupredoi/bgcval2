@@ -568,7 +568,7 @@ class timeseriesAnalysis:
 
         ###############
         # load and calculate the real data info
-        if self.clean or not len(glob(self.shelvefn_insit+'*')):
+        if self.clean or not len(glob(self.shelvefn_insitu+'*')):
             print("timeseriesAnalysis:\t loadData\tClean run.")       
             dataD = {}
         else:
