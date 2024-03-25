@@ -137,7 +137,7 @@ class timeseriesAnalysis:
         if self.debug: print("timeseriesAnalysis:\tloadModel.")
         ####
         # load and calculate the model info
-        if glob.glob(self.shelvefn+'*'): # shelve files have .bak .dat .dir files now
+        if len(glob.glob(self.shelvefn+'*')): # shelve files have .bak .dat .dir files now
             with shOpen(self.shelvefn) as sh:
                 print('Shelf opens fine:', self.shelvefn)
                 print (sh.keys())
@@ -565,10 +565,8 @@ class timeseriesAnalysis:
 
         ###############
         # load and calculate the real data info
-        if self.clean:
-            print(
-                "timeseriesAnalysis:\t loadData\tUser requested clean run. Wiping old data."
-            )       
+        if self.clean or not len(glob(self.shelvefn_insit+'*')):
+            print("timeseriesAnalysis:\t loadData\tClean run.")       
             dataD = {}
         else:
             with shOpen(self.shelvefn_insitu) as sh:
