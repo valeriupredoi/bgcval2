@@ -267,6 +267,9 @@ class DataLoader:
                  layers=[
                      'Surface',
                  ],
+                 modeldataD = {},
+                 metrics = ['mean', ],
+                 meantime = 0,
                  data=''):
         self.fn = fn
         if type(nc) == type('filename'):
@@ -276,6 +279,9 @@ class DataLoader:
         self.details = details
         self.regions = regions
         self.layers = layers
+        self.metrics = metrics
+        self.modeldataD = modeldataD
+        self.meantime = meantime
         self.name = self.details['name']
         if data == '': data = std_extractData(nc, self.details)
         self.Fulldata = data
@@ -294,7 +300,7 @@ class DataLoader:
             depths = {}
         lays = self.layers[:]
         lays.reverse()
-
+               
         for l in lays:
             try:
                 layer = int(l)
@@ -317,6 +323,15 @@ class DataLoader:
                 continue
 
             for region in self.regions:
+                loadthisregion = 0
+                for m in metrics:
+                    if self.modeldataD.get((r, l, m), False) and self.meantime in modeldataD[(r, l, m)]:
+                        # Data arra already exists and This time point's data already exists                         
+                        continue
+                    # This region does not exist in the processed data, so add it.
+                    loadthisregion +=1
+                if loadthisregion == 0:
+                    continue
                 arr, arr_t, arr_z, arr_lat, arr_lon = self.createDataArray(
                     region, layer)
                 if len(arr) == 0:
