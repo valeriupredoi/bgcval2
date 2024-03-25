@@ -566,20 +566,18 @@ class timeseriesAnalysis:
         ###############
         # load and calculate the real data info
         try:
-            if self.clean:
-                print(
-                    "timeseriesAnalysis:\t loadData\tUser requested clean run. Wiping old data."
-                )
-                assert 0
+        if self.clean:
+            print(
+                "timeseriesAnalysis:\t loadData\tUser requested clean run. Wiping old data."
+            )       
+            dataD = {}
+        else:
             with shOpen(self.shelvefn_insitu) as sh:
-                dataD = sh['dataD']
+                dataD = sh['dataD']           
             print("timeseriesAnalysis:\t loadData\tOpened shelve:",
                   self.shelvefn_insitu)
             self.dataD = dataD
-        except:
-            dataD = {}
-            print("timeseriesAnalysis:\t loadData\tCould not open in situ shelve:",
-                  self.shelvefn_insitu)
+
 
         ###############
         # Test to find out if we need to load the netcdf, or if we can just return the dict as a self.object.
@@ -672,17 +670,8 @@ class timeseriesAnalysis:
         # Savng shelve
         print("timeseriesAnalysis:\t loadData.\tSaving shelve:",
               self.shelvefn_insitu)
-        try:
-            with shOpen(self.shelvefn_insitu) as sh:
-                sh['dataD'] = dataD
-        except:
-            print(
-                "timeseriesAnalysis:\t WARNING.\tSaving shelve failed, trying again.:",
-                self.shelvefn_insitu
-            )
-            shutil.move(self.shelvefn_insitu, self.shelvefn_insitu + '.broken')
-            with shOpen(self.shelvefn_insitu) as sh:
-                sh['dataD'] = dataD
+        with shOpen(self.shelvefn_insitu) as sh:
+            sh['dataD'] = dataD        
 
         self.dataD = dataD
 
