@@ -143,13 +143,6 @@ class timeseriesAnalysis:
                 print (sh.keys())
                 readFiles       = sh['readFiles']
                 modeldataD      = sh['modeldata']
-            # sh = shOpen(self.shelvefn)
-            # print('Shelf opens fine:', self.shelvefn)
-            # print (sh.keys())
-            # readFiles       = sh['readFiles']
-            # modeldataD      = sh['modeldata']
-            # print(readFiles) 
-            # sh.close()            
         else:
             print('Does not exist', self.shelvefn)
             readFiles = []
@@ -422,11 +415,6 @@ class timeseriesAnalysis:
                     sh['readFiles'] = readFiles
                     sh['modeldata'] = modeldataD
 
-                # sh = shOpen(self.shelvefn, protocol=5)
-                # sh['readFiles'] = readFiles
-                # sh['modeldata'] = modeldataD
-                # sh.close()
-
                 openedFiles = 0
         if openedFiles:
             print("timeseriesAnalysis:\tloadModel\tSaving shelve - last time:",
@@ -434,11 +422,6 @@ class timeseriesAnalysis:
             with shOpen(self.shelvefn, protocol=5) as sh:
                 sh['readFiles'] = readFiles
                 sh['modeldata'] = modeldataD            
-
-            # sh = shOpen(self.shelvefn, protocol=5)
-            # sh['readFiles'] = readFiles
-            # sh['modeldata'] = modeldataD
-            sh.close()
 
         self.modeldataD = modeldataD
         if self.debug:
@@ -590,9 +573,6 @@ class timeseriesAnalysis:
                 assert 0
             with shOpen(self.shelvefn_insitu) as sh:
                 dataD = sh['dataD']
-            # sh = shOpen(self.shelvefn_insitu)
-            # dataD = sh['dataD']
-            # sh.close()            
             print("timeseriesAnalysis:\t loadData\tOpened shelve:",
                   self.shelvefn_insitu)
             self.dataD = dataD
@@ -695,18 +675,12 @@ class timeseriesAnalysis:
         try:
             with shOpen(self.shelvefn_insitu) as sh:
                 sh['dataD'] = dataD
-            # sh = shOpen(self.shelvefn_insitu)
-            # sh['dataD'] = dataD
-            # sh.close()            
         except:
             print(
                 "timeseriesAnalysis:\t WARNING.\tSaving shelve failed, trying again.:",
                 self.shelvefn_insitu
             )
             shutil.move(self.shelvefn_insitu, self.shelvefn_insitu + '.broken')
-            # sh = shOpen(self.shelvefn_insitu)
-            # sh['dataD'] = dataD
-            # sh.close()
             with shOpen(self.shelvefn_insitu) as sh:
                 sh['dataD'] = dataD
 
