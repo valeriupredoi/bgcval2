@@ -324,8 +324,8 @@ class DataLoader:
 
             for region in self.regions:
                 loadthisregion = 0
-                for m in metrics:
-                    if self.modeldataD.get((r, l, m), False) and self.meantime in modeldataD[(r, l, m)]:
+                for m in self.metrics:
+                    if self.modeldataD.get((region, l, m), False) and self.meantime in self.modeldataD[(region, l, m)]:
                         # Data arra already exists and This time point's data already exists                         
                         continue
                     # This region does not exist in the processed data, so add it.
