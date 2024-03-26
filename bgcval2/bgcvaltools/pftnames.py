@@ -527,6 +527,8 @@ def makeLongNameDict():
     lnd['Remainder'] = "Oligotrophic Gyres"
     lnd['ArcticOcean'] = "Arctic Ocean"
     lnd['NorthernSubpolarAtlantic'] = "Northern Subpolar Atlantic"
+    lnd['SPNA'] = "Subpolar North Atlantic"
+    lnd['SubpolarNorthAtlantic'] =  lnd['SPNA']
     lnd['NorthernSubpolarPacific'] = "Northern Subpolar Pacific"
 
     lnd['SouthernOcean'] = "Southern Ocean"

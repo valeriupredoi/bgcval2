@@ -267,6 +267,9 @@ class DataLoader:
                  layers=[
                      'Surface',
                  ],
+                 modeldataD = {},
+                 metrics = ['mean', ],
+                 meantime = 0,
                  data=''):
         self.fn = fn
         if type(nc) == type('filename'):
@@ -276,6 +279,9 @@ class DataLoader:
         self.details = details
         self.regions = regions
         self.layers = layers
+        self.metrics = metrics
+        self.modeldataD = modeldataD
+        self.meantime = meantime
         self.name = self.details['name']
         if data == '': data = std_extractData(nc, self.details)
         self.Fulldata = data
@@ -294,7 +300,7 @@ class DataLoader:
             depths = {}
         lays = self.layers[:]
         lays.reverse()
-
+               
         for l in lays:
             try:
                 layer = int(l)
@@ -317,6 +323,18 @@ class DataLoader:
                 continue
 
             for region in self.regions:
+                loadthisregion = 0
+                for m in self.metrics:
+                    if self.modeldataD.get((region, l, m), False) and self.meantime in self.modeldataD[(region, l, m)]:
+                        # Data arra already exists and This time point's data already exists                         
+                        print('Dataloader: No need to load this setting', (region, l, m))
+                        continue
+                    print('Dataloader: We need to re-load this setting', (region, l, m), self.meantime)
+
+                    # This region does not exist in the processed data, so add it.
+                    loadthisregion +=1
+                if loadthisregion == 0:
+                    continue
                 arr, arr_t, arr_z, arr_lat, arr_lon = self.createDataArray(
                     region, layer)
                 if len(arr) == 0:
@@ -336,17 +354,7 @@ class DataLoader:
                 print("DataLoader:\tLoaded", self.name, 'in', end=' ')
                 print('{:<24} layer: {:<8}'.format(region, layer), end=' ')
                 print('\tdata length:',
-                      len(self.load[(region, layer)]),
-                      end=' ')
-                print('\tmean:',
-                      self.load[(region, layer)].mean(),
-                      'of',
-                      len(self.load[(region, layer)]),
-                      end=' ')
-                print('\trange:', [
-                    self.load[(region, layer)].min(),
-                    self.load[(region, layer)].max()
-                ])
+                      len(self.load[(region, layer)]),)
 
     def _makeTimeDict_(self, ):
         """ Make a dictionairy linking the time index with the float time.

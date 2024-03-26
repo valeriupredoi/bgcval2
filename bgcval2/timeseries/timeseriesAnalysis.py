@@ -265,6 +265,9 @@ class timeseriesAnalysis:
                 self.modeldetails,
                 regions=self.regions,
                 layers=self.layers,
+                metrics= self.metrics,
+                modeldataD=modeldataD,
+                meantime=meantime,
             )
 
             for l in self.layers:
