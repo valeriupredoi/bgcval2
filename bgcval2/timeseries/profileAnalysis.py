@@ -483,14 +483,7 @@ class profileAnalysis:
         with shOpen(self.shelvefn_insitu) as sh:
             sh['dataD'] = dataD        
 
-        # try:
-        #     with shOpen(self.shelvefn_insitu) as sh:
-        #         sh['dataD'] = dataD
-        #     print("profileAnalysis:\t loadData.\tSaved shelve:", self.shelvefn_insitu)
 
-        # except:
-        #     print("profileAnalysis:\t WARNING.\tSaving shelve failed, trying again.:", self.shelvefn_insitu)
-        #     print("Data is", list(dataD.keys()))
 
         #     for key in sorted(dataD.keys()):
 
@@ -499,10 +492,6 @@ class profileAnalysis:
         #             sh['dataD'] = dataD[key]
         #         print("saved fine:\t./tmpshelves/tmshelve.shelve")
 
-        #     shutil.move(self.shelvefn_insitu, self.shelvefn_insitu + '.broken')
-
-        #     with  shOpen(self.shelvefn_insitu) as sh:
-        #         sh['dataD'] = dataD
 
 #		except:
 #			print "profileAnalysis:\t WARNING.\tUnable to Save in situ shelve.\tYou'll have to input it each time.",self.shelvefn_insitu

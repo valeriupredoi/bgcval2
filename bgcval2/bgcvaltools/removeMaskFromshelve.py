@@ -46,7 +46,8 @@ def removeFromShelves(fn, removeRegions):
                 continue
             if r in removeRegions:
                 print('modeldata[', (r, l, m), '] will be deleted')
-                del modeldata[(r, l, m)]
+                if (r, l, m) in modeldata:
+                    del modeldata[(r, l, m)]
 
         sh['modeldata'] = modeldata
     # sh.close()
