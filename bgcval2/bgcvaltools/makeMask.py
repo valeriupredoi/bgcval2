@@ -31,6 +31,7 @@ import numpy as np
 from calendar import month_name
 from shelve import open as shOpen
 import os
+from glob import glob
 from bgcval2.Paths.paths import paths
 from netCDF4 import Dataset
 import bgcval2.bgcvaltools.bv2tools as bvt
@@ -483,11 +484,11 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
 
         shelveFn = bvt.folder(os.path.join(paths.shelvedir, "MatchingMasks/"))+ newSlice+"_diag_maskMask.shelve"
 
-        try:
-            s = shOpen(shelveFn)
-            lldict = s['lldict']
-            s.close()
-        except:
+        if len(glob(shelveFn+'*')):
+            # Shelve already exists:
+            with shOpen(shelveFn) as sh:
+                lldict = sh['lldict']
+        else:
             lldict = {}
 
         print("Bathy mask: before mask:", newSlice, nmask.sum(), 'of',
@@ -517,9 +518,8 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
                     nmask[i] = 1
         if i > 0:
             try:
-                s = shOpen(shelveFn)
-                s['lldict'] = lldict
-                s.close()
+                with shOpen(shelveFn) as sh:
+                    sh['lldict'] = lldict
             except:
                 print(
                     "makeMask:\tWARNING:\tUnable to save lldict at this time")

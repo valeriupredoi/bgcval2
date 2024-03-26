@@ -35,7 +35,7 @@ from socket import gethostname
 import os
 import shutil
 from glob import glob
-from shelve import open as shopen
+from shelve import open as shOpen
 from datetime import datetime
 
 from bgcval2.bgcvaltools.bv2tools import folder
@@ -169,7 +169,7 @@ def linkTwoJobs(jobID1, jobID2, copyShelves=False):
 
             if os.path.exists(fn2) and fn2.find('insitu') == -1:
                 try:
-                    s = shopen(fn2)
+                    s = shOpen(fn2)
                     if 'readFiles' not in list(s.keys()):
                         s.close()
                         print("Shelve has no readFiles:", fn2)

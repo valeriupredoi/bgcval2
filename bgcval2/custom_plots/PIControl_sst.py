@@ -3,7 +3,7 @@
 import os
 import numpy as np
 from matplotlib import pyplot
-from shelve import open as shopen
+from shelve import open as shOpen
 from mpl_toolkits.axes_grid.inset_locator import (inset_axes, InsetPosition,
                                                   mark_inset,
                                                   zoomed_inset_axes)
@@ -174,7 +174,7 @@ def get_data(j, field='AMOC'):
 
     if not os.path.exists(fn):
         print('Does not exist:', fn)
-    shelve = shopen(fn)
+    shelve = shOpen(fn)
     data = shelve['modeldata'][index]
     shelve.close()
     return data

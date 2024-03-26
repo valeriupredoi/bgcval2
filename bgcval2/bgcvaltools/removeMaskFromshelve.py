@@ -31,27 +31,26 @@
 
 """
 
-from shelve import open as shopen
+from shelve import open as shOpen
 from glob import glob
 
 
 def removeFromShelves(fn, removeRegions):
     print('removing:', removeRegions, 'from', fn)
-    sh = shopen(fn)
+    with shOpen(fn) as sh:
+        modeldata = sh['modeldata']
+        for key in list(modeldata.keys()):
+            try:
+                (r, l, m) = key
+            except ValueError:
+                continue
+            if r in removeRegions:
+                print('modeldata[', (r, l, m), '] will be deleted')
+                if (r, l, m) in modeldata:
+                    del modeldata[(r, l, m)]
 
-    modeldata = sh['modeldata']
-
-    for key in list(modeldata.keys()):
-        try:
-            (r, l, m) = key
-        except:
-            continue
-        if r in removeRegions:
-            print('modeldata[', (r, l, m), '] will be deleted')
-            del modeldata[(r, l, m)]
-
-    sh['modeldata'] = modeldata
-    sh.close()
+        sh['modeldata'] = modeldata
+    # sh.close()
 
 
 removeRegions = [

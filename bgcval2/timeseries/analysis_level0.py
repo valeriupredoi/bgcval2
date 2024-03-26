@@ -29,7 +29,7 @@
 
 """
 
-from shelve import open as shopen
+from shelve import open as shOpen
 from sys import argv, exit
 import os
 import numpy as np
@@ -80,7 +80,7 @@ def analysis_level0(
         print("This shelve fn doesn't exists", shelvefn)
         return name, False, False
     try:
-        s = shopen(shelvefn)
+        s = shOpen(shelvefn)
         modeldata = s['modeldata']
         readFiles = s['readFiles']
         s.close()
@@ -150,13 +150,13 @@ def analysis_level0_insitu(
         print("This shelve fn doesn't exists", shelvefn)
         return False
     try:
-        s = shopen(shelvefn)
+        s = shOpen(shelvefn)
         dataD = s['dataD']
         s.close()
     except:
         print("This shelve fn doesn't work properly", shelvefn)
         try:
-            s = shopen(shelvefn)
+            s = shOpen(shelvefn)
             print("s.keys:", list(s.keys()))
             s.close()
         except:

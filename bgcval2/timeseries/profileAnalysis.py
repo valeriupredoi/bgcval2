@@ -33,6 +33,7 @@ from shelve import open as shOpen
 from netCDF4 import num2date
 import os
 import shutil
+from glob import glob
 
 #Specific local code:
 from bgcval2.bgcvaltools import bv2tools as bvt
@@ -181,27 +182,19 @@ class profileAnalysis:
         # load and calculate the model info
         self.setmlayers()
 
-        try:
-            if self.clean:
-                print("profileAnalysis:\tloadModel:\tUser requested clean run. Wiping old data.")
-                assert 0
-            sh = shOpen(self.shelvefn)
-            readFiles = sh['readFiles']
-            modeldataD = sh['modeldata']
-            sh.close()
-
-            print("OprofileAnalysis:\tloadModel:\tpened shelve:", self.shelvefn, '\tread', len(
-                readFiles))
-        except:
+        if self.clean or not len(glob(self.shelvefn+'*')):
+            #print("profileAnalysis:\tloadModel:\tUser requested clean run. Wiping old data.")
             readFiles = []
             modeldataD = {}
-            #		self.setmlayers()
             for r in self.regions:
                 for l in self.mlayers:
                     for m in self.metrics:
                         modeldataD[(r, l, m)] = {}
-
-            print("profileAnalysis:\tloadModel:\tCould not open shelve:", self.shelvefn, '\tread', len(
+        else:
+            with shOpen(self.shelvefn) as sh:
+                readFiles = sh['readFiles']
+                modeldataD = sh['modeldata']
+            print("ProfileAnalysis:\tloadModel:\tOpened shelve:", self.shelvefn, '\tread', len(
                 readFiles))
 
         ###############
@@ -300,18 +293,16 @@ class profileAnalysis:
             if openedFiles:
                 print("Saving shelve:", self.dataType, self.shelvefn, '\tread', len(
                     readFiles))
-                sh = shOpen(self.shelvefn)
-                sh['readFiles'] = readFiles
-                sh['modeldata'] = modeldataD
-                sh.close()
+                with shOpen(self.shelvefn) as sh:
+                    sh['readFiles'] = readFiles
+                    sh['modeldata'] = modeldataD
                 openedFiles = 0
         if openedFiles:
             print("Saving shelve:", self.dataType, self.shelvefn, '\tread', len(
                 readFiles))
-            sh = shOpen(self.shelvefn)
-            sh['readFiles'] = readFiles
-            sh['modeldata'] = modeldataD
-            sh.close()
+            with shOpen(self.shelvefn) as sh:
+                sh['readFiles'] = readFiles
+                sh['modeldata'] = modeldataD
 
         self.modeldataD = modeldataD
         if self.debug:
@@ -371,18 +362,14 @@ class profileAnalysis:
 
         ###############
         # load and calculate the real data info
-        try:
-            if self.clean:
-                print("profileAnalysis:\t loadData\tUser requested clean run. Wiping old data.")
-                assert 0
-            sh = shOpen(self.shelvefn_insitu)
-            dataD = sh['dataD']
-            sh.close()
+        if self.clean or not len(glob(self.shelvefn_insitu+'*')):
+            print("profileAnalysis:\t loadData\tClean run.")
+            dataD = {}
+        else:
+            with shOpen(self.shelvefn_insitu) as sh:
+                dataD = sh['dataD']
             print("profileAnalysis:\t loadData\tOpened shelve:", self.shelvefn_insitu)
             self.dataD = dataD
-        except:
-            dataD = {}
-            print("profileAnalysis:\t loadData\tCould not open shelve:", self.shelvefn_insitu)
 
         ###############
         # Test to find out if we need to load the netcdf, or if we can just return the dict as a self.object.
@@ -488,38 +475,22 @@ class profileAnalysis:
                         r, l), 'mean:\t', meandatad)
 
             print("profileAnalysis:\t loadData.\tSaving shelve: (layer", l, ")", self.shelvefn_insitu)
-            sh = shOpen(self.shelvefn_insitu)
-            sh['dataD'] = dataD
-            sh.close()
-
+            with shOpen(self.shelvefn_insitu) as sh:
+                sh['dataD'] = dataD
         ###############
         # Savng shelve
         print("profileAnalysis:\t loadData.\tSaving shelve:", self.shelvefn_insitu)
-        try:
-            sh = shOpen(self.shelvefn_insitu)
-            sh['dataD'] = dataD
-            sh.close()
+        with shOpen(self.shelvefn_insitu) as sh:
+            sh['dataD'] = dataD        
 
-            print("profileAnalysis:\t loadData.\tSaved shelve:", self.shelvefn_insitu)
 
-        except:
-            print("profileAnalysis:\t WARNING.\tSaving shelve failed, trying again.:", self.shelvefn_insitu)
-            print("Data is", list(dataD.keys()))
 
-            for key in sorted(dataD.keys()):
+        #     for key in sorted(dataD.keys()):
 
-                print(key, ':\t', dataD[key])
-                sh = shOpen(bvt.folder('./tmpshelves') + 'tmshelve.shelve')
-                sh['dataD'] = dataD[key]
-                sh.close()
-                print("saved fine:\t./tmpshelves/tmshelve.shelve")
-
-            shutil.move(self.shelvefn_insitu, self.shelvefn_insitu + '.broken')
-
-            #		try:
-            sh = shOpen(self.shelvefn_insitu)
-            sh['dataD'] = dataD
-            sh.close()
+        #         print(key, ':\t', dataD[key])
+        #         with shOpen(bvt.folder('./tmpshelves') + 'tmshelve.shelve') as sh:
+        #             sh['dataD'] = dataD[key]
+        #         print("saved fine:\t./tmpshelves/tmshelve.shelve")
 
 
 #		except:

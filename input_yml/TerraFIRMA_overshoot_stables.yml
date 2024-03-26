@@ -84,7 +84,7 @@ jobs:
    # 1.5k Stabilisation
    u-cy837:
       description: '1.5K Stabilisation from u-cx209 (#1)'
-      label: '1.5K Stable #1'
+      label: '1.5K Stable' # #1'
       colour: 'lawngreen'
       thickness: 1.2
       linestyle: '-'
@@ -93,7 +93,7 @@ jobs:
       suite: kmf physics bgc #alkalinity physics   
    u-cz834:
       description: '1.5K Stabilisation from u-cw988 (#2)'
-      label: '1.5K Stable #2'
+      label: None #Stable #2'
       colour: 'lawngreen'
       thickness: 1.2
       linestyle: '-'
@@ -102,7 +102,7 @@ jobs:
       suite: kmf physics bgc #alkalinity physics
    u-da087:
       description: '1.5K Stabilisation from u-cw989 (#3)'
-      label: '1.5K Stable #3'
+      label: None #'Stable #3'
       colour: 'lawngreen' 
       thickness: 1.2
       linestyle: '-'
@@ -113,7 +113,7 @@ jobs:
     # 2k Stabilisation
    u-cy838:
       description: '2.0K Stabilisation from u-cx209 (#1)'
-      label: '2K Stable #1'
+      label: '2K Stable' # #1'
       colour: 'goldenrod'
       thickness: 1.2
       linestyle: '-'
@@ -123,7 +123,7 @@ jobs:
 
    u-cz855:
       description: '2.0K Stabilisation from cw988 (#2)'
-      label: '2K Stable #2'
+      label: None #'2K Stable #2'
       colour: 'goldenrod'
       thickness: 1.2
       linestyle: '-'
@@ -133,7 +133,7 @@ jobs:
 
    u-da266:
       description: '2.0K Stabilisation from cw988 (#3)'
-      label: '2K Stable #3'
+      label: None #'2K Stable #3'
       colour: 'goldenrod'
       thickness: 1.2
       linestyle: '-'
@@ -144,7 +144,7 @@ jobs:
     # 2.5k Stabilisation
    u-cz374:
       description: '2.5K Stabilisation from u-cx209 (#1)'
-      label: '2.5K Stable #1'
+      label: '2.5K Stable' # #1'
       colour: 'orange'
       thickness: 1.2
       linestyle: '-'
@@ -153,7 +153,7 @@ jobs:
       suite: kmf physics bgc #alkalinity physics   
    u-cz859:
       description: '2.5K Stabilisation from cw988 (#2)'
-      label: '2.5K Stable #2'
+      label: None #'2.5K Stable #2'
       colour: 'orange' 
       thickness: 1.2
       linestyle: '-'
@@ -165,7 +165,7 @@ jobs:
     # 3.0K Stabilisations
    u-cz375:
       description: '3.0K Stabilisation from u-cx209 (#1)'
-      label: '3K Stable #1'
+      label: '3K Stable' # #1'
       colour: 'red'     #
       thickness: 1.2
       linestyle: '-'
@@ -175,7 +175,7 @@ jobs:
 
    u-db587:
       description: '3.0K Stabilisation from u-cx209 (#2)'
-      label: '3K Stable #2'
+      label: None #'3K Stable #2'
       colour: 'red'     #
       thickness: 1.2
       linestyle: '-'
@@ -185,7 +185,7 @@ jobs:
 
    u-db597:
       description: '3.0K Stabilisation from u-cx209 (#3)'
-      label: '3K Stable #3'
+      label: None #'3K Stable #3'
       colour: 'red'     #
       thickness: 1.2
       linestyle: '-'
@@ -196,7 +196,7 @@ jobs:
     # 4k  Stabilisations
    u-cz376:
       description: '4.0K Stabilisation from u-cx209 (#1)'
-      label: '4K Stable #1'
+      label: '4K Stable' # #1'
       colour: 'sienna'
       thickness: 1.2
       linestyle: '-'
@@ -205,7 +205,7 @@ jobs:
       suite: kmf physics bgc #alkalinity physics  
    u-db723:
       description: '4.0K Stabilisation from u-cw988 (#2)'
-      label: '4K Stable #2'
+      label: None #'4K Stable #2'
       colour: 'sienna'
       thickness: 1.2
       linestyle: '-'
@@ -214,7 +214,7 @@ jobs:
       suite: kmf physics bgc #alkalinity physics      
    u-db733:
       description: '4.0K Stabilisation from u-cw989 (#3)'
-      label: '4K Stable #3'
+      label: None #'4K Stable #3'
       colour: 'sienna'
       thickness: 1.2
       linestyle: '-'
@@ -225,7 +225,7 @@ jobs:
     # 5k & 6K  Stabilisations
    u-cz377:
       description: '5.0K Stabilisation from u-cx209 (#1)'
-      label: '5K Stable #1'
+      label: '5K Stable'
       colour: 'maroon'
       thickness: 1.2
       linestyle: '-'
@@ -234,7 +234,7 @@ jobs:
       suite: kmf physics bgc #alkalinity physics 
    u-db731:
       description: '5.0K Stabilisation from u-cw988 (#2)'
-      label: '5K Stable #2'
+      label: None #'5K Stable #2'
       colour: 'maroon'
       thickness: 1.2
       linestyle: '-'
@@ -243,7 +243,7 @@ jobs:
       suite: kmf physics bgc #alkalinity physics 
    u-dc324:
       description: '5.0K Stabilisation from u-cw989 (#3)'
-      label: '5K Stable #3'
+      label: None #'5K Stable #3'
       colour: 'maroon'
       thickness: 1.2
       linestyle: '-'
@@ -253,7 +253,7 @@ jobs:
 
    u-cz378:
       description: '6.0K Stabilisation from u-cx209 (#1)'
-      label: '6K Stable #1'
+      label: '6K Stable'
       colour: 'indigo'
       thickness: 1.2
       linestyle: '-'
@@ -396,7 +396,7 @@ jobs:
    # Ramp down stables.
    u-dc163:
       description: 'Stable post ramp-down (#1)'
-      label: 'Stab Rampdown #1'
+      label: None #'Stab Rampdown #1'
       colour: 'lawngreen'
       thickness: 1.2
       linestyle: '-'

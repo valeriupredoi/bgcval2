@@ -10,7 +10,7 @@
 import os
 import numpy as np
 from matplotlib import pyplot
-from shelve import open as shopen
+from shelve import open as shOpen
 
 
 def movingaverage_DT(data, times, window_len=10., window_units='years'):
@@ -106,7 +106,7 @@ def getAMOCdata(j, field='AMOC'):
 
     if not os.path.exists(fn):
         print('Does not exist:', fn)
-    shelve = shopen(fn)
+    shelve = shOpen(fn)
     data = shelve['modeldata'][index]
     shelve.close()
     #	times = sorted(data.keys())

@@ -749,6 +749,8 @@ def multitimeseries(
     else:
         print("colours isn't working.")
 
+    final_labels = []
+
     for i, jobID in enumerate(sorted(timesD.keys())):
         times = timesD[jobID]
         arr = arrD[jobID]
@@ -788,7 +790,13 @@ def multitimeseries(
         if np.min(arr) < ylims[0]: ylims[0] = np.min(arr)
         if np.max(arr) > ylims[1]: ylims[1] = np.max(arr)
 
-        label = labels.get(jobID, jobID)
+        # If label is None, we put nothing.
+        if labels.get(jobID, True) in [None, '', 'None', 'none']:
+            label = None
+        else:
+            label = labels.get(jobID, jobID)
+            final_labels.append(final_labels)
+
         if smoothing.lower() in ['spline', 'all']:
             tnew = np.linspace(times[0], times[-1], 60)
             arr_smooth = interpolate.spline(times, arr, tnew)
@@ -1036,7 +1044,7 @@ def multitimeseries(
 
         #####
         # Add legend:
-        legendSize = len(list(timesD.keys()))
+        legendSize = len(final_labels)
         ncols = int(legendSize / 25) + 1
         box = ax.get_position()
         ax.set_position(

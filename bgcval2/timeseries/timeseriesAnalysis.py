@@ -137,19 +137,18 @@ class timeseriesAnalysis:
         if self.debug: print("timeseriesAnalysis:\tloadModel.")
         ####
         # load and calculate the model info
-        if glob.glob(self.shelvefn+'*'): # shelve files have .bak .dat .dir files now
-            sh = shOpen(self.shelvefn)
-            print('seems fine:', self.shelvefn)
-            sh = shOpen(self.shelvefn)
-            print (sh.keys())
-            readFiles       = sh['readFiles']
-            modeldataD      = sh['modeldata']
-            print(readFiles) 
-            sh.close()
+        if len(glob.glob(self.shelvefn+'*')): # shelve files have .bak .dat .dir files now
+            with shOpen(self.shelvefn) as sh:
+                print('Shelf opens fine:', self.shelvefn)
+                print (sh.keys())
+                readFiles       = sh['readFiles']
+                modeldataD      = sh['modeldata']
         else:
             print('Does not exist', self.shelvefn)
             readFiles = []
             modeldataD = {}
+
+        print('loadmodel: already opened files:', readFiles) 
 
         for r in self.regions:
             for l in self.layers:
@@ -412,18 +411,17 @@ class timeseriesAnalysis:
             if openedFiles and openedFiles%save_every==0:
                 print("timeseriesAnalysis:\tloadModel\tSaving shelve:",
                       self.shelvefn, '\tread', len(readFiles))
-                sh = shOpen(self.shelvefn, protocol=5)
-                sh['readFiles'] = readFiles
-                sh['modeldata'] = modeldataD
-                sh.close()
+                with shOpen(self.shelvefn, protocol=5) as sh:
+                    sh['readFiles'] = readFiles
+                    sh['modeldata'] = modeldataD
+
                 openedFiles = 0
         if openedFiles:
             print("timeseriesAnalysis:\tloadModel\tSaving shelve - last time:",
                   self.shelvefn, '\tread', len(readFiles))
-            sh = shOpen(self.shelvefn, protocol=5)
-            sh['readFiles'] = readFiles
-            sh['modeldata'] = modeldataD
-            sh.close()
+            with shOpen(self.shelvefn, protocol=5) as sh:
+                sh['readFiles'] = readFiles
+                sh['modeldata'] = modeldataD            
 
         self.modeldataD = modeldataD
         if self.debug:
@@ -567,22 +565,16 @@ class timeseriesAnalysis:
 
         ###############
         # load and calculate the real data info
-        try:
-            if self.clean:
-                print(
-                    "timeseriesAnalysis:\t loadData\tUser requested clean run. Wiping old data."
-                )
-                assert 0
-            sh = shOpen(self.shelvefn_insitu)
-            dataD = sh['dataD']
-            sh.close()
+        if self.clean or not len(glob.glob(self.shelvefn_insitu+'*')):
+            print("timeseriesAnalysis:\t loadData\tClean run.")       
+            dataD = {}
+        else:
+            with shOpen(self.shelvefn_insitu) as sh:
+                dataD = sh['dataD']           
             print("timeseriesAnalysis:\t loadData\tOpened shelve:",
                   self.shelvefn_insitu)
             self.dataD = dataD
-        except:
-            dataD = {}
-            print("timeseriesAnalysis:\t loadData\tCould not open in situ shelve:",
-                  self.shelvefn_insitu)
+
 
         ###############
         # Test to find out if we need to load the netcdf, or if we can just return the dict as a self.object.
@@ -675,18 +667,8 @@ class timeseriesAnalysis:
         # Savng shelve
         print("timeseriesAnalysis:\t loadData.\tSaving shelve:",
               self.shelvefn_insitu)
-        try:
-            sh = shOpen(self.shelvefn_insitu)
-            sh['dataD'] = dataD
-            sh.close()
-        except:
-            print(
-                "timeseriesAnalysis:\t WARNING.\tSaving shelve failed, trying again.:",
-                self.shelvefn_insitu)
-            shutil.move(self.shelvefn_insitu, self.shelvefn_insitu + '.broken')
-            sh = shOpen(self.shelvefn_insitu)
-            sh['dataD'] = dataD
-            sh.close()
+        with shOpen(self.shelvefn_insitu) as sh:
+            sh['dataD'] = dataD        
 
         self.dataD = dataD
 
