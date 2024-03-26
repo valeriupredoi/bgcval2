@@ -355,16 +355,6 @@ class DataLoader:
                 print('{:<24} layer: {:<8}'.format(region, layer), end=' ')
                 print('\tdata length:',
                       len(self.load[(region, layer)]),)
-                      #end=' ')
-                #print('\tmean:',
-                #      self.load[(region, layer)].mean(),
-                #      'of',
-                #      len(self.load[(region, layer)]),
-                #      end=' ')
-                #print('\trange:', [
-                #    self.load[(region, layer)].min(),
-                #    self.load[(region, layer)].max()
-                #])
 
     def _makeTimeDict_(self, ):
         """ Make a dictionairy linking the time index with the float time.
