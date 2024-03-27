@@ -61,6 +61,8 @@ from .bgcvaltools import bv2tools as bvt
 from .timeseries import timeseriesAnalysis
 from .timeseries import profileAnalysis
 from .timeseries import timeseriesPlots as tsp
+from .timeseries import timeseriesTools as tst
+
 from bgcval2.analysis_timeseries import analysis_timeseries, build_list_of_suite_keys, load_key_file
 from bgcval2.download_from_mass import download_from_mass
 

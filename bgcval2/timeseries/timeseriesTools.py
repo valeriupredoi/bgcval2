@@ -291,7 +291,7 @@ def save_csv(
             'analysisname': analysisname,
             'colours':colours,
             'linestyles':linestyles,
-            'thicknesses':lineThicknesses,
+            'thicknesses':thicknesses,
             'labels':labels,
             'name':name,
             'units':units,
@@ -310,16 +310,12 @@ def save_csv(
        
         diff = jsondiff(jsondata, json_old)
         if not len(diff):
-            # Nothing new to add
+            print('Nothing new to add', filename)
             return
 
     with open(filename, 'w', encoding='utf-8') as f:
         json.dump(jsondata, f, ensure_ascii=False, indent=4)
-
-        
-
-
-
+    print('Data saved in: ', filename)
 
 
 class DataLoader:
