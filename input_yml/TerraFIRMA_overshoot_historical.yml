@@ -13,14 +13,15 @@ master_suites: physics bgc #alkalinity physics kmf1
 
 clean: True
 
+
 jobs:
     u-ca306:
        description: 'Reference '
-       colour: 'black'
+       colour: 'blue'
        thickness: 0.6
        linestyle: '-'
        shifttime: 0.
-       timerange: [1800, 1900]
+       timerange: [1850, 2020]
        suite: kmf physics bgc #alkalinity physics
 
     u-cy623:
@@ -31,9 +32,36 @@ jobs:
        shifttime: 0.
        suite: kmf physics bgc #alkalinity physics
 
+
+    u-da914:
+       description: 'interactive ice, started from picontrol yr 2197'
+       colour: red  
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf physics bgc #alkalinity physics
+
+    u-da916:
+       description: 'interactive ice, started from picontrol yr 2237'
+       colour: red  
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf physics bgc #alkalinity physics
+
+    u-da917:
+       description: 'interactive ice, started from picontrol yr 2317'
+       colour: red  
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf physics bgc #alkalinity physics
+
+
+
     u-cy690: 
        description: 'static ice sheets, started from picontrol yr 2277'
-       colour: purple
+       colour: blue
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
@@ -49,7 +77,7 @@ jobs:
 
     u-cy692:
        description: ' static ice sheets, started from picontrol yr 2237'
-       colour: green
+       colour: blue
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
@@ -57,7 +85,7 @@ jobs:
 
     u-cy693:
        description: ' static ice sheets, started from picontrol yr 2317'
-       colour: goldenrod
+       colour: blue
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
