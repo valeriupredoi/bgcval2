@@ -33,6 +33,9 @@ from bgcval2.netcdf_manipulation import convertToOneDNC
 from bgcval2.bgcvaltools.dataset import dataset
 from bgcval2.bgcvaltools.makeMask import makeMask
 from bgcval2.functions.standard_functions import extractData as std_extractData
+import json
+from jsondiff import diff as jsondiff
+
 
 """
 .. module:: timeseriesTools
@@ -252,6 +255,71 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
     print("getHorizontalSlice\t:ERROR:\tunrecoginised layer instructions",
           layer, coords, type(layer))
     assert 0
+
+
+def save_csv(
+        timesD,
+        arrD, 
+        analysisname,
+        colours={},
+        linestyles={},
+        thicknesses={},
+        labels={},
+        name='',
+        units='',
+        region='',
+        layer='',
+        metric='',
+        title='',
+        ts='',
+        csvFolder='',
+        csvformat='.json',
+    ):
+    """
+    Output the data that appears in a plot as a csv.
+
+    """
+    if csvformat.lower() not in ['json', '.json']:
+        print('Format not set up', csvformat )
+        return
+    
+    filename = bvt.folder(csvFolder) + '_'.join([analysisname, name, region, layer, metric, ts ]) + csvformat
+
+    jsondata = {
+            'timesD': timesD,
+            'arrD': arrD, 
+            'analysisname': analysisname,
+            'colours':colours,
+            'linestyles':linestyles,
+            'thicknesses':lineThicknesses,
+            'labels':labels,
+            'name':name,
+            'units':units,
+            'region':region,
+            'layer':layer,
+            'metric':metric,
+            'title':title,
+            'analysisname': analysisname,
+            'ts':ts,
+            'filename':filename,
+        }
+    
+    if os.path.exists(filename):
+        with open(filename) as json_data:
+            json_old = json.load(json_data)
+       
+        diff = jsondiff(jsondata, json_old)
+        if not len(diff):
+            # Nothing new to add
+            return
+
+    with open(filename, 'w', encoding='utf-8') as f:
+        json.dump(jsondata, f, ensure_ascii=False, indent=4)
+
+        
+
+
+
 
 
 class DataLoader:

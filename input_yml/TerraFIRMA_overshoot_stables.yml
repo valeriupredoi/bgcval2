@@ -14,6 +14,9 @@ master_suites: physics bgc kmf #alkalinity physics kmf1
 # Run without strick check (if True, breaks if job has no years.)
 strict_file_check: False
 
+# Output the figures as csv json files.
+savecsv: True
+
 clean: True
 
 

@@ -710,6 +710,7 @@ def multitimeseries(
         labels={},
         dpi=None,
         savepdf=False,
+        savecsv=False,
 ):
 
     if 0 in [len(timesD), len(list(timesD.keys()))]: return
@@ -750,6 +751,8 @@ def multitimeseries(
         print("colours isn't working.")
 
     final_labels = []
+
+
 
     for i, jobID in enumerate(sorted(timesD.keys())):
         times = timesD[jobID]
