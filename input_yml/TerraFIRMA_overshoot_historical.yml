@@ -19,6 +19,7 @@ savecsv: True
 jobs:
     u-ca306:
        description: 'Reference '
+       label: PiControl
        colour: 'blue'
        thickness: 0.6
        linestyle: '-'
@@ -28,6 +29,7 @@ jobs:
 
     u-cy623:
        description: 'interactive ice, started from picontrol yr 2277'
+       label: 'hist ice'
        colour: red  
        thickness: 1.7
        linestyle: '-'
@@ -37,6 +39,7 @@ jobs:
 
     u-da914:
        description: 'interactive ice, started from picontrol yr 2197'
+       label: None
        colour: red  
        thickness: 1.7
        linestyle: '-'
@@ -45,6 +48,7 @@ jobs:
 
     u-da916:
        description: 'interactive ice, started from picontrol yr 2237'
+       label: None
        colour: red  
        thickness: 1.7
        linestyle: '-'
@@ -53,6 +57,7 @@ jobs:
 
     u-da917:
        description: 'interactive ice, started from picontrol yr 2317'
+       label: None
        colour: red  
        thickness: 1.7
        linestyle: '-'
@@ -64,6 +69,7 @@ jobs:
     u-cy690: 
        description: 'static ice sheets, started from picontrol yr 2277'
        colour: blue
+       label: 'hist static ice'
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
@@ -71,6 +77,7 @@ jobs:
 
     u-cy691:
        description: 'static ice sheets, started from picontrol yr 2197'
+       label: None       
        colour: blue
        thickness: 1.7
        linestyle: '-'
@@ -79,6 +86,7 @@ jobs:
 
     u-cy692:
        description: ' static ice sheets, started from picontrol yr 2237'
+       label: None       
        colour: blue
        thickness: 1.7
        linestyle: '-'
@@ -87,6 +95,7 @@ jobs:
 
     u-cy693:
        description: ' static ice sheets, started from picontrol yr 2317'
+       label: None       
        colour: blue
        thickness: 1.7
        linestyle: '-'
