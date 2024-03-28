@@ -1,0 +1,68 @@
+---
+name: TerraFIRMA_overshoot_co2tests
+
+# Run the single job analysis
+do_analysis_timeseries: True 
+
+# Download from mass:
+do_mass_download: False
+
+# master analysis suite
+master_suites: physics bgc #alkalinity physics kmf1
+
+clean: True
+
+# Output the figures as csv json files.
+savecsv: True
+
+jobs:
+    u-ca306:
+       description: 'Reference '
+       label: PiControl
+       colour: 'blue'
+       thickness: 0.6
+       linestyle: '-'
+       shifttime: 0.
+       timerange: [1850, 2020]
+       suite: kmf physics bgc #alkalinity physics
+
+    u-cz014:
+       description: 'Terrafirma 4x CO2'
+       label: '4xCO2'
+       colour: 'green'
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf physics bgc #alkalinity physics
+
+    u-cz014:
+       description: 'Terrafirma 1% CO2'
+       label: '1%CO2'
+       colour: 'purple'
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf physics bgc #alkalinity physics
+
+
+    u-cy623:
+       description: 'interactive ice, started from picontrol yr 2277'
+       label: 'hist ice'
+       colour: 'orange'  
+       thickness: 1.7
+       linestyle: 'dashdot'
+       shifttime: 0.
+       suite: kmf physics bgc #alkalinity physics
+
+
+    u-cy690: 
+       description: 'static ice sheets, started from picontrol yr 2277'
+       colour: 'red'
+       label: 'hist static ice'
+       thickness: 1.7
+       linestyle: ':'
+       shifttime: 0.
+       suite: kmf physics bgc #alkalinity physics
+
+
+

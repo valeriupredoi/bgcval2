@@ -286,8 +286,9 @@ def save_csv(
     filename = bvt.folder(csvFolder) + '_'.join([analysisname, name, region, layer, metric, ts ]) + csvformat
 
     jsondata = {
-            'timesD': timesD,
-            'arrD': arrD, 
+            # json can't save numpy.float32, so we convert to list of floats.
+            'timesD': {job:[float(t) for t in times] for job, times in timesD.items()},
+            'arrD': {job:[float(d) for d in data] for job, data in arrD.items()},
             'analysisname': analysisname,
             'colours':colours,
             'linestyles':linestyles,
@@ -305,17 +306,18 @@ def save_csv(
         }
     
     if os.path.exists(filename):
+        print('Opening old file:', filename)
         with open(filename) as json_data:
             json_old = json.load(json_data)
        
         diff = jsondiff(jsondata, json_old)
         if not len(diff):
-            print('Nothing new to add', filename)
+            print('Nothing new to add')
             return
 
+    print('Data saved in: ', filename)
     with open(filename, 'w', encoding='utf-8') as f:
         json.dump(jsondata, f, ensure_ascii=False, indent=4)
-    print('Data saved in: ', filename)
 
 
 class DataLoader:
