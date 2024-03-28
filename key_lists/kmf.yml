@@ -7,7 +7,7 @@ keys:
     SST: True
     DrakePassageTransport: True
     AMOC_26N: True
-    atmosco2: True
+    AtmosCO2: True
     TotalAirSeaFluxCO2: True
     # NoCaspianAirSeaFluxCO2: True
     # IntPP_OSU: True
