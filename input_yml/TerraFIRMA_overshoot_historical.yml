@@ -23,7 +23,7 @@ jobs:
        colour: 'blue'
        thickness: 0.6
        linestyle: '-'
-       shifttime: 0.
+       shifttime: 0    
        timerange: [1850, 2020]
        suite: kmf physics bgc #alkalinity physics
 

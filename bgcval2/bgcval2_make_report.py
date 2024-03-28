@@ -1480,6 +1480,7 @@ def comparehtml5Maker(
     physicsKM = [
         'AMOC_26N',
         'ADRC_26N',
+        'AtmosCO2',  
         'DrakePassage',
         'GlobalMeanTemperature',
         'GlobalMeanSalinity',
