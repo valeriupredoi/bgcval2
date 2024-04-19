@@ -8,7 +8,7 @@ do_analysis_timeseries: True
 do_mass_download: False
 
 # master analysis suite
-master_suites: physics bgc #alkalinity physics kmf1
+master_suites: physics bgc kmf #alkalinity physics kmf1
 
 clean: True
 

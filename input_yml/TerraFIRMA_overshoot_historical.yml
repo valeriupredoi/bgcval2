@@ -17,10 +17,20 @@ clean: True
 savecsv: True
 
 jobs:
-    u-ca306:
-       description: 'Reference '
+    u-cs495:
+       description: 'PiControl'
        label: PiControl
        colour: 'blue'
+       thickness: 0.6
+       linestyle: '-'
+       shifttime: -427.
+       timerange: [1850, 2020]
+       suite: kmf physics bgc #alkalinity physics
+
+    u-ca306:
+       description: 'Reference '
+       label: Reference
+       colour: 'black'
        thickness: 0.6
        linestyle: '-'
        shifttime: 0    
@@ -64,11 +74,9 @@ jobs:
        shifttime: 0.
        suite: kmf physics bgc #alkalinity physics
 
-
-
     u-cy690: 
        description: 'static ice sheets, started from picontrol yr 2277'
-       colour: blue
+       colour: green
        label: 'hist static ice'
        thickness: 1.7
        linestyle: '-'
@@ -78,7 +86,7 @@ jobs:
     u-cy691:
        description: 'static ice sheets, started from picontrol yr 2197'
        label: None       
-       colour: blue
+       colour: green
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
@@ -87,7 +95,7 @@ jobs:
     u-cy692:
        description: ' static ice sheets, started from picontrol yr 2237'
        label: None       
-       colour: blue
+       colour: green
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
@@ -96,7 +104,7 @@ jobs:
     u-cy693:
        description: ' static ice sheets, started from picontrol yr 2317'
        label: None       
-       colour: blue
+       colour: green
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
