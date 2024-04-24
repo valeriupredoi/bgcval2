@@ -257,7 +257,7 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
     assert 0
 
 
-def save_csv(
+def save_json(
         timesD,
         arrD, 
         analysisname,
@@ -276,7 +276,7 @@ def save_csv(
         csvformat='.json',
     ):
     """
-    Output the data that appears in a plot as a csv.
+    Output the data that appears in a plot as a json file.
 
     """
     if csvformat.lower() not in ['json', '.json']:

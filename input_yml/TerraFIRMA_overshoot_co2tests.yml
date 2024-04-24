@@ -13,7 +13,7 @@ master_suites: physics bgc kmf #alkalinity physics kmf1
 clean: True
 
 # Output the figures as csv json files.
-savecsv: True
+savejson: True
 
 jobs:
     u-cs495:

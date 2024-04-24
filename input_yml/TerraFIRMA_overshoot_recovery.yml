@@ -15,7 +15,7 @@ master_suites: physics bgc kmf #alkalinity physics kmf1
 strict_file_check: False
 
 # Output the figures as csv json files.
-savecsv: True
+savejson: True
 
 clean: True
 

@@ -196,7 +196,7 @@ def timeseries_compare(jobs,
                        config_user=None,
                        dpi=None,
                        savepdf=False,
-                       savecsv=False,
+                       savejson=False,
     ):
     """
     timeseries_compare:
@@ -414,8 +414,8 @@ def timeseries_compare(jobs,
 
             ts = 'Together'
 
-            if savecsv:
-                tst.save_csv(
+            if savejson:
+                tst.save_json(
                         timesD,
                         arrD, 
                         analysisname,
@@ -450,7 +450,6 @@ def timeseries_compare(jobs,
                     labels=labels,
                     dpi=dpi,
                     savepdf=savepdf,
-                    savecsv=savecsv,
                 )
 
 
@@ -537,10 +536,10 @@ def load_comparison_yml(master_compare_yml_fn):
     # Image output settings:
     # dpi: pixels per inch (image resolution)
     # savepdf: also save the image as a pdf. 
-    # savecsv: Save the data that appears in the image.
+    # savejson: Save the data that appears in the image.
     details['dpi'] = input_yml_dict.get('dpi', None)
     details['savepdf'] = input_yml_dict.get('savepdf', False)
-    details['savecsv'] = input_yml_dict.get('savecsv', False)
+    details['savejson'] = input_yml_dict.get('savejson', False)
 
 
 
@@ -627,7 +626,7 @@ def load_yml_and_run(compare_yml, config_user, skip_timeseries):
     strictFileCheck = details.get('strictFileCheck', True)
     dpi = details.get('dpi', None)
     savepdf = details.get('savepdf', False)
-    savecsv = details.get('savecsv', False)
+    savejson = details.get('savejson', False)
 
     print('---------------------')
     print('timeseries_compare:',  analysis_name)
@@ -684,7 +683,7 @@ def load_yml_and_run(compare_yml, config_user, skip_timeseries):
         config_user=config_user,
         dpi=dpi,
         savepdf=savepdf,
-        savecsv=savecsv,
+        savejson=savejson,
 
     )
 

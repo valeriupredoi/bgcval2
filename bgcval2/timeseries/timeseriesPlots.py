@@ -710,7 +710,6 @@ def multitimeseries(
         labels={},
         dpi=None,
         savepdf=False,
-        savecsv=False,
 ):
 
     if 0 in [len(timesD), len(list(timesD.keys()))]: return
