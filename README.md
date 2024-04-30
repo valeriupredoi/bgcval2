@@ -228,6 +228,7 @@ auto_download: <bool>
 strictFileCheck: <bool>
 dpi: <int>
 savepdf: <bool>
+savejson: <bool>
 
 jobs:
    <jobID1>:
@@ -278,7 +279,12 @@ These values are:
    - Output the image as a pdf in addition to the standard png. 
    - This doesn't replace the image in the report, but saves a pdf version of the image in the images directory.
    - The pdfs will be web-visible in the report image directory, but will not linked in the html.
-   - To view a pdf from a report, simply click the image, and replace the `png` extension with `pdf` in the browser path. 
+   - To view a pdf from a report, simply click the image, and replace the `png` extension with `pdf` in the browser path.
+ - `safejson`:
+   - Outputs the data and plotting details of each timeseries plot as a json file.
+   - json is a human readable format that is similar to a python dictionary or a shelve file. 
+   - This file includes all data, time values, units, and line colors, thicknesses and styles.
+
  - `jobs`:
    - A list of jobIDs, and some options on how they will appear in the final report.
    - The options are:
@@ -329,6 +335,46 @@ can copy the html report to a web-visible directory, using the script:
 
 then the report will appear on the [JASMIN public facing page](https://gws-access.jasmin.ac.uk/public/esmeval/CompareReports/bgcval2/),
 which is public facing but password protected.
+
+
+Information about the json output:
+----------------------------------
+
+The `savejson` flag allows bgcval2 to output all data from the multi-model plots to json. 
+Json files are effectively python dictionaries that are saved as human readable ASCII files. 
+This means that they can contain a lot more metadata than a simple csv file. 
+It also means that it's easier to deal with multiple datasets with different time ranges. 
+
+So, in these files, everything is saved as a series of dictionaries, and the main ones are:
+ - `timesD`: The time value (in decimal years)
+ - `arrD`: The data value. 
+
+There's also a lot of info used to make the bgcavl2 plots, including 
+ - `colours`: the colour used by bgcval2 for each jobid
+ - `linestyle`: the plot line style for each job id
+ - `label`: the plot lable for each jobid
+
+Each of these dictionaries uses the jobID as the index, so in python, these can be plotted using the code:
+
+
+```
+import json
+from matplotlib import pyplot
+
+json_file = 'filename.json'
+with open(json_file) as json_file:
+    amoc_data = json.load(json_file)
+
+for jobID in sorted(amoc_data['timesD'].keys()):
+    times = amoc_data['timesD'][jobID]
+    amoc = amoc_data['arrD'][jobID]
+    colour = amoc_data['colours'][jobID]
+    pyplot.plot(times, amoc, c=colour, label=jobID)
+
+pyplot.show()
+```
+
+
 
 
 Batch times series Analysis

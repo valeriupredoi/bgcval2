@@ -26,6 +26,7 @@ REQUIREMENTS = {
     'install': [
         'basemap>=1.3.6',
         'cartopy',
+        'jsondiff',
         'matplotlib',
         'nctoolkit>=0.8.7',  # use linux64 build
         'netcdf4',

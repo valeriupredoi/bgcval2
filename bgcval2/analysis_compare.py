@@ -61,6 +61,8 @@ from .bgcvaltools import bv2tools as bvt
 from .timeseries import timeseriesAnalysis
 from .timeseries import profileAnalysis
 from .timeseries import timeseriesPlots as tsp
+from .timeseries import timeseriesTools as tst
+
 from bgcval2.analysis_timeseries import analysis_timeseries, build_list_of_suite_keys, load_key_file
 from bgcval2.download_from_mass import download_from_mass
 
@@ -194,6 +196,7 @@ def timeseries_compare(jobs,
                        config_user=None,
                        dpi=None,
                        savepdf=False,
+                       savejson=False,
     ):
     """
     timeseries_compare:
@@ -225,6 +228,7 @@ def timeseries_compare(jobs,
         sys.exit(0)
     else:
         imageFolder = paths.imagedir + '/TimeseriesCompare/' + analysisname
+        csvFolder = paths.imagedir + '/TimeseriesCompare_CSV/' + analysisname
 
     annual = True
     strictFileCheck = False
@@ -409,6 +413,25 @@ def timeseries_compare(jobs,
             units = av[name]['modeldetails']['units']
 
             ts = 'Together'
+
+            if savejson:
+                tst.save_json(
+                        timesD,
+                        arrD, 
+                        analysisname,
+                        colours=colours,
+                        linestyles=linestyles,
+                        thicknesses=lineThicknesses,
+                        labels=labels,
+                        name=name,
+                        units=units,
+                        region=region,
+                        layer=layer,
+                        metric=metric,
+                        title=title,
+                        ts=ts,
+                        csvFolder=csvFolder)
+                    
             for smoothing in smoothings:
             #or ls in ['DataOnly', ]:
                 tsp.multitimeseries(
@@ -417,7 +440,7 @@ def timeseries_compare(jobs,
                     data=-999,  # in situ data distribution
                     title=title,
                     filename=bvt.folder(imageFolder) +
-                        '_'.join([name, region, layer, ts, smoothing + '.png']),
+                        '_'.join([name, region, layer, metric, ts, smoothing + '.png']),
                     units=units,
                     plotStyle=ts,
                     smoothing=smoothing,
@@ -428,6 +451,7 @@ def timeseries_compare(jobs,
                     dpi=dpi,
                     savepdf=savepdf,
                 )
+
 
     # Generate a list of comparison images:
     method_images = 'oswalk'
@@ -512,8 +536,12 @@ def load_comparison_yml(master_compare_yml_fn):
     # Image output settings:
     # dpi: pixels per inch (image resolution)
     # savepdf: also save the image as a pdf. 
+    # savejson: Save the data that appears in the image.
     details['dpi'] = input_yml_dict.get('dpi', None)
     details['savepdf'] = input_yml_dict.get('savepdf', False)
+    details['savejson'] = input_yml_dict.get('savejson', False)
+
+
 
     if details['dpi']: # None is valid!
         try: 
@@ -555,7 +583,6 @@ def load_comparison_yml(master_compare_yml_fn):
         auto_download_dict[jobID] = job_dict.get('auto_download', auto_download_dict[jobID]) 
         labels[jobID] = job_dict.get('label', jobID)
        
-
     details['colours'] = colours
     details['descriptions'] = descriptions
     details['thicknesses'] = thicknesses
@@ -599,6 +626,7 @@ def load_yml_and_run(compare_yml, config_user, skip_timeseries):
     strictFileCheck = details.get('strictFileCheck', True)
     dpi = details.get('dpi', None)
     savepdf = details.get('savepdf', False)
+    savejson = details.get('savejson', False)
 
     print('---------------------')
     print('timeseries_compare:',  analysis_name)
@@ -655,6 +683,7 @@ def load_yml_and_run(compare_yml, config_user, skip_timeseries):
         config_user=config_user,
         dpi=dpi,
         savepdf=savepdf,
+        savejson=savejson,
 
     )
 

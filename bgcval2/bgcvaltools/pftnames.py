@@ -270,6 +270,9 @@ def makeLongNameDict():
 
     lnd['PCO2_SW'] = 'pCO2'
     lnd['pCO2'] = 'pCO2'
+    lnd['AtmospCO2'] = 'pCO2'
+    lnd['AtmosCO2'] = 'Atmospheric CO2'
+
 
     lnd['iron'] = "Iron"
     lnd['Fe_D_CONC_BOTTLE'] = "Iron (Dissolved)"

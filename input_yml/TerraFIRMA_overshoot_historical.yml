@@ -13,18 +13,61 @@ master_suites: physics bgc #alkalinity physics kmf1
 
 clean: True
 
+# Output the figures as csv json files.
+savejson: True
+
 jobs:
+    u-cs495:
+       description: 'PiControl'
+       label: PiControl
+       colour: 'blue'
+       thickness: 0.6
+       linestyle: '-'
+       shifttime: -427.
+       timerange: [1850, 2020]
+       suite: kmf physics bgc #alkalinity physics
+
     u-ca306:
        description: 'Reference '
+       label: Reference
        colour: 'black'
        thickness: 0.6
        linestyle: '-'
-       shifttime: 0.
-       timerange: [1800, 1900]
+       shifttime: 0    
+       timerange: [1850, 2020]
        suite: kmf physics bgc #alkalinity physics
 
     u-cy623:
        description: 'interactive ice, started from picontrol yr 2277'
+       label: 'hist ice'
+       colour: red  
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf physics bgc #alkalinity physics
+
+
+    u-da914:
+       description: 'interactive ice, started from picontrol yr 2197'
+       label: None
+       colour: red  
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf physics bgc #alkalinity physics
+
+    u-da916:
+       description: 'interactive ice, started from picontrol yr 2237'
+       label: None
+       colour: red  
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       suite: kmf physics bgc #alkalinity physics
+
+    u-da917:
+       description: 'interactive ice, started from picontrol yr 2317'
+       label: None
        colour: red  
        thickness: 1.7
        linestyle: '-'
@@ -33,7 +76,8 @@ jobs:
 
     u-cy690: 
        description: 'static ice sheets, started from picontrol yr 2277'
-       colour: purple
+       colour: green
+       label: 'hist static ice'
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
@@ -41,7 +85,8 @@ jobs:
 
     u-cy691:
        description: 'static ice sheets, started from picontrol yr 2197'
-       colour: blue
+       label: None       
+       colour: green
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
@@ -49,6 +94,7 @@ jobs:
 
     u-cy692:
        description: ' static ice sheets, started from picontrol yr 2237'
+       label: None       
        colour: green
        thickness: 1.7
        linestyle: '-'
@@ -57,7 +103,8 @@ jobs:
 
     u-cy693:
        description: ' static ice sheets, started from picontrol yr 2317'
-       colour: goldenrod
+       label: None       
+       colour: green
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.

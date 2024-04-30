@@ -17,6 +17,9 @@ keys:
     Salinity: True  # WOA Salinity
 #    soga: True
 
+    # CO2:
+    AtmosCO2: True
+
     # Mixed layer depth keys:
     MLD: True  # iFERMER Mixed Layer Depth
     # MaxMonthlyMLD: True               # MLD Monthly max
