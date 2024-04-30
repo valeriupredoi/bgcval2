@@ -280,8 +280,7 @@ def save_json(
 
     """
     if csvformat.lower() not in ['json', '.json']:
-        print('Format not set up', csvformat )
-        return
+        raise OSError(''.join(['save_json: format not recognised:', csvformat]))  
     
     filename = bvt.folder(csvFolder) + '_'.join([analysisname, name, region, layer, metric, ts ]) + csvformat
 
