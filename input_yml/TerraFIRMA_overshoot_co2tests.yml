@@ -8,7 +8,7 @@ do_analysis_timeseries: True
 do_mass_download: False
 
 # master analysis suite
-master_suites: physics bgc kmf #alkalinity physics kmf1
+master_suites: &keylists physics bgc kmf tfamoc #alkalinity physics kmf11
 
 clean: True
 
@@ -23,8 +23,8 @@ jobs:
        thickness: 0.6
        linestyle: '-'
        shifttime: -427.
-       timerange: [1850, 2020]
-       suite: kmf physics bgc #alkalinity physics
+#       timerange: [1850, 2020]
+       suite: *keylists #kmf physics bgc #alkalinity physics
 
     u-cz014:
        description: 'Terrafirma 4x CO2'
@@ -33,7 +33,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: kmf physics bgc #alkalinity physics
+       suite: *keylists #kmf physics bgc #alkalinity physics
 
     u-cz152:
        description: 'Terrafirma 1% CO2'
@@ -42,8 +42,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: kmf physics bgc #alkalinity physics
-
+       suite: *keylists #kmf physics bgc #alkalinity physics
 
     u-cy623:
        description: 'interactive ice, started from picontrol yr 2277'
@@ -52,8 +51,7 @@ jobs:
        thickness: 1.7
        linestyle: 'dashdot'
        shifttime: 0.
-       suite: kmf physics bgc #alkalinity physics
-
+       suite: *keylists #kmf physics bgc #alkalinity physics
 
     u-cy690: 
        description: 'static ice sheets, started from picontrol yr 2277'
@@ -62,7 +60,8 @@ jobs:
        thickness: 1.7
        linestyle: ':'
        shifttime: 0.
-       suite: kmf physics bgc #alkalinity physics
+       suite: *keylists #kmf physics bgc #alkalinity physics
+
 
 
 

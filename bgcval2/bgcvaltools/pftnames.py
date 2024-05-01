@@ -248,6 +248,9 @@ def makeLongNameDict():
     lnd['VolumeMeanTemperature'] = "Volume-weighted Mean Temperature"
     lnd['GlobalMeanSalinity'] = "Global Volume-weighted Mean Salinity"
 
+    lnd['AtlanticSubtropicSalinity'] = 'Atlantic Subtropic Salinity'
+    lnd['SubtropicNorthAtlantic'] = 'Subtropic North Atlantic'
+    lnd['Surfaceto800m'] = 'Surface-to-800m'
 
     lnd['TotalHeatFlux'] = "Global Total Heat Flux"
     lnd['HeatFlux'] = "Heat Flux"
@@ -531,6 +534,9 @@ def makeLongNameDict():
     lnd['ArcticOcean'] = "Arctic Ocean"
     lnd['NorthernSubpolarAtlantic'] = "Northern Subpolar Atlantic"
     lnd['SPNA'] = "Subpolar North Atlantic"
+    lnd['STNA'] = "Subtropic North Atlantic"
+    lnd['GINseas'] = 'Greenland, Iceland, Norway seas'
+
     lnd['SubpolarNorthAtlantic'] =  lnd['SPNA']
     lnd['NorthernSubpolarPacific'] = "Northern Subpolar Pacific"
 

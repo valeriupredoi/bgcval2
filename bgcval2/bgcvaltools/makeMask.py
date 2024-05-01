@@ -246,11 +246,29 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
             xy, 60., 80.).mask
         return mx
 
+    if newSlice in ['SubtropicNorthAtlantic', 'STNA']:
+        mx = np.ma.masked_outside(xx, -90., -10.).mask + np.ma.masked_outside(
+            xy, 10., 40.).mask
+#       mx *= np.ma.masked_outside(xx, -45., 15.).mask + np.ma.masked_outside(
+#           xy, 60., 80.).mask
+        return mx
+
+
     if newSlice in ['SubpolarNorthAtlantic', 'SPNA',]:
         #  Based on  SPNA region here: https://www.nature.com/articles/s43247-021-00120-y#citeas
         mx = np.ma.masked_outside(xx, -35., -10.).mask + np.ma.masked_outside(
             xy, 40., 65.).mask
         return mx
+
+#    if newSlice in ['WesternSubpolarNorthAtlantic', 'WSPNA',]:
+        
+
+    if newSlice in ['GINseas',]: #Greenland, icveland and norwegean seas
+        mx = np.ma.masked_outside(xx, -20., 15.).mask + np.ma.masked_outside(
+            xy, 65., 75.).mask
+        return mx
+        #65-75:20W-15E         
+
     
     if newSlice == 'AtlanticSOcean':
         mx = np.ma.masked_outside(xx, -40., 20.).mask + np.ma.masked_outside(
