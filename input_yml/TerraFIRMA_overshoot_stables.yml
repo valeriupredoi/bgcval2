@@ -9,7 +9,8 @@ do_analysis_timeseries: True
 do_mass_download: False
 
 # master analysis suite
-master_suites: physics bgc kmf #alkalinity physics kmf1
+master_suites: &keylists physics bgc kmf tfamoc #alkalinity physics
+
 
 # Run without strick check (if True, breaks if job has no years.)
 strict_file_check: False
@@ -31,7 +32,7 @@ jobs:
        linestyle: '-'
        shifttime: -2094
        timerange: [-50., 400.]
-       suite: kmf physics bgc #alkalinity physics
+       suite: *keylists
          
    # # ramp ups
    # u-cx209:
@@ -42,7 +43,7 @@ jobs:
    #    linestyle: '-'
    #    shifttime: 0.
    #    #timerange: [1800, 2050]
-   #    suite: kmf physics bgc #alkalinity physics
+   #    suite: *keylists
 
    # u-cw988:
    #    description: 'E-mode free ice RAMP UP 8GtC/yr #2'
@@ -52,7 +53,7 @@ jobs:
    #    linestyle: '-'
    #    shifttime: 0.
    #    #timerange: [1800, 2050]
-   #    suite: kmf physics bgc #alkalinity physics
+   #    suite: *keylists
            
    # u-cw989:
    #    description: 'E-mode free ice RAMP UP 8GtC/yr #3'
@@ -62,7 +63,7 @@ jobs:
    #    linestyle: '-'
    #    shifttime: 0.
    #    #timerange: [1800, 2050]
-   #    suite: kmf physics bgc #alkalinity physics
+   #    suite: *keylists
 
    # u-cw990:
    #    description: 'E-mode free ice RAMP UP 8GtC/yr #4'
@@ -72,7 +73,7 @@ jobs:
    #    linestyle: '-'
    #    shifttime: 0.
    #    #timerange: [1800, 2050]
-   #    suite: kmf physics bgc #alkalinity physics
+   #    suite: *keylists
 
    # u-cz826:
    #    description: 'like cx209 but static ice sheet geometry 8GtC/yr #5'
@@ -82,7 +83,7 @@ jobs:
    #    linestyle: '-'
    #    shifttime: 0.
    #    #timerange: [1800, 2050]
-   #    suite: kmf physics bgc #alkalinity physics
+   #    suite: *keylists
 
    # 1.5k Stabilisation
    u-cy837:
@@ -93,7 +94,7 @@ jobs:
       linestyle: '-'
       shifttime: -1919.
       #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics   
+      suite: *keylists   
    u-cz834:
       description: '1.5K Stabilisation from u-cw988 (#2)'
       label: None #Stable #2'
@@ -102,7 +103,7 @@ jobs:
       linestyle: '-'
       shifttime: -1931.
       #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics
+      suite: *keylists
    u-da087:
       description: '1.5K Stabilisation from u-cw989 (#3)'
       label: None #'Stable #3'
@@ -111,7 +112,7 @@ jobs:
       linestyle: '-'
       shifttime: -1922.
       #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics
+      suite: *keylists
            
     # 2k Stabilisation
    u-cy838:
@@ -122,7 +123,7 @@ jobs:
       linestyle: '-'
       shifttime: -1944.
       #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics   
+      suite: *keylists   
 
    u-cz855:
       description: '2.0K Stabilisation from cw988 (#2)'
@@ -132,7 +133,7 @@ jobs:
       linestyle: '-'
       shifttime: -1956.
       #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics
+      suite: *keylists
 
    u-da266:
       description: '2.0K Stabilisation from cw988 (#3)'
@@ -142,7 +143,7 @@ jobs:
       linestyle: '-'
       shifttime: -1947
       #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics
+      suite: *keylists
            
     # 2.5k Stabilisation
    u-cz374:
@@ -153,7 +154,7 @@ jobs:
       linestyle: '-'
       shifttime: -1970.
       #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics   
+      suite: *keylists   
    u-cz859:
       description: '2.5K Stabilisation from cw988 (#2)'
       label: None #'2.5K Stable #2'
@@ -162,7 +163,7 @@ jobs:
       linestyle: '-'
       shifttime: -1979.
       #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics
+      suite: *keylists
 
 
     # 3.0K Stabilisations
@@ -174,7 +175,7 @@ jobs:
       linestyle: '-'
       shifttime: -1992.
       #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics          
+      suite: *keylists          
 
    u-db587:
       description: '3.0K Stabilisation from u-cx209 (#2)'
@@ -184,7 +185,7 @@ jobs:
       linestyle: '-'
       shifttime: -2004.
       #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics  
+      suite: *keylists  
 
    u-db597:
       description: '3.0K Stabilisation from u-cx209 (#3)'
@@ -194,7 +195,7 @@ jobs:
       linestyle: '-'
       shifttime: -1994.
       #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics         #       
+      suite: *keylists         #       
 
     # 4k  Stabilisations
    u-cz376:
@@ -205,7 +206,7 @@ jobs:
       linestyle: '-'
       shifttime: -2044.
       #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics  
+      suite: *keylists  
    u-db723:
       description: '4.0K Stabilisation from u-cw988 (#2)'
       label: None #'4K Stable #2'
@@ -214,7 +215,7 @@ jobs:
       linestyle: '-'
       shifttime: -2049.
       #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics      
+      suite: *keylists      
    u-db733:
       description: '4.0K Stabilisation from u-cw989 (#3)'
       label: None #'4K Stable #3'
@@ -223,7 +224,7 @@ jobs:
       linestyle: '-'
       shifttime: -2036.
       #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics      
+      suite: *keylists      
 
     # 5k & 6K  Stabilisations
    u-cz377:
@@ -234,7 +235,7 @@ jobs:
       linestyle: '-'
       shifttime: -2082.
       #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics 
+      suite: *keylists 
    u-db731:
       description: '5.0K Stabilisation from u-cw988 (#2)'
       label: None #'5K Stable #2'
@@ -243,7 +244,7 @@ jobs:
       linestyle: '-'
       shifttime: -2095.
       #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics 
+      suite: *keylists 
    u-dc324:
       description: '5.0K Stabilisation from u-cw989 (#3)'
       label: None #'5K Stable #3'
@@ -252,7 +253,7 @@ jobs:
       linestyle: '-'
       shifttime: -2084.
       #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics 
+      suite: *keylists 
 
    u-cz378:
       description: '6.0K Stabilisation from u-cx209 (#1)'
@@ -262,7 +263,7 @@ jobs:
       linestyle: '-'
       shifttime: -2137.
       #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics 
+      suite: *keylists 
 
    #  # Ramp downs
    # u-cz944:
@@ -273,7 +274,7 @@ jobs:
    #    linestyle: ':' 
    #    shifttime: 0.
    #    #timerange: [1800, 2050]
-   #    suite: kmf physics bgc #alkalinity physics   
+   #    suite: *keylists   
    # u-da800:
    #    description: 'Ramp down from cy838 (- 2.0K Stabilisation from u-cx209) (#1)'
    #    label: '2K Rampdown #1'
@@ -282,7 +283,7 @@ jobs:
    #    linestyle: ':'
    #    shifttime: 0.
    #    #timerange: [1800, 2050]
-   #    suite: kmf physics bgc #alkalinity physics   
+   #    suite: *keylists   
 
    # u-da697:
    #    description: '1.5K Rampdown from u-cx209 (#1)'
@@ -292,7 +293,7 @@ jobs:
    #    linestyle: ':'
    #    shifttime: 0.
    #    #timerange: [1800, 2050]
-   #    suite: kmf physics bgc #alkalinity physics
+   #    suite: *keylists
 
    # u-da892:
    #    description: '4.K Rampdown (#1)'
@@ -301,7 +302,7 @@ jobs:
    #    thickness: 1.2
    #    linestyle: ':'
    #    shifttime: 0.
-   #    suite: kmf physics bgc #alkalinity physics
+   #    suite: *keylists
 
    # u-db223:
    #    description: '3.K Rampdown (#1)'
@@ -310,7 +311,7 @@ jobs:
    #    thickness: 1.2
    #    linestyle: ':'
    #    shifttime: 0.
-   #    suite: kmf physics bgc #alkalinity physics
+   #    suite: *keylists
 
    # u-dc051:
    #    description: 'Rampdown from yr 50 of 1.5 stab #1, -4GtC/yr (#1)'
@@ -320,7 +321,7 @@ jobs:
    #    linestyle: ':'
    #    shifttime: 0.
    #    #timerange: [1800, 2050]
-   #    suite: kmf physics bgc #alkalinity physics  
+   #    suite: *keylists  
 
    # u-dc052:
    #    description: 'Rampdown from yr 200 of 1.5deg, -4GtC/yr (#1)'
@@ -330,7 +331,7 @@ jobs:
    #    linestyle: ':'
    #    shifttime: 0
    #    #timerange: [1800, 2050]
-   #    suite: kmf physics bgc #alkalinity physics  
+   #    suite: *keylists  
 
    # u-dc248:
    #    description: '1.5K Rampdown -4GtC/yr, (#1)'
@@ -339,7 +340,7 @@ jobs:
    #    thickness: 1.2
    #    linestyle: ':'
    #    shifttime: 0.
-   #    suite: kmf physics bgc #alkalinity physics
+   #    suite: *keylists
 
    # u-dc249:
    #    description: '3.K Rampdown -4GtC/yr, 200 years, (#1)'
@@ -348,7 +349,7 @@ jobs:
    #    thickness: 1.2
    #    linestyle: ':'
    #    shifttime: 0.
-   #    suite: kmf physics bgc #alkalinity physics
+   #    suite: *keylists
 
    # u-dc251:
    #    description: '5K Rampdown -8GtC/yr, 50 years, (#1)'
@@ -357,7 +358,7 @@ jobs:
    #    thickness: 1.2
    #    linestyle: ':'
    #    shifttime: 0.
-   #    suite: kmf physics bgc #alkalinity physics
+   #    suite: *keylists
 
    # u-db956:
    #    description: '1.5K Rampdown -8GtC/yr, 0 years, (#1)'
@@ -366,7 +367,7 @@ jobs:
    #    thickness: 1.2
    #    linestyle: ':'
    #    shifttime: 0.
-   #    suite: kmf physics bgc #alkalinity physics
+   #    suite: *keylists
 
    # u-dc032:
    #    description: 'ramp-down from yr 50 of 3.0 stab #1, free ice, -4GtC/yr (#1)'
@@ -376,7 +377,7 @@ jobs:
    #    linestyle: ':'
    #    shifttime: 0.
    #    #timerange: [1800, 2050]
-   #    suite: kmf physics bgc #alkalinity physics
+   #    suite: *keylists
    # u-dc123:
    #    description: 'ramp-down from yr 50 of 4.0 stab #1, free ice, -4GtC/yr (#1)'
    #    label: '4K Rampdown #1'
@@ -385,7 +386,7 @@ jobs:
    #    linestyle: ':'
    #    shifttime: 0.
    #    #timerange: [1800, 2050]
-   #    suite: kmf physics bgc #alkalinity physics
+   #    suite: *keylists
    # u-dc130:
    #    description: 'ramp-down from yr 50 of 5.0 stab #1, free ice, -4GtC/yr (#1)'
    #    label: '5K Rampdown #1'
@@ -394,7 +395,7 @@ jobs:
    #    linestyle: ':'
    #    shifttime: 0.
    #    #timerange: [1800, 2050]
-   #    suite: kmf physics bgc #alkalinity physics
+   #    suite: *keylists
 
    # Ramp down stables.
    u-dc163:
@@ -405,5 +406,5 @@ jobs:
       linestyle: '-'
       shifttime: -2019.
       #timerange: [1800, 2050]
-      suite: kmf physics bgc #alkalinity physics      
+      suite: *keylists      
 

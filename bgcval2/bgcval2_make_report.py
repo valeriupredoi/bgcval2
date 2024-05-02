@@ -1488,7 +1488,7 @@ def comparehtml5Maker(
         'SouthernTotalIceExtent',
         'Temperature_Global_Surface',
         'Salinty_Global_Surface',
-        'AtlanticSubpolarSalinity',
+        'AtlanticSubtropicalSalinity',
         'FreshwaterFlux_Global',
         'TotalHeatFlux',
         'MA_SST',
