@@ -250,7 +250,16 @@ def makeLongNameDict():
 
     lnd['AtlanticSubtropicSalinity'] = 'Atlantic Subtropic Salinity'
     lnd['SubtropicNorthAtlantic'] = 'Subtropic North Atlantic'
+
+    lnd['Surfaceto100m'] = 'Surface-to-100m'
+    lnd['Surfaceto200m'] = 'Surface-to-200m'
+    lnd['Surfaceto300m'] = 'Surface-to-300m'
+    lnd['Surfaceto400m'] = 'Surface-to-400m'
+    lnd['Surfaceto500m'] = 'Surface-to-500m'
+    lnd['Surfaceto600m'] = 'Surface-to-600m'
+    lnd['Surfaceto700m'] = 'Surface-to-700m'
     lnd['Surfaceto800m'] = 'Surface-to-800m'
+    lnd['Surfaceto2000m'] = 'Surface-to-2000m'
 
     lnd['TotalHeatFlux'] = "Global Total Heat Flux"
     lnd['HeatFlux'] = "Heat Flux"
