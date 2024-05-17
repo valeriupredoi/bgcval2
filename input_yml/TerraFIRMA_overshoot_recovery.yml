@@ -208,16 +208,6 @@ jobs:
     # -8: dotted
     # -4: dashed
     # -2 dashdot
-    u-cz944:
-       description: 'Ramp down from cy838 (- 2.0K Stabilisation from u-cx209) (#1)'
-       label: '2K Rampdown'
-       colour: 'goldenrod'
-       thickness: 1.7
-       linestyle: 'dotted' 
-       shifttime: -1994.
-       #timerange: [1800, 2050]
-       suite: *keylists   
-
     u-da800:
        description: 'Ramp down from cy838 (- 2.0K Stabilisation from u-cx209) (#1)'
        label: None #'2K Rampdown #1'
@@ -238,24 +228,33 @@ jobs:
        #timerange: [1800, 2050]
        suite: *keylists
 
-    u-da892:
-       description: '4.K Rampdown (#1)'
-       label: '4.K Rampdown'
-       colour: 'sienna'
+    u-cz944:
+       description: 'Ramp down from cy838 (- 2.0K Stabilisation from u-cx209) (#1)'
+       label: '2K Rampdown'
+       colour: 'goldenrod'
        thickness: 1.7
        linestyle: 'dotted'
-       shifttime: -2094.
+       shifttime: -1994.
+       #timerange: [1800, 2050]
        suite: *keylists
 
     u-db223:
        description: '3.K Rampdown (#1)'
-       label: '3.K Rampdown'
+       label: '3K Rampdown'
        colour: 'red'
        thickness: 1.7
        linestyle: 'dotted'
        shifttime: -2032.
        suite: *keylists
 
+    u-da892:
+       description: '4.K Rampdown (#1)'
+       label: '4K Rampdown'
+       colour: 'sienna'
+       thickness: 1.7
+       linestyle: 'dotted'
+       shifttime: -2094.
+       suite: *keylists
 
 
     u-dc051:
@@ -347,14 +346,14 @@ jobs:
 
 
 # added Monday 13th May:
-    u-df453:
-      description: '-8 Ramp down from cz375 (3.0K Stabilisation 50 years) (#1)'
-      label: None #'2K Rampdown #1'
-      colour: 'red'
-      thickness: 1.7
-      linestyle: 'dotted' 
-      shifttime: -2043.
-      suite: *keylists  
+#    u-df453:
+#      description: '-8 Ramp down from cz375 (3.0K Stabilisation 50 years) (#1)'
+#      label: None #'2K Rampdown #1'
+#      colour: 'red'
+#      thickness: 1.7
+#      linestyle: 'dotted' 
+#      shifttime: -2043.
+#      suite: *keylists  
 
     u-dc565:
       description: '-4 Ramp down from cy838 (2.0K Stabilisation 200 years) (#1)'
@@ -365,39 +364,40 @@ jobs:
       shifttime: -2144.
       suite: *keylists 
 
-    u-dc566:
-      description: '-4 Ramp down from cy376 (4.0K Stabilisation 200 years) (#1)'
-      label: None #'2K Rampdown #1'
-      colour: 'sienna'
-      thickness: 1.7
-      linestyle: 'dashed' 
-      shifttime: -2144.
-      suite: *keylists  
-    u-dc567:
-      description: '-4 Ramp down from cz375 (3.0K Stabilisation 30 years) (#1)'
-      label: None #'2K Rampdown #1'
-      colour: 'red'
-      thickness: 1.7
-      linestyle: 'dashed' 
-      shifttime: -2023.
-      suite: *keylists  
-    u-dc568:
-      description: '-4 Ramp down from cz375 (3.0K Stabilisation 50 years) (#1)'
-      label: None #'2K Rampdown #1'
-      colour: 'red'
-      thickness: 1.7
-      linestyle: 'dashed' 
-      shifttime: -2043.
-      suite: *keylists      
-    u-dc569:
-      description: '-4 Ramp down from cz376 (4.0K Stabilisation 50 years) (#1)'
-      label: None #'2K Rampdown #1'
-      colour: 'sienna'
-      thickness: 1.7
-      linestyle: 'dashed' 
-      shifttime: -2095.
-      suite: *keylists    
-
+#    u-dc566:
+#      description: '-4 Ramp down from cy376 (4.0K Stabilisation 200 years) (#1)'
+#      label: None #'2K Rampdown #1'
+#      colour: 'sienna'
+#      thickness: 1.7
+#      linestyle: 'dashed' 
+#      shifttime: -2144.
+#      suite: *keylists  
+#    u-dc567:
+#      description: '-4 Ramp down from cz375 (3.0K Stabilisation 30 years) (#1)'
+#      label: None #'2K Rampdown #1'
+#      colour: 'red'
+#      thickness: 1.7
+#      linestyle: 'dashed' 
+#      shifttime: -2023.
+#      suite: *keylists  
+#    u-dc568:
+#      description: '-4 Ramp down from cz375 (3.0K Stabilisation 50 years) (#1)'
+#      label: None #'2K Rampdown #1'
+#      colour: 'red'
+#      thickness: 1.7
+#      linestyle: 'dashed' 
+#      shifttime: -2043.
+#      suite: *keylists      
+#    u-dc569:
+#      description: '-4 Ramp down from cz376 (4.0K Stabilisation 50 years) (#1)'
+#      label: None #'2K Rampdown #1'
+#      colour: 'sienna'
+#      thickness: 1.7
+#      linestyle: 'dashed' 
+#      shifttime: -2095.
+#      suite: *keylists    
+# NO DATA ON MASS - 2024-05-13
+#
     u-df025:
       description: '-2 Ramp down from cy838 (2.0K Stabilisation 50 years) (#1)'
       label: None #'2K Rampdown #1'
@@ -436,7 +436,7 @@ jobs:
 
     u-de943:
       description: '-8 Ramp down from cz378 (6.0K Stabilisation 51 years) (#1)'
-      label: None #'2K Rampdown #1'
+      label: '6K Rampdown'
       colour: 'indigo'
       thickness: 1.7
       linestyle: 'dotted' 
