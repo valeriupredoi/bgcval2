@@ -278,7 +278,7 @@ jobs:
    # 1.5 degree rampdown
    u-da697:
        description: '1.5K Rampdown from u-cx209 (#1)'
-       label: '-8Pg/yr'
+       label: '-8.Pg/yr'
        colour: 'lawngreen'
        thickness: 1.7
        linestyle: 'dotted'
@@ -288,7 +288,7 @@ jobs:
 
    u-dc051:
        description: 'Rampdown from yr 50 of 1.5 stab #1, -4GtC/yr (#1)'
-       label: '-4Pg/yr'
+       label: '-4.Pg/yr'
        colour: 'lawngreen'
        thickness: 1.7
        linestyle: 'dashed'
@@ -347,7 +347,7 @@ jobs:
 
    u-df025:
       description: '-2 Ramp down from cy838 (2.0K Stabilisation 50 years) (#1)'
-      label: '-2Pg/yr' #'2K Rampdown #1'
+      label: '-2.Pg/yr' #'2K Rampdown #1'
       colour: 'goldenrod'
       thickness: 1.7
       linestyle: 'dashdot' 
@@ -538,7 +538,7 @@ jobs:
    # Ramp down stables.
    u-dc163:
       description: 'Stable post ramp-down (#1)'
-      label: 'Ramp-down 0.Pg/yr'
+      label: '0.Pg/yr'
       colour: 'green'
       thickness: 1.6
       linestyle: '-'
