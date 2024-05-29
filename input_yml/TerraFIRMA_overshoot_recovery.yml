@@ -358,7 +358,7 @@ jobs:
     u-dc565:
       description: '-4 Ramp down from cy838 (2.0K Stabilisation 200 years) (#1)'
       label: None #'2K Rampdown #1'
-      colour: 'red'
+      colour: 'goldenrod'
       thickness: 1.7
       linestyle: 'dashed' 
       shifttime: -2144.
