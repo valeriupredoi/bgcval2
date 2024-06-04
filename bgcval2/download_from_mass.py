@@ -502,6 +502,8 @@ def download_from_mass(
                                        stdout=subprocess.PIPE)
             output = process.communicate()[0]
 
+    download_script_txt = ''.join([download_script_txt, '\nexit 0\n']) # ends the self-destruct timer.
+ 
     print('writing file:',download_script_path, '\nfile contents:\n', download_script_txt)
     outfile = open(download_script_path, 'w')
     outfile.write(download_script_txt)
