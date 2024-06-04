@@ -30,4 +30,4 @@ data_convert:
     maskname : mask
     areafile: $BASEDIR_OBS/IFREMER-MLD/mld_DT02_c1m_reg2.0-annual.nc
 #layers          : Surface
-regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthAtlanticOcean SouthAtlanticOcean NorthPacificOcean SouthPacificOcean SPNA STNA GINseas LabradorSea
+regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthAtlanticOcean SouthAtlanticOcean NorthPacificOcean SouthPacificOcean SPNA STNA GINseas LabradorSea EquatorialAtlanticOcean

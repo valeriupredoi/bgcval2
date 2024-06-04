@@ -30,7 +30,7 @@ jobs:
       thickness: 1.2
       linestyle: '-'
       shifttime: -100.
-      timerange: [1850, 2400]
+      timerange: [1850, 2600]
       suite: *keylists
          
    # ramp up
