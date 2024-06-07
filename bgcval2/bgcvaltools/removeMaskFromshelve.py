@@ -34,6 +34,8 @@
 from shelve import open as shOpen
 from glob import glob
 
+from bgcval2._runtime_config import get_run_configuration
+
 
 def removeFromShelves(fn, removeRegions):
     print('removing:', removeRegions, 'from', fn)
@@ -54,8 +56,7 @@ def removeFromShelves(fn, removeRegions):
 
 
 
-def main():
-
+def main(config_user=None):
 
     # get runtime configuration
     if config_user:
