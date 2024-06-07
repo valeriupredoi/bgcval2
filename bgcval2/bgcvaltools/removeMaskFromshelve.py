@@ -53,10 +53,32 @@ def removeFromShelves(fn, removeRegions):
     # sh.close()
 
 
-removeRegions = [
-    'Remainder',
-]  #'ignoreInlandSeas',
 
-for fn in glob('shelves/timeseries/u-ab749/u-ab749_*'):
-    if fn.find('insitu') > -1: continue
-    removeFromShelves(fn, removeRegions)
+def main():
+
+
+    # get runtime configuration
+    if config_user:
+        paths_dict, config_user = get_run_configuration(config_user)
+    else:
+        paths_dict, config_user = get_run_configuration("defaults")
+
+    # filter paths dict into an object that's usable below
+    paths = paths_setter(paths_dict)
+        
+    removeRegions = [
+    #    'Remainder',
+        'STNA', 'SubtropicNorthAtlantic',
+        'Pitcairn',
+    ]  #'ignoreInlandSeas',
+
+    shelvedir = bvt.folder([paths.shelvedir, "timeseries", jobID])
+
+    jobIDs = ['u-ab749', ]
+    for jobID in jobIDS:
+        for fn in glob(shelvedir+'/*'):
+            if fn.find('insitu') > -1: continue
+            removeFromShelves(fn, removeRegions)
+
+if __name__ == "__main__":
+    main()
