@@ -135,7 +135,7 @@ def add_region(fig, ax, lons, lats, data):
 
 def make_figure(region):
     fig_fn = bvt.folder('images/regions')+region+'.png'
-    if os.path.exists(fig_fn): return
+    #if os.path.exists(fig_fn): return
 
     fig = pyplot.figure()
     
@@ -213,7 +213,7 @@ def make_figure(region):
     pyplot.suptitle(region+': '+getLongName(region))
     print('saving:', fig_fn)
     pyplot.savefig(fig_fn,dpi=300.)
-    #pyplot.savefig(fig_fn.replace('.png', '_trans.png'), transparent=True)
+    pyplot.savefig(fig_fn.replace('.png', '_trans.png'), transparent=True)
     pyplot.close()
 
 
