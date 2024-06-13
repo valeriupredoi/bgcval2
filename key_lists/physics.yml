@@ -26,10 +26,11 @@ keys:
     # MinMonthlyMLD: True               # MLD Monthly min
 
     # Ice keys:
-    #	TotalIceArea: True			# work in progress
-    #	NorthernTotalIceArea: True		# work in progress
-    #	SouthernTotalIceArea: True		# work in progress
-    #	WeddelTotalIceArea: True
+    TotalIceArea: True # work in progress
+    NorthernTotalIceArea: True  # work in progress
+    SouthernTotalIceArea: True  # work in progress
+
+   #WeddelTotalIceArea: True
     TotalIceExtent: True  # work in progress
     NorthernTotalIceExtent: True  # work in progress
     SouthernTotalIceExtent: True  # work in progress

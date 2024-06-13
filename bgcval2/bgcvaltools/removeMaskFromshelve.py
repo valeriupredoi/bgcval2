@@ -35,6 +35,8 @@ from shelve import open as shOpen
 from glob import glob
 
 from bgcval2._runtime_config import get_run_configuration
+from bgcval2.Paths.paths import paths_setter
+from bgcval2.bgcvaltools import bv2tools as bvt
 
 
 def removeFromShelves(fn, removeRegions):
@@ -73,12 +75,27 @@ def main(config_user=None):
         'Pitcairn',
     ]  #'ignoreInlandSeas',
 
-    shelvedir = bvt.folder([paths.shelvedir, "timeseries", jobID])
 
-    jobIDs = ['u-ab749', ]
-    for jobID in jobIDS:
-        for fn in glob(shelvedir+'/*'):
+    jobIDs = [
+        'u-cs495', 'u-cs568', 'u-cy623', 'u-da914', 'u-da916', 
+        'u-da917', 'u-cy690', 'u-cy691', 'u-cy692', 'u-cy693', 
+        'u-cz152', 'u-cz014', 'u-cx209', 'u-cw988', 'u-cw989', 
+        'u-cw990', 'u-cz826', 'u-cy837', 'u-cy838', 'u-cz374', 
+        'u-cz375', 'u-cz376', 'u-cz377', 'u-cz378', 'u-cz834', 
+        'u-cz855', 'u-cz859', 'u-db587', 'u-db723', 'u-db731', 
+        'u-da087', 'u-da266', 'u-db597', 'u-db733', 'u-dc324', 
+        'u-cz944', 'u-da800', 'u-da697', 'u-da892', 'u-db223', 
+        'u-df453', 'u-dc251', 'u-dc051', 'u-dc052', 'u-dc248', 
+        'u-dc249', 'u-db956', 'u-dc565', 'u-dd210', 'u-dc032', 
+        'u-df028', 'u-dc123', 'u-dc130', 'u-df025', 'u-df027', 
+        'u-df021', 'u-df023', 'u-de943', 'u-de962', 'u-de963', 
+        'u-dc163', 'u-df028', ]
+    for jobID in jobIDs:
+        shelvedir = bvt.folder([paths.shelvedir, "timeseries", jobID])
+
+        for fn in glob(shelvedir+'/*shelve.dir'):
             if fn.find('insitu') > -1: continue
+            fn = fn[:-4]
             removeFromShelves(fn, removeRegions)
 
 if __name__ == "__main__":

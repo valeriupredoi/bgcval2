@@ -74,15 +74,15 @@ jobs:
       #timerange: [1800, 2050]
       suite: *keylists
 
-   u-cz826:
-      description: 'like cx209 but static ice sheet geometry 8GtC/yr #5'
-      label: None #'Ramp-up #5'
-      colour: 'black'
-      thickness: 1.2
-      linestyle: '-'
-      shifttime: 0.
-      #timerange: [1800, 2050]
-      suite: *keylists
+#   u-cz826:
+#      description: 'like cx209 but static ice sheet geometry 8GtC/yr #5'
+#      label: None #'Ramp-up #5'
+#      colour: 'black'
+#      thickness: 1.2
+#      linestyle: '-'
+#      shifttime: 0.
+#      #timerange: [1800, 2050]
+#      suite: *keylists
 
    # 1.5k Stabilisation
    u-cy837:
