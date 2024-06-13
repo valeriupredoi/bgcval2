@@ -52,6 +52,14 @@ keys:
     #	MeridionalCurrent: True        	# Meridional Veloctity
     #	VerticalCurrent: True          	# Vertical Veloctity
 
+
+    ZOS: True # Sea Surface Height
+    sowindsp: True # Wind speed
+    sowflisf: True # Ice flux
+    evs: True # Evaporation
+    precip: True # Precipitation
+
+
     # Misc fluxes:
     # FreshwaterFlux: True  # Freshwater flux
     # sowaflup: True  # Net Upward Water Flux
