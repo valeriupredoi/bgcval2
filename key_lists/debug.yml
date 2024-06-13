@@ -9,8 +9,12 @@ keys:
 #    DrakePassageTransport: True
 #    AMOC_26N: True
 #    GlobalMeanTemperature: True
-     AtlanticSubtropicSalinity: True
-     MLD: True
+#     pH: True
+    TotalIceArea: True
+    NorthernTotalIceArea: True
+    SouthernTotalIceArea: True
+#     AtlanticSubtropicSalinity: True
+#     MLD: True
 #     Temperature: True
 #   Iron: True
 #    GlobalMeanSalinity: True
