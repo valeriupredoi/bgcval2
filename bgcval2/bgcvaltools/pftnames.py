@@ -328,6 +328,12 @@ def makeLongNameDict():
     lnd['WeddelIceExent'] = 'Weddel Sea Ice Extent'
     lnd['TotalIceExtent'] = 'Total Ice Extent'
 
+    lnd['ZOS'] = 'Sea Surface Height'
+    lnd['EVS'] = 'Water Evaporation flux '
+    lnd['Precip'] = 'Precipitation'
+    lnd['sowindsp'] = 'Surface wind speed'
+    lnd['sowlisf'] = 'Ice Shelf Melting'
+
     lnd['AMM'] = 'Atlantic Margins'
     lnd['AMM_Shelf'] = 'Atlantic Margins Shelf'
     lnd['AMM_OffShelf'] = 'Atlantic Margins Off Shelf'

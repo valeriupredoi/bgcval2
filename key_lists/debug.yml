@@ -13,6 +13,13 @@ keys:
     TotalIceArea: True
     NorthernTotalIceArea: True
     SouthernTotalIceArea: True
+
+    ZOS: True
+    sowindsp: True
+    sowflisf: True
+    evs: True
+    precip: True
+
 #     AtlanticSubtropicSalinity: True
 #     MLD: True
 #     Temperature: True
