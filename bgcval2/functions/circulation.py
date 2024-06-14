@@ -305,6 +305,12 @@ def AMOC26N(nc, keys, **kwargs):
     return atlmoc.max()
 
 
+def fov_sa(nc, keys, **kwargs):
+    assert 0
+
+    return atlmoc.max()
+
+
 
 def AEU(nc, keys, **kwargs):
     """

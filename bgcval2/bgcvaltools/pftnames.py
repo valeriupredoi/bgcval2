@@ -333,6 +333,10 @@ def makeLongNameDict():
     lnd['Precip'] = 'Precipitation'
     lnd['sowindsp'] = 'Surface wind speed'
     lnd['sowflisf'] = 'Ice Shelf Melting'     
+    lnd['fov'] = 'AMOC Meridional freshwater transport'     
+    lnd['fov_sa'] = 'AMOC Meridional freshwater transport (South Atlantic)'     
+    lnd['fov_stna'] = 'AMOC Meridional freshwater transport (Subtropial North Atlantic)'     
+
 
     lnd['AMM'] = 'Atlantic Margins'
     lnd['AMM_Shelf'] = 'Atlantic Margins Shelf'

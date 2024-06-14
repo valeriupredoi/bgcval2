@@ -19,6 +19,7 @@ keys:
     #sowflisf: True
     #evs: True
     precip: True
+    fov: True
 
 #     AtlanticSubtropicSalinity: True
 #     MLD: True
