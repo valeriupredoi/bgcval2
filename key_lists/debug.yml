@@ -10,14 +10,14 @@ keys:
 #    AMOC_26N: True
 #    GlobalMeanTemperature: True
 #     pH: True
-    TotalIceArea: True
-    NorthernTotalIceArea: True
-    SouthernTotalIceArea: True
+#    TotalIceArea: True
+#    NorthernTotalIceArea: True
+#    SouthernTotalIceArea: True
 
-    ZOS: True
-    sowindsp: True
-    sowflisf: True
-    evs: True
+    #ZOS: True
+    #sowindsp: True
+    #sowflisf: True
+    #evs: True
     precip: True
 
 #     AtlanticSubtropicSalinity: True

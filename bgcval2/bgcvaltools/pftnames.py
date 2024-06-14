@@ -332,7 +332,7 @@ def makeLongNameDict():
     lnd['EVS'] = 'Water Evaporation flux '
     lnd['Precip'] = 'Precipitation'
     lnd['sowindsp'] = 'Surface wind speed'
-    lnd['sowlisf'] = 'Ice Shelf Melting'
+    lnd['sowflisf'] = 'Ice Shelf Melting'     
 
     lnd['AMM'] = 'Atlantic Margins'
     lnd['AMM_Shelf'] = 'Atlantic Margins Shelf'
