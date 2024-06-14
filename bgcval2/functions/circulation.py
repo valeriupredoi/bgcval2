@@ -72,8 +72,10 @@ e3v_AMOC26N = 0
 e1v_AMOC26N = 0
 tmask_AMOC26N = 0
 alttmask_AMOC26N = 0
+alttmask = 0
 loadedArea = False
 loadedAltMask = False
+loadedAltMask_full = False
 loaded_AEU = False
 
 def loadDataMask(gridfn, maskname, grid):
@@ -155,6 +157,22 @@ def loadAtlanticMask(altmaskfile, maskname='tmaskatl', grid = 'eORCA1'):
     alttmask_AMOC26N = nc.variables[maskname][latslice26Nnm, :]
     nc.close()
     loadedAltMask = True
+
+
+def loadAtlanticMask_full(altmaskfile, maskname='tmaskatl', grid = 'eORCA1'):
+    """
+    Load the atlantic ocean mask.
+    """
+    global alttmask
+    global loadedAltMask_full
+    if grid == 'eORCA1':
+        latslice26Nnm = eORCA1_latslice26Nnm
+    else:
+        raise ValueError("Grid not recognised in this calculation: %s", grid)
+    nc = dataset(altmaskfile, 'r')        
+    alttmask = nc.variables[maskname][latslice26Nnm, :]
+    nc.close()
+    loadedAltMask_full = True
 
 
 def find_keys_in_nc(nc, keys):
@@ -306,9 +324,52 @@ def AMOC26N(nc, keys, **kwargs):
 
 
 def fov_sa(nc, keys, **kwargs):
+    # Fov/Mov defined in Jackson 2023 as:
+    # We also use diagnostics of the overturning component of the Atlantic freshwater transport (Fov).
+    # This is calculated as "equation", where 
+    # vbar is the zonal mean of the meridional velocity, 
+    # sbar is the zonal mean of the salinity, 
+    # and S0 is a reference salinity, 35PSU (Rahmstorf, 1996; Hawkins et al., 2011; Weaver et al., 2012).
+    # This is calculated with monthly mean velocity and salinity fields, 
+    # which ignores the impacts of the higher-frequency covariances of v and S;
+    # however, previous studies have found these to be small (Mecking et al., 2016; Jackson and Wood, 2018a).
+    # We use a reference salinity of 35 PSU, except in the case of CESM2, 
+    # for which a reference salinity of 34.7 PSU is used, 
+    # although the implied difference in transports from these different reference salinities
+    # is again very small (Mecking et al., 2017)."
+    # https://gmd.copernicus.org/articles/16/1975/2023/
+
+    # Grid?
+    grid = kwargs.get('grid', 'eORCA1')
+
+    # Reference salinity, S0
+    sal_ref = kwargs.get('sal_ref', 35.)
+
+    # Load Atlantic Mask
+    if not loadedAltMask_full:
+        loadAtlanticMask_full(altmaskfile, maskname='tmaskatl', grid=grid)
+
+    # Load and mask vo
+    vo =  np.ma.array(nc.variables[keys[0]][:]) # #vo in m/s
+    vo = np.ma.masekd_where(vo.mask + alttmask, vo) # shape alignment?
     assert 0
 
-    return atlmoc.max()
+    # Take the zonal mean of the salinity in the Atlantic then subtract 35.
+    vobar = 
+    # Take the zonal mean of the meridional velocity 
+
+    # Multiply these two terms together
+
+    # Integrate along the meridional direction from 30 S to 34 S. *
+    #Integrate along the vertical direction from surface to sea floor. 
+    #Multiply by -1/35
+    #*This range is given in the paragraph of this paper that starts "There are various factors which could contribute to whether a model has a bistable AMOC." We could also do a second version for the subtropical North Atlantic, which we previously defined as 10N-40N.
+
+    # apply Atlantic mas#
+
+    vbar = 
+
+    return 
 
 
 
