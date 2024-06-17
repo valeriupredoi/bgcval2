@@ -53,6 +53,8 @@ keys:
     #	VerticalCurrent: True          	# Vertical Veloctity
 
 
+    somesatr: True # salt flow
+
     ZOS: True # Sea Surface Height
     sowindsp: True # Wind speed
     sowflisf: True # Ice flux

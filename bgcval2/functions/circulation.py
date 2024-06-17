@@ -355,7 +355,7 @@ def fov_sa(nc, keys, **kwargs):
     assert 0
 
     # Take the zonal mean of the salinity in the Atlantic then subtract 35.
-    vobar = 
+    #vobar = 
     # Take the zonal mean of the meridional velocity 
 
     # Multiply these two terms together
@@ -367,7 +367,7 @@ def fov_sa(nc, keys, **kwargs):
 
     # apply Atlantic mas#
 
-    vbar = 
+    #vbar = 
 
     return 
 
