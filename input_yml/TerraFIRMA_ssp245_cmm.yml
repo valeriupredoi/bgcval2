@@ -1,0 +1,116 @@
+---
+# GC5 N96 ORCA1 spinup analysis
+name: TerraFIRMA_SSP245_CMM
+
+# Run the single job analysis
+do_analysis_timeseries: True  
+
+# Download from mass:
+do_mass_download: False
+
+# master analysis suite
+master_suites: &keylists physics bgc kmf tfamoc #alkalinity physics
+
+
+# Run without strick check (if True, breaks if job has no years.)
+strict_file_check: False
+
+# Output the figures as csv json files.
+savejson: True
+
+clean: True
+
+
+jobs:
+
+
+   # PI CONTROL
+   u-cs495:
+      description: 'PI-Control'
+      label: 'PIcontrol'
+      colour: 'blue' 
+      thickness: 1.2
+      linestyle: '-'
+      shifttime: -300.
+      timerange: [2197, 2600]
+      suite: *keylists
+         
+
+   # ramp up
+   u-cy623:
+      description: 'TF OS SSP245 cmm'
+      label: 'SSP2-4.5' 
+      colour: 'red'
+      thickness: 1.2
+      linestyle: '-'
+      shifttime: 0.
+      #timerange: [1800, 2050]
+      suite: *keylists
+
+   # ramp up
+   u-da914:
+      description: 'TF OS SSP245 cmm- High freq nemo, no CFC/SF6 output'
+      label: 'SSP2-4.5' 
+      colour: 'red'
+      thickness: 1.2
+      linestyle: '-'
+      shifttime: 0.
+      #timerange: [1800, 2050]
+      suite: *keylists
+
+   # ramp up
+   u-da916:
+      description: 'TF OS SSP245 cmm - High freq nemo, no CFC/SF6 output from 2030 onwards'
+      label: 'SSP2-4.5' 
+      colour: 'red'
+      thickness: 1.2
+      linestyle: '-'
+      shifttime: 0.
+      #timerange: [1800, 2050]
+      suite: *keylists
+
+   # ramp up
+   u-da917:
+      description: 'TF OS SSP245 cmm - High freq nemo, no CFC/SF6 output from 2030 onwards'
+      label: 'SSP2-4.5' 
+      colour: 'red'
+      thickness: 1.2
+      linestyle: '-'
+      shifttime: 0.
+      #timerange: [1800, 2050]
+      suite: *keylists
+
+
+   # ramp up
+   u-dg308:
+      description: 'TF OS SSP245 cmm - High freq nemo, no CFC/SF6 output from 2030 onwards'
+      label: 'SSP2-4.5' 
+      colour: 'red'
+      thickness: 1.2
+      linestyle: '-'
+      shifttime: 0.
+      #timerange: [1800, 2050]
+      suite: *keylists
+
+   # ramp up
+   u-dg508:
+      description: 'TF OS SSP245 cmm - High freq nemo, no CFC/SF6 output from 2030 onwards'
+      label: 'SSP2-4.5' 
+      colour: 'red'
+      thickness: 1.2
+      linestyle: '-'
+      shifttime: 0.
+      #timerange: [1800, 2050]
+      suite: *keylists
+
+   # ramp up
+   u-dg509:
+      description: 'TF OS SSP245 cmm - High freq nemo, no CFC/SF6 output from 2030 onwards'
+      label: 'SSP2-4.5' 
+      colour: 'red'
+      thickness: 1.2
+      linestyle: '-'
+      shifttime: 0.
+      #timerange: [1800, 2050]
+      suite: *keylists
+
