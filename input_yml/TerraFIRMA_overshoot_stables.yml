@@ -1,4 +1,27 @@
-u-cz826:
+---
+name: TerraFIRMA_overshoot_stables
+
+# Run the single job analysis
+do_analysis_timeseries: True
+
+# Download from mass:
+do_mass_download: False
+
+# master analysis suite
+master_suites: &keylists physics bgc kmf tfamoc #alkalinity physics
+
+
+# Run without strick check (if True, breaks if job has no years.)
+strict_file_check: False
+
+# Output the figures as csv json files.
+savejson: True
+
+clean: True
+
+jobs:
+
+# u-cz826:
    #    description: 'like cx209 but static ice sheet geometry 8GtC/yr #5'
    #    label: 'Ramp-up #5'
    #    colour: 'black'

@@ -32,25 +32,25 @@ jobs:
       thickness: 1.2
       linestyle: '-'
       shifttime: -300.
-      timerange: [2197, 2600]
+      timerange: [1825, 2200]
       suite: *keylists
          
 
-   # ramp up
+
+
    u-cy623:
-      description: 'TF OS SSP245 cmm'
-      label: 'SSP2-4.5' 
-      colour: 'red'
+      description: 'interactive ice, started from picontrol yr 2277'
+      label: 'Historical' 
+      colour: 'maroon'
       thickness: 1.2
       linestyle: '-'
       shifttime: 0.
       #timerange: [1800, 2050]
       suite: *keylists
 
-   # ramp up
    u-da914:
-      description: 'TF OS SSP245 cmm- High freq nemo, no CFC/SF6 output'
-      label: 'SSP2-4.5' 
+      description: 'interactive ice, started from picontrol yr 2197'
+      label: None
       colour: 'red'
       thickness: 1.2
       linestyle: '-'
@@ -58,10 +58,10 @@ jobs:
       #timerange: [1800, 2050]
       suite: *keylists
 
-   # ramp up
    u-da916:
-      description: 'TF OS SSP245 cmm - High freq nemo, no CFC/SF6 output from 2030 onwards'
-      label: 'SSP2-4.5' 
+      description: 'interactive ice, started from picontrol yr 2237'
+      label: None
+#     label: 'SSP2-4.5' 
       colour: 'red'
       thickness: 1.2
       linestyle: '-'
@@ -69,10 +69,10 @@ jobs:
       #timerange: [1800, 2050]
       suite: *keylists
 
-   # ramp up
    u-da917:
-      description: 'TF OS SSP245 cmm - High freq nemo, no CFC/SF6 output from 2030 onwards'
-      label: 'SSP2-4.5' 
+      description: 'interactive ice, started from picontrol yr 2317'
+      label: None
+#     label: 'SSP2-4.5' 
       colour: 'red'
       thickness: 1.2
       linestyle: '-'
@@ -81,36 +81,49 @@ jobs:
       suite: *keylists
 
 
-   # ramp up
    u-dg308:
-      description: 'TF OS SSP245 cmm - High freq nemo, no CFC/SF6 output from 2030 onwards'
+      description: 'TF OS SSP245 cmm - High freq nemo, no CFC/SF6 output - ssp245 extension of u-da914'
+#      label: 'Extension'
       label: 'SSP2-4.5' 
-      colour: 'red'
+      colour: 'purple'
       thickness: 1.2
       linestyle: '-'
       shifttime: 0.
       #timerange: [1800, 2050]
       suite: *keylists
 
-   # ramp up
+
+   u-dg480:
+      description: 'Interactive ice TF OS SSP245 cmm - High freq nemo, no CFC/SF6 output - ssp245 extension of u-cy623'
+#      label: 'Extension'
+      label: 'SSP2-4.5'
+      colour: 'violet'
+      thickness: 1.2
+      linestyle: '-'
+      shifttime: 0.
+      #timerange: [1800, 2050]
+      suite: *keylists
+
+
    u-dg508:
-      description: 'TF OS SSP245 cmm - High freq nemo, no CFC/SF6 output from 2030 onwards'
-      label: 'SSP2-4.5' 
-      colour: 'red'
+      description: 'TF OS SSP245 cmm - High freq nemo, no CFC/SF6 output from 2030 onwards - ssp245 extension of u-da916'
+      label: None
+#     label: 'SSP2-4.5' 
+      colour: 'purple'
       thickness: 1.2
       linestyle: '-'
       shifttime: 0.
       #timerange: [1800, 2050]
       suite: *keylists
 
-   # ramp up
-   u-dg509:
-      description: 'TF OS SSP245 cmm - High freq nemo, no CFC/SF6 output from 2030 onwards'
-      label: 'SSP2-4.5' 
-      colour: 'red'
-      thickness: 1.2
-      linestyle: '-'
-      shifttime: 0.
-      #timerange: [1800, 2050]
-      suite: *keylists
+#   u-dg509:
+#      description: 'TF OS SSP245 cmm - High freq nemo, no CFC/SF6 output from 2030 onwards - ssp245 extension of u-da917'
+#      label: None
+#      label: 'SSP2-4.5' 
+#      colour: 'purple'
+#      thickness: 1.2
+#      linestyle: '-'
+#      shifttime: 0.
+#      #timerange: [1800, 2050]
+#      suite: *keylists
 
