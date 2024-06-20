@@ -175,7 +175,7 @@ def apply_timerange(times, datas, jobID, timeranges):
         print('apply_timerange:', jobID, ti, da)
 
     if not len(n_times):
-        print('apply_timerange: WARNING: No times made the cut?', len(times),
+        print('apply_timerange: WARNING: No times made the cut?', jobID, len(times),
               'original times', [np.min(times), np.max(times)], 
               'timerange:', timerange)
         assert 0
@@ -401,7 +401,7 @@ def timeseries_compare(jobs,
                 title = titleify([region, layer, metric, name])
 
                 times, datas = apply_shifttimes(mdata, jobID, shifttimes)
-                print('post apply_shifttimes:', len(times), len(datas))
+                print('post apply_shifttimes:', jobID, len(times), len(datas))
                 times, datas = apply_timerange(times, datas, jobID, timeranges)
                 timesD[jobID] = times 
                 arrD[jobID] = datas  

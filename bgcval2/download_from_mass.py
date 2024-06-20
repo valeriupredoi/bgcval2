@@ -441,6 +441,12 @@ def download_from_mass(
     header_lines.append('# from login1.jasmin.ac.uk, ssh to the mass machine:\n#     ssh -X  mass-cli\n')
     header_lines.append(''.join(['# run script with:\n# source ', os.path.abspath(download_script_path),'\n']))
     header_lines.append('# moo passwd -r # if mass password is expired\n')
+    header_lines.append('\n#self-destruct:\n')
+    header_lines.append('{\n')
+    header_lines.append('    sleep 720m  # Kill script after 12 hours.\n')
+    header_lines.append('    echo "Script ran out of time (23 hour limit)"\n')
+    header_lines.append('    kill $$\n')
+    header_lines.append('} &\n\n')
     header_lines.append('source /etc/bashrc\n') # make sure script can access moo tools.
     header_lines.append('echo "\n\nDownloading '+jobID+' on mass-cli1"\n') # make sure script can access moo tools.
 
@@ -496,6 +502,8 @@ def download_from_mass(
                                        stdout=subprocess.PIPE)
             output = process.communicate()[0]
 
+    download_script_txt = ''.join([download_script_txt, '\nexit 0\n']) # ends the self-destruct timer.
+ 
     print('writing file:',download_script_path, '\nfile contents:\n', download_script_txt)
     outfile = open(download_script_path, 'w')
     outfile.write(download_script_txt)

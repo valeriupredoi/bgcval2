@@ -248,6 +248,18 @@ def makeLongNameDict():
     lnd['VolumeMeanTemperature'] = "Volume-weighted Mean Temperature"
     lnd['GlobalMeanSalinity'] = "Global Volume-weighted Mean Salinity"
 
+    lnd['AtlanticSubtropicSalinity'] = 'Atlantic Subtropic Salinity'
+    lnd['SubtropicNorthAtlantic'] = 'Subtropic North Atlantic'
+
+    lnd['Surfaceto100m'] = 'Surface-to-100m'
+    lnd['Surfaceto200m'] = 'Surface-to-200m'
+    lnd['Surfaceto300m'] = 'Surface-to-300m'
+    lnd['Surfaceto400m'] = 'Surface-to-400m'
+    lnd['Surfaceto500m'] = 'Surface-to-500m'
+    lnd['Surfaceto600m'] = 'Surface-to-600m'
+    lnd['Surfaceto700m'] = 'Surface-to-700m'
+    lnd['Surfaceto800m'] = 'Surface-to-800m'
+    lnd['Surfaceto2000m'] = 'Surface-to-2000m'
 
     lnd['TotalHeatFlux'] = "Global Total Heat Flux"
     lnd['HeatFlux'] = "Heat Flux"
@@ -315,6 +327,16 @@ def makeLongNameDict():
     lnd['SouthernTotalIceExtent'] = 'Southern Hemisphere Ice Extent'
     lnd['WeddelIceExent'] = 'Weddel Sea Ice Extent'
     lnd['TotalIceExtent'] = 'Total Ice Extent'
+
+    lnd['ZOS'] = 'Sea Surface Height'
+    lnd['EVS'] = 'Water Evaporation flux '
+    lnd['Precip'] = 'Precipitation'
+    lnd['sowindsp'] = 'Surface wind speed'
+    lnd['sowflisf'] = 'Ice Shelf Melting'     
+    lnd['fov'] = 'AMOC Meridional freshwater transport'     
+    lnd['fov_sa'] = 'AMOC Meridional freshwater transport (South Atlantic)'     
+    lnd['fov_stna'] = 'AMOC Meridional freshwater transport (Subtropial North Atlantic)'     
+    lnd['somesatr'] = 'Salt Transport in y-direction'
 
     lnd['AMM'] = 'Atlantic Margins'
     lnd['AMM_Shelf'] = 'Atlantic Margins Shelf'
@@ -531,6 +553,12 @@ def makeLongNameDict():
     lnd['ArcticOcean'] = "Arctic Ocean"
     lnd['NorthernSubpolarAtlantic'] = "Northern Subpolar Atlantic"
     lnd['SPNA'] = "Subpolar North Atlantic"
+    lnd['STNA'] = "Subtropic North Atlantic"
+    
+    lnd['STSA'] = "Subtropic North Atlantic"
+    lnd['SubtropicSouthAtlantic'] = lnd['STSA']
+    lnd['GINseas'] = 'Greenland, Iceland, Norway seas'
+
     lnd['SubpolarNorthAtlantic'] =  lnd['SPNA']
     lnd['NorthernSubpolarPacific'] = "Northern Subpolar Pacific"
 

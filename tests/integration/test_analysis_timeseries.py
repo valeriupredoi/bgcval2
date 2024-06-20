@@ -172,7 +172,7 @@ def test_load_key_file(tmp_path):
     assert expected_output_dict['units'] == runtime_output_dict['units']
     expected_output_dict['dimensions'] = 3
     assert expected_output_dict['dimensions'] == runtime_output_dict['dimensions']
-    expected_output_dict['layers'] = ['Surface']
+    expected_output_dict['layers'] = ['Surface', '500m']
     assert expected_output_dict['layers'] == runtime_output_dict['layers']
     expected_output_dict['gridFile'] = paths.orcaGridfn
     assert expected_output_dict['gridFile'] == runtime_output_dict['gridFile']

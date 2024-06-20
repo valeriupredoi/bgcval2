@@ -1488,6 +1488,7 @@ def comparehtml5Maker(
         'SouthernTotalIceExtent',
         'Temperature_Global_Surface',
         'Salinty_Global_Surface',
+        'AtlanticSubtropicalSalinity',
         'FreshwaterFlux_Global',
         'TotalHeatFlux',
         'MA_SST',
@@ -1524,7 +1525,6 @@ def comparehtml5Maker(
         'BGC Key Metrics': [],
         'Other Plots': [],
     }
-
     
     for fn in files:
         found = False

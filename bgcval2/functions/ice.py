@@ -94,3 +94,44 @@ def calculate_ice_extent(nc, keys, **kwargs):
 
     return masked_area.sum()/1.E12
 
+
+def calculate_ice_area(nc, keys, **kwargs):
+    """
+    Calculate the total ice area.
+    This is the total area of all sea ice. 
+
+    kwargs:
+        areafile: path to area file
+        maskname: name of the mask in the input file. (default is tmask)
+        #minIce: fraction of ice coverage, default is 15%.
+        region: global, North hemisphere or Southern Hemisphere.
+    """
+    areafile = get_kwarg_file(kwargs, 'areafile')
+
+    maskname = kwargs.get('maskname', 'tmask')
+    if 'area' not in nc.variables and not loaded_area_and_mask:
+        area, tmask, lat = load_area_and_mask(areafile, maskname)
+    else:
+        area = nc.variables['area'][:]
+        lat = nc.variables['nav_lat'][:]
+        tmask = nc.variables[keys[0]][:].squeeze().mask
+    ice_fraction = nc.variables[keys[0]][:].squeeze()
+ 
+    if ice_fraction.max() > 1. or ice_fraction.min() < 0. :
+        raise ValueError('Ice coverage fraction incorrect range. Are you using the correct variable?')
+
+    region = kwargs.get('region', 'Global')
+    region = region.lower().replace('-', '').replace(' ', '').replace('_', '')
+
+    # create mask of ice values:
+    masked_area = np.ma.masked_where(tmask, ice_fraction * area)
+
+    if region in ['n', 'north', 'northern', 'northhemisphere', 'northernhemisphere']:
+        masked_area = np.ma.masked_where(masked_area.mask + (lat<0.), masked_area)
+
+    if region in ['s', 'south', 'southern', 'southhemisphere', 'southernhemisphere']:
+        masked_area = np.ma.masked_where(masked_area.mask + (lat>0.), masked_area)
+
+    return masked_area.sum()/1.E12
+
+

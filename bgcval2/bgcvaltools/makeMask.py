@@ -216,20 +216,20 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
     if newSlice == 'ignoreExtraArtics':
         return np.ma.masked_outside(xy, -50., 50.).mask
     if newSlice == 'NorthAtlanticOcean':
-        return np.ma.masked_outside(bvt.makeLonSafeArr(xx), -80.,
+        print('NorthAtlanticOcean - pre')
+        #xx = bvt.makeLonSafeArr(xx)
+        print('NorthAtlanticOcean', len(xx))
+        return np.ma.masked_outside(xx, -80.,
                                     0.).mask + np.ma.masked_outside(
                                         xy, 10., 60.).mask
     if newSlice == 'SouthAtlanticOcean':
-        return np.ma.masked_outside(bvt.makeLonSafeArr(xx), -65.,
-                                    20.).mask + np.ma.masked_outside(
+        return np.ma.masked_outside(xx, -65., 20.).mask + np.ma.masked_outside(
                                         xy, -50., -10.).mask
     if newSlice == 'EquatorialAtlanticOcean':
-        return np.ma.masked_outside(bvt.makeLonSafeArr(xx), -65.,
-                                    20.).mask + np.ma.masked_outside(
+        return np.ma.masked_outside(xx, -65., 20.).mask + np.ma.masked_outside(
                                         xy, -15., 15.).mask
     if newSlice == 'ITCZ': #Inter‐Tropical Convergence Zone (johns 2020 Sargassum) in the region 0-15N, 15-55W
-        return np.ma.masked_outside(bvt.makeLonSafeArr(xx), -55.,
-                                    15.).mask + np.ma.masked_outside(
+        return np.ma.masked_outside(xx, -55., 15.).mask + np.ma.masked_outside(
                                         xy, 0., 15.).mask
 
     if newSlice == 'ArcticOcean':
@@ -246,11 +246,36 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
             xy, 60., 80.).mask
         return mx
 
+    if newSlice in ['SubtropicNorthAtlantic', 'STNA']:
+        mx = np.ma.masked_outside(xx, -80., -10.).mask + np.ma.masked_outside(
+            xy, 10., 40.).mask
+#       mx *= np.ma.masked_outside(xx, -45., 15.).mask + np.ma.masked_outside(
+#           xy, 60., 80.).mask
+        return mx
+
+    if newSlice in ['SubtropicSouthAtlantic', 'STSA']:
+        mx = np.ma.masked_outside(xx, -80., -10.).mask + np.ma.masked_outside(
+            xy, 10., 40.).mask
+#       mx *= np.ma.masked_outside(xx, -45., 15.).mask + np.ma.masked_outside(
+#           xy, 60., 80.).mask
+        return mx
+    
+
     if newSlice in ['SubpolarNorthAtlantic', 'SPNA',]:
         #  Based on  SPNA region here: https://www.nature.com/articles/s43247-021-00120-y#citeas
         mx = np.ma.masked_outside(xx, -35., -10.).mask + np.ma.masked_outside(
             xy, 40., 65.).mask
         return mx
+
+#    if newSlice in ['WesternSubpolarNorthAtlantic', 'WSPNA',]:
+        
+
+    if newSlice in ['GINseas',]: #Greenland, icveland and norwegean seas
+        mx = np.ma.masked_outside(xx, -20., 15.).mask + np.ma.masked_outside(
+            xy, 65., 75.).mask
+        return mx
+        #65-75:20W-15E         
+
     
     if newSlice == 'AtlanticSOcean':
         mx = np.ma.masked_outside(xx, -40., 20.).mask + np.ma.masked_outside(
@@ -292,7 +317,7 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
     if newSlice == 'Pitcairn': # MPA covers several islands. This is very approximate
         # Ducie Island:  24.66 S 124.75 W (Eastern most)
         # Oeno island: 23.9 S 130.74 W (western most) (Western boundary is not the full EEZ)
-        mx = np.ma.masked_outside(xx, -130.74 - 1.5, 124.75 + 3.).mask # longitude # West
+        mx = np.ma.masked_outside(xx, -130.74 - 1.5, -124.75 + 3.).mask # longitude # West
         mx += np.ma.masked_outside(xy, -24.66 -3, -23.9 + 3.).mask # Lattitue  # South
         return mx
 

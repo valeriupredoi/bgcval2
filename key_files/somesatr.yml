@@ -1,0 +1,22 @@
+---
+name            : somesatr #ocean_salt_y_transport
+units           : 1e-3*kg/s
+dimensions      : 3
+model           : NEMO
+
+# The filenames
+modelFiles      : $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_grid-V.nc
+modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*$JOBIDo_1y_*$YEAR????_grid-T.nc
+gridFile        : $PATHS_GRIDFILE
+
+# Model coordinates/dimension names
+model_vars      : somesatr
+model_convert   : choose_best_var
+
+layers          : layerless
+regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean SouthAtlanticOcean SPNA STSA
+smoothings      : DataOnly 5and30 
+
+
+
+
