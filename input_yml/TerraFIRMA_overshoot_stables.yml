@@ -20,6 +20,15 @@ savejson: True
 clean: True
 
 jobs:
+   u-cs495:
+       description: 'PI-Control'
+       label: 'PIcontrol'
+       colour: 'blue'
+       thickness: 1.2
+       linestyle: '-'
+       shifttime: -2094
+       timerange: [-50., 400.]
+       suite: *keylist
 
 # u-cz826:
    #    description: 'like cx209 but static ice sheet geometry 8GtC/yr #5'
