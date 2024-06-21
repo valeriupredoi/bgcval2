@@ -53,7 +53,7 @@ keys:
     #	VerticalCurrent: True          	# Vertical Veloctity
 
 
-    somesatr: True # salt flow
+    somesatr: True # salt flow # Work in progress in debug
 
     ZOS: True # Sea Surface Height
     sowindsp: True # Wind speed

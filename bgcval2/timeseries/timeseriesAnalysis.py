@@ -298,6 +298,7 @@ class timeseriesAnalysis:
                     #####
                     # can't skip it, need to load it.
                     layerdata = DL.load[(r, l)]
+
                     #####
                     # get Weights:
                     volumeWeightedLayers = ['All', 'Transect']
@@ -310,6 +311,8 @@ class timeseriesAnalysis:
                             ], self.metrics)):
                         lats = DL.load[(r, l, 'lat')]
                         lons = DL.load[(r, l, 'lon')]
+                        #print(lats, lons, len(lats), len(lons), lats.max(), lons.max())
+#                       assert 0
                         if l in volumeWeightedLayers:
                             depths = DL.load[(r, l, 'z')]
                             weights = np.array([
@@ -319,10 +322,24 @@ class timeseriesAnalysis:
                         else:
                             weights = []
                             for la, lo, da in zip(lats, lons, layerdata):
+                                if np.ma.masked in [la, lo, da]:
+                                   # lat and lon can be masked
+                                   weights.append(0)
+                                   continue  
+   
+#                                if not self.weightsDict.get((la, lo), False):
+#                                    print('TimeseriesAnalysis: coords not in weights:', (la, lo))
+#                                    assert 0
                                 try:
                                     weights.append(self.weightsDict[(la, lo)])
                                 except:
+                                    print('ERROR: not in weightsDict:', la, lo, da)
                                     weights.append(0.)
+                                    print('region:', r, 'layer:', l)   
+                                    print('coords not found for weights:', la, lo, da)
+                                    print('coords:', lats, lons)
+                                    print('TimeseriesAnalysis: Is this data, ', self.dataType, ', the T grid?')
+                                    assert 0   
 
                     else:
                         weights = np.ones_like(layerdata)
@@ -440,16 +457,25 @@ class timeseriesAnalysis:
             raise FileNotFoundError(
                 errno.ENOENT, os.strerror(errno.ENOENT), self.gridFile)
         print('loadModelWeightsDict loading grid file:', self.gridFile)
-        nc = dataset(self.gridFile, 'r')
-        tmask = nc.variables['tmask'][:]
-        try:
-            area = nc.variables['area'][:].squeeze()
-        except:
-            area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
-        if tmask.ndim == 3: area = np.ma.masked_where(tmask[0] == 0, area)
-        if tmask.ndim == 2: area = np.ma.masked_where(tmask == 0, area)
-        area = area.squeeze()
 
+        nc = dataset(self.modelFiles[0], 'r', skip_option='delete')
+        if 'area' in nc.variables.keys():
+            area = nc.variables['area'][:]
+        else:
+
+            nc = dataset(self.gridFile, 'r')
+            tmask = nc.variables['tmask'][:]
+            try:
+                area = nc.variables['area'][:].squeeze()
+            except:
+                area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
+            if tmask.ndim == 3: 
+                area = np.ma.masked_where(tmask[0] == 0, area)
+            if tmask.ndim == 2: 
+                area = np.ma.masked_where(tmask == 0, area)
+            area = area.squeeze()
+        #print('loadModelWeightsDict: area:', area.shape, area.max())
+        #assert 0
         self.weightsDict = {}
         if self.modelcoords['lat'] == self.modelcoords['lon'] == False:
             ####
@@ -468,7 +494,7 @@ class timeseriesAnalysis:
         nc.close()
 
         if lats.ndim == 2:
-            print(area.shape) 
+            #print(area.shape) 
             for (i, j), a in np.ndenumerate(area):
                 self.weightsDict[(lats[i, j], lons[i, j])] = a
 
@@ -479,6 +505,8 @@ class timeseriesAnalysis:
         if self.debug:
             print("timeseriesAnalysis:\t loadModelWeightsDict.",
                   list(self.weightsDict.keys())[0])
+        #print('loadModelWeightsDict:', len(self.weightsDict.keys()), self.weightsDict)
+        #assert 0
 
     def loadModelwcvDict(self, ):
         """
