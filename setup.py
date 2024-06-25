@@ -24,7 +24,7 @@ REQUIREMENTS = {
     # Installation dependencies
     # Use with pip install . to install from source
     'install': [
-        'basemap>=1.3.6',
+        # 'basemap>=1.3.6',
         'cartopy',
         'jsondiff',
         'matplotlib',
