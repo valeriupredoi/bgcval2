@@ -491,10 +491,10 @@ class DataLoader:
             self.oneDData['arr_lon'],
             self.oneDData['arr'],
         )
-        print('createDataArray: mask:', len(m), sum(m))
-        print(self.oneDData['arr_lat'][:3], self.oneDData['arr_lon'][:3])
+#        print('createDataArray: mask:', len(m), sum(m))
+#        print(self.oneDData['arr_lat'][:3], self.oneDData['arr_lon'][:3])
         lat = np.ma.masked_where(m,self.oneDData['arr_lat'])
-        print('createDataArray', lat.min(), lat.max())
+#        print('createDataArray', lat.min(), lat.max())
         #assert 0
 
         return  np.ma.masked_where(m,self.oneDData['arr']),\

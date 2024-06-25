@@ -28,15 +28,15 @@ jobs:
        timerange: [1850, 2020]
        suite: *keylists
 
-    u-ca306:
-       description: 'Reference '
-       label: Reference
-       colour: 'black'
-       thickness: 0.6
-       linestyle: '-'
-       shifttime: 0    
-       timerange: [1850, 2020]
-       suite: *keylists
+#    u-ca306:
+#       description: 'Reference '
+#       label: Reference
+#       colour: 'black'
+#       thickness: 0.6
+#       linestyle: '-'
+#       shifttime: 0    
+#       timerange: [1850, 2020]
+#       suite: *keylists
 
     u-cy623:
        description: 'interactive ice, started from picontrol yr 2277'
