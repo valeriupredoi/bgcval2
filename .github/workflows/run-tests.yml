@@ -33,6 +33,8 @@ jobs:
       - shell: bash -l {0}
         run: pip install -e .[develop]
       - shell: bash -l {0}
+        run: conda list
+      - shell: bash -l {0}
         run: |
           analysis_compare --help
           analysis_level3_amoc --help
@@ -45,6 +47,6 @@ jobs:
           bgcval2_make_report --help
           download_from_mass --help
       - shell: bash -l {0}
-        run: pytest
+        run: pytest -n 2
       - shell: bash -l {0}
         run: sphinx-build -Ea doc doc/build
