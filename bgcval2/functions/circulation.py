@@ -323,6 +323,8 @@ def AMOC26N(nc, keys, **kwargs):
     return atlmoc.max()
 
 
+
+
 def fov_sa(nc, keys, **kwargs):
     # Fov/Mov defined in Jackson 2023 as:
     # We also use diagnostics of the overturning component of the Atlantic freshwater transport (Fov).
@@ -345,20 +347,48 @@ def fov_sa(nc, keys, **kwargs):
     # Reference salinity, S0
     sal_ref = kwargs.get('sal_ref', 35.)
 
+    lats = nc.variables['nav_lat'][:]
+    lats = np.ma.masked_outside(lats, -30., -34.)
+    lons = np.ma.masked_outside(lons, -100., 20.)
+    
+    # lons = nc.variables['nav_lon'][:]
+    lons_bounds_0 = nc.variables['bounds_lon'][:].min(2)
+    lons_bounds_1 = nc.variables['bounds_lon'][:].max(2)
+
+    lons_bounds_0 = np.ma.masked_where(lats.mask + lons.mask, lons_bounds_0)
+    lons_bounds_1 = np.ma.masked_where(lats.mask + lons.mask, lons_bounds_1)
+
+    lons_diff = lons_bounds_1 - lons_bounds_0
+    if lons_diff.min() != lons_diff.max():
+        print('Can not assume that grid is even')
+        assert 0
+
     # Load Atlantic Mask
     if not loadedAltMask_full:
         loadAtlanticMask_full(altmaskfile, maskname='tmaskatl', grid=grid)
+    
+    # Load and mask vso
+    vso =  np.ma.array(nc.variables['vso'][:]).squeeze() # #vso in PSU m/s
+    vo =  np.ma.array(nc.variables['vo'][:]).squeeze() # #vso in PSU m/s
+    sal0 = vso/vo - sal_ref
 
-    # Load and mask vo
-    vo =  np.ma.array(nc.variables[keys[0]][:]) # #vo in m/s
-    vo = np.ma.masekd_where(vo.mask + alttmask, vo) # shape alignment?
-    assert 0
+    mask_2d =  alttmask + lats.mask + lons.mask
+    mask_3d = [mask_2d for _ in range(75)]
+    mask_3d = np.stack(mask_3d, axis=0)
 
-    # Take the zonal mean of the salinity in the Atlantic then subtract 35.
-    #vobar = 
+    if vso.shape != mask_3d.shape:
+        print('FOV: Shapes don\'t match')
+    
+
+    # eorca is even so no weights needed, right? 
+    vo = np.ma.masked_where(vso.mask + mask_3d + (vo == 0.), vo) # shape alignment?
+    sal0 = np.ma.masked_where(vso.mask + mask_3d + (sal0 == 0.), sal0) # shape alignment?
+
     # Take the zonal mean of the meridional velocity 
+    vobar = vo.mean(axis=2)
+    sal0bar =  sal0.mean(axis=2)
+    vsobar = vobar * sal0bar
 
-    # Multiply these two terms together
 
     # Integrate along the meridional direction from 30 S to 34 S. *
     #Integrate along the vertical direction from surface to sea floor. 
