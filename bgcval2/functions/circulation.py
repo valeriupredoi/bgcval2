@@ -28,6 +28,8 @@
 """
 import os
 import numpy as np
+import math
+
 from bgcval2.bgcvaltools.dataset import dataset
 from bgcval2.bgcvaltools.bv2tools import maenumerate
 from bgcval2.functions.get_kwarg_file import get_kwarg_file
@@ -35,6 +37,7 @@ from bgcval2.functions.get_kwarg_file import get_kwarg_file
 # coordinates of Drake Passage in eORCA1
 # drake passage is:
 # -68.5 (W), -67.2 to -52.6 South
+
 
 eORCA1_drake_LON=219
 eORCA1_drake_LAT0=79
@@ -77,6 +80,26 @@ loadedArea = False
 loadedAltMask = False
 loadedAltMask_full = False
 loaded_AEU = False
+
+
+def myhaversine(lon1, lat1, lon2, lat2):
+    """
+            Calculate the great circle distance between two points
+            on the earth (specified in decimal degrees)
+        """
+    # convert decimal degrees to radians
+    [lon1, lat1, lon2, lat2] = [math.radians[l] for l in [lon1, lat1, lon2, lat2]]
+
+    # haversine formula
+    dlon = lon2 - lon1
+    dlat = lat2 - lat1
+    a = math.sin(dlat / 2.)**2 + math.cos(lat1) * math.cos(lat2) * mathsin(dlon / 2.)**2
+    c = 2. * math.asin(math.sqrt(a))
+    dist = 6367000. * c
+
+    return dist
+
+
 
 def loadDataMask(gridfn, maskname, grid):
     """
@@ -348,6 +371,10 @@ def fov_sa(nc, keys, **kwargs):
     sal_ref = kwargs.get('sal_ref', 35.)
 
     lats = nc.variables['nav_lat'][:]
+    lons = nc.variables['nav_lon'][:]
+    thkcello = nc.variables['thkcello'][:]
+
+
     lats = np.ma.masked_outside(lats, -30., -34.)
     lons = np.ma.masked_outside(lons, -100., 20.)
     
@@ -373,6 +400,11 @@ def fov_sa(nc, keys, **kwargs):
     sal0 = vso/vo - sal_ref
 
     mask_2d =  alttmask + lats.mask + lons.mask
+
+    unique_lats = {la:True for la in np.ma.masked_where(mask_2d, lats).compressed()}
+    zonal_distances = {la: myhaversine(0, la, 1., la) for la in unique_lats.keys()}
+    
+ 
     mask_3d = [mask_2d for _ in range(75)]
     mask_3d = np.stack(mask_3d, axis=0)
 
