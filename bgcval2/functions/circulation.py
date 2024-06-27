@@ -29,6 +29,7 @@
 import os
 import numpy as np
 import math
+import itertools
 
 from bgcval2.bgcvaltools.dataset import dataset
 from bgcval2.bgcvaltools.bv2tools import maenumerate
@@ -81,6 +82,13 @@ loadedAltMask = False
 loadedAltMask_full = False
 loaded_AEU = False
 
+
+
+
+def maenumerate(marr):
+    mask = ~marr.mask.ravel()
+    for i, m in itertools.izip(np.ndenumerate(marr), mask):
+        if m: yield i
 
 def myhaversine(lon1, lat1, lon2, lat2):
     """
@@ -372,8 +380,7 @@ def fov_sa(nc, keys, **kwargs):
 
     lats = nc.variables['nav_lat'][:]
     lons = nc.variables['nav_lon'][:]
-    thkcello = nc.variables['thkcello'][:]
-
+    thkcello = nc.variables['thkcello'][:].squeeze()
 
     lats = np.ma.masked_outside(lats, -30., -34.)
     lons = np.ma.masked_outside(lons, -100., 20.)
@@ -411,27 +418,26 @@ def fov_sa(nc, keys, **kwargs):
     if vso.shape != mask_3d.shape:
         print('FOV: Shapes don\'t match')
     
-
     # eorca is even so no weights needed, right? 
     vo = np.ma.masked_where(vso.mask + mask_3d + (vo == 0.), vo) # shape alignment?
     sal0 = np.ma.masked_where(vso.mask + mask_3d + (sal0 == 0.), sal0) # shape alignment?
+    xarea = np.ma.masked_where(sal0.mask, thkcello)
+
+    # calculate cross sectional area by multiplying zonal cell length by cell depth thickness
+    for (z, y, x), thk in maenumerate(xarea):
+        la = lats[y, x]
+        xarea[z, y, x] = thk * zonal_distances[la]
+    xarea_sum = xarea.sum(axis=(0,1))
 
     # Take the zonal mean of the meridional velocity 
-    vobar = vo.mean(axis=2)
-    sal0bar =  sal0.mean(axis=2)
-    vsobar = vobar * sal0bar
+    total =  vo * sal0 * xarea 
+    total = total.sum(axis=(0,1))/xarea_sum
+    total = total.mean()
+    output = (-1./sal_rf) * total
+    print(output)
+    assert 0
+    return output
 
-
-    # Integrate along the meridional direction from 30 S to 34 S. *
-    #Integrate along the vertical direction from surface to sea floor. 
-    #Multiply by -1/35
-    #*This range is given in the paragraph of this paper that starts "There are various factors which could contribute to whether a model has a bistable AMOC." We could also do a second version for the subtropical North Atlantic, which we previously defined as 10N-40N.
-
-    # apply Atlantic mas#
-
-    #vbar = 
-
-    return 
 
 
 
