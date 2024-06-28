@@ -60,6 +60,7 @@ keys:
     sowflisf: True # Ice flux
     evs: True # Evaporation
     precip: True # Precipitation
+    fov: True # Fov (Total salt flux in the Atlantic)
 
 
     # Misc fluxes:

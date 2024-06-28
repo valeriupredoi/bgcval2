@@ -29,7 +29,7 @@
 import os
 import numpy as np
 import math
-import itertools
+#import itertools
 
 from bgcval2.bgcvaltools.dataset import dataset
 from bgcval2.bgcvaltools.bv2tools import maenumerate
@@ -87,7 +87,7 @@ loaded_AEU = False
 
 def maenumerate(marr):
     mask = ~marr.mask.ravel()
-    for i, m in itertools.izip(np.ndenumerate(marr), mask):
+    for i, m in zip(np.ndenumerate(marr), mask):
         if m: yield i
 
 def myhaversine(lon1, lat1, lon2, lat2):
@@ -96,12 +96,12 @@ def myhaversine(lon1, lat1, lon2, lat2):
             on the earth (specified in decimal degrees)
         """
     # convert decimal degrees to radians
-    [lon1, lat1, lon2, lat2] = [math.radians[l] for l in [lon1, lat1, lon2, lat2]]
+    [lon1, lat1, lon2, lat2] = [math.radians(l) for l in [lon1, lat1, lon2, lat2]]
 
     # haversine formula
     dlon = lon2 - lon1
     dlat = lat2 - lat1
-    a = math.sin(dlat / 2.)**2 + math.cos(lat1) * math.cos(lat2) * mathsin(dlon / 2.)**2
+    a = math.sin(dlat / 2.)**2 + math.cos(lat1) * math.cos(lat2) * math.sin(dlon / 2.)**2
     c = 2. * math.asin(math.sqrt(a))
     dist = 6367000. * c
 
@@ -201,7 +201,7 @@ def loadAtlanticMask_full(altmaskfile, maskname='tmaskatl', grid = 'eORCA1'):
     else:
         raise ValueError("Grid not recognised in this calculation: %s", grid)
     nc = dataset(altmaskfile, 'r')        
-    alttmask = nc.variables[maskname][latslice26Nnm, :]
+    alttmask = nc.variables[maskname][:]
     nc.close()
     loadedAltMask_full = True
 
@@ -383,7 +383,7 @@ def fov_sa(nc, keys, **kwargs):
     thkcello = nc.variables['thkcello'][:].squeeze()
 
     lats = np.ma.masked_outside(lats, -30., -34.)
-    lons = np.ma.masked_outside(lons, -100., 20.)
+    lons = np.ma.masked_outside(lons, -65., 20.)
     
     # lons = nc.variables['nav_lon'][:]
     lons_bounds_0 = nc.variables['bounds_lon'][:].min(2)
@@ -394,11 +394,12 @@ def fov_sa(nc, keys, **kwargs):
 
     lons_diff = lons_bounds_1 - lons_bounds_0
     if lons_diff.min() != lons_diff.max():
-        print('Can not assume that grid is even')
+        print('Can not assume that longitude grid is even')
         assert 0
 
     # Load Atlantic Mask
     if not loadedAltMask_full:
+        altmaskfile = get_kwarg_file(kwargs, 'altmaskfile', default = 'bgcval2/data/basinlandmask_eORCA1.nc')
         loadAtlanticMask_full(altmaskfile, maskname='tmaskatl', grid=grid)
     
     # Load and mask vso
@@ -406,11 +407,10 @@ def fov_sa(nc, keys, **kwargs):
     vo =  np.ma.array(nc.variables['vo'][:]).squeeze() # #vso in PSU m/s
     sal0 = vso/vo - sal_ref
 
-    mask_2d =  alttmask + lats.mask + lons.mask
-
+    mask_2d =  lats.mask + lons.mask
+    #print(alttmask, alttmask.shape)
     unique_lats = {la:True for la in np.ma.masked_where(mask_2d, lats).compressed()}
     zonal_distances = {la: myhaversine(0, la, 1., la) for la in unique_lats.keys()}
-    
  
     mask_3d = [mask_2d for _ in range(75)]
     mask_3d = np.stack(mask_3d, axis=0)
@@ -423,19 +423,44 @@ def fov_sa(nc, keys, **kwargs):
     sal0 = np.ma.masked_where(vso.mask + mask_3d + (sal0 == 0.), sal0) # shape alignment?
     xarea = np.ma.masked_where(sal0.mask, thkcello)
 
+#    from matplotlib import pyplot
+#    for name, dat in zip(
+#        ['vo', 'sal0', 'xarea', 'lats', 'lons', 'mask2d', 'mask3d', 'alttmask',],
+#        [vo, sal0, xarea, lats, lons, mask_2d, mask_3d, alttmask]):
+#        print('plotting', name)
+#        if name in ['lats', 'lons', 'mask2d', 'alttmask']:
+#            plot = dat
+#        else:
+#           plot = dat.mean(0)
+#        pyplot.pcolormesh(plot)
+#        pyplot.title(name)
+#        pyplot.colorbar()
+#        pyplot.savefig('images/'+name+'.png')
+#        pyplot.close()
+
     # calculate cross sectional area by multiplying zonal cell length by cell depth thickness
     for (z, y, x), thk in maenumerate(xarea):
         la = lats[y, x]
         xarea[z, y, x] = thk * zonal_distances[la]
-    xarea_sum = xarea.sum(axis=(0,1))
+    xarea_sum = xarea.sum(axis=(0,2))
 
+    #print('xarea', {f:True for f in xarea_sum.compressed()}.keys()) # should be 4 or 5 values.
+    #assert 0
     # Take the zonal mean of the meridional velocity 
+
     total =  vo * sal0 * xarea 
-    total = total.sum(axis=(0,1))/xarea_sum
+    total = total.sum(axis=(0, 2))/xarea_sum
+    #print('total', {f:True for f in total.compressed()}.keys())
+    #pyplot.pcolormesh(vo[0] * sal0[0] * xarea[0])
+    #pyplot.title('total')
+    #pyplot.colorbar()
+    #pyplot.savefig('images/total.png')
+    #pyplot.close()
+
     total = total.mean()
-    output = (-1./sal_rf) * total
+    output = (-1./sal_ref) * total
     print(output)
-    assert 0
+    #assert 0
     return output
 
 
