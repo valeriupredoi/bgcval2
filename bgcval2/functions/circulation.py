@@ -372,56 +372,61 @@ def fov_sa(nc, keys, **kwargs):
     # is again very small (Mecking et al., 2017)."
     # https://gmd.copernicus.org/articles/16/1975/2023/
 
-    # Grid?
+    # Check Grid
     grid = kwargs.get('grid', 'eORCA1')
 
-    # Reference salinity, S0
+    # Reference salinity, S0, default is 35. 
     sal_ref = kwargs.get('sal_ref', 35.)
 
+    # Load lats,. lons, cell thickness
     lats = nc.variables['nav_lat'][:]
     lons = nc.variables['nav_lon'][:]
     thkcello = nc.variables['thkcello'][:].squeeze()
 
+    # mask lats and lons to south Atlantic (30S-34S)
     lats = np.ma.masked_outside(lats, -30., -34.)
     lons = np.ma.masked_outside(lons, -65., 20.)
-    
-    # lons = nc.variables['nav_lon'][:]
+    mask_2d =  lats.mask + lons.mask
+
+    # Check to make sure Longitude boundaries are even here.  
     lons_bounds_0 = nc.variables['bounds_lon'][:].min(2)
     lons_bounds_1 = nc.variables['bounds_lon'][:].max(2)
-
-    lons_bounds_0 = np.ma.masked_where(lats.mask + lons.mask, lons_bounds_0)
-    lons_bounds_1 = np.ma.masked_where(lats.mask + lons.mask, lons_bounds_1)
-
+    lons_bounds_0 = np.ma.masked_where(mask_2d, lons_bounds_0)
+    lons_bounds_1 = np.ma.masked_where(mask_2d, lons_bounds_1)
     lons_diff = lons_bounds_1 - lons_bounds_0
     if lons_diff.min() != lons_diff.max():
         print('Can not assume that longitude grid is even')
         assert 0
 
     # Load Atlantic Mask
-    if not loadedAltMask_full:
-        altmaskfile = get_kwarg_file(kwargs, 'altmaskfile', default = 'bgcval2/data/basinlandmask_eORCA1.nc')
-        loadAtlanticMask_full(altmaskfile, maskname='tmaskatl', grid=grid)
+#    if not loadedAltMask_full:
+#        altmaskfile = get_kwarg_file(kwargs, 'altmaskfile', default = 'bgcval2/data/basinlandmask_eORCA1.nc')
+#        loadAtlanticMask_full(altmaskfile, maskname='tmaskatl', grid=grid)
     
-    # Load and mask vso
+    # Load and mask vo and vso (vo * salinity)
     vso =  np.ma.array(nc.variables['vso'][:]).squeeze() # #vso in PSU m/s
     vo =  np.ma.array(nc.variables['vo'][:]).squeeze() # #vso in PSU m/s
+    
+    # Calculate salinity and subtract reference salininty.
     sal0 = vso/vo - sal_ref
 
-    mask_2d =  lats.mask + lons.mask
-    #print(alttmask, alttmask.shape)
+    # Calculate zonal cell length. 
+    # Lon grid is evenly spaced, so only need one cell length per latitude.
     unique_lats = {la:True for la in np.ma.masked_where(mask_2d, lats).compressed()}
     zonal_distances = {la: myhaversine(0, la, 1., la) for la in unique_lats.keys()}
  
+    # create 3d mask
     mask_3d = [mask_2d for _ in range(75)]
     mask_3d = np.stack(mask_3d, axis=0)
 
+    # check sizes
     if vso.shape != mask_3d.shape:
         print('FOV: Shapes don\'t match')
+        assert 0
     
-    # eorca is even so no weights needed, right? 
+    # Apply masks to 3d data
     vo = np.ma.masked_where(vso.mask + mask_3d + (vo == 0.), vo) # shape alignment?
     sal0 = np.ma.masked_where(vso.mask + mask_3d + (sal0 == 0.), sal0) # shape alignment?
-    xarea = np.ma.masked_where(sal0.mask, thkcello)
 
 #    from matplotlib import pyplot
 #    for name, dat in zip(
@@ -439,17 +444,20 @@ def fov_sa(nc, keys, **kwargs):
 #        pyplot.close()
 
     # calculate cross sectional area by multiplying zonal cell length by cell depth thickness
+    xarea = np.ma.masked_where(sal0.mask, thkcello)
+
     for (z, y, x), thk in maenumerate(xarea):
         la = lats[y, x]
         xarea[z, y, x] = thk * zonal_distances[la]
     xarea_sum = xarea.sum(axis=(0,2))
 
-    #print('xarea', {f:True for f in xarea_sum.compressed()}.keys()) # should be 4 or 5 values.
-    #assert 0
-    # Take the zonal mean of the meridional velocity 
-
+    # Take the zonal sum of the meridional velocity, the normalised salinity and the cross sectional area 
     total =  vo * sal0 * xarea 
+
+    # Calculate the cross sectional total, then divide by the total cross section area
     total = total.sum(axis=(0, 2))/xarea_sum
+
+
     #print('total', {f:True for f in total.compressed()}.keys())
     #pyplot.pcolormesh(vo[0] * sal0[0] * xarea[0])
     #pyplot.title('total')
@@ -457,7 +465,10 @@ def fov_sa(nc, keys, **kwargs):
     #pyplot.savefig('images/total.png')
     #pyplot.close()
 
+    # Take the mean in the meridional area
     total = total.mean()
+
+    # Apply factors from paper.
     output = (-1./sal_ref) * total
     print(output)
     #assert 0
