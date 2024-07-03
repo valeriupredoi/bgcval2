@@ -354,8 +354,6 @@ def AMOC26N(nc, keys, **kwargs):
     return atlmoc.max()
 
 
-
-
 def fov_sa(nc, keys, **kwargs):
     # Fov/Mov defined in Jackson 2023 as:
     # We also use diagnostics of the overturning component of the Atlantic freshwater transport (Fov).
@@ -449,14 +447,34 @@ def fov_sa(nc, keys, **kwargs):
     for (z, y, x), thk in maenumerate(xarea):
         la = lats[y, x]
         xarea[z, y, x] = thk * zonal_distances[la]
-    xarea_sum = xarea.sum(axis=(0,2))
+    #xarea_sum = xarea.sum(axis=(0,2))
+    xarea_sum2 = xarea.sum(axis=2)
+
+    # Vbar = SUM( vo(x)*thickcello(x)*dx)  / SUM(  thickcello*dx)
+
+    vobar = (vo* xarea).sum(2) / xarea_sum2
+
+    print('vobar', vobar.shape, vobar.min(), vobar.max())
+
+    sobar = (sal0* xarea).sum(2) / xarea_sum2
+    print('sobar', sobar.shape, sobar.min(), sobar.max())
+
+
+    vsbar = (vobar*sobar * xarea_sum2).sum(1)
+    print('vsbar', vsbar.shape, vsbar.min(), vsbar.max())
+
+    total = vsbar.mean()
 
     # Take the zonal sum of the meridional velocity, the normalised salinity and the cross sectional area 
-    total =  vo * sal0 * xarea    # m/s * PSU * m2
+    #total =  vo * sal0 * xarea    # m/s * PSU * m2
 
     # Calculate the cross sectional total, then divide by the total cross section area
-    total = total.sum(axis=(0, 2))/xarea_sum  # PSU m3/s /m2
+    #total = total.sum(axis=(0, 2))/xarea_sum  # PSU m3/s /m2
 
+    #total =  vo * sal0 * xarea 
+
+    # Calculate the cross sectional total, then divide by the total cross section area
+    #total = total.sum(axis=(0, 2))/xarea_sum
 
     #print('total', {f:True for f in total.compressed()}.keys())
     #pyplot.pcolormesh(vo[0] * sal0[0] * xarea[0])
@@ -471,10 +489,8 @@ def fov_sa(nc, keys, **kwargs):
     # Apply factors from paper.
     output = (-1./sal_ref) * total   # 1/PSU * PSU m/s
     print(output)
-    #assert 0
+    assert 0
     return output
-
-
 
 
 def AEU(nc, keys, **kwargs):
