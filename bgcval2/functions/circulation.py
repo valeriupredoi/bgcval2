@@ -452,10 +452,10 @@ def fov_sa(nc, keys, **kwargs):
     xarea_sum = xarea.sum(axis=(0,2))
 
     # Take the zonal sum of the meridional velocity, the normalised salinity and the cross sectional area 
-    total =  vo * sal0 * xarea 
+    total =  vo * sal0 * xarea    # m/s * PSU * m2
 
     # Calculate the cross sectional total, then divide by the total cross section area
-    total = total.sum(axis=(0, 2))/xarea_sum
+    total = total.sum(axis=(0, 2))/xarea_sum  # PSU m3/s /m2
 
 
     #print('total', {f:True for f in total.compressed()}.keys())
@@ -466,10 +466,10 @@ def fov_sa(nc, keys, **kwargs):
     #pyplot.close()
 
     # Take the mean in the meridional area
-    total = total.mean()
+    total = total.mean()  
 
     # Apply factors from paper.
-    output = (-1./sal_ref) * total
+    output = (-1./sal_ref) * total   # 1/PSU * PSU m/s
     print(output)
     #assert 0
     return output
