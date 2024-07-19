@@ -1,0 +1,167 @@
+---
+# GC5 N96 ORCA1 spinup analysis
+name: TerraFIRMA_overshoot_historical
+
+# Run the single job analysis
+do_analysis_timeseries: True 
+
+# Download from mass:
+do_mass_download: False
+
+# master analysis suite
+master_suites: &keylists physics bgc kmf tfamoc #alkalinity physics
+
+
+clean: True
+
+# Output the figures as csv json files.
+savejson: True
+
+jobs:
+    u-cs495:
+       description: 'PiControl'
+       label: PiControl
+       colour: 'blue'
+       thickness: 0.6
+       linestyle: '-'
+       shifttime: -427.
+       timerange: [1850, 2020]
+       suite: *keylists
+
+#    u-ca306:
+#       description: 'Reference '
+#       label: Reference
+#       colour: 'black'
+#       thickness: 0.6
+#       linestyle: '-'
+#       shifttime: 0    
+#       timerange: [1850, 2020]
+#       suite: *keylists
+
+    u-cy623:
+       description: 'interactive ice, started from picontrol yr 2277'
+       label: 'hist ice'
+       colour: red  
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       timerange: &histtimerange [1975, 2015]
+       suite: *keylists
+
+
+    u-da914:
+       description: 'interactive ice, started from picontrol yr 2197'
+       label: None
+       colour: red  
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       timerange: *histtimerange       
+       suite: *keylists
+
+    u-da916:
+       description: 'interactive ice, started from picontrol yr 2237'
+       label: None
+       colour: red  
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       timerange: *histtimerange       
+       suite: *keylists
+
+    u-da917:
+       description: 'interactive ice, started from picontrol yr 2317'
+       label: None
+       colour: red  
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       timerange: *histtimerange       
+       suite: *keylists
+
+    u-cy690: 
+       description: 'static ice sheets, started from picontrol yr 2277'
+       colour: green
+       label: 'hist static ice'
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       timerange: *histtimerange       
+       suite: *keylists
+
+    u-cy691:
+       description: 'static ice sheets, started from picontrol yr 2197'
+       label: None       
+       colour: green
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       timerange: *histtimerange       
+       suite: *keylists
+
+    u-cy692:
+       description: ' static ice sheets, started from picontrol yr 2237'
+       label: None       
+       colour: green
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       timerange: *histtimerange       
+       suite: *keylists 
+
+    u-cy693:
+       description: ' static ice sheets, started from picontrol yr 2317'
+       label: None       
+       colour: green
+       thickness: 1.7
+       linestyle: '-'
+       shifttime: 0.
+       timerange: *histtimerange       
+       suite: *keylists 
+
+
+
+   # ramp up
+   u-cx209:
+      description: 'E-mode free ice RAMP UP 8GtC/yr #1'
+      label: 'Ramp-up' # #1'
+      colour: 'black'
+      thickness: 1.2
+      linestyle: '-'
+      shifttime: &rampupshifttime 115
+      timerange: &rampuptimerange [1860, 1900]
+      suite: *keylists
+
+   u-cw988:
+      description: 'E-mode free ice RAMP UP 8GtC/yr #2'
+      label: None #'Ramp-up #2'
+      colour: 'black'
+      thickness: 1.2
+      linestyle: '-'
+      shifttime: *rampupshifttime 
+      timerange: *rampuptimerange 
+      suite: *keylists
+           
+   u-cw989:
+      description: 'E-mode free ice RAMP UP 8GtC/yr #3'
+      label: None #'Ramp-up #3'
+      colour: 'black'
+      thickness: 1.2
+      linestyle: '-'
+      shifttime: *rampupshifttime 
+      timerange: *rampuptimerange 
+      suite: *keylists
+
+   u-cw990:
+      description: 'E-mode free ice RAMP UP 8GtC/yr #4'
+      label: None #'Ramp-up #4'
+      colour: 'black'
+      thickness: 1.2
+      linestyle: '-'
+      shifttime: *rampupshifttime 
+      timerange: *rampuptimerange 
+      suite: *keylists
+
+
+
+
