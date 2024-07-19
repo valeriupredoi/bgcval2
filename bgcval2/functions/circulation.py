@@ -402,11 +402,15 @@ def fov_sa(nc, keys, **kwargs):
 #        loadAtlanticMask_full(altmaskfile, maskname='tmaskatl', grid=grid)
     
     # Load and mask vo and vso (vo * salinity)
-    vso =  np.ma.array(nc.variables['vso'][:]).squeeze() # #vso in PSU m/s
+    #vso =  np.ma.array(nc.variables['vso'][:]).squeeze() # #vso in PSU m/s
     vo =  np.ma.array(nc.variables['vo'][:]).squeeze() # #vso in PSU m/s
-    
+   
+    #print(nc.variables['vso'], '\n', nc.variables['vo']) 
     # Calculate salinity and subtract reference salininty.
-    sal0 = vso/vo - sal_ref
+    fn2 = nc.filename.replace('grid_V', 'grid_T').replace('grid-V', 'grid-T')
+    nc2 = dataset(fn2, 'r')
+    sal0 = nc2.variables['so'][:].squeeze()
+    nc2.close()
 
     # Calculate zonal cell length. 
     # Lon grid is evenly spaced, so only need one cell length per latitude.
@@ -418,14 +422,21 @@ def fov_sa(nc, keys, **kwargs):
     mask_3d = np.stack(mask_3d, axis=0)
 
     # check sizes
-    if vso.shape != mask_3d.shape:
+    if sal0.shape != mask_3d.shape:
         print('FOV: Shapes don\'t match')
         assert 0
     
     # Apply masks to 3d data
-    vo = np.ma.masked_where(vso.mask + mask_3d + (vo == 0.), vo) # shape alignment?
-    sal0 = np.ma.masked_where(vso.mask + mask_3d + (sal0 == 0.), sal0) # shape alignment?
+    vo = np.ma.masked_where(vo.mask + mask_3d + (vo == 0.), vo) # shape alignment?
+    sal0 = np.ma.masked_where(sal0.mask + mask_3d + (sal0 == 0.), sal0) # shape alignment?
 
+    #print('a sal0', sal0.shape, sal0.min(), sal0.max())
+
+    sal0 = sal0 - sal_ref
+    #print('b sal0', sal0.shape, sal0.min(), sal0.max())
+
+    #print('vo:', vo.shape, vo.min(), vo.max())
+    #print('c sal0', sal0.shape, sal0.min(), sal0.max())
 #    from matplotlib import pyplot
 #    for name, dat in zip(
 #        ['vo', 'sal0', 'xarea', 'lats', 'lons', 'mask2d', 'mask3d', 'alttmask',],
@@ -443,25 +454,27 @@ def fov_sa(nc, keys, **kwargs):
 
     # calculate cross sectional area by multiplying zonal cell length by cell depth thickness
     xarea = np.ma.masked_where(sal0.mask, thkcello)
-
     for (z, y, x), thk in maenumerate(xarea):
         la = lats[y, x]
         xarea[z, y, x] = thk * zonal_distances[la]
-    #xarea_sum = xarea.sum(axis=(0,2))
     xarea_sum2 = xarea.sum(axis=2)
+    #print('xarea_sum2:', xarea_sum2.shape, xarea_sum2.min(), xarea_sum2.max())
 
+
+    # Calculate vobar and sobar. 
     # Vbar = SUM( vo(x)*thickcello(x)*dx)  / SUM(  thickcello*dx)
-
     vobar = (vo* xarea).sum(2) / xarea_sum2
+    #obar = vo.mean(2)
+    #print('vobar', vobar.shape, vobar.min(), vobar.max())
 
-    print('vobar', vobar.shape, vobar.min(), vobar.max())
-
+    #sobar = sal0.mean(2)
     sobar = (sal0* xarea).sum(2) / xarea_sum2
-    print('sobar', sobar.shape, sobar.min(), sobar.max())
+    #print('sobar', sobar.shape, sobar.min(), sobar.max())
 
+    vsbar = (vobar*sobar * xarea_sum2).sum(0)
+    #vsbar = (vobar*sobar * xarea.mean(2)).sum(0)
 
-    vsbar = (vobar*sobar * xarea_sum2).sum(1)
-    print('vsbar', vsbar.shape, vsbar.min(), vsbar.max())
+    #print('vsbar', vsbar.shape, vsbar.min(), vsbar.max(), vsbar.compressed())
 
     total = vsbar.mean()
 
@@ -484,12 +497,11 @@ def fov_sa(nc, keys, **kwargs):
     #pyplot.close()
 
     # Take the mean in the meridional area
-    total = total.mean()  
+    #total = total.mean()  
 
     # Apply factors from paper.
     output = (-1./sal_ref) * total   # 1/PSU * PSU m/s
-    print(output)
-    assert 0
+    output = output * 1e-6 # Convert m3 s-1 to Sv. 
     return output
 
 
