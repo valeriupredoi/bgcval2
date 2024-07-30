@@ -81,16 +81,16 @@ jobs:
       suite: *keylists
 
 
-   u-dg308:
-      description: 'TF OS SSP245 cmm - High freq nemo, no CFC/SF6 output - ssp245 extension of u-da914'
-#      label: 'Extension'
-      label: 'SSP2-4.5' 
-      colour: 'purple'
-      thickness: 1.2
-      linestyle: '-'
-      shifttime: 0.
-      #timerange: [1800, 2050]
-      suite: *keylists
+#   u-dg308:
+#      description: 'TF OS SSP245 cmm - High freq nemo, no CFC/SF6 output - ssp245 extension of u-da914'
+##      label: 'Extension'
+#      label: 'SSP2-4.5' 
+#      colour: 'purple'
+#      thickness: 1.2
+#      linestyle: '-'
+#      shifttime: 0.
+#      #timerange: [1800, 2050]
+#      suite: *keylists
 
 
    u-dg480:
@@ -105,28 +105,28 @@ jobs:
       suite: *keylists
 
 
-   u-dg508:
-      description: 'TF OS SSP245 cmm - High freq nemo, no CFC/SF6 output from 2030 onwards - ssp245 extension of u-da916'
-      label: None
-#     label: 'SSP2-4.5' 
-      colour: 'purple'
-      thickness: 1.2
-      linestyle: '-'
-      shifttime: 0.
-      #timerange: [1800, 2050]
-      suite: *keylists
+ #  u-dg508:
+ #     description: 'TF OS SSP245 cmm - High freq nemo, no CFC/SF6 output from 2030 onwards - ssp245 extension of u-da916'
+ #     label: None
+##     label: 'SSP2-4.5' 
+ #     colour: 'purple'
+ #     thickness: 1.2
+ #     linestyle: '-'
+ #     shifttime: 0.
+ #     #timerange: [1800, 2050]
+ #     suite: *keylists
 
 
-    u-dg327:
-      description: 'Revised SSP236. '
-      label: None
-#     label: 'SSP2-4.5'
-      colour: 'green'
-      thickness: 1.2
-      linestyle: '-'
-      shifttime: 0.
-      #timerange: [1800, 2050]
-      suite: *keylists
+#   u-dg327:
+#      description: 'Revised SSP236. '
+#      label: None
+##     label: 'SSP2-4.5'
+#      colour: 'green'
+#      thickness: 1.2
+#      linestyle: '-'
+#      shifttime: 0.
+#      #timerange: [1800, 2050]
+#      suite: *keylists
 
 #   u-dg509:
 #      description: 'TF OS SSP245 cmm - High freq nemo, no CFC/SF6 output from 2030 onwards - ssp245 extension of u-da917'
