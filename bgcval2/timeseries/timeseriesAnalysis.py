@@ -139,10 +139,11 @@ class timeseriesAnalysis:
         # load and calculate the model info
         if len(glob.glob(self.shelvefn+'*')): # shelve files have .bak .dat .dir files now
             with shOpen(self.shelvefn) as sh:
-                print('Shelf opens fine:', self.shelvefn)
+                print('Opening Shelf file:', self.shelvefn)
                 print (sh.keys())
                 readFiles       = sh['readFiles']
                 modeldataD      = sh['modeldata']
+               
         else:
             print('Does not exist', self.shelvefn)
             readFiles = []

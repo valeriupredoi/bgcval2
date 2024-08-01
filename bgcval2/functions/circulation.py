@@ -62,6 +62,9 @@ eORCA025_AEU_LAT1=704
 
 #eORCA1_latslice26N = slice(227,228)
 eORCA1_latslice26Nnm = slice(228,229)
+eORCA1_lonslice_GS = slice(228,229)
+
+
 eORCA1_latslice32S = slice(137,138)
 
 eORCA025_latslice26Nnm = slice(794,795)
@@ -310,6 +313,72 @@ def TwentySixNorth(nc,keys,**kwargs):
     for z in range(e3v_AMOC26N.shape[0] -2, 1, -1): # add from the bottom up
         atlmoc[z, :] = atlmoc[z+1, :] + atlmoc[z, :]
     return atlmoc
+
+
+def gulfstream(nc, keys, **kwargs):
+    """
+    This function calculates the Gulf Stream at 26N.
+    This is the sum of Northbound current between 
+
+    nc: a netcdf openned as a dataset.
+    keys: a list of keys to use in this function.
+
+    """
+    areafile = get_kwarg_file(kwargs, 'areafile')
+    maskname = kwargs.get('maskname', 'tmask')
+    grid = kwargs.get('grid', 'eORCA1')
+    maxdepth = np.abs(kwargs.get('maxdepth', 2000. ))
+
+ 
+    if not loadedArea:
+        loadDataMask(areafile, maskname, grid)
+
+    if grid == 'eORCA1':
+        latslice26Nnm = eORCA1_latslice26Nnm
+
+        #data=[-80.5011659 , -79.50119298, -78.50121829, -77.50124181,
+        #           -76.50126349, -75.50128329, -74.50130118, -73.50131712,
+        #           -72.50133107, -71.50134301, -70.50135293, -69.50136079,
+        #           -68.50136658],
+        lonslice_70W = slice(207, 220) 
+
+        altmaskfile = get_kwarg_file(kwargs, 'altmaskfile', default = 'bgcval2/data/basinlandmask_eORCA1.nc')
+        if not loadedAltMask:
+             loadAtlanticMask(altmaskfile, maskname='tmaskatl', grid=grid)
+    elif grid == 'eORCA025':
+        latslice26Nnm = eORCA025_latslice26Nnm
+
+    else:
+        # grid not recognised.
+        raise ValueError('TwentySixNorth: grid not recognised: %s', grid)
+
+    if not loadedAltMask:
+        # Atlantic Mask not loaded
+        raise ValueError('TwentySixNorth: Mask not loaded: ed: %s', grid)
+        assert 0
+
+    lats = nc.variables['nav_lat'][latslice26Nnm, lonslice_70W]
+    lons = nc.variables['nav_lon'][latslice26Nnm, lonslice_70W]
+    vo = np.ma.array(nc.variables[keys[0]][0, :, latslice26Nnm, lonslice_70W]) # m/s
+    vo = np.ma.masked_where(vo.mask + (vo <= 0.), vo) 
+
+    thickness = nc.variables['thkcello'][0,:,latslice26Nnm, lonslice_70W] 
+    depth = np.abs(np.cumsum(thickness, axis=0))# depth array
+    #print(vo.shape, thickness.shape, e1v_AMOC26N.shape)
+    gs = 0.
+    for (z, la, lo), v in np.ndenumerate(vo):
+        if depth[z, la,lo] > maxdepth:
+            continue
+        if v <= 0:
+            continue
+        #print((z, la, lo),'depth:', depth[z, la,lo], (lats[la, lo],'N', lons[la, lo], 'E'),  'v:', v, 'thickness:', thickness[z, la, lo], 'width:', e1v_AMOC26N[la, lo])
+        gs += v * thickness[z, la, lo] * e1v_AMOC26N[la, lo] / 1.E06
+
+    print('Gulf Stream:', gs) # expecting a value of 32Sv ish.
+    # https://www.sciencedirect.com/science/article/pii/S0079661114001694
+
+    return gs
+
 
 
 def twentysixnorth025(nc,keys,**kwargs):
