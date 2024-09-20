@@ -1479,8 +1479,10 @@ def comparehtml5Maker(
     # of the comparison report
     physicsKM = [
         'AMOC_26N',
+        'AMOC_depth',
         'ADRC_26N',
         'GulfStream',
+        'GulfStream_depth',
         'AtmosCO2',  
         'DrakePassage',
         'GlobalMeanTemperature',

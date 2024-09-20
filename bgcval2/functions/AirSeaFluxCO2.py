@@ -58,7 +58,7 @@ def calc_total_airseafluxco2(nc, keys, **kwargs):
     """
     areafile = get_kwarg_file(kwargs, 'areafile')
     if not loaded_area_and_mask:
-        if area in nc.variables.keys():
+        if 'area' in nc.variables.keys():
             area = nc.variables['area'][:]
         else:
             area = load_area_and_mask(areafile)

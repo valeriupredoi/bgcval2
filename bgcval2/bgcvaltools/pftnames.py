@@ -234,8 +234,10 @@ def makeLongNameDict():
     lnd['AMOC_26N'] = "AMOC 26N"
     lnd['AMOC_26N_nomexico'] = "AMOC 26N (excluding Gulf of Mexico)"
     lnd['AMOC_32S'] = "AMOC 32S"
+    lnd['AMOC_depth'] = "AMOC depth"
     lnd['ADRC_26N'] = "Atlantic Deep Return Current at 26N"
     lnd['GulfStream'] = "Gulf Stream at 26N"
+    lnd['GulfStream_depth'] = "Gulf Stream depth at 26N"
 
 
     lnd['ZonalCurrent'] = "Zonal Current"
@@ -250,8 +252,9 @@ def makeLongNameDict():
     lnd['VolumeMeanTemperature'] = "Volume-weighted Mean Temperature"
     lnd['GlobalMeanSalinity'] = "Global Volume-weighted Mean Salinity"
 
-    lnd['AtlanticSubtropicSalinity'] = 'Atlantic Subtropic Salinity'
+    lnd['AtlanticSubtropicSalinity'] = 'Atlantic Subtropic Salinity 0-800m'
     lnd['SubtropicNorthAtlantic'] = 'Subtropic North Atlantic'
+    lnd['GINSalinity'] = 'GIN Salinity 0-800m'
 
     lnd['Surfaceto100m'] = 'Surface-to-100m'
     lnd['Surfaceto200m'] = 'Surface-to-200m'
