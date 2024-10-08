@@ -1,0 +1,35 @@
+---
+#        float hfbasin_atlantic(time_counter, y, x) ;                                                                   
+#                hfbasin_atlantic:standard_name = "northward_ocean_heat_transport" ;
+#                hfbasin_atlantic:long_name = "Advective Heat Transport" ;                                             
+#                hfbasin_atlantic:units = "PW" ;                                                                        
+#                hfbasin_atlantic:online_operation = "average" ;                                                                                                                                                                         
+#
+#                hfbasin_atlantic:interval_operation = "2700 s" ;                                           
+#                hfbasin_atlantic:interval_write = "1 month" ;                                                          
+#                hfbasin_atlantic:cell_methods = "time: mean (interval: 2700 s)" ;                                     
+#                hfbasin_atlantic:_FillValue = 1.e+20f ;                                                                                                                                                                                      
+#                hfbasin_atlantic:missing_value = 1.e+20f ;                                                             
+#                hfbasin_atlantic:coordinates = "time_centered nav_lat nav_lon" ;  
+
+name            : hfbasinatlantic
+units           : PW
+dimensions      : 1
+model           : NEMO
+datasource      : WOA
+# The filenames
+modelFiles      : $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_diaptr.nc
+#modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*$JOBIDo_1y_*$YEAR????_grid-T.nc
+gridFile        : $PATHS_GRIDFILE
+
+# Model coordinates/dimension names
+model_vars      : hfbasin_atlantic
+model_convert   : choose_best_var
+
+layers          : layerless
+regions         : 26N Global NorthAtlanticOcean SouthAtlanticOcean 30S 40N
+smoothings      : DataOnly 5and30 
+
+
+
+

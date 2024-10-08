@@ -52,6 +52,8 @@ keys:
     #	MeridionalCurrent: True        	# Meridional Veloctity
     #	VerticalCurrent: True          	# Vertical Veloctity
     GulfStream: True
+    GulfStream_depth: True
+
 
     somesatr: True # salt flow # Work in progress in debug
 

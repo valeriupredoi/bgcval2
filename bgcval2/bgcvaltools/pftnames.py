@@ -276,12 +276,14 @@ def makeLongNameDict():
 
     lnd['sowaflup'] = "Net Upward Water Flux"
     lnd['sohefldo'] = "Net Downward Heat Flux"
+    lnd['fsitherm'] = "Water flux due to freezing/melting" 
+    lnd['sosafldo'] = "Downward salt flux"	
     lnd['sofmflup'] = "Water flux due to freezing/melting"
     lnd['sosfldow'] = "Downward salt flux"
     lnd['soicecov'] = "Ice Fraction"
     lnd['sossheig'] = "Sea Surface Height"
     lnd['FreshwaterFlux'] = "Freshwater Flux"
-
+    lnd['hfbasinatlantic'] = 'Northward Atlantic heat transport'
     lnd['exportRatio'] = "Export Ratio"
     lnd['LocalExportRatio'] = "Export Ratio"
 
@@ -544,6 +546,8 @@ def makeLongNameDict():
     lnd['SouthHemisphere'] = "South Hemisphere"
     lnd['26N'] = "26N"
     lnd['32S'] = "32S"
+    lnd['30S'] = "30S"
+    lnd['40N'] = "40N"
 
     lnd['WeddelSea'] = "Weddel Sea"
     lnd['Enderby'] = "Enderby Region"  # Regions from Pierce 1995 - https://doi.org/10.1175/1520-0485(1995)025<2046:CROHAF>2.0.CO;2
@@ -563,6 +567,9 @@ def makeLongNameDict():
     lnd['STSA'] = "Subtropic North Atlantic"
     lnd['SubtropicSouthAtlantic'] = lnd['STSA']
     lnd['GINseas'] = 'Greenland, Iceland, Norway seas'
+    lnd['IrmingerSea'] = 'Irminger Sea'
+    lnd['LIGINseas'] = 'Labrador, Irminger, Greenland, Iceland, Norway seas'
+    lnd['LIseas'] = 'Labrador and Irminger seas'
 
     lnd['SubpolarNorthAtlantic'] =  lnd['SPNA']
     lnd['NorthernSubpolarPacific'] = "Northern Subpolar Pacific"

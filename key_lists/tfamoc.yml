@@ -9,6 +9,7 @@ keys:
     AMOC_26N: True
     AtmosCO2: True
     AtlanticSubtropicSalinity: True
+    GINSalinity: True
     MLD: True
     TotalAirSeaFluxCO2: True
     # NoCaspianAirSeaFluxCO2: True
@@ -18,3 +19,8 @@ keys:
     NorthernTotalIceExtent: True
     SouthernTotalIceExtent: True
     GlobalMeanSalinity: True
+    fsitherm: True
+    sowaflup: True
+    sosafldo: True
+    hfbasinatlantic: True
+

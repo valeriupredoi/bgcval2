@@ -1,22 +1,23 @@
 ---
-name            : Windspeed
-units           : m/s
+name            : GINSalinity
+units           : PSU
 dimensions      : 3
 model           : NEMO
 datasource      : WOA
 # The filenames
 modelFiles      : $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_grid-T.nc
 modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*$JOBIDo_1y_*$YEAR????_grid-T.nc
+dataFile        : $BASEDIR_OBS/WOA/annual/woa13_decav_s00_01v2.nc
 gridFile        : $PATHS_GRIDFILE
 
 # Model coordinates/dimension names
-model_vars      : sowindsp 
+model_vars      : so_abs so
 model_convert   : choose_best_var
 
-layers          : layerless
-regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean SPNA LIGINseas STNA LIseas
-smoothings      : DataOnly 5and30 
+# Data coordinates names
+data_vars       : s_an
+data_convert    : NoChange
+data_tdict      : ZeroToZero
 
-
-
-
+layers          : 'Surfaceto800m'
+regions         : GINseas

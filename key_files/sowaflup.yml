@@ -1,0 +1,34 @@
+---
+#        float sowaflup(time_counter, y, x) ;
+#                sowaflup:standard_name = "water_flux_out_of_sea_ice_and_sea_water" ;
+#                sowaflup:long_name = "Net Upward Water Flux" ;
+#                sowaflup:units = "kg/m2/s" ;
+#                sowaflup:online_operation = "average" ;
+#                sowaflup:interval_operation = "2700 s" ;
+#                sowaflup:interval_write = "1 month" ;
+#                sowaflup:cell_methods = "time: mean (interval: 2700 s)" ;
+#                sowaflup:cell_measures = "area: area" ;
+#                sowaflup:_FillValue = 1.e+20f ;
+#                sowaflup:missing_value = 1.e+20f ;
+#                sowaflup:coordinates = "time_centered nav_lat nav_lon" ;
+name            : sowaflup
+units           : kg/m2/s
+dimensions      : 3
+model           : NEMO
+datasource      : WOA
+# The filenames
+modelFiles      : $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_grid-T.nc
+modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*$JOBIDo_1y_*$YEAR????_grid-T.nc
+gridFile        : $PATHS_GRIDFILE
+
+# Model coordinates/dimension names
+model_vars      : sowaflup
+model_convert   : choose_best_var
+
+layers          : layerless
+regions         : Global SouthernOcean ArcticOcean NorthAtlanticOcean SouthAtlanticOcean SPNA STNA GINseas LabradorSea IrmingerSea LIGINseas LIseas
+smoothings      : DataOnly 5and30 
+
+
+
+

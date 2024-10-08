@@ -8,6 +8,14 @@ keys:
 #    SouthernTotalIceExtent: True
 #    DrakePassageTransport: True
 #    AMOC_26N: True
+#     hfbasinatlantic: True
+#    fsitherm: True
+    sowaflup: True
+#    sosafldo: True
+
+    #GulfStream: True
+#    AMOC_depth: True
+#    GulfStream_depth: True
 #    GlobalMeanTemperature: True
 #     pH: True
 #    TotalIceArea: True
@@ -19,7 +27,7 @@ keys:
     #sowflisf: True
     #evs: True
     #precip: True
-    fov: True
+    #fov: True
     #somesatr: True
 
 #     AtlanticSubtropicSalinity: True

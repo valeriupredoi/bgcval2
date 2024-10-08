@@ -15,7 +15,7 @@ model_convert   : maskzeroes
 
 metrics         : mean
 layers          : layerless
-regions         : STSA RAPIDAtlanticTransect
+regions         : STSA RAPIDAtlanticTransect LIseas 
 smoothings      : DataOnly 5and30 
 
 

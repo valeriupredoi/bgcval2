@@ -14,7 +14,7 @@ model_vars      : evs
 model_convert   : choose_best_var
 
 layers          : layerless
-regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean SPNA 
+regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean SPNA STNA GINseas LabradorSea IrmingerSea LIGINseas LIseas
 smoothings      : DataOnly 5and30 
 
 

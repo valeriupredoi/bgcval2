@@ -258,9 +258,9 @@ jobs:
 
 
     u-dc051:
-       description: 'Rampdown from yr 50 of 1.5 stab #1, -4GtC/yr (#1)'
+       description: 'Rampdown from yr 50 of 2 stab #1, -4GtC/yr (#1)'
        label: None #'1.5K Rampdown #1'
-       colour: 'lawngreen'
+       colour: 'goldenrod'
        thickness: 1.7
        linestyle: 'dashed'
        shifttime: -1995.
