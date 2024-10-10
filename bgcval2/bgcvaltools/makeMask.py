@@ -269,6 +269,11 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
         mx = np.ma.masked_outside(
             xy, 38., 42.).mask
         return mx
+    if newSlice in ['55N', ]:
+        mx = np.ma.masked_outside(
+            xy, 55., 57.).mask
+        return mx
+
     if newSlice in ['30S', ]:
         mx = np.ma.masked_outside(
             xy, -32., -28., ).mask
@@ -305,7 +310,7 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
         mx += ((np.ma.masked_inside(xx, -27.5, -25.).mask * np.ma.masked_inside(xy, 58., 60.5).mask)) #Irm small square top
         return mx
 
-    if newSlice in ['LIseas',]: #Labrador &  Irminger seas
+    if newSlice in ['LIseas', ]: #Labrador &  Irminger seas
         mx = (np.ma.masked_outside(xx, -69., -45.).mask + np.ma.masked_outside(xy, 53., 67.).mask) #Lab
         mx *= (np.ma.masked_outside(xx, -45., -25.).mask + np.ma.masked_outside(xy, 53., 67.).mask) #Irm main
         mx += ((np.ma.masked_inside(xx, -30., -25.).mask * np.ma.masked_inside(xy, 53., 58.).mask)) #Irm square

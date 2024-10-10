@@ -274,6 +274,7 @@ def makeLongNameDict():
     lnd['thetaoga'] = "Global Average Sea Water Potential Temperature"
     lnd['scalarHeatContent'] = "Global heat content"
 
+    lnd['thkcello'] = 'Cell thickness'
     lnd['sowaflup'] = "Net Upward Water Flux"
     lnd['sohefldo'] = "Net Downward Heat Flux"
     lnd['fsitherm'] = "Water flux due to freezing/melting" 
@@ -339,7 +340,8 @@ def makeLongNameDict():
     lnd['EVS'] = 'Water Evaporation flux '
     lnd['Precip'] = 'Precipitation'
     lnd['sowindsp'] = 'Surface wind speed'
-    lnd['sowflisf'] = 'Ice Shelf Melting'     
+    lnd['sowflisf'] = 'Ice Shelf Melting' 
+    lnd['friver'] = 'River Water Flux'     
     lnd['fov'] = 'AMOC Meridional freshwater transport'     
     lnd['fov_sa'] = 'AMOC Meridional freshwater transport (South Atlantic)'     
     lnd['fov_stna'] = 'AMOC Meridional freshwater transport (Subtropial North Atlantic)'     
@@ -548,6 +550,7 @@ def makeLongNameDict():
     lnd['32S'] = "32S"
     lnd['30S'] = "30S"
     lnd['40N'] = "40N"
+    lnd['55N'] = "55N"
 
     lnd['WeddelSea'] = "Weddel Sea"
     lnd['Enderby'] = "Enderby Region"  # Regions from Pierce 1995 - https://doi.org/10.1175/1520-0485(1995)025<2046:CROHAF>2.0.CO;2

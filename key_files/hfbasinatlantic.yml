@@ -27,7 +27,7 @@ model_vars      : hfbasin_atlantic
 model_convert   : choose_best_var
 
 layers          : layerless
-regions         : 26N Global NorthAtlanticOcean SouthAtlanticOcean 30S 40N
+regions         : 26N Global NorthAtlanticOcean SouthAtlanticOcean 30S 40N 55N
 smoothings      : DataOnly 5and30 
 
 
