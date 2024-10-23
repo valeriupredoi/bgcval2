@@ -1,0 +1,34 @@
+---
+#        float hfds(time_counter, y, x) ;
+#                hfds:standard_name = "surface_downward_heat_flux_in_sea_water" ;
+#                hfds:long_name = "Net Downward Heat Flux" ;
+#                hfds:units = "W/m2" ;
+#                hfds:online_operation = "average" ;
+#                hfds:interval_operation = "2700 s" ;
+#                hfds:interval_write = "1 month" ;
+#                hfds:cell_methods = "time: mean (interval: 2700 s)" ;
+#                hfds:cell_measures = "area: area" ;
+#                hfds:_FillValue = 1.e+20f ;
+#                hfds:missing_value = 1.e+20f ;
+#                hfds:coordinates = "time_centered nav_lat nav_lon" ;
+name            : hfds
+units           : W/m2
+dimensions      : 3
+model           : NEMO
+datasource      : WOA
+# The filenames
+modelFiles      : $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_grid-T.nc
+modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*$JOBIDo_1y_*$YEAR????_grid-T.nc
+gridFile        : $PATHS_GRIDFILE
+
+# Model coordinates/dimension names
+model_vars      : hfds
+model_convert   : choose_best_var
+
+layers          : layerless
+regions         : Global SouthernOcean ArcticOcean NorthAtlanticOcean SouthAtlanticOcean SPNA STNA GINseas LabradorSea IrmingerSea LIGINseas LIseas
+smoothings      : DataOnly 5and30 
+
+
+
+

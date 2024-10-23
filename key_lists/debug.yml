@@ -10,7 +10,10 @@ keys:
 #    AMOC_26N: True
 #     hfbasinatlantic: True
 #    fsitherm: True
-    sowaflup: True
+#     thkcello: True    
+#     sowaflup: True
+#    soicecov: True     
+    hfds: True
 #    sosafldo: True
 
     #GulfStream: True

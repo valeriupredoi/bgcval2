@@ -21,6 +21,10 @@ keys:
     GlobalMeanSalinity: True
     fsitherm: True
     sowaflup: True
+    hfds: True
     sosafldo: True
     hfbasinatlantic: True
-
+    sowindsp: True
+    friver: True
+    soicecov: True
+#    thkcello: True

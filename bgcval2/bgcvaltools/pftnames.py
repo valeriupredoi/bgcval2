@@ -276,6 +276,7 @@ def makeLongNameDict():
 
     lnd['thkcello'] = 'Cell thickness'
     lnd['sowaflup'] = "Net Upward Water Flux"
+    lnd['hfds'] = 'Downwards Heat Flux'
     lnd['sohefldo'] = "Net Downward Heat Flux"
     lnd['fsitherm'] = "Water flux due to freezing/melting" 
     lnd['sosafldo'] = "Downward salt flux"	

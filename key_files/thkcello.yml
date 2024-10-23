@@ -1,0 +1,42 @@
+---
+#        float thkcello(time_counter, deptht, y, x) ;
+#                thkcello:standard_name = "cell_thickness" ;
+#                thkcello:long_name = "Ocean Model cell Thickness" ;
+#                thkcello:units = "m" ;
+#                thkcello:online_operation = "average" ;
+#                thkcello:interval_operation = "2700 s" ;
+#                thkcello:interval_write = "1 month" ;
+#                thkcello:cell_methods = "time: mean (interval: 2700 s)" ;
+#                thkcello:cell_measures = "area: area" ;
+#                thkcello:_FillValue = 1.e+20f ;
+#                thkcello:missing_value = 1.e+20f ;
+#                thkcello:coordinates = "time_centered deptht nav_lat nav_lon" ;
+
+name            : thkcello
+units           : m
+dimensions      : 3
+model           : NEMO
+datasource      : WOA
+# The filenames
+modelFiles      : $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_grid-T.nc
+modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*$JOBIDo_1y_*$YEAR????_grid-T.nc
+#dataFile        : $BASEDIR_OBS/WOA/annual/woa13_decav_t00_01v2.nc
+gridFile        : $PATHS_GRIDFILE
+
+# Model coordinates/dimension names
+model_vars      : thkcello
+model_convert   : choose_best_var
+
+
+# Data coordinates names
+#data_vars       : t_an
+#data_convert    : NoChange
+#data_tdict      : ZeroToZero
+
+layers          : Surface 
+regions         : Global SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean SPNA STNA GINseas LabradorSea IrmingerSea LIGINseas LIseas EquatorialAtlanticOcean # NorthHemisphere SouthHemisphere
+
+
+
+
+

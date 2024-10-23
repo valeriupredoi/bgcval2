@@ -132,6 +132,14 @@ def add_region(fig, ax, lons, lats, data):
     ax.add_feature(cfeature.LAND, zorder=10, edgecolor='black')
     return fig, ax, im
 
+ncfn = 'mesh_mask_eORCA1_wrk.nc'
+nc = Dataset(ncfn, 'r')
+dat = nc.variables['mbathy'][:].squeeze()
+lats = nc.variables['nav_lat'][:].squeeze()
+lons = nc.variables['nav_lon'][:].squeeze()
+lons = bvt.makeLonSafeArr(lons)
+nc.close()
+
 
 def make_figure(region):
     fig_fn = bvt.folder('images/regions')+region+'.png'
@@ -139,19 +147,18 @@ def make_figure(region):
 
     fig = pyplot.figure()
     
-    paths_dict, config_user = get_run_configuration("defaults")
+#    paths_dict, config_user = get_run_configuration("defaults")
     # filter paths dict into an object that's usable below
-    paths = paths_setter(paths_dict)    
+#    paths = paths_setter(paths_dict)    
     #ncfn = paths.orcaGridfn
-    ncfn = 'mesh_mask_eORCA1_wrk.nc'
+#   ncfn = 'mesh_mask_eORCA1_wrk.nc'
 
-    nc = Dataset(ncfn, 'r')
-    print(ncfn)
-
-    dat = nc.variables['mbathy'][:].squeeze()
-    lats = nc.variables['nav_lat'][:].squeeze()
-    lons = nc.variables['nav_lon'][:].squeeze()
-    lons = bvt.makeLonSafeArr(lons)
+#    nc = Dataset(ncfn, 'r')
+#    #print(ncfn)
+#    dat = nc.variables['mbathy'][:].squeeze()
+#    lats = nc.variables['nav_lat'][:].squeeze()
+#    lons = nc.variables['nav_lon'][:].squeeze()
+#    lons = bvt.makeLonSafeArr(lons)
 
     old_mask = np.ma.masked_where(dat.mask + dat ==0, dat).mask
 
@@ -186,7 +193,7 @@ def make_figure(region):
         hspace=0.30,
         wspace=0.30,)
 
-    print('lats:', new_lat.mean(), 'lon:', new_lon.mean(), 'data:', new_dat.min(), new_dat.max())
+    print('\''+region+'\': {\'lats\'', new_lat.mean(), 'lon:', new_lon.mean()) #data:', new_dat.min(), new_dat.max())
 
     ortho_pro=ccrs.Orthographic(new_lon.mean(), new_lat.mean(),)    
     ax_globe = fig.add_subplot(spec2[0, 0], projection=ortho_pro)
@@ -218,34 +225,36 @@ def make_figure(region):
 
 
 def main():
+#    paths_dict, config_user = get_run_configuration("defaults")
+
     regions = [
                 'LIseas',
-#               'LIGINseas',
-#               'GLINseas',
+                'LIGINseas',
+                'GLINseas',
 #               'Ascension',
 #               'ITCZ',
 #               'TristandaCunha',
 #               'Pitcairn',
 #               'Cornwall',
-#               'SubtropicNorthAtlantic',
-#               'SPNA',
-#               'STNA',        
+                'SubtropicNorthAtlantic',
+                'SPNA',
+                'STNA',        
 #               'SouthernOcean',
 #               'ArcticOcean',
 #               'Equator10',
 #               'NorthPacificOcean',
 #               'SouthPacificOcean',
-#               'NorthAtlanticOcean',
+                'NorthAtlanticOcean',
 #               'SouthAtlanticOcean',
-#               'GINseas',
-#               'LabradorSea',
-#               'IrmingerSea',
+                'GINseas',
+                'LabradorSea',
+                'IrmingerSea',
 #              'EquatorialAtlanticOcean',
 #              'Global',
 #              'ignoreInlandSeas',
     ]
     for region in regions[:]:
-        make_figure(region)
+        make_figure(region) 
 
 if __name__ == "__main__":
     main()
