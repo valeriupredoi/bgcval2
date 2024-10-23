@@ -8,7 +8,22 @@ keys:
 #    SouthernTotalIceExtent: True
 #    DrakePassageTransport: True
 #    AMOC_26N: True
-    GlobalMeanTemperature: True
+#    GlobalMeanTemperature: True
+#     pH: True
+#    TotalIceArea: True
+#    NorthernTotalIceArea: True
+#    SouthernTotalIceArea: True
+
+    #ZOS: True
+    #sowindsp: True
+    #sowflisf: True
+    #evs: True
+    #precip: True
+    #fov: True
+    somesatr: True
+
+#     AtlanticSubtropicSalinity: True
+#     MLD: True
 #     Temperature: True
 #   Iron: True
 #    GlobalMeanSalinity: True
