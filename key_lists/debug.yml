@@ -8,12 +8,14 @@ keys:
 #    SouthernTotalIceExtent: True
 #    DrakePassageTransport: True
 #    AMOC_26N: True
-#     hfbasinatlantic: True
+     hfbasinatlantic: True
 #    fsitherm: True
 #     thkcello: True    
 #     sowaflup: True
 #    soicecov: True     
-    hfds: True
+     hfds: True
+     somesatr: True
+
 #    sosafldo: True
 
     #GulfStream: True
