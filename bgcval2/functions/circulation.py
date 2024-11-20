@@ -144,7 +144,7 @@ def loadDataMask(gridfn, maskname, grid):
     global tmask_AMOC55N
     
     global loadedArea
-    global loadedAltMask
+#    global loadedAltMask
 
     if grid == 'eORCA1':
         LON = eORCA1_drake_LON
@@ -231,13 +231,15 @@ def loadAtlanticMask(altmaskfile, maskname='tmaskatl', grid = 'eORCA1'):
     global loadedAltMask
     if grid == 'eORCA1':
         latslice26Nnm = eORCA1_latslice26Nnm
+        latslice40N = eORCA1_latslice40N
+        latslice55N = eORCA1_latslice55N
+
     else:
         raise ValueError("Grid not recognised in this calculation: %s", grid)
     nc = dataset(altmaskfile, 'r')        
     alttmask_AMOC26N = nc.variables[maskname][latslice26Nnm, :]
     alttmask_AMOC40N = nc.variables[maskname][latslice40N, :]
     alttmask_AMOC55N = nc.variables[maskname][latslice55N, :]
-
     nc.close()
     loadedAltMask = True
 
@@ -326,34 +328,35 @@ def TwentySixNorth(nc, keys, lat='26N', return_max_depth=False, **kwargs):
     if not loadedArea:
         loadDataMask(areafile, maskname, grid)
 
+    altmaskfile = get_kwarg_file(kwargs, 'altmaskfile', default = 'bgcval2/data/basinlandmask_eORCA1.nc')
+    if not loadedAltMask:
+         loadAtlanticMask(altmaskfile, maskname='tmaskatl', grid=grid)
+
     if grid == 'eORCA1':
         if lat == '26N':
             latslice = eORCA1_latslice26Nnm
             e1v_AMOC = e1v_AMOC26N
-            alttmask_AMOC = alttmask_AMOC26N
+            alttmask_AMOC = alttmask_AMOC26N[:]
             tmask_AMOC = tmask_AMOC26N
             e3v_AMOC = e3v_AMOC26N
 
         elif lat == '40N':
             latslice = eORCA1_latslice40N
             e1v_AMOC = e1v_AMOC40N
-            alttmask_AMOC = alttmask_AMOC40N
+            alttmask_AMOC = alttmask_AMOC40N[:]
             tmask_AMOC = tmask_AMOC40N
             e3v_AMOC = e3v_AMOC40N
 
         elif lat == '55N':
             latslice = eORCA1_latslice55N
             e1v_AMOC = e1v_AMOC55N
-            alttmask_AMOC = alttmask_AMOC55N
+            alttmask_AMOC = alttmask_AMOC55N[:]
             tmask_AMOC = tmask_AMOC55N
             e3v_AMOC = e3v_AMOC44N
 
         else:
             raise ValueError('Region not recognised', lat)
 
-        altmaskfile = get_kwarg_file(kwargs, 'altmaskfile', default = 'bgcval2/data/basinlandmask_eORCA1.nc')
-        if not loadedAltMask:
-             loadAtlanticMask(altmaskfile, maskname='tmaskatl', grid=grid)
     elif grid == 'eORCA025':
         assert 0 
         latslice = eORCA025_latslice26Nnm
@@ -652,21 +655,21 @@ def AMOC26N(nc, keys, **kwargs):
     if kwargs.get('grid',None) == 'eORCA025':
         return twentysixnorth025(nc, keys, **kwargs)
     else:
-        atlmoc = TwentySixNorth(nc, keys, lat='26N' **kwargs)
+        atlmoc = TwentySixNorth(nc, keys, lat='26N', **kwargs)
     return atlmoc.max()
 
 def AMOC40N(nc, keys, **kwargs):
     if kwargs.get('grid',None) == 'eORCA025':
         return twentysixnorth025(nc, keys, **kwargs)
     else:
-        atlmoc = TwentySixNorth(nc, keys,lat='40N' **kwargs)
+        atlmoc = TwentySixNorth(nc, keys,lat='40N', **kwargs)
     return atlmoc.max()
 
 def AMOC55N(nc, keys, **kwargs):
     if kwargs.get('grid',None) == 'eORCA025':
         return twentysixnorth025(nc, keys, **kwargs)
     else:
-        atlmoc = TwentySixNorth(nc, keys, lat='55N' **kwargs)
+        atlmoc = TwentySixNorth(nc, keys, lat='55N', **kwargs)
     return atlmoc.max()
 
 
