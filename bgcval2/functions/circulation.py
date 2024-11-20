@@ -62,6 +62,9 @@ eORCA025_AEU_LAT1=704
 
 #eORCA1_latslice26N = slice(227,228)
 eORCA1_latslice26Nnm = slice(228,229)
+eORCA1_latslice40N = slice(245,246)
+eORCA1_latslice55N = slice(272,273)
+
 eORCA1_lonslice_GS = slice(228,229)
 
 
@@ -75,10 +78,22 @@ umask_drake = 0
 e2u_drake = 0
 e2u_aeu = 0
 umask_aeu = 0
+
 e3v_AMOC26N = 0
+e3v_AMOC40N = 0
+e3v_AMOC55N = 0
+
 e1v_AMOC26N = 0
+e1v_AMOC40N = 0
+e1v_AMOC55N = 0
 tmask_AMOC26N = 0
+tmask_AMOC40N = 0
+tmask_AMOC55N = 0
+
 alttmask_AMOC26N = 0
+alttmask_AMOC40N = 0
+alttmask_AMOC55N = 0
+
 alttmask = 0
 loadedArea = False
 loadedAltMask = False
@@ -119,8 +134,15 @@ def loadDataMask(gridfn, maskname, grid):
     global umask_drake
     global e2u_drake
     global e3v_AMOC26N
-    global e1v_AMOC26N
+    global e3v_AMOC40N
+    global e3v_AMOC55N
+    global e1v_AMOC26N    
+    global e1v_AMOC40N    
+    global e1v_AMOC55N
     global tmask_AMOC26N
+    global tmask_AMOC40N
+    global tmask_AMOC55N
+    
     global loadedArea
     global loadedAltMask
 
@@ -129,6 +151,10 @@ def loadDataMask(gridfn, maskname, grid):
         LAT0 = eORCA1_drake_LAT0
         LAT1 = eORCA1_drake_LAT1
         latslice26Nnm = eORCA1_latslice26Nnm
+        latslice40N = eORCA1_latslice40N
+        latslice55N = eORCA1_latslice55N
+        # no lon slice for eORCA1
+
     elif grid == 'eORCA025':
         LON = eORCA025_drake_LON
         LAT0 = eORCA025_drake_LAT0
@@ -148,12 +174,29 @@ def loadDataMask(gridfn, maskname, grid):
         e3v_AMOC26N = nc.variables['e3v_0'][..., latslice26Nnm, lonslice26N].squeeze()   # z level height 3D 
         e1v_AMOC26N = nc.variables['e1v'][..., latslice26Nnm, lonslice26N]     #
         tmask_AMOC26N = nc.variables['tmask'][..., latslice26Nnm, lonslice26N]
+
+        e3v_AMOC40N = nc.variables['e3v_0'][..., latslice40N, lonslice40N].squeeze()   # z level height 3D 
+        e1v_AMOC40N = nc.variables['e1v'][..., latslice40N, lonslice40N]     #
+        tmask_AMOC40N = nc.variables['tmask'][..., latslice40N, lonslice40N]
+
+        e3v_AMOC55N = nc.variables['e3v_0'][..., latslice55Nnm, lonslice55N].squeeze()   # z level height 3D 
+        e1v_AMOC55N = nc.variables['e1v'][..., latslice55Nnm, lonslice55N]     #
+        tmask_AMOC55N = nc.variables['tmask'][..., latslice55Nnm, lonslice55N]
+
     else:
         e3v_AMOC26N = nc.variables['e3v'][..., latslice26Nnm, :]   # z level height 3D
         e1v_AMOC26N = nc.variables['e1v'][..., latslice26Nnm, :]     #
         tmask_AMOC26N = nc.variables['tmask'][..., latslice26Nnm, :]
 
-    print('e3v_AMOC26N: loaded')#e3v_AMOC26N, latslice26Nnm, e3v_AMOC26N.shape)
+        e3v_AMOC40N = nc.variables['e3v'][..., latslice40N, :]   # z level height 3D
+        e1v_AMOC40N = nc.variables['e1v'][..., latslice40N, :]     #
+        tmask_AMOC40N = nc.variables['tmask'][..., latslice40N, :]        
+
+        e3v_AMOC55N = nc.variables['e3v'][..., latslice55N, :]   # z level height 3D
+        e1v_AMOC55N = nc.variables['e1v'][..., latslice55N, :]     #
+        tmask_AMOC55N = nc.variables['tmask'][..., latslice55N, :]
+
+    #print('e3v_AMOC26N: loaded')#e3v_AMOC26N, latslice26Nnm, e3v_AMOC26N.shape)
     nc.close()
     loadedArea = True
 
@@ -182,6 +225,9 @@ def loadAtlanticMask(altmaskfile, maskname='tmaskatl', grid = 'eORCA1'):
     Load the atlantic ocean mask.
     """
     global alttmask_AMOC26N
+    global alttmask_AMOC40N
+    global alttmask_AMOC55N
+
     global loadedAltMask
     if grid == 'eORCA1':
         latslice26Nnm = eORCA1_latslice26Nnm
@@ -189,6 +235,9 @@ def loadAtlanticMask(altmaskfile, maskname='tmaskatl', grid = 'eORCA1'):
         raise ValueError("Grid not recognised in this calculation: %s", grid)
     nc = dataset(altmaskfile, 'r')        
     alttmask_AMOC26N = nc.variables[maskname][latslice26Nnm, :]
+    alttmask_AMOC40N = nc.variables[maskname][latslice40N, :]
+    alttmask_AMOC55N = nc.variables[maskname][latslice55N, :]
+
     nc.close()
     loadedAltMask = True
 
@@ -262,7 +311,7 @@ def drakePassage(nc, keys, **kwargs):
     return drake
 
 
-def TwentySixNorth(nc, keys, return_max_depth=False, **kwargs):
+def TwentySixNorth(nc, keys, lat='26N', return_max_depth=False, **kwargs):
     """
     This function loads the AMOC/ADRC array that is used for eORCA
     
@@ -278,13 +327,36 @@ def TwentySixNorth(nc, keys, return_max_depth=False, **kwargs):
         loadDataMask(areafile, maskname, grid)
 
     if grid == 'eORCA1':
-        latslice26Nnm = eORCA1_latslice26Nnm
+        if lat == '26N':
+            latslice = eORCA1_latslice26Nnm
+            e1v_AMOC = e1v_AMOC26N
+            alttmask_AMOC = alttmask_AMOC26N
+            tmask_AMOC = tmask_AMOC26N
+            e3v_AMOC = e3v_AMOC26N
+
+        elif lat == '40N':
+            latslice = eORCA1_latslice40N
+            e1v_AMOC = e1v_AMOC40N
+            alttmask_AMOC = alttmask_AMOC40N
+            tmask_AMOC = tmask_AMOC40N
+            e3v_AMOC = e3v_AMOC40N
+
+        elif lat == '55N':
+            latslice = eORCA1_latslice55N
+            e1v_AMOC = e1v_AMOC55N
+            alttmask_AMOC = alttmask_AMOC55N
+            tmask_AMOC = tmask_AMOC55N
+            e3v_AMOC = e3v_AMOC44N
+
+        else:
+            raise ValueError('Region not recognised', lat)
 
         altmaskfile = get_kwarg_file(kwargs, 'altmaskfile', default = 'bgcval2/data/basinlandmask_eORCA1.nc')
         if not loadedAltMask:
              loadAtlanticMask(altmaskfile, maskname='tmaskatl', grid=grid)
     elif grid == 'eORCA025':
-        latslice26Nnm = eORCA025_latslice26Nnm
+        assert 0 
+        latslice = eORCA025_latslice26Nnm
 
     else:
         # grid not recognised.
@@ -294,36 +366,34 @@ def TwentySixNorth(nc, keys, return_max_depth=False, **kwargs):
         # Atlantic Mask not loaded
         raise ValueError('TwentySixNorth: Mask not loaded: ed: %s', grid)
 
-        assert 0 
-
-    zv = np.ma.array(nc.variables[keys[0]][..., latslice26Nnm, :]) # m/s
+    zv = np.ma.array(nc.variables[keys[0]][..., latslice, :]) # m/s
     zv = np.ma.masked_where(zv.mask + (zv == 0.), zv)
 
     atlmoc = np.array(np.zeros_like(zv[0, :, :, 0]))
 
     if 'thkcello' in nc.variables.keys():
-        thkcello = nc.variables['thkcello'][0, :, latslice26Nnm, :]
+        thkcello = nc.variables['thkcello'][0, :, latslice, :]
         thkcello = np.ma.masked_where(thkcello.mask + zv[0].mask, thkcello)
     else:
-        thkcello = e3v_AMOC26N[:]
+        thkcello = e3v_AMOC[:]
 
     depths = np.ma.abs(np.cumsum(thkcello, axis=0))
 
     for (z, la, lo), _ in np.ndenumerate(thkcello):
-        if not alttmask_AMOC26N[la, lo]:
+        if not alttmask_AMOC[la, lo]:
             continue
-        if not tmask_AMOC26N[z, la, lo]:
+        if not tmask_AMOC[z, la, lo]:
             continue
         if np.ma.is_masked(zv[0, z, la, lo]):
             continue
-        atlmoc[z, la] = atlmoc[z, la] - e1v_AMOC26N[la, lo] * thkcello[z, la, lo] * zv[0, z, la, lo] / 1.E06
+        atlmoc[z, la] = atlmoc[z, la] - e1v_AMOC[la, lo] * thkcello[z, la, lo] * zv[0, z, la, lo] / 1.E06
 
     for z in range(thkcello.shape[0] -2, 1, -1): # add from the bottom up
         atlmoc[z, :] = atlmoc[z+1, :] + atlmoc[z, :]
     if return_max_depth:
         max_depth_index = np.argmax(atlmoc, keepdims=True)
         max_depth2d = depths[max_depth_index[0], :] # extract the depth layer
-        max_depth2d = np.ma.masked_where( max_depth2d.mask + (alttmask_AMOC26N==0.), max_depth2d) # mask the non-atlantic
+        max_depth2d = np.ma.masked_where( max_depth2d.mask + (alttmask_AMOC==0.), max_depth2d) # mask the non-atlantic
 
 #       print('max depth ', atlmoc.max(), atlmoc.shape, max_depth_index, atlmoc[max_depth_index], depths.shape)
 #       print('max_depth2d', max_depth2d.min(), max_depth2d.mean(), max_depth2d.max())
@@ -544,7 +614,7 @@ def gulfstream(nc, keys, **kwargs):
 
 
 
-def twentysixnorth025(nc,keys,**kwargs):
+def twentysixnorth025(nc, keys, **kwargs):
     """
     This function loads the AMOC array that is used for eORCA025
 
@@ -582,10 +652,22 @@ def AMOC26N(nc, keys, **kwargs):
     if kwargs.get('grid',None) == 'eORCA025':
         return twentysixnorth025(nc, keys, **kwargs)
     else:
-        atlmoc = TwentySixNorth(nc, keys, **kwargs)
+        atlmoc = TwentySixNorth(nc, keys, lat='26N' **kwargs)
     return atlmoc.max()
 
+def AMOC40N(nc, keys, **kwargs):
+    if kwargs.get('grid',None) == 'eORCA025':
+        return twentysixnorth025(nc, keys, **kwargs)
+    else:
+        atlmoc = TwentySixNorth(nc, keys,lat='40N' **kwargs)
+    return atlmoc.max()
 
+def AMOC55N(nc, keys, **kwargs):
+    if kwargs.get('grid',None) == 'eORCA025':
+        return twentysixnorth025(nc, keys, **kwargs)
+    else:
+        atlmoc = TwentySixNorth(nc, keys, lat='55N' **kwargs)
+    return atlmoc.max()
 
 
 def fov_sa(nc, keys, **kwargs):
