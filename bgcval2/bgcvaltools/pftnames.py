@@ -347,6 +347,8 @@ def makeLongNameDict():
     lnd['fov_sa'] = 'AMOC Meridional freshwater transport (South Atlantic)'     
     lnd['fov_stna'] = 'AMOC Meridional freshwater transport (Subtropial North Atlantic)'     
     lnd['somesatr'] = 'Salt Transport in y-direction'
+    lnd['hfy'] = 'Heat Transport in y-direction'
+
 
     lnd['AMM'] = 'Atlantic Margins'
     lnd['AMM_Shelf'] = 'Atlantic Margins Shelf'
