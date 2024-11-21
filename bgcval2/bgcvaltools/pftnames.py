@@ -438,6 +438,7 @@ def makeLongNameDict():
 
     lnd['NordicSea'] = "Nordic Sea"
     lnd['LabradorSea'] = "Labrador Sea"
+    lnd['NorthEastAtlantic'] = "North East Atlantic"
     lnd['NorwegianSea'] = "Norwegian Sea"
     lnd['Cornwall'] = "Cornwall"
     lnd['Ascension'] = "Ascension Island"

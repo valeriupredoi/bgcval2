@@ -14,7 +14,7 @@ model_vars      : sowflisf
 model_convert   : choose_best_var
 
 layers          : layerless
-regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean SPNA LIGINseas LabradorSea IrmingerSea GINseas LIseas 
+regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean SPNA LIGINseas LabradorSea NorthEastAtlantic IrmingerSea GINseas LIseas 
 smoothings      : DataOnly 5and30 
 
 

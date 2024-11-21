@@ -13,7 +13,7 @@ model_vars      : soicecov
 model_convert   : choose_best_var
 
 layers          : layerless
-regions         : Global SouthernOcean ArcticOcean NorthAtlanticOcean SouthAtlanticOcean GINseas LabradorSea IrmingerSea LIGINseas LIseas
+regions         : Global SouthernOcean ArcticOcean NorthAtlanticOcean SouthAtlanticOcean GINseas LabradorSea NorthEastAtlantic IrmingerSea LIGINseas LIseas
 smoothings      : DataOnly 5and30 
 
 
