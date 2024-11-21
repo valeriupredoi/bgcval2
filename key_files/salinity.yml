@@ -20,4 +20,4 @@ data_convert    : NoChange
 data_tdict      : ZeroToZero
 
 layers          : Surface 500m
-regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean SPNA STNA GINseas LabradorSea IrmingerSea LIGINseas EquatorialAtlanticOcean LIseas
+regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean SPNA STNA GINseas LabradorSea IrmingerSea LIGINseas EquatorialAtlanticOcean LIseas subpolar

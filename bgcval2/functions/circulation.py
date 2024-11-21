@@ -352,7 +352,7 @@ def TwentySixNorth(nc, keys, lat='26N', return_max_depth=False, **kwargs):
             e1v_AMOC = e1v_AMOC55N
             alttmask_AMOC = alttmask_AMOC55N[:]
             tmask_AMOC = tmask_AMOC55N
-            e3v_AMOC = e3v_AMOC44N
+            e3v_AMOC = e3v_AMOC55N
 
         else:
             raise ValueError('Region not recognised', lat)

@@ -201,6 +201,8 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
 
     if newSlice == 'AMM':
         return np.ma.masked_outside(bvt.makeLonSafeArr(xx), -20., 13.).mask + np.ma.masked_outside(xy, 40., 65.).mask
+    
+    if newSlice == 'NorthEastAtlantic':
 
 
     if newSlice == 'SouthernOcean':
@@ -347,6 +349,14 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
         mx = np.ma.masked_outside(xx, -15., 10.).mask
         mx += np.ma.masked_outside(xy, 67., 76.).mask
         return mx
+
+    if newSlice == 'NorthEastAtlantic':
+
+        mx = np.ma.masked_outside(xx, -25., -2.).mask 
+        mx += np.ma.masked_outside(xy, 53., 65.).mask
+        return mx
+        #65-75:20W-15E
+
    
 
     if newSlice == 'Cornwall':
@@ -415,6 +425,13 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
     if newSlice == 'YevgenyNorwegianSea':  # same
         mx = np.ma.masked_outside(xx, -15., 10.).mask
         mx += np.ma.masked_outside(xy, 67., 76.).mask
+        return mx
+
+    if newSlice == 'subpolar':  
+        #    subpolar North Atlantic (50–70° N and 70° W–0° E)
+        # from https://www.nature.com/articles/s41561-024-01568-1
+        mx = np.ma.masked_outside(xx, -70., 0.).mask
+        mx += np.ma.masked_outside(xy, 50., 70.).mask
         return mx
 
     if newSlice == 'NorthernSubpolarPacific':
