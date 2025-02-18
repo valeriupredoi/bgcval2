@@ -468,6 +468,7 @@ def makeLongNameDict():
     #####
     # DMS fields:
     lnd['anderson'] = 'Anderson et al.'
+    lnd['DMS'] = 'DMS'
     lnd['dms_and'] = 'Anderson et al.'
     lnd['dms_andSurface'] = 'Anderson et al.'
     lnd['dms_p_and'] = 'Anderson et al.'
