@@ -9,7 +9,8 @@ do_analysis_timeseries: True
 do_mass_download: False
 
 # master analysis suite
-master_suites: physics bgc #alkalinity physics kmf1
+master_suites: &keylists physics bgc kmf tfamoc #alkalinity physics
+
 
 clean: True
 
@@ -25,7 +26,7 @@ jobs:
        linestyle: '-'
        shifttime: -427.
        timerange: [1850, 2020]
-       suite: kmf physics bgc #alkalinity physics
+       suite: *keylists
 
     u-ca306:
        description: 'Reference '
@@ -35,7 +36,7 @@ jobs:
        linestyle: '-'
        shifttime: 0    
        timerange: [1850, 2020]
-       suite: kmf physics bgc #alkalinity physics
+       suite: *keylists
 
     u-cy623:
        description: 'interactive ice, started from picontrol yr 2277'
@@ -44,7 +45,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: kmf physics bgc #alkalinity physics
+       suite: *keylists
 
 
     u-da914:
@@ -54,7 +55,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: kmf physics bgc #alkalinity physics
+       suite: *keylists
 
     u-da916:
        description: 'interactive ice, started from picontrol yr 2237'
@@ -63,7 +64,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: kmf physics bgc #alkalinity physics
+       suite: *keylists
 
     u-da917:
        description: 'interactive ice, started from picontrol yr 2317'
@@ -72,7 +73,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: kmf physics bgc #alkalinity physics
+       suite: *keylists
 
     u-cy690: 
        description: 'static ice sheets, started from picontrol yr 2277'
@@ -81,7 +82,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: kmf physics bgc #alkalinity physics
+       suite: *keylists
 
     u-cy691:
        description: 'static ice sheets, started from picontrol yr 2197'
@@ -90,7 +91,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: kmf physics bgc #alkalinity physics
+       suite: *keylists
 
     u-cy692:
        description: ' static ice sheets, started from picontrol yr 2237'
@@ -99,7 +100,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: kmf physics bgc #alkalinity physics kmf
+       suite: *keylists 
 
     u-cy693:
        description: ' static ice sheets, started from picontrol yr 2317'
@@ -108,7 +109,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
-       suite: kmf physics bgc #alkalinity physics kmf
+       suite: *keylists 
 
 
 

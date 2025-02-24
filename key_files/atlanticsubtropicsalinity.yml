@@ -1,5 +1,5 @@
 ---
-name            : Salinity
+name            : AtlanticSubtropicSalinity
 units           : PSU
 dimensions      : 3
 model           : NEMO
@@ -19,5 +19,5 @@ data_vars       : s_an
 data_convert    : NoChange
 data_tdict      : ZeroToZero
 
-layers          : Surface 500m
-regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean SPNA STNA GINseas LabradorSea EquatorialAtlanticOcean
+layers          : 'Surfaceto800m'
+regions         : SubtropicNorthAtlantic
