@@ -110,7 +110,7 @@ conda env remove -n ENV_NAME
 
 Executable name | What it does | Command
 :--------------:|:------------:|:------------:
-`analysis_timeseries` | runs timeseries analysis for single model run. | analysis_timeseries jobID key
+`analysis_timeseries` | runs timeseries analysis for single model run. | analysis_timeseries -j jobID -k key
 `analysis_p2p` | runs point to point analysis of model against observational dataset. | analysis_p2p jobID YEAR
 `bgcval` | runs time series and point to point. | bgcval jobID
 `bgcval2_make_report` | makes the single model HTML report. | bgcval2_make_report jobID
