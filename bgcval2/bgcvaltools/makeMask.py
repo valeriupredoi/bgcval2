@@ -202,9 +202,6 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
     if newSlice == 'AMM':
         return np.ma.masked_outside(bvt.makeLonSafeArr(xx), -20., 13.).mask + np.ma.masked_outside(xy, 40., 65.).mask
     
-    if newSlice == 'NorthEastAtlantic':
-
-
     if newSlice == 'SouthernOcean':
         return np.ma.masked_where(xy > -40., nmask).mask
     if newSlice == 'AntarcticOcean':

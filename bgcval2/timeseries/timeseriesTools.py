@@ -286,6 +286,13 @@ def save_json(
     
     filename = bvt.folder(csvFolder) + '_'.join([analysisname, name, region, layer, metric, ts ]) + csvformat
 
+#    json_arrD = {job:[float(d) for d in data] for job, data in arrD.items()}
+#    if region in ['IrmingerSea',]:
+#        for j in json_arrD:
+#            print('\n\n',j,name, region,  json_arrD[j])
+#            print('\n\n',j,name, region,  arrD[j])
+#            
+#        assert 0
     jsondata = {
             # json can't save numpy.float32, so we convert to list of floats.
             'timesD': {job:[float(t) for t in times] for job, times in timesD.items()},

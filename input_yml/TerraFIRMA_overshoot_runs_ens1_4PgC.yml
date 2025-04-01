@@ -24,7 +24,7 @@ jobs:
    # PI CONTROL
    u-cs495:
       description: 'PI-Control'
-      label: 'PIcontrol'
+      label: 'Pre-industrial'
       colour: 'blue' 
       thickness: 1.2
       linestyle: '-'
@@ -35,7 +35,7 @@ jobs:
    # ramp up
    u-cx209:
       description: 'E-mode free ice RAMP UP 8GtC/yr #1'
-      label: 'Ramp-up' # #1'
+      label: 'Positive emissions' # #1'
       colour: 'black'
       thickness: 1.2
       linestyle: '-'
