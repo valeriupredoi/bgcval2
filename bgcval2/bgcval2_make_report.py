@@ -1593,6 +1593,31 @@ def comparehtml5Maker(
         relativeFiles = [
             addImageToHtml(catfn, imagesfold, reportdir) for catfn in catfiles
         ]
+        ######
+        # Add json file too.
+        analysis_name = os.path.basename(reportdir[:-1]) # assume last character is slash
+        csvFolder = paths.imagedir + '/TimeseriesCompare_CSV/' + analysis_name
+
+        for catfn in catfiles:
+#            print('png:', catfn)
+            json_fn = csvFolder+'/'+analysis_name+'_'+os.path.basename(catfn)
+            together = json_fn.find('Together')
+            json_fn = json_fn[:together] + 'Together.json'
+            print('json:', json_fn)
+            if not os.path.exists(json_fn):
+                print('Can not find json:', json_fn)
+                continue
+            # copying file to report dir.
+            newfn = imagesfold + os.path.basename(json_fn)
+
+            if shouldIMakeFile(
+                  json_fn,
+                  newfn,
+            ):
+                if os.path.exists(newfn):
+                    os.remove(newfn)
+                shutil.copy2(json_fn, newfn)
+            
 
         ####
         # sort alphabeticaly.
