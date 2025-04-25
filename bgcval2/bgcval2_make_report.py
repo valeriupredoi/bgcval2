@@ -1421,6 +1421,7 @@ def comparehtml5Maker(
         pass
 
     imagesfold = folder(reportdir + 'images/')
+    jsonfold = folder(reportdir + 'json/')
 
     def newImageLocation(fn):
         return imagesfold + os.path.basename(fn)
@@ -1608,7 +1609,7 @@ def comparehtml5Maker(
                 print('Can not find json:', json_fn)
                 continue
             # copying file to report dir.
-            newfn = imagesfold + os.path.basename(json_fn)
+            newfn = jsonfold + os.path.basename(json_fn)
 
             if shouldIMakeFile(
                   json_fn,
