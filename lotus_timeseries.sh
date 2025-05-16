@@ -25,7 +25,7 @@
 
 #########################
 # Change this to your bgcval2 conda environment name
-CONDA_ENV=bgcval2
+CONDA_ENV=~/miniconda3/envs/bgcval2
 
 
 ##########################
