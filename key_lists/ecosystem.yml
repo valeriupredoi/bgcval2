@@ -5,6 +5,10 @@ keys:
     phd: True
     zmi: True
     zme: True 
+    int_zmi: True
+    int_zme: True
+    zi_grow: True
+    ze_grow: True
 
 ###################
 # Below this line is also in bgc.yml
