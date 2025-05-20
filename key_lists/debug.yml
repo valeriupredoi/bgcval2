@@ -8,7 +8,7 @@ keys:
 #    SouthernTotalIceExtent: True
 #    DrakePassageTransport: True
 #     hfbasinatlantic: True
-#    AMOC_26N: True
+    AMOC_26N: True
 #    AMOC_40N: True
 #    AMOC_55N: True
 
@@ -42,10 +42,10 @@ keys:
 
 #     AtlanticSubtropicSalinity: True
 #     MLD: True
-    Temperature: True
+#    Temperature: True
 #   Iron: True
 #    GlobalMeanSalinity: True
-    Salinity: True
+#    Salinity: True
     # MLD: True
  # BGC
     # TotalAirSeaFluxCO2: True

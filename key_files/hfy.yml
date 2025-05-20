@@ -1,0 +1,35 @@
+---
+#       float hfy(time_counter, y, x) ;
+#               hfy:standard_name = "ocean_heat_y_transport" ;
+#               hfy:long_name = "Ocean Heat X Transport" ;
+#               hfy:units = "W" ;
+#               hfy:online_operation = "average" ;
+#               hfy:interval_operation = "1800 s" ;
+#               hfy:interval_write = "1 month" ;
+#               hfy:cell_methods = "time: mean (interval: 1800 s)" ;
+#               hfy:cell_measures = "area: area" ;
+#               hfy:_FillValue = 1.e+20f ;
+#               hfy:missing_value = 1.e+20f ;
+#               hfy:coordinates = "time_centered nav_lat nav_lon" ;
+name            : hfy  #ocean_salt_y_transport
+units           : W    # so this is on a cell by cell basis? no area?
+dimensions      : 3
+model           : NEMO
+
+# The filenames
+modelFiles      : $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_grid-V.nc
+#modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*$JOBIDo_1y_*$YEAR????_grid-T.nc
+gridFile        : $PATHS_GRIDFILE
+
+# Model coordinates/dimension names
+model_vars      : hfy
+model_convert   : maskzeroes
+
+metrics         : mean
+layers          : layerless
+regions         : STSA RAPIDAtlanticTransect LIseas 40N 55N 
+smoothings      : DataOnly 5and30 
+
+
+
+

@@ -1,0 +1,48 @@
+---
+# Biogeochemistry keys for UKESM analysis.
+keys:
+    phn: True
+    phd: True
+    zmi: True
+    zme: True 
+
+###################
+# Below this line is also in bgc.yml
+    # Nutrients
+#    Nitrate: True                          # WOA Nitrate
+#    Silicate: True                         # WOA Siliate
+#    Iron: True                       # Iron
+
+
+    # Chlorophyll, Production, Export and DMS
+#    Chlorophyll: True                        # Total Chlorophyll
+#    TotalIntPP: True                 # Global Total Integrated Primary Production
+    # CHD: True                      # Diatom Chlorophyll
+    # CHN: True                      # Non-diatom Chlorophyll
+    #	DiaFrac: True                  # Diatom Fraction
+#    IntPP_OSU: True                  # OSU Integrated primpary production
+#    PP_OSU: True                     # OSU Integrated primpary production
+    #	LocalExportRatio: True         # Export ratio
+    #	GlobalExportRatio: True        # Export ratio
+    # DMS_ARAN: True
+    # DMS: True
+    # DTC: True                      # Detrital carbon
+
+    # Carbonate system:
+#    Alkalinity: True                        # Glodap Alkalinity
+#    pH: True
+#    DIC: True                        # Globap dissolved inorganic carbon
+#    AirSeaFluxCO2: True              # Air Sea Flux of CO2
+#    TotalAirSeaFluxCO2: True         # Total global air sea flux
+
+    # Oxygen:
+#    Oxygen: True                         # WOA Oxygen
+#    TotalOMZVolume: True             # Total Oxygen Minimum zone Volume
+    #	OMZThickness: True             # Oxygen Minimum Zone Thickness
+    #	OMZMeanDepth: True             # Oxygen Minimum Zone mean depth
+#    VolumeMeanOxygen: True           # Volune Mean regional oxygen concentation
+    #	AOU: True                      # Apparent Oxygen Usage
+
+    # Misc.
+#    Dust: True  # Dust
+#    TotalDust: True                # Total Dust
