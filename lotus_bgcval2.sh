@@ -1,9 +1,11 @@
 #!/bin/bash
 #SBATCH --job-name=bgcval2
-#SBATCH --partition=short-serial
-#SBATCH --time 6:00:00
-#SBATCH -o log_bgcval2_%J.out
-#SBATCH -e log_bgcval3_%J.err
+#SBATCH --partition=standard
+#SBATCH --time 24:00:00
+#SBATCH --qos=standard
+#SBATCH --account=esmeval
+#SBATCH -o /home/users/ldemora/bgcval2_logs/log_bgcval2_%J.out
+#SBATCH -e /home/users/ldemora/bgcval2_logs/log_bgcval2_%J.err
 
 
 ######################

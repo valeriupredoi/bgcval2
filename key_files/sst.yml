@@ -21,7 +21,7 @@ data_convert    : NoChange
 data_tdict      : ZeroToZero
 
 layers          : Surface
-regions         : Global 
+regions         : Global NorthHemisphere SouthHemisphere 
 smoothings      : DataOnly 5and30 
 
 

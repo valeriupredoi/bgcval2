@@ -1,6 +1,6 @@
 ---
 # GC5 N96 ORCA1 spinup analysis
-name: TerraFIRMA_overshoot_historical
+name: TerraFIRMA_rampup_vs_historical
 
 # Run the single job analysis
 do_analysis_timeseries: True 
@@ -45,6 +45,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
+       timerange: &histtimerange [1975, 2015]
        suite: *keylists
 
 
@@ -55,6 +56,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
+       timerange: *histtimerange       
        suite: *keylists
 
     u-da916:
@@ -64,6 +66,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
+       timerange: *histtimerange       
        suite: *keylists
 
     u-da917:
@@ -73,6 +76,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
+       timerange: *histtimerange       
        suite: *keylists
 
     u-cy690: 
@@ -82,6 +86,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
+       timerange: *histtimerange       
        suite: *keylists
 
     u-cy691:
@@ -91,6 +96,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
+       timerange: *histtimerange       
        suite: *keylists
 
     u-cy692:
@@ -100,6 +106,7 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
+       timerange: *histtimerange       
        suite: *keylists 
 
     u-cy693:
@@ -109,8 +116,51 @@ jobs:
        thickness: 1.7
        linestyle: '-'
        shifttime: 0.
+       timerange: *histtimerange       
        suite: *keylists 
 
+
+
+    # ramp up
+    u-cx209:
+      description: 'E-mode free ice RAMP UP 8GtC/yr #1'
+      label: 'Ramp-up' # #1'
+      colour: 'black'
+      thickness: 1.2
+      linestyle: '-'
+      shifttime: &rampupshifttime 0.
+      timerange: &rampuptimerange [1860, 1900]
+      suite: *keylists
+
+    u-cw988:
+      description: 'E-mode free ice RAMP UP 8GtC/yr #2'
+      label: None #'Ramp-up #2'
+      colour: 'black'
+      thickness: 1.2
+      linestyle: '-'
+      shifttime: *rampupshifttime 
+      timerange: *rampuptimerange 
+      suite: *keylists
+           
+    u-cw989:
+      description: 'E-mode free ice RAMP UP 8GtC/yr #3'
+      label: None #'Ramp-up #3'
+      colour: 'black'
+      thickness: 1.2
+      linestyle: '-'
+      shifttime: *rampupshifttime 
+      timerange: *rampuptimerange 
+      suite: *keylists
+
+    u-cw990:
+      description: 'E-mode free ice RAMP UP 8GtC/yr #4'
+      label: None #'Ramp-up #4'
+      colour: 'black'
+      thickness: 1.2
+      linestyle: '-'
+      shifttime: *rampupshifttime 
+      timerange: *rampuptimerange 
+      suite: *keylists
 
 
 

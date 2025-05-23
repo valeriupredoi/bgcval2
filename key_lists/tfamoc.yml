@@ -7,8 +7,11 @@ keys:
     SST: True
     DrakePassageTransport: True
     AMOC_26N: True
+    AMOC_40N: True
+    AMOC_55N: True
     AtmosCO2: True
     AtlanticSubtropicSalinity: True
+    GINSalinity: True
     MLD: True
     TotalAirSeaFluxCO2: True
     # NoCaspianAirSeaFluxCO2: True
@@ -18,3 +21,14 @@ keys:
     NorthernTotalIceExtent: True
     SouthernTotalIceExtent: True
     GlobalMeanSalinity: True
+    fsitherm: True
+    sowaflup: True
+    hfds: True
+    hfy: True
+    sosafldo: True
+    somesatr: True
+    hfbasinatlantic: True
+    sowindsp: True
+    friver: True
+    soicecov: True
+#    thkcello: True

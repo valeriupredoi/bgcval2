@@ -233,8 +233,15 @@ def makeLongNameDict():
     lnd['AMOC'] = "AMOC"
     lnd['AMOC_26N'] = "AMOC 26N"
     lnd['AMOC_26N_nomexico'] = "AMOC 26N (excluding Gulf of Mexico)"
+    lnd['AMOC_40N'] = "AMOC 40N"
+    lnd['AMOC_55N'] = "AMOC 55N"
+
     lnd['AMOC_32S'] = "AMOC 32S"
+    lnd['AMOC_depth'] = "AMOC depth"
     lnd['ADRC_26N'] = "Atlantic Deep Return Current at 26N"
+    lnd['GulfStream'] = "Gulf Stream at 26N"
+    lnd['GulfStream_depth'] = "Gulf Stream depth at 26N"
+
 
     lnd['ZonalCurrent'] = "Zonal Current"
     lnd['MeridionalCurrent'] = "Meridional Current"
@@ -248,8 +255,9 @@ def makeLongNameDict():
     lnd['VolumeMeanTemperature'] = "Volume-weighted Mean Temperature"
     lnd['GlobalMeanSalinity'] = "Global Volume-weighted Mean Salinity"
 
-    lnd['AtlanticSubtropicSalinity'] = 'Atlantic Subtropic Salinity'
+    lnd['AtlanticSubtropicSalinity'] = 'Atlantic Subtropic Salinity 0-800m'
     lnd['SubtropicNorthAtlantic'] = 'Subtropic North Atlantic'
+    lnd['GINSalinity'] = 'GIN Salinity 0-800m'
 
     lnd['Surfaceto100m'] = 'Surface-to-100m'
     lnd['Surfaceto200m'] = 'Surface-to-200m'
@@ -269,14 +277,18 @@ def makeLongNameDict():
     lnd['thetaoga'] = "Global Average Sea Water Potential Temperature"
     lnd['scalarHeatContent'] = "Global heat content"
 
+    lnd['thkcello'] = 'Cell thickness'
     lnd['sowaflup'] = "Net Upward Water Flux"
+    lnd['hfds'] = 'Downwards Heat Flux'
     lnd['sohefldo'] = "Net Downward Heat Flux"
+    lnd['fsitherm'] = "Water flux due to freezing/melting" 
+    lnd['sosafldo'] = "Downward salt flux"	
     lnd['sofmflup'] = "Water flux due to freezing/melting"
     lnd['sosfldow'] = "Downward salt flux"
     lnd['soicecov'] = "Ice Fraction"
     lnd['sossheig'] = "Sea Surface Height"
     lnd['FreshwaterFlux'] = "Freshwater Flux"
-
+    lnd['hfbasinatlantic'] = 'Northward Atlantic heat transport'
     lnd['exportRatio'] = "Export Ratio"
     lnd['LocalExportRatio'] = "Export Ratio"
 
@@ -332,11 +344,14 @@ def makeLongNameDict():
     lnd['EVS'] = 'Water Evaporation flux '
     lnd['Precip'] = 'Precipitation'
     lnd['sowindsp'] = 'Surface wind speed'
-    lnd['sowflisf'] = 'Ice Shelf Melting'     
+    lnd['sowflisf'] = 'Ice Shelf Melting' 
+    lnd['friver'] = 'River Water Flux'     
     lnd['fov'] = 'AMOC Meridional freshwater transport'     
     lnd['fov_sa'] = 'AMOC Meridional freshwater transport (South Atlantic)'     
     lnd['fov_stna'] = 'AMOC Meridional freshwater transport (Subtropial North Atlantic)'     
     lnd['somesatr'] = 'Salt Transport in y-direction'
+    lnd['hfy'] = 'Heat Transport in y-direction'
+
 
     lnd['AMM'] = 'Atlantic Margins'
     lnd['AMM_Shelf'] = 'Atlantic Margins Shelf'
@@ -423,6 +438,7 @@ def makeLongNameDict():
 
     lnd['NordicSea'] = "Nordic Sea"
     lnd['LabradorSea'] = "Labrador Sea"
+    lnd['NorthEastAtlantic'] = "North East Atlantic"
     lnd['NorwegianSea'] = "Norwegian Sea"
     lnd['Cornwall'] = "Cornwall"
     lnd['Ascension'] = "Ascension Island"
@@ -539,6 +555,9 @@ def makeLongNameDict():
     lnd['SouthHemisphere'] = "South Hemisphere"
     lnd['26N'] = "26N"
     lnd['32S'] = "32S"
+    lnd['30S'] = "30S"
+    lnd['40N'] = "40N"
+    lnd['55N'] = "55N"
 
     lnd['WeddelSea'] = "Weddel Sea"
     lnd['Enderby'] = "Enderby Region"  # Regions from Pierce 1995 - https://doi.org/10.1175/1520-0485(1995)025<2046:CROHAF>2.0.CO;2
@@ -558,6 +577,9 @@ def makeLongNameDict():
     lnd['STSA'] = "Subtropic North Atlantic"
     lnd['SubtropicSouthAtlantic'] = lnd['STSA']
     lnd['GINseas'] = 'Greenland, Iceland, Norway seas'
+    lnd['IrmingerSea'] = 'Irminger Sea'
+    lnd['LIGINseas'] = 'Labrador, Irminger, Greenland, Iceland, Norway seas'
+    lnd['LIseas'] = 'Labrador and Irminger seas'
 
     lnd['SubpolarNorthAtlantic'] =  lnd['SPNA']
     lnd['NorthernSubpolarPacific'] = "Northern Subpolar Pacific"
