@@ -62,7 +62,7 @@ def _establish_hostname():
         hostname = "pml"
     elif gethostname().find('-az') > -1:
         hostname = "local-test-only"  # for testing on GA machine (old type)
-    elif os.environ.get("hostname", "") == "github":
+    elif os.environ.get("INPUT_RUN_POST", "") is True:
         hostname = "local-test-only"  # for testing on GA machine (new type)
     # FIXME local testing only
     elif gethostname().find('valeriu-PORTEGE-Z30-C') > -1:
