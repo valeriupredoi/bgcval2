@@ -53,6 +53,7 @@ def get_run_configuration(config_file):
 
 def _establish_hostname():
     """Return the hostname where the run is done."""
+    print("XXX", os.environ.get("INPUT_RUN_POST", ""))
     if gethostname().find('ceda.ac.uk') > -1 or gethostname().find(
             'jasmin') > -1 or gethostname().find('jc.rl.ac.uk') > -1:
         hostname = "jasmin"
