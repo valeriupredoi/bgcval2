@@ -38,7 +38,8 @@ jobs:
           bgcval2_make_report --help
           download_from_mass --help 
       - shell: bash -l {0}
-        run: echo "hostname=github" >> $GITHUB_ENV
-        run: pytest
+        run: |
+          echo "hostname=github" >> $GITHUB_ENV
+          pytest
       - shell: bash -l {0}
         run: sphinx-build -Ea doc doc/build
