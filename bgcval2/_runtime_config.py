@@ -53,7 +53,6 @@ def get_run_configuration(config_file):
 
 def _establish_hostname():
     """Return the hostname where the run is done."""
-    print("XXX", os.environ.get("INPUT_RUN_POST", ""))
     if gethostname().find('ceda.ac.uk') > -1 or gethostname().find(
             'jasmin') > -1 or gethostname().find('jc.rl.ac.uk') > -1:
         hostname = "jasmin"
@@ -63,7 +62,7 @@ def _establish_hostname():
         hostname = "pml"
     elif gethostname().find('-az') > -1:
         hostname = "local-test-only"  # for testing on GA machine (old type)
-    elif os.environ.get("INPUT_RUN_POST", "") is True:
+    elif os.environ.get("INPUT_RUN_POST", None):
         hostname = "local-test-only"  # for testing on GA machine (new type)
     # FIXME local testing only
     elif gethostname().find('valeriu-PORTEGE-Z30-C') > -1:
