@@ -132,33 +132,25 @@ def add_region(fig, ax, lons, lats, data):
     ax.add_feature(cfeature.LAND, zorder=10, edgecolor='black')
     return fig, ax, im
 
-ncfn = 'mesh_mask_eORCA1_wrk.nc'
-nc = Dataset(ncfn, 'r')
-dat = nc.variables['mbathy'][:].squeeze()
-lats = nc.variables['nav_lat'][:].squeeze()
-lons = nc.variables['nav_lon'][:].squeeze()
-lons = bvt.makeLonSafeArr(lons)
-nc.close()
-
 
 def make_figure(region):
+    """
+    Make a figure for this region.
+    """
     fig_fn = bvt.folder('images/regions')+region+'.png'
-    #if os.path.exists(fig_fn): return
 
-    fig = pyplot.figure()
-    
-#    paths_dict, config_user = get_run_configuration("defaults")
+    paths_dict, config_user = get_run_configuration("defaults")
     # filter paths dict into an object that's usable below
-#    paths = paths_setter(paths_dict)    
-    #ncfn = paths.orcaGridfn
-#   ncfn = 'mesh_mask_eORCA1_wrk.nc'
+    paths = paths_setter(paths_dict)   
+    orcaGridfn = paths.orcaGridfn
 
-#    nc = Dataset(ncfn, 'r')
-#    #print(ncfn)
-#    dat = nc.variables['mbathy'][:].squeeze()
-#    lats = nc.variables['nav_lat'][:].squeeze()
-#    lons = nc.variables['nav_lon'][:].squeeze()
-#    lons = bvt.makeLonSafeArr(lons)
+    #    ncfn = 'mesh_mask_eORCA1_wrk.nc'
+    nc = Dataset(orcaGridfn, 'r')
+    dat = nc.variables['mbathy'][:].squeeze()
+    lats = nc.variables['nav_lat'][:].squeeze()
+    lons = nc.variables['nav_lon'][:].squeeze()
+    lons = bvt.makeLonSafeArr(lons)
+    nc.close()
 
     old_mask = np.ma.masked_where(dat.mask + dat ==0, dat).mask
 
@@ -180,7 +172,7 @@ def make_figure(region):
     #new_lat = lats # new_lat.reshape(lats.shape)
     #new_lon = lons # new_lon.reshape(lons.shape)
 
-
+    fig = pyplot.figure()
     fig.set_size_inches(12, 8)
     widths = [1, 1, 1]
     heights = [1, 1.75]       
