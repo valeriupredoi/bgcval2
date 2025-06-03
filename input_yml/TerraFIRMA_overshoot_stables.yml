@@ -28,7 +28,7 @@ jobs:
        linestyle: '-'
        shifttime: -2094
        timerange: [-50., 400.]
-       suite: *keylist
+       suite: *keylists
 
 # u-cz826:
    #    description: 'like cx209 but static ice sheet geometry 8GtC/yr #5'

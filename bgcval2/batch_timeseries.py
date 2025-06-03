@@ -140,7 +140,7 @@ def main():
 
         if not os.path.isfile(compare_yml):
             print(f"analysis_timeseries: Could not find comparison config file {compare_yml}")
-            sys.exit(1)
+            sys.exit()
         dry_run = args.dry_run
         submits_lotus(compare_yml, config_user, dry_run)
 

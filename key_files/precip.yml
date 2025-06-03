@@ -14,7 +14,7 @@ model_vars      : pr prsn
 model_convert   : sum
 
 layers          : layerless
-regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean SPNA 
+regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean SPNA GINseas LabradorSea NorthEastAtlantic IrmingerSea LIGINseas LIseas 
 smoothings      : DataOnly 5and30 
 
 

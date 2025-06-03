@@ -201,8 +201,7 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
 
     if newSlice == 'AMM':
         return np.ma.masked_outside(bvt.makeLonSafeArr(xx), -20., 13.).mask + np.ma.masked_outside(xy, 40., 65.).mask
-
-
+    
     if newSlice == 'SouthernOcean':
         return np.ma.masked_where(xy > -40., nmask).mask
     if newSlice == 'AntarcticOcean':
@@ -249,17 +248,35 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
     if newSlice in ['SubtropicNorthAtlantic', 'STNA']:
         mx = np.ma.masked_outside(xx, -80., -10.).mask + np.ma.masked_outside(
             xy, 10., 40.).mask
-#       mx *= np.ma.masked_outside(xx, -45., 15.).mask + np.ma.masked_outside(
-#           xy, 60., 80.).mask
         return mx
 
     if newSlice in ['SubtropicSouthAtlantic', 'STSA']:
         mx = np.ma.masked_outside(xx, -80., -10.).mask + np.ma.masked_outside(
             xy, 10., 40.).mask
-#       mx *= np.ma.masked_outside(xx, -45., 15.).mask + np.ma.masked_outside(
-#           xy, 60., 80.).mask
         return mx
-    
+   
+    if newSlice in ['RAPIDAtlanticTransect', ]:
+        mx = np.ma.masked_outside(xx, -80., -10.).mask + np.ma.masked_outside(
+            xy, 24.5, 28.5).mask
+        return mx
+
+    if newSlice in ['26N', ]:
+        mx = np.ma.masked_outside(
+            xy, 24.5, 28.5).mask
+        return mx
+    if newSlice in ['40N', ]:
+        mx = np.ma.masked_outside(
+            xy, 38., 42.).mask
+        return mx
+    if newSlice in ['55N', ]:
+        mx = np.ma.masked_outside(
+            xy, 55., 57.).mask
+        return mx
+
+    if newSlice in ['30S', ]:
+        mx = np.ma.masked_outside(
+            xy, -32., -28., ).mask
+        return mx 
 
     if newSlice in ['SubpolarNorthAtlantic', 'SPNA',]:
         #  Based on  SPNA region here: https://www.nature.com/articles/s43247-021-00120-y#citeas
@@ -272,15 +289,48 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
 
     if newSlice in ['GINseas',]: #Greenland, icveland and norwegean seas
         mx = np.ma.masked_outside(xx, -20., 15.).mask + np.ma.masked_outside(
-            xy, 65., 75.).mask
+              xy, 65., 75.).mask
         return mx
         #65-75:20W-15E         
 
+    if newSlice in ['GLINseas',]: #Greenland, Labrador, Iceland and norwegean seas
+        mx = np.ma.masked_outside(xx, -20., 15.).mask + np.ma.masked_outside(
+            xy, 65., 75.).mask
+        mx *= (np.ma.masked_outside(xx, -69., -45.).mask + np.ma.masked_outside(xy, 53., 67.).mask)
+        return mx
+
+    if newSlice in ['LIGINseas',]: #Greenland, Labrador, Iceland and norwegean seas
+        mx = np.ma.masked_outside(xx, -20., 15.).mask + np.ma.masked_outside(
+            xy, 65., 75.).mask # GIN
+        mx *= (np.ma.masked_outside(xx, -69., -45.).mask + np.ma.masked_outside(xy, 53., 67.).mask) #Lab
+        mx *= (np.ma.masked_outside(xx, -45., -25.).mask + np.ma.masked_outside(xy, 53., 67.).mask) #Irm main
+        mx += ((np.ma.masked_inside(xx, -30., -25.).mask * np.ma.masked_inside(xy, 53., 58.).mask)) #Irm square
+        mx += ((np.ma.masked_inside(xx, -32.5, -30.).mask * np.ma.masked_inside(xy, 53., 55.5).mask)) #Irm small square left
+        mx += ((np.ma.masked_inside(xx, -27.5, -25.).mask * np.ma.masked_inside(xy, 58., 60.5).mask)) #Irm small square top
+        return mx
+
+    if newSlice in ['LIseas', ]: #Labrador &  Irminger seas
+        mx = (np.ma.masked_outside(xx, -69., -45.).mask + np.ma.masked_outside(xy, 53., 67.).mask) #Lab
+        mx *= (np.ma.masked_outside(xx, -45., -25.).mask + np.ma.masked_outside(xy, 53., 67.).mask) #Irm main
+        mx += ((np.ma.masked_inside(xx, -30., -25.).mask * np.ma.masked_inside(xy, 53., 58.).mask)) #Irm square
+        mx += ((np.ma.masked_inside(xx, -32.5, -30.).mask * np.ma.masked_inside(xy, 53., 55.5).mask)) #Irm small square left
+        mx += ((np.ma.masked_inside(xx, -27.5, -25.).mask * np.ma.masked_inside(xy, 58., 60.5).mask)) #Irm small square top
+        return mx
     
     if newSlice == 'AtlanticSOcean':
         mx = np.ma.masked_outside(xx, -40., 20.).mask + np.ma.masked_outside(
             xy, -50., -75.).mask
         return mx
+
+    if newSlice == 'IrmingerSea':
+        mx = np.ma.masked_outside(xx, -45., -25.).mask + np.ma.masked_outside(xy, 53., 67.).mask
+#        mx += np.ma.masked_outside(xy, 53., 67.).mask
+        mx += ((np.ma.masked_inside(xx, -30., -25.).mask * np.ma.masked_inside(xy, 53., 58.).mask)) #Irm
+        mx += ((np.ma.masked_inside(xx, -32.5, -30.).mask * np.ma.masked_inside(xy, 53., 55.5).mask)) #Irm
+        mx += ((np.ma.masked_inside(xx, -27.5, -25.).mask * np.ma.masked_inside(xy, 58., 60.5).mask)) #Irm
+
+        return mx
+
 
     if newSlice == 'NordicSea':
         mx = np.ma.masked_outside(xx, -44., -5.).mask
@@ -296,6 +346,15 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
         mx = np.ma.masked_outside(xx, -15., 10.).mask
         mx += np.ma.masked_outside(xy, 67., 76.).mask
         return mx
+
+    if newSlice == 'NorthEastAtlantic':
+
+        mx = np.ma.masked_outside(xx, -25., -2.).mask 
+        mx += np.ma.masked_outside(xy, 53., 65.).mask
+        return mx
+        #65-75:20W-15E
+
+   
 
     if newSlice == 'Cornwall':
         mx = np.ma.masked_outside(xx, -8., -4.).mask
@@ -363,6 +422,13 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
     if newSlice == 'YevgenyNorwegianSea':  # same
         mx = np.ma.masked_outside(xx, -15., 10.).mask
         mx += np.ma.masked_outside(xy, 67., 76.).mask
+        return mx
+
+    if newSlice == 'subpolar':  
+        #    subpolar North Atlantic (50–70° N and 70° W–0° E)
+        # from https://www.nature.com/articles/s41561-024-01568-1
+        mx = np.ma.masked_outside(xx, -70., 0.).mask
+        mx += np.ma.masked_outside(xy, 50., 70.).mask
         return mx
 
     if newSlice == 'NorthernSubpolarPacific':
