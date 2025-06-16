@@ -24,13 +24,13 @@ REQUIREMENTS = {
     # Installation dependencies
     # Use with pip install . to install from source
     'install': [
-        'basemap>=1.3.6',
+        'basemap>=2.0',  # earliest support for Python 3.13
         'cartopy',
         'jsondiff',
         'matplotlib',
         'nctoolkit>=0.8.7',  # use linux64 build
         'netcdf4',
-        'numpy>1.24.3,<2.0',
+        'numpy',
         'pip!=21.3',
         'pyyaml',
         'scikit-learn',
