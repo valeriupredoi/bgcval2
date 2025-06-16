@@ -19,7 +19,8 @@ This work was funded through WP1 of the Terrafirma project.
 
 Current version notes:
 
-- Suported versions of Python: 3.9, 3.10, 3.11, and 3.12
+- Suported versions of Python: 3.10, 3.11, 3.12, and 3.13
+- Numpy 2+ compatible
 
 Environment and installation
 ============================
