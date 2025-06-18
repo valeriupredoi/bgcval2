@@ -678,10 +678,10 @@ class DataLoader:
             assert False
 
         #print('lat:', arr_lat, 'lon:', arr_lon)
-        print('createOneDDataArray: Arr:', np.array(arr).min(), np.array(arr).max(), len(arr))
+        #print('createOneDDataArray: Arr:', np.array(arr).min(), np.array(arr).max(), len(arr))
 
         arr = np.ma.masked_invalid(np.ma.array(arr))
-        print('createOneDDataArray: Arr:', np.array(arr).min(), np.array(arr).max(), len(arr))
+        #print('createOneDDataArray: Arr:', np.array(arr).min(), np.array(arr).max(), len(arr))
         #mask = np.ma.masked_where((arr > 1E20) + arr.mask, arr).mask
         #print('len:', mask, np.sum(mask), len(mask))
         mask = arr.mask
