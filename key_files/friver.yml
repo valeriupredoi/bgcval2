@@ -1,0 +1,35 @@
+---
+#        float friver(time_counter, y, x) ;
+#                friver:standard_name = "water_flux_into_sea_water_from_rivers" ;
+#                friver:long_name = "Water Flux into Sea Water From Rivers" ;
+#                friver:units = "kg/m2/s" ;
+#                friver:online_operation = "average" ;
+#                friver:interval_operation = "2700 s" ;
+#                friver:interval_write = "1 month" ;
+#                friver:cell_methods = "time: mean (interval: 2700 s)" ;
+#                friver:cell_measures = "area: area" ;
+#                friver:_FillValue = 1.e+20f ;
+#                friver:missing_value = 1.e+20f ;
+#                friver:coordinates = "time_centered nav_lat nav_lon" ;
+
+name            : Rivers
+units           : "kg/m2/s"
+dimensions      : 2
+model           : NEMO
+datasource      : WOA
+# The filenames
+modelFiles      : $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_grid-T.nc
+modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*$JOBIDo_1y_*$YEAR????_grid-T.nc
+gridFile        : $PATHS_GRIDFILE
+
+# Model coordinates/dimension names
+model_vars      : friver   
+model_convert   : choose_best_var
+
+layers          : layerless
+regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean SPNA LIGINseas STNA LIseas LabradorSea NorthEastAtlantic IrmingerSea GINseas
+smoothings      : DataOnly 5and30 
+
+
+
+

@@ -14,7 +14,7 @@ model_vars      : sowindsp
 model_convert   : choose_best_var
 
 layers          : layerless
-regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean SPNA 
+regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean SPNA LIGINseas STNA LIseas LabradorSea NorthEastAtlantic IrmingerSea GINseas
 smoothings      : DataOnly 5and30 
 
 

@@ -57,9 +57,11 @@ def calc_total_airseafluxco2(nc, keys, **kwargs):
     This function calculated the total Air Sea FLux for the MEDUSA model in the eORCA grid.
     """
     areafile = get_kwarg_file(kwargs, 'areafile')
-
     if not loaded_area_and_mask:
-        area = load_area_and_mask(areafile)
+        if 'area' in nc.variables.keys():
+            area = nc.variables['area'][:]
+        else:
+            area = load_area_and_mask(areafile)
 
     factor =  365.25 * 12. / 1000. / 1.E15
     try:   

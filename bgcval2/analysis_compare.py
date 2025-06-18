@@ -732,10 +732,10 @@ def main():
     compare_ymls = args.compare_yml
 
     for compare_yml in compare_ymls:
-        print(f"analysis_timeseries: Comparison config file {compare_yml}")
+        print(f"analysis_compare: Comparison config file {compare_yml}")
 
         if not os.path.isfile(compare_yml):
-            print(f"analysis_timeseries: Could not find comparison config file {compare_yml}")
+            print(f"analysis_compare: Could not find comparison config file {compare_yml}")
             sys.exit(1)
         skip_timeseries = args.skip_timeseries  
         load_yml_and_run(compare_yml, config_user, skip_timeseries)

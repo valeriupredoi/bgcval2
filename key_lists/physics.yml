@@ -51,15 +51,18 @@ keys:
     #	ZonalCurrent: True             	# Zonal Veloctity
     #	MeridionalCurrent: True        	# Meridional Veloctity
     #	VerticalCurrent: True          	# Vertical Veloctity
+    GulfStream: True
+    GulfStream_depth: True
 
 
-    somesatr: True # salt flow
+    somesatr: True # salt flow # Work in progress in debug
 
     ZOS: True # Sea Surface Height
     sowindsp: True # Wind speed
     sowflisf: True # Ice flux
     evs: True # Evaporation
     precip: True # Precipitation
+    fov: True # Fov (Total salt flux in the Atlantic)
 
 
     # Misc fluxes:

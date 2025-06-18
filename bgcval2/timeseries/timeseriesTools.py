@@ -412,6 +412,8 @@ class DataLoader:
                     self.maskedload(region, layer)
                     continue
 
+                print('DataLoader: ', region, layer, 'arr_lat', arr_lat, arr_lat.max())
+
                 self.load[(region, layer)] = arr
                 self.load[(region, layer, 't')] = arr_t
                 self.load[(region, layer, 'z')] = arr_z
@@ -421,7 +423,10 @@ class DataLoader:
                 print("DataLoader:\tLoaded", self.name, 'in', end=' ')
                 print('{:<24} layer: {:<8}'.format(region, layer), end=' ')
                 print('\tdata length:',
-                      len(self.load[(region, layer)]),)
+                      len(self.load[(region, layer)]),
+                      '\tdata range: ', self.load[(region, layer)].min(), '->', self.load[(region, layer)].max())
+                print('DataLoader: ', region, layer, 'lat',self.load[(region, layer, 'lat')]) 
+
 
     def _makeTimeDict_(self, ):
         """ Make a dictionairy linking the time index with the float time.
@@ -449,7 +454,7 @@ class DataLoader:
         self.load[(region, layer, 'z')] = maskedValue
         self.load[(region, layer, 'lat')] = maskedValue
         self.load[(region, layer, 'lon')] = maskedValue
-        print("DataLoader:\tLoaded empty", self.name, 'in', end=' ')
+        print("WARNING: DataLoader:\tLoaded empty", self.name, 'in', end=' ')
         print('{:<24} layer: {:<8}'.format(region, layer), end=' ')
         print('\tdata length:', len(self.load[(region, layer)]))  #,
 
@@ -486,6 +491,7 @@ class DataLoader:
             self.oneDData['arr_lon'],
             self.oneDData['arr'],
         )
+        lat = np.ma.masked_where(m,self.oneDData['arr_lat'])
 
         return  np.ma.masked_where(m,self.oneDData['arr']),\
          np.ma.masked_where(m,self.oneDData['arr_t']),\
@@ -511,12 +517,15 @@ class DataLoader:
         else:
             if self.coords['lat'] not in self.nc.variables or self.coords['lon'] not in self.nc.variables:
                 raise KeyError(f"ERROR: coordinates provided do not match coordinates in file: {self.coords['lat']}, {self.coords['lon']}")
+
             lat = self.nc.variables[self.coords['lat']][:]
             lon = bvt.makeLonSafeArr(self.nc.variables[self.coords['lon']]
                                      [:])  # makes sure it's between +/-180
             dims = choose_best_ncvar(self.nc, self.details['vars']).dimensions
             dat = self.__getlayerDat__(layer)
-        if dat.ndim == 2: dat = dat[None, :, :]
+
+        if dat.ndim == 2:
+            dat = dat[None, :, :]
 
         try:
             l = len(dat)
@@ -656,7 +665,7 @@ class DataLoader:
             assert False
 
         arr = np.ma.masked_invalid(np.ma.array(arr))
-        mask = np.ma.masked_where((arr > 1E20) + arr.mask, arr).mask
+        mask = arr.mask
 
         self.oneDData = {}
         self.oneDData['arr_lat'] = np.ma.masked_where(mask,

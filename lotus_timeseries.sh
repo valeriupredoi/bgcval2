@@ -1,6 +1,9 @@
 #!/bin/bash
-#SBATCH --partition=short-serial
+#SBATCH --job-name=bgcval2
+#SBATCH --partition=standard
 #SBATCH --time 6:00:00
+#SBATCH --qos=standard
+#SBATCH --account=esmeval
 #SBATCH -o logs/log_bgcval2_ts_%J.out
 #SBATCH -e logs/log_bgcval3_ts_%J.err
 
@@ -22,7 +25,7 @@
 
 #########################
 # Change this to your bgcval2 conda environment name
-CONDA_ENV=bgcval2
+CONDA_ENV=~/miniconda3/envs/bgcval2
 
 
 ##########################

@@ -139,10 +139,11 @@ class timeseriesAnalysis:
         # load and calculate the model info
         if len(glob.glob(self.shelvefn+'*')): # shelve files have .bak .dat .dir files now
             with shOpen(self.shelvefn) as sh:
-                print('Shelf opens fine:', self.shelvefn)
+                print('Opening Shelf file:', self.shelvefn)
                 print (sh.keys())
                 readFiles       = sh['readFiles']
                 modeldataD      = sh['modeldata']
+               
         else:
             print('Does not exist', self.shelvefn)
             readFiles = []
@@ -298,6 +299,7 @@ class timeseriesAnalysis:
                     #####
                     # can't skip it, need to load it.
                     layerdata = DL.load[(r, l)]
+
                     #####
                     # get Weights:
                     volumeWeightedLayers = ['All', 'Transect']
@@ -319,10 +321,21 @@ class timeseriesAnalysis:
                         else:
                             weights = []
                             for la, lo, da in zip(lats, lons, layerdata):
+                                if np.ma.masked in [la, lo, da]:
+                                   # lat and lon can be masked
+                                   weights.append(0)
+                                   continue  
+   
                                 try:
                                     weights.append(self.weightsDict[(la, lo)])
                                 except:
+                                    print('ERROR: not in weightsDict:', la, lo, da)
                                     weights.append(0.)
+                                    print('region:', r, 'layer:', l)   
+                                    print('coords not found for weights:', la, lo, da)
+                                    print('coords:', lats, lons)
+                                    print('TimeseriesAnalysis: Is this data, ', self.dataType, ', the T grid?')
+                                    assert 0   
 
                     else:
                         weights = np.ones_like(layerdata)
@@ -440,16 +453,23 @@ class timeseriesAnalysis:
             raise FileNotFoundError(
                 errno.ENOENT, os.strerror(errno.ENOENT), self.gridFile)
         print('loadModelWeightsDict loading grid file:', self.gridFile)
-        nc = dataset(self.gridFile, 'r')
-        tmask = nc.variables['tmask'][:]
-        try:
-            area = nc.variables['area'][:].squeeze()
-        except:
-            area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
-        if tmask.ndim == 3: area = np.ma.masked_where(tmask[0] == 0, area)
-        if tmask.ndim == 2: area = np.ma.masked_where(tmask == 0, area)
-        area = area.squeeze()
 
+        nc = dataset(self.modelFiles[0], 'r', skip_option='delete')
+        if 'area' in nc.variables.keys():
+            area = nc.variables['area'][:]
+        else:
+
+            nc = dataset(self.gridFile, 'r')
+            tmask = nc.variables['tmask'][:]
+            try:
+                area = nc.variables['area'][:].squeeze()
+            except:
+                area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
+            if tmask.ndim == 3: 
+                area = np.ma.masked_where(tmask[0] == 0, area)
+            if tmask.ndim == 2: 
+                area = np.ma.masked_where(tmask == 0, area)
+            area = area.squeeze()
         self.weightsDict = {}
         if self.modelcoords['lat'] == self.modelcoords['lon'] == False:
             ####
@@ -468,7 +488,7 @@ class timeseriesAnalysis:
         nc.close()
 
         if lats.ndim == 2:
-            print(area.shape) 
+            #print(area.shape) 
             for (i, j), a in np.ndenumerate(area):
                 self.weightsDict[(lats[i, j], lons[i, j])] = a
 

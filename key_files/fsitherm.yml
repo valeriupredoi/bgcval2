@@ -1,0 +1,33 @@
+---
+#         float fsitherm(time_counter, y, x) ;
+#                fsitherm:long_name = "Water flux due to freezing/melting" ;
+#                fsitherm:units = "kg/m2/s" ;
+#                fsitherm:online_operation = "average" ;
+#                fsitherm:interval_operation = "2700 s" ;
+#                fsitherm:interval_write = "1 month" ;
+#                fsitherm:cell_methods = "time: mean (interval: 2700 s)" ;
+#                fsitherm:cell_measures = "area: area" ;
+#                fsitherm:_FillValue = 1.e+20f ;
+#                fsitherm:missing_value = 1.e+20f ;
+#                fsitherm:coordinates = "time_centered nav_lat nav_lon" ;
+name            : fsitherm
+units           : kg/m2/s
+dimensions      : 3
+model           : NEMO
+datasource      : WOA
+# The filenames
+modelFiles      : $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_grid-T.nc
+modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*$JOBIDo_1y_*$YEAR????_grid-T.nc
+gridFile        : $PATHS_GRIDFILE
+
+# Model coordinates/dimension names
+model_vars      : fsitherm
+model_convert   : choose_best_var
+
+layers          : layerless
+regions         : Global SouthernOcean ArcticOcean NorthAtlanticOcean SouthAtlanticOcean SPNA STNA GINseas LabradorSea NorthEastAtlantic IrmingerSea LIGINseas LIseas
+smoothings      : DataOnly 5and30 
+
+
+
+

@@ -1,20 +1,21 @@
 ---
 name            : somesatr #ocean_salt_y_transport
-units           : 1e-3*kg/s
+units           : 1e-3*kg/s    # so this is on a cell by cell basis? no area?
 dimensions      : 3
 model           : NEMO
 
 # The filenames
 modelFiles      : $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_grid-V.nc
-modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*$JOBIDo_1y_*$YEAR????_grid-T.nc
+#modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*$JOBIDo_1y_*$YEAR????_grid-T.nc
 gridFile        : $PATHS_GRIDFILE
 
 # Model coordinates/dimension names
 model_vars      : somesatr
-model_convert   : choose_best_var
+model_convert   : maskzeroes
 
+metrics         : mean
 layers          : layerless
-regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean SouthAtlanticOcean SPNA STSA
+regions         : STSA RAPIDAtlanticTransect LIseas 40N 55N 
 smoothings      : DataOnly 5and30 
 
 

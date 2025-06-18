@@ -135,9 +135,10 @@ def maskzeroes(nc, keys):
     Also applied find best var.
     """
     var0 = find_best_var(nc, keys)
-    arr = np.ma.array(nc.variables[var0][:])
-    return np.ma.masked_where(arr == 0. + arr.mask, arr)
-
+    arr = np.ma.array(nc.variables[var0][:]) #, dtype=np.float64)
+    arr = np.ma.masked_where(arr == 0. + arr.mask, arr)
+    print('maskzeroes:', arr.min(), '->', arr.max(), arr.dtype, arr.mean())
+    return arr
 
 def sums(nc,keys):
     """
