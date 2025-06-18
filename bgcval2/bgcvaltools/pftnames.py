@@ -205,6 +205,9 @@ def makeLongNameDict():
     lnd['PHN'] = 'Non-Diatoms'
     lnd['INT_ZMI'] = 'Int. Microzooplankton'
     lnd['INT_ZME'] = 'Int. Mesozooplankton'
+    lnd['INT_PD'] = 'Int. Diatoms'
+    lnd['INT_PN'] = 'Int. Non-Diatoms'
+
     lnd['ZI_GROW'] = 'Microzooplankton Growth'
     lnd['ZE_GROW'] = 'Mesozooplankton Growth'
     

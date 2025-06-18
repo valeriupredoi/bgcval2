@@ -9,6 +9,8 @@ keys:
 #    DrakePassageTransport: True
 #     hfbasinatlantic: True
     AMOC_26N: True
+    int_pn: True
+    int_pd: True
 #    AMOC_40N: True
 #    AMOC_55N: True
 

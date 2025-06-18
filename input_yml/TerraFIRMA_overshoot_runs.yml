@@ -9,7 +9,7 @@ do_analysis_timeseries: True
 do_mass_download: False
 
 # master analysis suite
-master_suites: &keylists physics bgc kmf tfamoc #alkalinity physics
+master_suites: &keylists physics bgc kmf tfamoc ecosystem #alkalinity physics
 
 
 # Run without strick check (if True, breaks if job has no years.)

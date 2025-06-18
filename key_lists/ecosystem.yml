@@ -7,6 +7,8 @@ keys:
     zme: True 
     int_zmi: True
     int_zme: True
+    int_pd: True
+    int_pn: True
     zi_grow: True
     ze_grow: True
 
