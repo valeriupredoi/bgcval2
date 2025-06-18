@@ -19,7 +19,8 @@ This work was funded through WP1 of the Terrafirma project.
 
 Current version notes:
 
-- Suported versions of Python: 3.9, 3.10, 3.11, and 3.12
+- Suported versions of Python: 3.10, 3.11, 3.12, and 3.13
+- Numpy 2+ compatible
 
 Environment and installation
 ============================
@@ -110,7 +111,7 @@ conda env remove -n ENV_NAME
 
 Executable name | What it does | Command
 :--------------:|:------------:|:------------:
-`analysis_timeseries` | runs timeseries analysis for single model run. | analysis_timeseries jobID key
+`analysis_timeseries` | runs timeseries analysis for single model run. | analysis_timeseries -j jobID -k key
 `analysis_p2p` | runs point to point analysis of model against observational dataset. | analysis_p2p jobID YEAR
 `bgcval` | runs time series and point to point. | bgcval jobID
 `bgcval2_make_report` | makes the single model HTML report. | bgcval2_make_report jobID

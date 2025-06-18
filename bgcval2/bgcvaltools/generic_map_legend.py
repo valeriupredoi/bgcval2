@@ -144,7 +144,6 @@ def make_figure(region):
     paths = paths_setter(paths_dict)   
     orcaGridfn = paths.orcaGridfn
 
-    #    ncfn = 'mesh_mask_eORCA1_wrk.nc'
     nc = Dataset(orcaGridfn, 'r')
     dat = nc.variables['mbathy'][:].squeeze()
     lats = nc.variables['nav_lat'][:].squeeze()
