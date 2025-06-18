@@ -1600,8 +1600,7 @@ def comparehtml5Maker(
         csvFolder = paths.imagedir + '/TimeseriesCompare_CSV/' + analysis_name
 
         for catfn in catfiles:
-#            print('png:', catfn)
-            json_fn = csvFolder+'/'+analysis_name+'_'+os.path.basename(catfn)
+            json_fn = ''.join([csvFolder, '/', analysis_name, '_', os.path.basename(catfn)])
             together = json_fn.find('Together')
             json_fn = json_fn[:together] + 'Together.json'
             print('json:', json_fn)

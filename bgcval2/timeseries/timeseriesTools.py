@@ -286,13 +286,6 @@ def save_json(
     
     filename = bvt.folder(csvFolder) + '_'.join([analysisname, name, region, layer, metric, ts ]) + csvformat
 
-#    json_arrD = {job:[float(d) for d in data] for job, data in arrD.items()}
-#    if region in ['IrmingerSea',]:
-#        for j in json_arrD:
-#            print('\n\n',j,name, region,  json_arrD[j])
-#            print('\n\n',j,name, region,  arrD[j])
-#            
-#        assert 0
     jsondata = {
             # json can't save numpy.float32, so we convert to list of floats.
             'timesD': {job:[float(t) for t in times] for job, times in timesD.items()},
@@ -498,11 +491,7 @@ class DataLoader:
             self.oneDData['arr_lon'],
             self.oneDData['arr'],
         )
-#        print('createDataArray: mask:', len(m), sum(m))
-#        print(self.oneDData['arr_lat'][:3], self.oneDData['arr_lon'][:3])
         lat = np.ma.masked_where(m,self.oneDData['arr_lat'])
-#        print('createDataArray', lat.min(), lat.max())
-        #assert 0
 
         return  np.ma.masked_where(m,self.oneDData['arr']),\
          np.ma.masked_where(m,self.oneDData['arr_t']),\
@@ -532,8 +521,6 @@ class DataLoader:
             lat = self.nc.variables[self.coords['lat']][:]
             lon = bvt.makeLonSafeArr(self.nc.variables[self.coords['lon']]
                                      [:])  # makes sure it's between +/-180
-#            print('createOneDDataArray:', lat, lon)
-#            assert 0
             dims = choose_best_ncvar(self.nc, self.details['vars']).dimensions
             dat = self.__getlayerDat__(layer)
 
@@ -677,17 +664,8 @@ class DataLoader:
             print("Unknown dimensions order", dims)
             assert False
 
-        #print('lat:', arr_lat, 'lon:', arr_lon)
-        #print('createOneDDataArray: Arr:', np.array(arr).min(), np.array(arr).max(), len(arr))
-
         arr = np.ma.masked_invalid(np.ma.array(arr))
-        #print('createOneDDataArray: Arr:', np.array(arr).min(), np.array(arr).max(), len(arr))
-        #mask = np.ma.masked_where((arr > 1E20) + arr.mask, arr).mask
-        #print('len:', mask, np.sum(mask), len(mask))
         mask = arr.mask
-        #print('len:', mask, np.sum(mask), len(mask))
-
-        #assert 0  
 
         self.oneDData = {}
         self.oneDData['arr_lat'] = np.ma.masked_where(mask,

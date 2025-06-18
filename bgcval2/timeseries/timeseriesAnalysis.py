@@ -312,8 +312,6 @@ class timeseriesAnalysis:
                             ], self.metrics)):
                         lats = DL.load[(r, l, 'lat')]
                         lons = DL.load[(r, l, 'lon')]
-                        #print(lats, lons, len(lats), len(lons), lats.max(), lons.max())
-#                       assert 0
                         if l in volumeWeightedLayers:
                             depths = DL.load[(r, l, 'z')]
                             weights = np.array([
@@ -328,9 +326,6 @@ class timeseriesAnalysis:
                                    weights.append(0)
                                    continue  
    
-#                                if not self.weightsDict.get((la, lo), False):
-#                                    print('TimeseriesAnalysis: coords not in weights:', (la, lo))
-#                                    assert 0
                                 try:
                                     weights.append(self.weightsDict[(la, lo)])
                                 except:
@@ -475,8 +470,6 @@ class timeseriesAnalysis:
             if tmask.ndim == 2: 
                 area = np.ma.masked_where(tmask == 0, area)
             area = area.squeeze()
-        #print('loadModelWeightsDict: area:', area.shape, area.max())
-        #assert 0
         self.weightsDict = {}
         if self.modelcoords['lat'] == self.modelcoords['lon'] == False:
             ####
@@ -506,8 +499,6 @@ class timeseriesAnalysis:
         if self.debug:
             print("timeseriesAnalysis:\t loadModelWeightsDict.",
                   list(self.weightsDict.keys())[0])
-        #print('loadModelWeightsDict:', len(self.weightsDict.keys()), self.weightsDict)
-        #assert 0
 
     def loadModelwcvDict(self, ):
         """
