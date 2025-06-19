@@ -1,0 +1,20 @@
+---
+# Mesozoo Growth
+name            : ZE_GROW 
+units           : mmol N/m^2/d
+model           : MEDUSA
+modelgrid       : eORCA1
+dimensions      : 2
+
+# The filenames
+modelFiles      : $BASEDIR_MODEL/$JOBID/medusa*$JOBIDo_1y_*_diad-T.nc
+modelFile_p2p   : $BASEDIR_MODEL/$JOBID/medusa*$JOBIDo_1y_*$YEAR????_diad-T.nc
+
+# # Model coordinates/dimension names
+model_vars      : ZE_GROW
+model_convert   : NoChange
+
+
+layers          : layerless
+regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean SPNA 
+
