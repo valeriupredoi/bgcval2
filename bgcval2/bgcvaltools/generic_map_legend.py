@@ -215,6 +215,53 @@ def make_figure(region):
     pyplot.close()
 
 
+
+def calc_area(region):
+    """
+    Calculate the area for this region.
+    """
+
+    paths_dict, config_user = get_run_configuration("defaults")
+    # filter paths dict into an object that's usable below
+    paths = paths_setter(paths_dict)   
+    orcaGridfn = paths.orcaGridfn
+
+    nc = Dataset(orcaGridfn, 'r')
+    dat = nc.variables['mbathy'][:].squeeze()
+    area = nc.variables['area'][:].squeeze()
+    lats = nc.variables['nav_lat'][:].squeeze()
+    lons = nc.variables['nav_lon'][:].squeeze()
+    lons = bvt.makeLonSafeArr(lons)
+    nc.close()
+
+    old_mask = np.ma.masked_where(dat.mask + dat ==0, dat).mask
+
+    xd = np.ma.masked_where(old_mask, dat).flatten()
+    xt = np.ones_like(xd)
+    xz = xt
+    xy = np.ma.masked_where(old_mask, lats).flatten()
+    xx = np.ma.masked_where(old_mask, lons).flatten()
+    flat_area = np.ma.masked_where(old_mask, area).flatten()
+    old_mask_flat = old_mask.flatten()
+
+    region_mask = makeMask('bathy', region, xt, xz, xy, xx, xd, debug=True)
+    
+    new_area = np.ma.masked_where(region_mask + old_mask_flat, flat_area)
+    
+    print('region:', new_area.sum())
+    
+    
+    out_fn = bvt.folder('region_areas')+region+'.txt'
+    txt = ''.join([region, ', ', str(int(area)), '\n'])
+    fn = open(out_fn, 'w')
+    fn.write(txt)
+    fn.close()
+    
+ 
+
+
+
+
 def main():
 #    paths_dict, config_user = get_run_configuration("defaults")
 
