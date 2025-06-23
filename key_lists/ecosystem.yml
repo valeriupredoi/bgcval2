@@ -1,6 +1,8 @@
 ---
 # Biogeochemistry keys for UKESM analysis.
+#
 keys:
+#   Ptrc: 
     phn: True
     phd: True
     zmi: True
@@ -9,8 +11,22 @@ keys:
     int_zme: True
     int_pd: True
     int_pn: True
+    det: True
+
+#   diag:
     zi_grow: True
     ze_grow: True
+    mpd: True
+    mpn: True
+    gmipn: True
+    gmepn: True
+    gmepd: True
+    pd_nlim: True
+    pn_nlim: True
+    epn100: True
+    o2min: True
+
+#   
 
 ###################
 # Below this line is also in bgc.yml

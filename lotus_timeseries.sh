@@ -1,9 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=bgcval2
 #SBATCH --partition=standard
-#SBATCH --time 6:00:00
+#SBATCH --time 23:00:00
 #SBATCH --qos=standard
 #SBATCH --account=esmeval
+#SBATCH --mem=8GB
 #SBATCH -o logs/log_bgcval2_ts_%J.out
 #SBATCH -e logs/log_bgcval3_ts_%J.err
 

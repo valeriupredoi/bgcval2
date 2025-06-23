@@ -203,6 +203,8 @@ def makeLongNameDict():
     lnd['ZME'] = 'Mesozooplankton'
     lnd['PHD'] = 'Diatoms'
     lnd['PHN'] = 'Non-Diatoms'
+    lnd['DET'] = 'Detritus'
+
     lnd['INT_ZMI'] = 'Int. Microzooplankton'
     lnd['INT_ZME'] = 'Int. Mesozooplankton'
     lnd['INT_PD'] = 'Int. Diatoms'
@@ -210,7 +212,15 @@ def makeLongNameDict():
 
     lnd['ZI_GROW'] = 'Microzooplankton Growth'
     lnd['ZE_GROW'] = 'Mesozooplankton Growth'
-    
+    lnd['MPD'] = "Diatom non-grazing losses"
+    lnd['MPN'] = "Non-Diatom non-grazing losses"
+    lnd['GMIPn'] = "Microzoo grazing on non-diatoms"
+    lnd['GMEPN'] = "Mesorozoo grazing on non-diatoms"
+    lnd['GMEPD'] = "Mesorozoo grazing on diatoms"
+    lnd['PN_NLIM'] = 'Non-Diatom N limitation'
+    lnd['PD_NLIM'] = 'Diatom N limitation'
+    lnd['epN100'] = "Downward Flux of Particulate Nitrogen"
+    lnd['O2min'] = 'Oxygen Minimum Concentration'
 
     lnd['bac'] = 'Bacteria'
 
