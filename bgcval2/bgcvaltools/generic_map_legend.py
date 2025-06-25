@@ -133,16 +133,17 @@ def add_region(fig, ax, lons, lats, data):
     return fig, ax, im
 
 
-def make_figure(region):
+def make_figure(region, orcaGridfn=None):
     """
     Make a figure for this region.
     """
     fig_fn = bvt.folder('images/regions')+region+'.png'
 
-    paths_dict, config_user = get_run_configuration("defaults")
-    # filter paths dict into an object that's usable below
-    paths = paths_setter(paths_dict)   
-    orcaGridfn = paths.orcaGridfn
+    if not orcaGridfn:
+        paths_dict, config_user = get_run_configuration("defaults")
+        # filter paths dict into an object that's usable below
+        paths = paths_setter(paths_dict)   
+        orcaGridfn = paths.orcaGridfn
 
     nc = Dataset(orcaGridfn, 'r')
     dat = nc.variables['mbathy'][:].squeeze()
@@ -216,19 +217,21 @@ def make_figure(region):
 
 
 
-def calc_area(region):
+def calc_area(region, orcaGridfn = None):
     """
     Calculate the area for this region.
     """
 
-    paths_dict, config_user = get_run_configuration("defaults")
-    # filter paths dict into an object that's usable below
-    paths = paths_setter(paths_dict)   
-    orcaGridfn = paths.orcaGridfn
+    if not orcaGridfn:
+        paths_dict, config_user = get_run_configuration("defaults")
+        paths = paths_setter(paths_dict)  
+        orcaGridfn = paths.orcaGridfn
+    print('calc_area: opening:', orcaGridfn)
 
     nc = Dataset(orcaGridfn, 'r')
     dat = nc.variables['mbathy'][:].squeeze()
-    area = nc.variables['area'][:].squeeze()
+    #area = nc.variables['area'][:].squeeze()
+    area = nc.variables['e2t'][:]* nc.variables['e1t'][:]
     lats = nc.variables['nav_lat'][:].squeeze()
     lons = nc.variables['nav_lon'][:].squeeze()
     lons = bvt.makeLonSafeArr(lons)
@@ -247,12 +250,12 @@ def calc_area(region):
     region_mask = makeMask('bathy', region, xt, xz, xy, xx, xd, debug=True)
     
     new_area = np.ma.masked_where(region_mask + old_mask_flat, flat_area)
-    
-    print('region:', new_area.sum())
+    total_area=new_area.sum() 
+    print('region:', total_area)
     
     
     out_fn = bvt.folder('region_areas')+region+'.txt'
-    txt = ''.join([region, ', ', str(int(area)), '\n'])
+    txt = ''.join([region, ', ', str(int(total_area)), '\n'])
     fn = open(out_fn, 'w')
     fn.write(txt)
     fn.close()
@@ -264,38 +267,46 @@ def calc_area(region):
 
 def main():
 #    paths_dict, config_user = get_run_configuration("defaults")
+    paths_dict, config_user = get_run_configuration("defaults")
+    # filter paths dict into an object that's usable below
+    paths = paths_setter(paths_dict) 
+    orcaGridfn = paths.orcaGridfn
+
 
     regions = [
-#                'LIseas',
-#                'LIGINseas',
-#                'GLINseas',
-#               'Ascension',
-#               'ITCZ',
+                'LIseas',
+                'LIGINseas',
+                'GLINseas',
+                'Ascension',
+#              'ITCZ',
 #               'TristandaCunha',
 #               'Pitcairn',
-#               'Cornwall',
-#                'SubtropicNorthAtlantic',
-#                'SPNA',
-#                'STNA',        
+                'Cornwall',
+                'SubtropicNorthAtlantic',
+                'SPNA',
+                'STNA',        
                 'SouthernOcean',
                 'subpolar',
                 'NorthEastAtlantic',
-#               'ArcticOcean',
-#               'Equator10',
-#               'NorthPacificOcean',
+                'ArcticOcean',
+                'Equator10',
+                'NorthPacificOcean',
                 'SouthAtlanticOcean',
-#               'SouthPacificOcean',
-#                'NorthAtlanticOcean',
-#               'SouthAtlanticOcean',
-#                'GINseas',
-#                'LabradorSea',
-#                'IrmingerSea',
+                'NorthernSubpolarPacific',
+                'NorthernSubpolarAtlantic',
+                'SouthPacificOcean',
+                'NorthAtlanticOcean',
+                'SouthAtlanticOcean',
+                'GINseas',
+                'LabradorSea',
+                'IrmingerSea',
                 'EquatorialAtlanticOcean',
-#              'Global',
-#              'ignoreInlandSeas',
+                'Global',
+                'ignoreInlandSeas',
     ]
     for region in regions[:]:
-        make_figure(region) 
+        calc_area(region, orcaGridfn=orcaGridfn)
+        make_figure(region, orcaGridfn=orcaGridfn) 
 
 if __name__ == "__main__":
     main()

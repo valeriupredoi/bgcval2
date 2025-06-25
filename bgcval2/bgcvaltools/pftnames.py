@@ -210,6 +210,8 @@ def makeLongNameDict():
     lnd['INT_PD'] = 'Int. Diatoms'
     lnd['INT_PN'] = 'Int. Non-Diatoms'
 
+    lnd['PRN'] = 'Non-Diatom Production'
+    lnd['PRD'] = 'Diatom Production'
     lnd['ZI_GROW'] = 'Microzooplankton Growth'
     lnd['ZE_GROW'] = 'Mesozooplankton Growth'
     lnd['MPD'] = "Diatom non-grazing losses"

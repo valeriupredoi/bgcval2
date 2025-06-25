@@ -14,6 +14,8 @@ keys:
     det: True
 
 #   diag:
+    prn: True
+    prd: True   
     zi_grow: True
     ze_grow: True
     mpd: True
