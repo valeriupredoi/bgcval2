@@ -36,5 +36,5 @@ keys:
     #	AOU: True                      # Apparent Oxygen Usage
 
     # Misc.
-    Dust: True  # Dust
-    TotalDust: True                # Total Dust
+#    Dust: True  # Dust
+#    TotalDust: True                # Total Dust
