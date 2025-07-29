@@ -370,7 +370,7 @@ jobs:
       thickness: 1.7
       linestyle: 'dashdot'
       #shifttime: -2144.
-      #      suite: *keylists
+      suite: *keylists
       #
 
    # 3 degree rampdown
@@ -407,7 +407,7 @@ jobs:
       thickness: 1.7
       linestyle: 'dotted'
       #shifttime: -2023.
-      #      suite: *keylists
+      suite: *keylists
       #
 
    u-df028:
