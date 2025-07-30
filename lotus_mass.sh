@@ -19,6 +19,10 @@
 # Set your target directory for scripts
 TARGET_DIR="/gws/nopw/j04/esmeval/bgcval2/shared_mass_scripts/"
 
+# delete old scripts
+find /gws/nopw/j04/esmeval/bgcval2/shared_mass_scripts -mindepth 1 -mtime +15 -print -delete -name 'u-*.sh'
+
+
 # Create an array of filenames without extensions
 file_list=()
 for file in "$TARGET_DIR"*; do
