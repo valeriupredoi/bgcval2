@@ -1,14 +1,15 @@
 #!/bin/bash
-#SBATCH --job-name=m%J
+#SBATCH --job-name=massbgcval
 #SBATCH --partition=mass
 #SBATCH --time 24:00:00
 #SBATCH --qos=mass
 #SBATCH --account=mass
-#SBATCH -o /home/users/ldemora/mass2_logs/log_mass2_%J.out
-#SBATCH -e /home/users/ldemora/mass2_logs/log_mass2_%J.err
+#SBATCH -o /home/users/ldemora/mass2_logs/log_mass2.out
+#SBATCH -e /home/users/ldemora/mass2_logs/log_mass2.err
 
 # Submit this script to mass-cli2.jasmin.ac.uk
-# 
+#  sbatch lotus_mass.sh
+
 # run script with:
 # moo passwd -r # if mass password is expired
 
