@@ -9,15 +9,14 @@
 
 # Submit this script to mass-cli2.jasmin.ac.uk
 #  sbatch lotus_mass.sh
-
-# run script with:
+#
 # moo passwd -r # if mass password is expired
 
 
 ##########################
 # Run mass download.
 
-# Set your target directory
+# Set your target directory for scripts
 TARGET_DIR="/gws/nopw/j04/esmeval/bgcval2/shared_mass_scripts/"
 
 # Create an array of filenames without extensions
@@ -28,15 +27,13 @@ for file in "$TARGET_DIR"*; do
   file_list+=("$name")
 done
 
-# Iterate through the list and echo the file names
-for fname in "${file_list[@]}"; do
-  echo "Filename: $fname"
-done
-
 
 # Shuffle the list and iterate through it
 for JOBID in $(printf "%s\n" "${file_list[@]}" | shuf); do
+  # make an output folder (typically done elsewhere)
   mkdir -p /gws/nopw/j04/ukesm/BGC_data/$JOBID/
+  
+  # Download jobID from mass to the standard location:
   moo get --fill-gaps moose:/crum/$JOBID/ony.nc.file/*.nc /gws/nopw/j04/ukesm/BGC_data/$JOBID/
 done
 
