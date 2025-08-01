@@ -15,6 +15,7 @@
 
 ##########################
 # Run mass download.
+source /etc/bashrc
 
 # Set your target directory for scripts
 TARGET_DIR="/gws/nopw/j04/esmeval/bgcval2/shared_mass_scripts/"
