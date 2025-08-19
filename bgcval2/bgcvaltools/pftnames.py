@@ -224,6 +224,7 @@ def makeLongNameDict():
     lnd['PD_NLIM'] = 'Diatom N limitation'
     lnd['PD_JLIM'] = 'Diatom Light Limitation'
     lnd['PD_SILIM'] = 'Diatom Si limitation'
+    lnd['PBSI3'] = 'Biogenic Silica Production'
 
     lnd['epN100'] = "Downward Flux of Particulate Nitrogen"
     lnd['O2min'] = 'Oxygen Minimum Concentration'

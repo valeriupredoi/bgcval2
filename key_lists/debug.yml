@@ -8,9 +8,11 @@ keys:
 #    SouthernTotalIceExtent: True
 #    DrakePassageTransport: True
 #     hfbasinatlantic: True
-    AMOC_26N: True
-    int_pn: True
-    int_pd: True
+#   AMOC_26N: True
+#   pbsi3: True
+    agessc: True
+#   int_pn: True
+#   int_pd: True
 #    AMOC_40N: True
 #    AMOC_55N: True
 
