@@ -1,0 +1,18 @@
+---
+name            : WaterAge
+units           : YearsU
+dimensions      : 3
+model           : NEMO
+datasource      : WOA
+# The filenames
+modelFiles      : $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_grid-T.nc
+#modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*$JOBIDo_1y_*$YEAR????_grid-T.nc
+#dataFile        : $BASEDIR_OBS/WOA/annual/woa13_decav_s00_01v2.nc
+gridFile        : $PATHS_GRIDFILE
+
+# Model coordinates/dimension names
+model_vars      : agessc
+model_convert   : choose_best_var
+
+layers          : 500m 1000m
+regions         : Global SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean SPNA STNA GINseas LabradorSea NorthEastAtlantic IrmingerSea LIGINseas EquatorialAtlanticOcean LIseas subpolar 26N 30S 40N 55N

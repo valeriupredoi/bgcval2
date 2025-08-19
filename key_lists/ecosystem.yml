@@ -12,6 +12,7 @@ keys:
     int_pd: True
     int_pn: True
     det: True
+    pbsi3: True
 
 #   diag:
     prn: True
