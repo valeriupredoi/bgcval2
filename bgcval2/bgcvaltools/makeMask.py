@@ -354,7 +354,10 @@ def makeMask(name, newSlice, xt, xz, xy, xx, xd, debug=False):
         return mx
         #65-75:20W-15E
 
-   
+    if newSlice == 'BritishIsles':
+        mx = np.ma.masked_outside(xx, -11., 2.).mask
+        mx += np.ma.masked_outside(xy, 48., 61.).mask
+        return mx
 
     if newSlice == 'Cornwall':
         mx = np.ma.masked_outside(xx, -8., -4.).mask

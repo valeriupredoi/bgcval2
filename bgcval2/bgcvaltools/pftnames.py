@@ -313,11 +313,13 @@ def makeLongNameDict():
     lnd['sofmflup'] = "Water flux due to freezing/melting"
     lnd['sosfldow'] = "Downward salt flux"
     lnd['soicecov'] = "Ice Fraction"
+    lnd['agessc'] = 'Water age'
     lnd['sossheig'] = "Sea Surface Height"
     lnd['FreshwaterFlux'] = "Freshwater Flux"
     lnd['hfbasinatlantic'] = 'Northward Atlantic heat transport'
     lnd['exportRatio'] = "Export Ratio"
     lnd['LocalExportRatio'] = "Export Ratio"
+    lnd['OCN_RHOSW'] = 'Density'
 
     lnd['PCO2_SW'] = 'pCO2'
     lnd['pCO2'] = 'pCO2'
@@ -468,6 +470,7 @@ def makeLongNameDict():
     lnd['NorthEastAtlantic'] = "North East Atlantic"
     lnd['NorwegianSea'] = "Norwegian Sea"
     lnd['Cornwall'] = "Cornwall"
+    lnd['BritishIsles'] = 'British Isles'
     lnd['Ascension'] = "Ascension Island"
     lnd['TristandaCunha'] = "Tristan da Cunha"
     lnd['Pitcairn'] = "Pitcairn"

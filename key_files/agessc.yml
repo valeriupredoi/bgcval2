@@ -15,4 +15,4 @@ model_vars      : agessc
 model_convert   : choose_best_var
 
 layers          : 500m 1000m
-regions         : Global SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean SPNA STNA GINseas LabradorSea NorthEastAtlantic IrmingerSea LIGINseas EquatorialAtlanticOcean LIseas subpolar 26N 30S 40N 55N
+regions         : Global SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean SPNA STNA GINseas LabradorSea NorthEastAtlantic IrmingerSea LIGINseas EquatorialAtlanticOcean LIseas subpolar 26N 30S 40N 55N BritishIsles

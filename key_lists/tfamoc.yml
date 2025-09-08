@@ -32,4 +32,5 @@ keys:
     friver: True
     soicecov: True
     agessc: True
+    RHOSW: True
 #    thkcello: True
