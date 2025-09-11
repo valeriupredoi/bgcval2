@@ -323,6 +323,8 @@ def makeLongNameDict():
     lnd['DrakePassageTransport'] = 'Drake Passage Transport'
     lnd['DPT'] = 'Drake Passage Transport'
 
+    lnd['DavisStraightSalt'] = 'Davis Straight Salt Flux'
+
     lnd['t_mn'] = 'Mean Temperature'
     lnd['t_an'] = 'Temperature'
     lnd['s_mn'] = 'Mean Salinity'

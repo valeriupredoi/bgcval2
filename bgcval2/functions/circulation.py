@@ -44,6 +44,12 @@ eORCA1_drake_LON=219
 eORCA1_drake_LAT0=79
 eORCA1_drake_LAT1=109
 
+
+eORCA1_davis_LON=300
+eORCA1_davis_LAT0=229
+eORCA1_davis_LAT1=250
+
+
 eORCA025_drake_LON=875
 eORCA025_drake_LAT0=317
 eORCA025_drake_LAT1=436 
@@ -86,6 +92,7 @@ e3v_AMOC55N = 0
 e1v_AMOC26N = 0
 e1v_AMOC40N = 0
 e1v_AMOC55N = 0
+e1v_davis = 0
 tmask_AMOC26N = 0
 tmask_AMOC40N = 0
 tmask_AMOC55N = 0
@@ -136,6 +143,7 @@ def loadDataMask(gridfn, maskname, grid):
     global e3v_AMOC26N
     global e3v_AMOC40N
     global e3v_AMOC55N
+    global e1v_davis    
     global e1v_AMOC26N    
     global e1v_AMOC40N    
     global e1v_AMOC55N
@@ -183,6 +191,8 @@ def loadDataMask(gridfn, maskname, grid):
         e1v_AMOC55N = nc.variables['e1v'][..., latslice55Nnm, lonslice55N]     #
         tmask_AMOC55N = nc.variables['tmask'][..., latslice55Nnm, lonslice55N]
 
+        e1v_davis = nc.variables['e1v'][eORCA1_davis_LON, eORCA1_davis_LAT0:eORCA1_davis_LAT1]  
+
     else:
         e3v_AMOC26N = nc.variables['e3v'][..., latslice26Nnm, :]   # z level height 3D
         e1v_AMOC26N = nc.variables['e1v'][..., latslice26Nnm, :]     #
@@ -195,6 +205,8 @@ def loadDataMask(gridfn, maskname, grid):
         e3v_AMOC55N = nc.variables['e3v'][..., latslice55N, :]   # z level height 3D
         e1v_AMOC55N = nc.variables['e1v'][..., latslice55N, :]     #
         tmask_AMOC55N = nc.variables['tmask'][..., latslice55N, :]
+
+        e1v_davis = nc.variables['e1v'][eORCA1_davis_LON, eORCA1_davis_LAT0:eORCA1_davis_LAT1]
 
     #print('e3v_AMOC26N: loaded')#e3v_AMOC26N, latslice26Nnm, e3v_AMOC26N.shape)
     nc.close()
@@ -311,6 +323,47 @@ def drakePassage(nc, keys, **kwargs):
     print('drakePassage:', grid, velo.shape, e3u.shape, e2u_drake.shape, umask_drake.shape)
     drake = np.sum(velo * e3u * e2u_drake * umask_drake) * 1.e-6
     return drake
+
+
+def davisstraightsalt(nc, keys, **kwargs):
+    """
+    This function calculates the salt flux through the davis straight in eORCA1. 
+    
+    nc: a netcdf openned as a dataset.
+    keys: a list of keys to use in this function.
+    
+    """
+    areafile = get_kwarg_file(kwargs, 'areafile')
+    maskname = kwargs.get('maskname', 'tmask')
+    grid = kwargs.get('grid', 'eORCA1')
+
+    if not loadedArea:
+        loadDataMask(areafile, maskname, grid)
+
+    if grid == 'eORCA1':    
+        LON = eORCA1_davis_LON
+        LAT0 = eORCA1_davis_LAT0
+        LAT1 = eORCA1_davis_LAT1
+    else:
+        assert 0
+
+    print('Davis straight:', grid, 'LON', LON, 'LAT0',LAT0, 'LAT1', LAT1)
+
+    vso = nc.variables['vso'][0, :, LAT0:LAT1, LON]
+    thkcello = nc.variables['thkcello'][0, :, LAT0:LAT1, LON]
+    e1v_4d = np.broadcast_to(e1v_davis[np.newaxis, :, :], vso.shape[:])
+
+    vso = np.ma.masked_where(vso==0., vso)
+
+    if vso.shape == thkcello.shape == e1v_4d.shape :
+        pass
+    else:
+        print('Shapes do not match', vso.shape, thkcello.shape, e1v_4d.shape)
+        assert 0
+
+    davis = np.ma.sum(vso * e1v_4d * thkcello) * 1.e-6  # PSU m s-1 * m * m or PSU Sv
+
+    return davis
 
 
 def TwentySixNorth(nc, keys, lat='26N', return_max_depth=False, **kwargs):

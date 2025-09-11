@@ -8,6 +8,7 @@ keys:
 #    SouthernTotalIceExtent: True
 #    DrakePassageTransport: True
 #     hfbasinatlantic: True
+    DavidStraightSalt: True
     AMOC_26N: True
     AMOC_40N: True
     AMOC_55N: True
