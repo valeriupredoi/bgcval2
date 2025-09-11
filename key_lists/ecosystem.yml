@@ -15,7 +15,7 @@ keys:
     pbsi3: True
 
 #   diag:
-    prn: True
+    pprn: True # prn is a protectedv filename and can't appear on github.
     prd: True   
     zi_grow: True
     ze_grow: True

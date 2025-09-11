@@ -1,6 +1,6 @@
 ---
 # Non-Diatom production
-name            : PRN
+name            : PPRN
 units           : mmol N/m^2/d
 model           : MEDUSA
 modelgrid       : eORCA1
