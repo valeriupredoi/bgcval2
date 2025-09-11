@@ -7,7 +7,7 @@ keys:
     SST: True
     DrakePassageTransport: True
     DavisStraightSalt: True
-    #DavisStraightSalt: True
+    NorwegeanSeaSalt: True
     AMOC_26N: True
     AMOC_40N: True
     AMOC_55N: True

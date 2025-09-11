@@ -49,6 +49,11 @@ eORCA1_davis_LON=300
 eORCA1_davis_LAT0=229
 eORCA1_davis_LAT1=250
 
+eORCA1_norway_LON = 300
+eORCA1_norway_LAT0 = 260
+eORCA1_norway_LAT1 = 300
+
+
 
 eORCA025_drake_LON=875
 eORCA025_drake_LAT0=317
@@ -192,6 +197,9 @@ def loadDataMask(gridfn, maskname, grid):
         tmask_AMOC55N = nc.variables['tmask'][..., latslice55Nnm, lonslice55N]
 
         e1v_davis = nc.variables['e1v'][eORCA1_davis_LON, eORCA1_davis_LAT0:eORCA1_davis_LAT1]  
+        e1v_norway = nc.variables['e1v'][eORCA1_norway_LON, eORCA1_norway_LAT0:eORCA1_norway_LAT1]  
+
+        
 
     else:
         e3v_AMOC26N = nc.variables['e3v'][..., latslice26Nnm, :]   # z level height 3D
@@ -207,6 +215,7 @@ def loadDataMask(gridfn, maskname, grid):
         tmask_AMOC55N = nc.variables['tmask'][..., latslice55N, :]
 
         e1v_davis = nc.variables['e1v'][eORCA1_davis_LON, eORCA1_davis_LAT0:eORCA1_davis_LAT1]
+        e1v_norway = nc.variables['e1v'][eORCA1_norway_LON, eORCA1_norway_LAT0:eORCA1_norway_LAT1]  
 
     #print('e3v_AMOC26N: loaded')#e3v_AMOC26N, latslice26Nnm, e3v_AMOC26N.shape)
     nc.close()
@@ -352,6 +361,47 @@ def davisstraightsalt(nc, keys, **kwargs):
     vso = nc.variables['vso'][0, :, LAT0:LAT1, LON]
     thkcello = nc.variables['thkcello'][0, :, LAT0:LAT1, LON]
     e1v_4d = np.broadcast_to(e1v_davis[np.newaxis, :], vso.shape[:])
+
+    vso = np.ma.masked_where(vso==0., vso)
+
+    if vso.shape == thkcello.shape == e1v_4d.shape :
+        pass
+    else:
+        print('Shapes do not match', vso.shape, thkcello.shape, e1v_4d.shape)
+        assert 0
+
+    print('davis:', vso.shape, thkcello.shape, e1v_4d.shape)
+    davis = np.ma.sum(vso * e1v_4d * thkcello) * 1.e-6  # PSU m s-1 * m * m or PSU Sv
+
+    return davis
+
+
+def norwegeanseasalt(nc, keys, **kwargs):
+    """
+    This function calculates the salt flux through the Norwegean Sea in eORCA1. 
+    
+    nc: a netcdf openned as a dataset.
+    keys: a list of keys to use in this function.
+    
+    """
+    areafile = get_kwarg_file(kwargs, 'areafile')
+    maskname = kwargs.get('maskname', 'tmask')
+    grid = kwargs.get('grid', 'eORCA1')
+
+    if not loadedArea:
+        loadDataMask(areafile, maskname, grid)
+
+    if grid == 'eORCA1':    
+        LON = eORCA1_norway_LON
+        LAT0 = eORCA1_norway_LAT0
+        LAT1 = eORCA1_norway_LAT1
+    else:
+        assert 0
+
+    print('Norwegean sea salt flux:', grid, 'LON', LON, 'LAT0',LAT0, 'LAT1', LAT1)
+    vso = nc.variables['vso'][0, :, LAT0:LAT1, LON]
+    thkcello = nc.variables['thkcello'][0, :, LAT0:LAT1, LON]
+    e1v_4d = np.broadcast_to(e1v_norway[np.newaxis, :], vso.shape[:])
 
     vso = np.ma.masked_where(vso==0., vso)
 

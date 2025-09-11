@@ -10,6 +10,7 @@ keys:
 #     hfbasinatlantic: True
 #   AMOC_26N: True
     DavisStraightSalt: True
+    NorwegeanSeaSalt: True
 
 #   pbsi3: True
 #    agessc: True
