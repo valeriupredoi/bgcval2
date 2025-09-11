@@ -351,7 +351,7 @@ def davisstraightsalt(nc, keys, **kwargs):
 
     vso = nc.variables['vso'][0, :, LAT0:LAT1, LON]
     thkcello = nc.variables['thkcello'][0, :, LAT0:LAT1, LON]
-    e1v_4d = np.broadcast_to(e1v_davis[np.newaxis, :, :], vso.shape[:])
+    e1v_4d = np.broadcast_to(e1v_davis[np.newaxis, :], vso.shape[:])
 
     vso = np.ma.masked_where(vso==0., vso)
 
@@ -361,6 +361,7 @@ def davisstraightsalt(nc, keys, **kwargs):
         print('Shapes do not match', vso.shape, thkcello.shape, e1v_4d.shape)
         assert 0
 
+    print('davis:', vso.shape, thkcello.shape, e1v_4d.shape)
     davis = np.ma.sum(vso * e1v_4d * thkcello) * 1.e-6  # PSU m s-1 * m * m or PSU Sv
 
     return davis

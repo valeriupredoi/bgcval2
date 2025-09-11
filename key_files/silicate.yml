@@ -19,7 +19,7 @@ data_convert    : NoChange
 data_tdict      : ZeroToZero
 
 layers          : Surface
-regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean SPNA STNA GINseas LabradorSea IrmingerSea LIGINseas BritishIsle
+regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean SPNA STNA GINseas LabradorSea IrmingerSea LIGINseas BritishIsles
 
 
 
