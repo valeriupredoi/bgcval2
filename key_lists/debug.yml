@@ -9,8 +9,10 @@ keys:
 #    DrakePassageTransport: True
 #     hfbasinatlantic: True
 #   AMOC_26N: True
+    DavidStraightSalt: True
+
 #   pbsi3: True
-    agessc: True
+#    agessc: True
 #   int_pn: True
 #   int_pd: True
 #    AMOC_40N: True
