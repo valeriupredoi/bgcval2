@@ -1,5 +1,5 @@
 ---
-name: NorwegeanSeaSaltFlux
+name: NorwegianSeaSaltFlux
 units: PSU m/s
 dimensions: 1
 model: NEMO
@@ -7,7 +7,7 @@ modelFiles: $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_grid-V.nc
 model_vars: vso thkcello
 model_convert:
   path: bgcval2/functions/circulation.py
-  function: norwegeanpassage
+  function: norwegianpassage
   areafile: $PATHS_GRIDFILE
 layers: layerless
 regions: regionless

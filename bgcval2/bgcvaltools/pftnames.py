@@ -356,9 +356,9 @@ def makeLongNameDict():
     lnd['DavisStraightSaltFlux'] = 'Davis Straight Salt Flux'
     lnd['DavisStraightMassFlux'] = 'Davis Straight Salt Flux'
     lnd['DavisStraightHeatFlux'] = 'Davis Straight Salt Flux'
-    lnd['NorwegeanSeaSaltFlux'] = 'Norwegian Sea Salt Flux'    
-    lnd['NorwegeanSeaMassFlux'] = 'Norwegian Sea Mass Flux'    
-    lnd['NorwegeanSeaHeatFlux'] = 'Norwegian Sea Heat Flux'
+    lnd['NorwegianSeaSaltFlux'] = 'Norwegian Sea Salt Flux'    
+    lnd['NorwegianSeaMassFlux'] = 'Norwegian Sea Mass Flux'    
+    lnd['NorwegianSeaHeatFlux'] = 'Norwegian Sea Heat Flux'
 
     lnd['t_mn'] = 'Mean Temperature'
     lnd['t_an'] = 'Temperature'

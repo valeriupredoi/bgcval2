@@ -38,9 +38,9 @@ keys:
 #    thkcello: True
 
     DavisStraightSaltFlux: True
-    NorwegeanSeaSaltFlux: True
+    NorwegianSeaSaltFlux: True
     DavisStraightHeatFlux: True
-    NorwegeanSeaHeatFlux: True
+    NorwegianSeaHeatFlux: True
     DavisStraightMassFlux: True
-    NorwegeanSeaMassFlux: True
+    NorwegianSeaMassFlux: True
 

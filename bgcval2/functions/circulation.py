@@ -359,31 +359,28 @@ def davisstraightflux(nc, keys, **kwargs):
     else:
         assert 0
 
-    print('Davis straight:', grid, 'LON', LON, 'LAT0',LAT0, 'LAT1', LAT1)
-
-    vso = nc.variables[keys[0]][0, :, LAT0:LAT1, LON]
-    thkcello = nc.variables['thkcello'][0, :, LAT0:LAT1, LON]
-    e1v_4d = np.broadcast_to(e1v_davis[np.newaxis, :], vso.shape[:])
-
-    vso = np.ma.masked_where(vso==0., vso)
-
-    if vso.shape == thkcello.shape == e1v_4d.shape :
-        pass
-    else:
-        print('Shapes do not match', vso.shape, thkcello.shape, e1v_4d.shape)
+    if keys[0] in ['vo', 'uo']:
+        print('These needs to be multiplied by the thkcello.')
         assert 0
 
-    print('davis:', vso.shape, thkcello.shape, e1v_4d.shape)
-    davis = np.ma.sum(vso * e1v_4d * thkcello) 
+    print('Davis straight:', grid, 'LON', LON, 'LAT0',LAT0, 'LAT1', LAT1)
 
-    # if keys[0]* 1.e-6  # PSU m s-1 * m * m or PSU Sv
+    ndim = nc.variables[keys[0]].ndim
+    if ndim == 4: # vso, vmo
+        flux = nc.variables[keys[0]][0, :, LAT0:LAT1, LON]
 
+    if ndim == 3: #hfy
+        flux = nc.variables[keys[0]][0, LAT0:LAT1, LON]
+
+    flux = np.ma.masked_where(flux==0., flux)
+
+    davis = np.ma.sum(flux ) #* e1v_4d * thkcello) 
     return davis
 
 
-def norwegeanpassage(nc, keys, **kwargs):
+def norwegianpassage(nc, keys, **kwargs):
     """
-    This function calculates the salt flux through the Norwegean Sea in eORCA1. 
+    This function calculates the salt flux through the Norwegian Sea in eORCA1. 
     
     nc: a netcdf openned as a dataset.
     keys: a list of keys to use in this function.
@@ -402,22 +399,23 @@ def norwegeanpassage(nc, keys, **kwargs):
         LAT1 = eORCA1_norway_LAT1
     else:
         assert 0
+    
+    if keys[0] in ['vo', 'uo']:
+        print('These needs to be multiplied by the thkcello.')
+        assert 0
+    print('Norwegian flux:', grid, 'LON', LON, 'LAT0',LAT0, 'LAT1', LAT1)
 
-    print('Norwegean flux:', grid, 'LON', LON, 'LAT0',LAT0, 'LAT1', LAT1)
-    flux = nc.variables[keys[0]][0, :, LAT0:LAT1, LON]
-    thkcello = nc.variables['thkcello'][0, :, LAT0:LAT1, LON]
-    e1v_4d = np.broadcast_to(e1v_norway[np.newaxis, :], flux.shape[:])
+    ndim = nc.variables[keys[0]].ndim
+    if ndim == 4: # vso, vmo
+        flux = nc.variables[keys[0]][0, :, LAT0:LAT1, LON]
+
+    if ndim == 3: #hfy
+        flux = nc.variables[keys[0]][0, LAT0:LAT1, LON]
 
     flux = np.ma.masked_where(flux==0., flux)
 
-    if flux.shape == thkcello.shape == e1v_4d.shape :
-        pass
-    else:
-        print('Shapes do not match', flux.shape, thkcello.shape, e1v_4d.shape)
-        assert 0
-
     print('Norway:', flux.shape, thkcello.shape, e1v_4d.shape)
-    Norway = np.ma.sum(flux * e1v_4d * thkcello) * 1.e-6  # PSU m s-1 * m * m or PSU Sv
+    Norway = np.ma.sum(flux)  
 
     return Norway
 
