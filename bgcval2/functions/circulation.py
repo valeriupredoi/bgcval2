@@ -98,6 +98,8 @@ e1v_AMOC26N = 0
 e1v_AMOC40N = 0
 e1v_AMOC55N = 0
 e1v_davis = 0
+e1v_norway = 0
+
 tmask_AMOC26N = 0
 tmask_AMOC40N = 0
 tmask_AMOC55N = 0
@@ -148,7 +150,8 @@ def loadDataMask(gridfn, maskname, grid):
     global e3v_AMOC26N
     global e3v_AMOC40N
     global e3v_AMOC55N
-    global e1v_davis    
+    global e1v_davis   
+    global e1v_norway 
     global e1v_AMOC26N    
     global e1v_AMOC40N    
     global e1v_AMOC55N

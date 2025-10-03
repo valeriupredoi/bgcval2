@@ -59,7 +59,7 @@ keys:
 
     ZOS: True # Sea Surface Height
     sowindsp: True # Wind speed
-    sowflisf: True # Ice flux
+#    sowflisf: True # Ice flux
     evs: True # Evaporation
     precip: True # Precipitation
 #    fov: True # Fov (Total salt flux in the Atlantic)
