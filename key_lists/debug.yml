@@ -9,8 +9,12 @@ keys:
 #    DrakePassageTransport: True
 #     hfbasinatlantic: True
 #   AMOC_26N: True
-    DavisStraightSalt: True
-    NorwegeanSeaSalt: True
+    DavisStraightSaltFlux: True
+    NorwegeanSeaSaltFlux: True
+    DavisStraightHeatFlux: True
+    NorwegeanSeaHeatFlux: True
+    DavisStraightMassFlux: True
+    NorwegeanSeaMassFlux: True
 
 #   pbsi3: True
 #    agessc: True

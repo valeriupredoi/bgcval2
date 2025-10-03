@@ -45,9 +45,9 @@ eORCA1_drake_LAT0=79
 eORCA1_drake_LAT1=109
 
 
-eORCA1_davis_LON=300
-eORCA1_davis_LAT0=229
-eORCA1_davis_LAT1=250
+eORCA1_davis_LON=289
+eORCA1_davis_LAT0=232
+eORCA1_davis_LAT1=244
 
 eORCA1_norway_LON = 300
 eORCA1_norway_LAT0 = 260
@@ -337,7 +337,7 @@ def drakePassage(nc, keys, **kwargs):
     return drake
 
 
-def davisstraightsalt(nc, keys, **kwargs):
+def davisstraightflux(nc, keys, **kwargs):
     """
     This function calculates the salt flux through the davis straight in eORCA1. 
     
@@ -361,7 +361,7 @@ def davisstraightsalt(nc, keys, **kwargs):
 
     print('Davis straight:', grid, 'LON', LON, 'LAT0',LAT0, 'LAT1', LAT1)
 
-    vso = nc.variables['vso'][0, :, LAT0:LAT1, LON]
+    vso = nc.variables[keys[0]][0, :, LAT0:LAT1, LON]
     thkcello = nc.variables['thkcello'][0, :, LAT0:LAT1, LON]
     e1v_4d = np.broadcast_to(e1v_davis[np.newaxis, :], vso.shape[:])
 
@@ -374,12 +374,14 @@ def davisstraightsalt(nc, keys, **kwargs):
         assert 0
 
     print('davis:', vso.shape, thkcello.shape, e1v_4d.shape)
-    davis = np.ma.sum(vso * e1v_4d * thkcello) * 1.e-6  # PSU m s-1 * m * m or PSU Sv
+    davis = np.ma.sum(vso * e1v_4d * thkcello) 
+
+    # if keys[0]* 1.e-6  # PSU m s-1 * m * m or PSU Sv
 
     return davis
 
 
-def norwegeanseasalt(nc, keys, **kwargs):
+def norwegeanpassage(nc, keys, **kwargs):
     """
     This function calculates the salt flux through the Norwegean Sea in eORCA1. 
     
@@ -401,23 +403,23 @@ def norwegeanseasalt(nc, keys, **kwargs):
     else:
         assert 0
 
-    print('Norwegean sea salt flux:', grid, 'LON', LON, 'LAT0',LAT0, 'LAT1', LAT1)
-    vso = nc.variables['vso'][0, :, LAT0:LAT1, LON]
+    print('Norwegean flux:', grid, 'LON', LON, 'LAT0',LAT0, 'LAT1', LAT1)
+    flux = nc.variables[keys[0]][0, :, LAT0:LAT1, LON]
     thkcello = nc.variables['thkcello'][0, :, LAT0:LAT1, LON]
-    e1v_4d = np.broadcast_to(e1v_norway[np.newaxis, :], vso.shape[:])
+    e1v_4d = np.broadcast_to(e1v_norway[np.newaxis, :], flux.shape[:])
 
-    vso = np.ma.masked_where(vso==0., vso)
+    flux = np.ma.masked_where(flux==0., flux)
 
-    if vso.shape == thkcello.shape == e1v_4d.shape :
+    if flux.shape == thkcello.shape == e1v_4d.shape :
         pass
     else:
-        print('Shapes do not match', vso.shape, thkcello.shape, e1v_4d.shape)
+        print('Shapes do not match', flux.shape, thkcello.shape, e1v_4d.shape)
         assert 0
 
-    print('davis:', vso.shape, thkcello.shape, e1v_4d.shape)
-    davis = np.ma.sum(vso * e1v_4d * thkcello) * 1.e-6  # PSU m s-1 * m * m or PSU Sv
+    print('Norway:', flux.shape, thkcello.shape, e1v_4d.shape)
+    Norway = np.ma.sum(flux * e1v_4d * thkcello) * 1.e-6  # PSU m s-1 * m * m or PSU Sv
 
-    return davis
+    return Norway
 
 
 def TwentySixNorth(nc, keys, lat='26N', return_max_depth=False, **kwargs):

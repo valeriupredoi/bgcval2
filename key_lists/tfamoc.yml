@@ -6,8 +6,8 @@ keys:
     GlobalMeanTemperature: True
     SST: True
     DrakePassageTransport: True
-    DavisStraightSalt: True
-    NorwegeanSeaSalt: True
+    # DavisStraightSalt: True
+    # NorwegeanSeaSalt: True
     AMOC_26N: True
     AMOC_40N: True
     AMOC_55N: True
@@ -36,3 +36,11 @@ keys:
     agessc: True
     RHOSW: True
 #    thkcello: True
+
+    DavisStraightSaltFlux: True
+    NorwegeanSeaSaltFlux: True
+    DavisStraightHeatFlux: True
+    NorwegeanSeaHeatFlux: True
+    DavisStraightMassFlux: True
+    NorwegeanSeaMassFlux: True
+
