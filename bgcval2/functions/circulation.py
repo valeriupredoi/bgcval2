@@ -379,15 +379,17 @@ def davisstraightflux(nc, keys, straight='Davis', **kwargs):
         flux = nc.variables[keys[0]][0, :, LAT0:LAT1, LON]
         e1v_4d = np.broadcast_to(e1v[np.newaxis, :], thkcello.shape[:])
 
-
     if ndim == 3: #hfy
         flux = nc.variables[keys[0]][0, LAT0:LAT1, LON]
         e1v_4d = e1v
         thkcello = thkcello.sum(0)
 
     flux = np.ma.masked_where(flux==0., flux)
-
-    flux = np.ma.sum(flux * e1v_4d * thkcello) 
+    if keys[0] in ['vo', 'uo']:
+        flux = np.ma.sum(flux * e1v_4d * thkcello) 
+    else:
+        # sum already calculated.
+        flux = np.ma.sum(flux)
 
     return flux
 
