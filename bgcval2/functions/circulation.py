@@ -49,9 +49,10 @@ eORCA1_davis_LON=289
 eORCA1_davis_LAT0=232
 eORCA1_davis_LAT1=244
 
-eORCA1_norway_LON = 300
-eORCA1_norway_LAT0 = 260
-eORCA1_norway_LAT1 = 300
+# From Greenland to Norway via Iceland
+eORCA1_norway_LON = 281
+eORCA1_norway_LAT0 = 245
+eORCA1_norway_LAT1 = 294
 
 
 

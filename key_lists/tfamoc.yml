@@ -24,6 +24,7 @@ keys:
     SouthernTotalIceExtent: True
     GlobalMeanSalinity: True
     fsitherm: True
+    ficeberg: True
     sowaflup: True
     hfds: True
     hfy: True
@@ -43,4 +44,7 @@ keys:
     NorwegianSeaHeatFlux: True
     DavisStraightMassFlux: True
     NorwegianSeaMassFlux: True
+
+    volTemperature: True
+    volSalinity: True
 

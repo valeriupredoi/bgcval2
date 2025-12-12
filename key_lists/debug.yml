@@ -9,12 +9,15 @@ keys:
 #    DrakePassageTransport: True
 #     hfbasinatlantic: True
 #   AMOC_26N: True
-    DavisStraightSaltFlux: True
-    NorwegianSeaSaltFlux: True
-    DavisStraightHeatFlux: True
-    NorwegianSeaHeatFlux: True
-    DavisStraightMassFlux: True
-    NorwegianSeaMassFlux: True
+#    ficeberg: True
+#   volTemperature: True
+#   volSalinity: True
+#   DavisStraightSaltFlux: True
+#   NorwegianSeaSaltFlux: True
+#   DavisStraightHeatFlux: True
+#   NorwegianSeaHeatFlux: True
+#   DavisStraightMassFlux: True
+#   NorwegianSeaMassFlux: True
 
 #   pbsi3: True
 #    agessc: True
@@ -44,7 +47,7 @@ keys:
 #    SouthernTotalIceArea: True
 
     #ZOS: True
-    #sowindsp: True
+    sowindsp: True
     #sowflisf: True
     #evs: True
     #precip: True

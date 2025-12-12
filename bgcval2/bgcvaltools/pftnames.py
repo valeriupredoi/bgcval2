@@ -287,6 +287,10 @@ def makeLongNameDict():
     lnd['SubtropicNorthAtlantic'] = 'Subtropic North Atlantic'
     lnd['GINSalinity'] = 'GIN Salinity 0-800m'
 
+    lnd['volSalinity'] = 'Salinity 0-1200m'
+    lnd['volTemperature'] = 'Temperature 0-1200m'
+
+
     lnd['Surfaceto100m'] = 'Surface-to-100m'
     lnd['Surfaceto200m'] = 'Surface-to-200m'
     lnd['Surfaceto300m'] = 'Surface-to-300m'
@@ -295,6 +299,8 @@ def makeLongNameDict():
     lnd['Surfaceto600m'] = 'Surface-to-600m'
     lnd['Surfaceto700m'] = 'Surface-to-700m'
     lnd['Surfaceto800m'] = 'Surface-to-800m'
+    lnd['Surfaceto1200m'] = 'Surface-to-1200m'
+
     lnd['Surfaceto2000m'] = 'Surface-to-2000m'
 
     lnd['TotalHeatFlux'] = "Global Total Heat Flux"
@@ -354,8 +360,8 @@ def makeLongNameDict():
     lnd['DPT'] = 'Drake Passage Transport'
 
     lnd['DavisStraightSaltFlux'] = 'Davis Straight Salt Flux'
-    lnd['DavisStraightMassFlux'] = 'Davis Straight Salt Flux'
-    lnd['DavisStraightHeatFlux'] = 'Davis Straight Salt Flux'
+    lnd['DavisStraightMassFlux'] = 'Davis Straight Mass Flux'
+    lnd['DavisStraightHeatFlux'] = 'Davis Straight Heat Flux'
     lnd['NorwegianSeaSaltFlux'] = 'Norwegian Sea Salt Flux'    
     lnd['NorwegianSeaMassFlux'] = 'Norwegian Sea Mass Flux'    
     lnd['NorwegianSeaHeatFlux'] = 'Norwegian Sea Heat Flux'

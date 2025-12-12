@@ -4,7 +4,7 @@ units: PSU m/s
 dimensions: 1
 model: NEMO
 modelFiles: $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_grid-V.nc
-model_vars: vso thkcello
+model_vars: somesatr thkcello
 model_convert:
   path: bgcval2/functions/circulation.py
   function: norwegianpassage

@@ -10,8 +10,8 @@ modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*$JOBIDo_1y_*$YEAR????_grid-T.nc
 gridFile        : $PATHS_GRIDFILE
 
 # Model coordinates/dimension names
-model_vars      : sowindsp 
-model_convert   : choose_best_var
+model_vars      : sowindsp sos 
+model_convert   : applymask # applies a mask where sos is zero.
 
 layers          : layerless
 regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean SPNA LIGINseas STNA LIseas LabradorSea NorthEastAtlantic IrmingerSea GINseas BritishIsles

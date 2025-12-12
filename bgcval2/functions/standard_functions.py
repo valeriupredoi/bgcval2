@@ -71,13 +71,16 @@ def extractData(nc, details, key=['',], debug=False):
     return np.ma.array(xd)
 
 
+
 ####
 # Some functions for maniulating data:
 def NoChange(nc,keys):
     """
     Loads keys[0] from the netcdf, but applies no change.
     """
-    return nc.variables[keys[0]][:]
+    arr = nc.variables[keys[0]][:]
+    arr = np.ma.masked_where(arr == 0. + arr.mask, arr)    
+    return arr
 
 
 def N2Biomass(nc,keys):
@@ -126,7 +129,9 @@ def applymask(nc,keys):
     """
     Loads keys[0] from the netcdf, but applies a mask.
     """
-    return np.ma.masked_where(nc.variables[keys[1]][:] == 0., nc.variables[keys[0]][:])
+    arr = np.ma.array(nc.variables[keys[0]][:])
+    arr = np.ma.masked_invalid(arr)
+    return np.ma.masked_where(arr.mask + (nc.variables[keys[1]][:] == 0.), arr)
 
 
 def maskzeroes(nc, keys):
@@ -147,6 +152,7 @@ def sums(nc,keys):
     a = nc.variables[keys[0]][:]
     for k in keys[1:]:
         a += nc.variables[k]
+    a = np.ma.masked_where(a == 0. + a.mask, a)
     return a
 
 
@@ -172,8 +178,11 @@ def choose_best_var(nc, keys):
     for key in keys:
         if key not in nc.variables.keys():
             continue
-        return nc.variables[key][:]
+        arr = nc.variables[key][:]
+        arr = np.ma.masked_where(arr == 0. + arr.mask, arr)    
+        return arr
     raise KeyError(f'choose_best_var: unable to find any variable in {keys} in {nc.filename}')    
+
 
 def find_best_var(nc, keys):
     """
@@ -194,7 +203,9 @@ def multiplyBy(nc,keys, **kwargs):
     """
     if 'factor' not in kwargs:
         raise KeyError(f"std_functions: multiplyBy: Did not get key word argument, 'factor' in kwargs: {kwargs}")
-    return nc.variables[keys[0]][:] * float(kwargs['factor'])
+    arr = nc.variables[keys[0]][:] * float(kwargs['factor'])
+    arr = np.ma.masked_where(arr == 0. + arr.mask, arr)    
+    return arr
 
 
 def addValue(nc,keys, **kwargs):

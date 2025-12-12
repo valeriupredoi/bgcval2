@@ -205,7 +205,7 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
 
     elif layer in [
             'Surfaceto100m', 'Surfaceto300m', 'Surfaceto700m', 
-            'Surfaceto500m', 'Surfaceto800m',
+            'Surfaceto500m', 'Surfaceto800m','Surfaceto1200m',
             'Surfaceto2000m'
     ]:
         if layer == 'Surfaceto100m': z = 100.
@@ -213,6 +213,7 @@ def getHorizontalSlice(nc, coords, details, layer, data=''):
         if layer == 'Surfaceto500m': z = 500.
         if layer == 'Surfaceto700m': z = 700.
         if layer == 'Surfaceto800m': z = 800.
+        if layer == 'Surfaceto1200m': z = 1200.
         if layer == 'Surfaceto2000m': z = 2000.
 
         k_surf = bvt.getORCAdepth(0.,
