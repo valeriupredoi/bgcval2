@@ -430,7 +430,7 @@ The `analysis_compare` tool creates a script in the `mass_scripts` directory.
 This script is copied to a shared directory in the shared ukesm/terrafirma diskspace:
 
 ```
-/gws/nopw/j04/esmeval/bgcval2/shared_mass_scripts
+/gws/ssde/j25a/esmeval/bgcval2/shared_mass_scripts
 ```
 
 A crontab job is set up to execute these scripts overnight on mass-cli1,
@@ -440,14 +440,14 @@ Very old scripts are automatically deleted.
 The crontab script is:
 
 ```
-/gws/nopw/j04/esmeval/bgcval2/shared_mass_cron.sh
+/gws/ssde/j25a/esmeval/bgcval2/shared_mass_cron.sh
 ```
 
 Note that cron executes this script with the `ldemora` username, so permissions may need to be changed
 in some cases. The output log for this script is sent to the file:
 
 ```
-/gws/nopw/j04/esmeval/bgcval2/shared_mass_cron.out
+/gws/ssde/j25a/esmeval/bgcval2/shared_mass_cron.out
 ```
 
 In the case that data is needed immediately, it's posiible to download manually as well.
@@ -642,7 +642,7 @@ input yamls. If you want to "clear the cache", these images need to be deleted.
 The key place to clear is set by default on jasmin to be:
 
 ```
-/gws/nopw/j04/ukesm/BGC_data/$USER/bgcval2/images/TimeseriesCompare/$NAME
+/gws/ssde/j25a/ukesm/BGC_data/$USER/bgcval2/images/TimeseriesCompare/$NAME
 ```
 
 where `$USER` is your jasmin user name and `$NAME` is the name given to this analysis 
@@ -660,7 +660,7 @@ This is where the report is generated.
 The third place that these plots are kept is on the public facing jasmin directory:
 
 ```
-/gws/nopw/j04/esmeval/public/CompareReports/bgcval2/$USER/$NAME
+/gws/ssde/j25a/esmeval/public/CompareReports/bgcval2/$USER/$NAME
 ```
 
 This is where the report is hosted.

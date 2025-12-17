@@ -74,7 +74,7 @@ analysis_compare -y $BGCVAL2_SUITE
 #########################
 # Rsync report to web facing directory:
 # (shouldn't need to change this!)
-OUTPATH=/gws/nopw/j04/esmeval/public/CompareReports/bgcval2/$USER
+OUTPATH=/gws/ssde/j25a/esmeval/public/CompareReports/bgcval2/$USER
 mkdir -p $OUTPATH
 rsync -av CompareReports2/* $OUTPATH/.
 
