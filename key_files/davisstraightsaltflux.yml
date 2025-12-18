@@ -1,0 +1,15 @@
+---
+name: DavisStraightSaltFlux
+units: PSU m/s
+dimensions: 1
+model: NEMO
+modelFiles: $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_grid-V.nc
+model_vars: somesatr thkcello
+model_convert:
+  path: bgcval2/functions/circulation.py
+  function: davisstraightflux
+  areafile: $PATHS_GRIDFILE
+layers: layerless
+regions: regionless
+smoothings: DataOnly 5and30
+

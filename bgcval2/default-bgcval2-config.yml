@@ -7,7 +7,7 @@ standard-paths:
   jasmin:
     general:
       machinelocation: "JASMIN"
-      root_dir: "/gws/nopw/j04/ukesm"
+      root_dir: "/gws/ssde/j25a/ukesm"
       shelvedir: "bgcval2/shelves"
       p2p_ppDir: "bgcval2/ukesm_postProcessed"
       imagedir: "bgcval2/images"

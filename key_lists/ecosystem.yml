@@ -12,9 +12,10 @@ keys:
     int_pd: True
     int_pn: True
     det: True
+    pbsi3: True
 
 #   diag:
-    prn: True
+    pprn: True # prn is a protectedv filename and can't appear on github.
     prd: True   
     zi_grow: True
     ze_grow: True
@@ -29,7 +30,7 @@ keys:
     pn_nlim: True
     pn_jlim: True
     epn100: True
-    o2min: True
+#    o2min: True
 
 #   
 

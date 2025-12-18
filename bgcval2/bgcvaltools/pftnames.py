@@ -211,6 +211,7 @@ def makeLongNameDict():
     lnd['INT_PN'] = 'Int. Non-Diatoms'
 
     lnd['PRN'] = 'Non-Diatom Production'
+    lnd['PPRN'] = 'Non-Diatom Production'
     lnd['PRD'] = 'Diatom Production'
     lnd['ZI_GROW'] = 'Microzooplankton Growth'
     lnd['ZE_GROW'] = 'Mesozooplankton Growth'
@@ -224,6 +225,7 @@ def makeLongNameDict():
     lnd['PD_NLIM'] = 'Diatom N limitation'
     lnd['PD_JLIM'] = 'Diatom Light Limitation'
     lnd['PD_SILIM'] = 'Diatom Si limitation'
+    lnd['PBSI3'] = 'Biogenic Silica Production'
 
     lnd['epN100'] = "Downward Flux of Particulate Nitrogen"
     lnd['O2min'] = 'Oxygen Minimum Concentration'
@@ -285,6 +287,10 @@ def makeLongNameDict():
     lnd['SubtropicNorthAtlantic'] = 'Subtropic North Atlantic'
     lnd['GINSalinity'] = 'GIN Salinity 0-800m'
 
+    lnd['volSalinity'] = 'Salinity 0-1200m'
+    lnd['volTemperature'] = 'Temperature 0-1200m'
+
+
     lnd['Surfaceto100m'] = 'Surface-to-100m'
     lnd['Surfaceto200m'] = 'Surface-to-200m'
     lnd['Surfaceto300m'] = 'Surface-to-300m'
@@ -293,6 +299,8 @@ def makeLongNameDict():
     lnd['Surfaceto600m'] = 'Surface-to-600m'
     lnd['Surfaceto700m'] = 'Surface-to-700m'
     lnd['Surfaceto800m'] = 'Surface-to-800m'
+    lnd['Surfaceto1200m'] = 'Surface-to-1200m'
+
     lnd['Surfaceto2000m'] = 'Surface-to-2000m'
 
     lnd['TotalHeatFlux'] = "Global Total Heat Flux"
@@ -312,11 +320,13 @@ def makeLongNameDict():
     lnd['sofmflup'] = "Water flux due to freezing/melting"
     lnd['sosfldow'] = "Downward salt flux"
     lnd['soicecov'] = "Ice Fraction"
+    lnd['agessc'] = 'Water age'
     lnd['sossheig'] = "Sea Surface Height"
     lnd['FreshwaterFlux'] = "Freshwater Flux"
     lnd['hfbasinatlantic'] = 'Northward Atlantic heat transport'
     lnd['exportRatio'] = "Export Ratio"
     lnd['LocalExportRatio'] = "Export Ratio"
+    lnd['OCN_RHOSW'] = 'Density'
 
     lnd['PCO2_SW'] = 'pCO2'
     lnd['pCO2'] = 'pCO2'
@@ -348,6 +358,13 @@ def makeLongNameDict():
 
     lnd['DrakePassageTransport'] = 'Drake Passage Transport'
     lnd['DPT'] = 'Drake Passage Transport'
+
+    lnd['DavisStraightSaltFlux'] = 'Davis Straight Salt Flux'
+    lnd['DavisStraightMassFlux'] = 'Davis Straight Mass Flux'
+    lnd['DavisStraightHeatFlux'] = 'Davis Straight Heat Flux'
+    lnd['NorwegianSeaSaltFlux'] = 'Norwegian Sea Salt Flux'    
+    lnd['NorwegianSeaMassFlux'] = 'Norwegian Sea Mass Flux'    
+    lnd['NorwegianSeaHeatFlux'] = 'Norwegian Sea Heat Flux'
 
     lnd['t_mn'] = 'Mean Temperature'
     lnd['t_an'] = 'Temperature'
@@ -467,6 +484,7 @@ def makeLongNameDict():
     lnd['NorthEastAtlantic'] = "North East Atlantic"
     lnd['NorwegianSea'] = "Norwegian Sea"
     lnd['Cornwall'] = "Cornwall"
+    lnd['BritishIsles'] = 'British Isles'
     lnd['Ascension'] = "Ascension Island"
     lnd['TristandaCunha'] = "Tristan da Cunha"
     lnd['Pitcairn'] = "Pitcairn"

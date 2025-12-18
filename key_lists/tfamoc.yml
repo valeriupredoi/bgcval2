@@ -6,6 +6,8 @@ keys:
     GlobalMeanTemperature: True
     SST: True
     DrakePassageTransport: True
+    # DavisStraightSalt: True
+    # NorwegeanSeaSalt: True
     AMOC_26N: True
     AMOC_40N: True
     AMOC_55N: True
@@ -22,6 +24,7 @@ keys:
     SouthernTotalIceExtent: True
     GlobalMeanSalinity: True
     fsitherm: True
+    ficeberg: True
     sowaflup: True
     hfds: True
     hfy: True
@@ -31,4 +34,17 @@ keys:
     sowindsp: True
     friver: True
     soicecov: True
+    agessc: True
+    RHOSW: True
 #    thkcello: True
+
+    DavisStraightSaltFlux: True
+    NorwegianSeaSaltFlux: True
+    DavisStraightHeatFlux: True
+    NorwegianSeaHeatFlux: True
+    DavisStraightMassFlux: True
+    NorwegianSeaMassFlux: True
+
+    volTemperature: True
+    volSalinity: True
+

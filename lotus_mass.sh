@@ -18,10 +18,10 @@
 source /etc/bashrc
 
 # Set your target directory for scripts
-TARGET_DIR="/gws/nopw/j04/esmeval/bgcval2/shared_mass_scripts/"
+TARGET_DIR="/home/users/ldemora/workspace/bgcval2/shared_mass_scripts/"
 
 # delete old scripts
-find /gws/nopw/j04/esmeval/bgcval2/shared_mass_scripts -mindepth 1 -mtime +15 -print -delete -name 'u-*.sh'
+find /gws/ssde/j25a/esmeval/bgcval2/shared_mass_scripts -mindepth 1 -mtime +15 -print -delete -name 'u-*.sh'
 
 
 # Create an array of filenames without extensions
@@ -36,10 +36,10 @@ done
 # Shuffle the list and iterate through it
 for JOBID in $(printf "%s\n" "${file_list[@]}" | shuf); do
   # make an output folder (typically done elsewhere)
-  mkdir -p /gws/nopw/j04/ukesm/BGC_data/$JOBID/
+  mkdir -p /gws/ssde/j25a/ukesm/BGC_data/$JOBID/
   
   # Download jobID from mass to the standard location:
-  moo get --fill-gaps moose:/crum/$JOBID/ony.nc.file/*.nc /gws/nopw/j04/ukesm/BGC_data/$JOBID/
+  moo get --fill-gaps moose:/crum/$JOBID/ony.nc.file/*.nc /gws/ssde/j25a/ukesm/BGC_data/$JOBID/
 done
 
 

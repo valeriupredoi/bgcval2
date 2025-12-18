@@ -1,7 +1,7 @@
 ---
-# Non-Diatom production
-name            : PRN
-units           : mmol N/m^2/d
+# Diatom Si limitation
+name            : PD_SILIM
+units           : ''
 model           : MEDUSA
 modelgrid       : eORCA1
 dimensions      : 2
@@ -11,10 +11,10 @@ modelFiles      : $BASEDIR_MODEL/$JOBID/medusa*$JOBIDo_1y_*_diad-T.nc
 modelFile_p2p   : $BASEDIR_MODEL/$JOBID/medusa*$JOBIDo_1y_*$YEAR????_diad-T.nc
 
 # # Model coordinates/dimension names
-model_vars      : PRN
+model_vars      : PD_SILIM
 model_convert   : NoChange
 
 
-layers          : layerless 
+layers          : layerless
 regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean SPNA 
 

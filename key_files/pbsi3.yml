@@ -1,0 +1,21 @@
+---
+# Integrated Diatoms
+#
+name            : PBSI3
+units           : mmol Si/m^3/day
+model           : MEDUSA
+modelgrid       : eORCA1
+dimensions      : 3
+
+# The filenames
+modelFiles      : $BASEDIR_MODEL/$JOBID/medusa*$JOBIDo_1y_*_diad-T.nc
+modelFile_p2p   : $BASEDIR_MODEL/$JOBID/medusa*$JOBIDo_1y_*$YEAR????_diad-T.nc
+
+# # Model coordinates/dimension names
+model_vars      : PBSI3
+model_convert   : NoChange
+
+
+layers          : Surface 500m 1000m
+regions         : Global SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean  
+

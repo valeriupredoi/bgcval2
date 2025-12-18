@@ -44,6 +44,18 @@ eORCA1_drake_LON=219
 eORCA1_drake_LAT0=79
 eORCA1_drake_LAT1=109
 
+
+eORCA1_davis_LON=289
+eORCA1_davis_LAT0=232
+eORCA1_davis_LAT1=244
+
+# From Greenland to Norway via Iceland
+eORCA1_norway_LON = 281
+eORCA1_norway_LAT0 = 245
+eORCA1_norway_LAT1 = 294
+
+
+
 eORCA025_drake_LON=875
 eORCA025_drake_LAT0=317
 eORCA025_drake_LAT1=436 
@@ -86,6 +98,9 @@ e3v_AMOC55N = 0
 e1v_AMOC26N = 0
 e1v_AMOC40N = 0
 e1v_AMOC55N = 0
+e1v_davis = 0
+e1v_norway = 0
+
 tmask_AMOC26N = 0
 tmask_AMOC40N = 0
 tmask_AMOC55N = 0
@@ -136,6 +151,8 @@ def loadDataMask(gridfn, maskname, grid):
     global e3v_AMOC26N
     global e3v_AMOC40N
     global e3v_AMOC55N
+    global e1v_davis   
+    global e1v_norway 
     global e1v_AMOC26N    
     global e1v_AMOC40N    
     global e1v_AMOC55N
@@ -183,6 +200,11 @@ def loadDataMask(gridfn, maskname, grid):
         e1v_AMOC55N = nc.variables['e1v'][..., latslice55Nnm, lonslice55N]     #
         tmask_AMOC55N = nc.variables['tmask'][..., latslice55Nnm, lonslice55N]
 
+        e1v_davis = nc.variables['e1v'][eORCA1_davis_LON, eORCA1_davis_LAT0:eORCA1_davis_LAT1]  
+        e1v_norway = nc.variables['e1v'][eORCA1_norway_LON, eORCA1_norway_LAT0:eORCA1_norway_LAT1]  
+
+        
+
     else:
         e3v_AMOC26N = nc.variables['e3v'][..., latslice26Nnm, :]   # z level height 3D
         e1v_AMOC26N = nc.variables['e1v'][..., latslice26Nnm, :]     #
@@ -195,6 +217,9 @@ def loadDataMask(gridfn, maskname, grid):
         e3v_AMOC55N = nc.variables['e3v'][..., latslice55N, :]   # z level height 3D
         e1v_AMOC55N = nc.variables['e1v'][..., latslice55N, :]     #
         tmask_AMOC55N = nc.variables['tmask'][..., latslice55N, :]
+
+        e1v_davis = nc.variables['e1v'][eORCA1_davis_LON, eORCA1_davis_LAT0:eORCA1_davis_LAT1]
+        e1v_norway = nc.variables['e1v'][eORCA1_norway_LON, eORCA1_norway_LAT0:eORCA1_norway_LAT1]  
 
     #print('e3v_AMOC26N: loaded')#e3v_AMOC26N, latslice26Nnm, e3v_AMOC26N.shape)
     nc.close()
@@ -311,6 +336,110 @@ def drakePassage(nc, keys, **kwargs):
     print('drakePassage:', grid, velo.shape, e3u.shape, e2u_drake.shape, umask_drake.shape)
     drake = np.sum(velo * e3u * e2u_drake * umask_drake) * 1.e-6
     return drake
+
+
+def davisstraightflux(nc, keys, straight='Davis', **kwargs):
+    """
+    This function calculates the salt flux through the davis straight in eORCA1. 
+    
+    nc: a netcdf openned as a dataset.
+    keys: a list of keys to use in this function.
+    
+    """
+    areafile = get_kwarg_file(kwargs, 'areafile')
+    maskname = kwargs.get('maskname', 'tmask')
+    grid = kwargs.get('grid', 'eORCA1')
+
+    if not loadedArea:
+        loadDataMask(areafile, maskname, grid)
+
+    if grid == 'eORCA1' and straight=='Davis':    
+        LON = eORCA1_davis_LON
+        LAT0 = eORCA1_davis_LAT0
+        LAT1 = eORCA1_davis_LAT1
+        e1v = e1v_davis
+    elif grid == 'eORCA1' and straight=='Norway':    
+        LON = eORCA1_norway_LON
+        LAT0 = eORCA1_norway_LAT0
+        LAT1 = eORCA1_norway_LAT1 
+        e1v = e1v_norway
+
+    else:
+        assert 0
+
+    if keys[0] in ['vo', 'uo']:
+        print('These needs to be multiplied by the thkcello.')
+        assert 0
+
+    thkcello = nc.variables['thkcello'][0, :, LAT0:LAT1, LON]
+
+    print('Davis straight:', grid, 'LON', LON, 'LAT0',LAT0, 'LAT1', LAT1)
+
+    ndim = nc.variables[keys[0]].ndim
+    if ndim == 4: # vso, vmo
+        flux = nc.variables[keys[0]][0, :, LAT0:LAT1, LON]
+        e1v_4d = np.broadcast_to(e1v[np.newaxis, :], thkcello.shape[:])
+
+    if ndim == 3: #hfy
+        flux = nc.variables[keys[0]][0, LAT0:LAT1, LON]
+        e1v_4d = e1v
+        thkcello = thkcello.sum(0)
+
+    flux = np.ma.masked_where(flux==0., flux)
+    if keys[0] in ['vo', 'uo']:
+        flux = np.ma.sum(flux * e1v_4d * thkcello) 
+    else:
+        # sum already calculated.
+        flux = np.ma.sum(flux)
+
+    return flux
+
+
+def norwegianpassage(nc, keys, **kwargs):
+    """
+    This function calculates the salt flux through the Norwegian Sea in eORCA1. 
+    
+    nc: a netcdf openned as a dataset.
+    keys: a list of keys to use in this function.
+    
+    """
+    return davisstraightflux(nc, keys, straight='Norway', **kwargs)
+
+    # areafile = get_kwarg_file(kwargs, 'areafile')
+    # maskname = kwargs.get('maskname', 'tmask')
+    # grid = kwargs.get('grid', 'eORCA1')
+
+    # if not loadedArea:
+    #     loadDataMask(areafile, maskname, grid)
+
+    # if grid == 'eORCA1':    
+    #     LON = eORCA1_norway_LON
+    #     LAT0 = eORCA1_norway_LAT0
+    #     LAT1 = eORCA1_norway_LAT1
+    # else:
+    #     assert 0
+    
+    # if keys[0] in ['vo', 'uo']:
+    #     print('These needs to be multiplied by the thkcello.')
+    #     assert 0
+    # print('Norwegian flux:', grid, 'LON', LON, 'LAT0',LAT0, 'LAT1', LAT1)
+
+
+    # ndim = nc.variables[keys[0]].ndim
+
+
+    # if ndim == 4: # vso, vmo
+    #     flux = nc.variables[keys[0]][0, :, LAT0:LAT1, LON]
+
+    # if ndim == 3: #hfy
+    #     flux = nc.variables[keys[0]][0, LAT0:LAT1, LON]
+
+    # flux = np.ma.masked_where(flux==0., flux)
+
+    # print('Norway:', flux.shape, thkcello.shape, e1v_4d.shape)
+    # Norway = np.ma.sum(flux)  
+
+    # return Norway
 
 
 def TwentySixNorth(nc, keys, lat='26N', return_max_depth=False, **kwargs):
