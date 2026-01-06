@@ -1,0 +1,22 @@
+---
+# Physics:
+# A list of physical keys.
+keys:
+    # Ice keys:
+    TotalIceArea: True # work in progress
+    NorthernTotalIceArea: True  # work in progress
+    SouthernTotalIceArea: True  # work in progress
+
+   #WeddelTotalIceArea: True
+    TotalIceExtent: True  # work in progress
+    NorthernTotalIceExtent: True  # work in progress
+    SouthernTotalIceExtent: True  # work in progress
+    # WeddelIceExent: True       # work in progress
+    # NorthernMIZArea: True
+    # SouthernMIZArea: True
+    # TotalMIZArea: True
+    # NorthernMIZfraction: True
+    # SouthernMIZfraction: True
+    # TotalMIZfraction: True
+
+    #	soicecov: True			# Ice fraction
