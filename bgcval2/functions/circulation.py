@@ -325,7 +325,7 @@ def drakePassage(nc, keys, **kwargs):
         assert 0
     print('drakePassage:', grid, 'LON', LON, 'LAT0',LAT0, 'LAT1', LAT1)
 
-    all_e3u_keys = ['thkcello', 'e3u']
+    all_e3u_keys = ['thkcello', 'thkcelluo', 'e3u']
     e3u_keys = find_keys_in_nc(nc, all_e3u_keys)
     e3u = nc.variables[e3u_keys[0]][0, :, LAT0:LAT1, LON]
 
@@ -371,7 +371,15 @@ def davisstraightflux(nc, keys, straight='Davis', **kwargs):
         print('These needs to be multiplied by the thkcello.')
         assert 0
 
-    thkcello = nc.variables['thkcello'][0, :, LAT0:LAT1, LON]
+  
+    if 'thkcello' in nc.variables.keys():
+        thkcello = nc.variables['thkcello'][0, :, LAT0:LAT1, LON]
+    elif 'thkcelluo' in nc.variables.keys():
+        thkcello = nc.variables['thkcelluo'][0, :, LAT0:LAT1, LON]
+    elif 'thkcellvo' in nc.variables.keys():
+        thkcello = nc.variables['thkcellvo'][0, :, LAT0:LAT1, LON]
+    else: assert 0
+    #thkcello = nc.variables['thkcello'][0, :, LAT0:LAT1, LON]
 
     print('Davis straight:', grid, 'LON', LON, 'LAT0',LAT0, 'LAT1', LAT1)
 
@@ -503,11 +511,19 @@ def TwentySixNorth(nc, keys, lat='26N', return_max_depth=False, **kwargs):
 
     atlmoc = np.array(np.zeros_like(zv[0, :, :, 0]))
 
+    # if 'thkcello' in nc.variables.keys():
+    #     thkcello = nc.variables['thkcello'][0, :, latslice, :]
+
     if 'thkcello' in nc.variables.keys():
         thkcello = nc.variables['thkcello'][0, :, latslice, :]
-        thkcello = np.ma.masked_where(thkcello.mask + zv[0].mask, thkcello)
+    elif 'thkcelluo' in nc.variables.keys():
+        thkcello = nc.variables['thkcelluo'][0, :, latslice, :]
+    elif 'thkcellvo' in nc.variables.keys():
+        thkcello = nc.variables['thkcellvo'][0, :, latslice, :]
     else:
         thkcello = e3v_AMOC[:]
+    thkcello = np.ma.array(thkcello)
+    thkcello = np.ma.masked_where(thkcello.mask + zv[0].mask, thkcello)
 
     depths = np.ma.abs(np.cumsum(thkcello, axis=0))
 
@@ -635,8 +651,15 @@ def gulfstream_depth(nc, keys, **kwargs):
     print(lats, lons)
 
     vo = nc.variables[keys[0]][0, :, latslice26Nnm, lonslice_70W].squeeze() # m/s
-    thickness = nc.variables['thkcello'][0,:,latslice26Nnm, lonslice_70W].squeeze()
+    # thickness = nc.variables['thkcello'][0,:,latslice26Nnm, lonslice_70W].squeeze()
     depth = np.abs(np.cumsum(thickness, axis=0))# depth array
+
+    if 'thkcello' in nc.variables.keys():
+        thickness = nc.variables['thkcello'][0,:,latslice26Nnm, lonslice_70W].squeeze()
+    elif 'thkcelluo' in nc.variables.keys():
+        thickness = nc.variables['thkcelluo'][0,:,latslice26Nnm, lonslice_70W].squeeze()
+    elif 'thkcellvo' in nc.variables.keys():
+        thickness = nc.variables['thkcellvo'][0,:,latslice26Nnm, lonslice_70W].squeeze()
 
     vo = np.ma.masked_where(vo.mask + (vo == 0.), vo)
 
@@ -726,8 +749,14 @@ def gulfstream(nc, keys, **kwargs):
     lons = nc.variables['nav_lon'][latslice26Nnm, lonslice_70W]
     vo = np.ma.array(nc.variables[keys[0]][0, :, latslice26Nnm, lonslice_70W]) # m/s
     vo = np.ma.masked_where(vo.mask + (vo <= 0.), vo) 
+    
+    if 'thkcello' in nc.variables.keys():
+        thickness = nc.variables['thkcello'][0,:,latslice26Nnm, lonslice_70W] 
+    elif 'thkcelluo' in nc.variables.keys():
+          thickness = nc.variables['thkcelluo'][0,:,latslice26Nnm, lonslice_70W]
+    elif 'thkcellvo' in nc.variables.keys():
+          thickness = nc.variables['thkcellvo'][0,:,latslice26Nnm, lonslice_70W]
 
-    thickness = nc.variables['thkcello'][0,:,latslice26Nnm, lonslice_70W] 
     depth = np.abs(np.cumsum(thickness, axis=0))# depth array
     #print(vo.shape, thickness.shape, e1v_AMOC26N.shape)
     gs = 0.
@@ -767,7 +796,16 @@ def twentysixnorth025(nc, keys, **kwargs):
     latslice26N = eORCA025_latslice26Nnm
     lonslice26N = eORCA025_lonslice26Nnm
     vo =  np.ma.array(nc.variables[keys[0]][..., latslice26N, lonslice26N]) # #vo in m/s
-    thkcello = np.ma.array(nc.variables['thkcello'][..., latslice26N, lonslice26N]) # #thickness
+#   thkcello = np.ma.array(nc.variables['thkcello'][..., latslice26N, lonslice26N]) # #thickness
+
+    if 'thkcello' in nc.variables.keys():
+        thkcello = nc.variables['thkcello'][..., latslice26N, lonslice26N] # #thickness
+    elif 'thkcelluo' in nc.variables.keys():
+        thkcello = nc.variables['thkcelluo'][..., latslice26N, lonslice26N] # #thickness
+    elif 'thkcellvo' in nc.variables.keys():
+        thkcello = nc.variables['thkcellvo'][..., latslice26N, lonslice26N] # #thickness
+    thkcello = np.ma.array(thkcello)
+
     depths = np.ma.cumsum(thkcello, axis=1)
 
     depths = np.ma.masked_where(thkcello.mask + np.abs(depths)<500., depths) # masked above 500m depth.

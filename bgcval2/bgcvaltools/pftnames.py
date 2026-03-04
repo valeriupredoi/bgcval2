@@ -324,6 +324,7 @@ def makeLongNameDict():
     lnd['sossheig'] = "Sea Surface Height"
     lnd['FreshwaterFlux'] = "Freshwater Flux"
     lnd['hfbasinatlantic'] = 'Northward Atlantic heat transport'
+    lnd['sltbasinatlantic'] = 'Northward Atlantic salt transport'
     lnd['exportRatio'] = "Export Ratio"
     lnd['LocalExportRatio'] = "Export Ratio"
     lnd['OCN_RHOSW'] = 'Density'
@@ -461,9 +462,13 @@ def makeLongNameDict():
     lnd['MaxMonthlyMLD'] = 'Annual Maximum Mixed Layer Depth'
     lnd['MinMonthlyMLD'] = 'Annual Minimum Mixed Layer Depth'
 
-    lnd['mld_DT02'] = 'MLD:Fixed Threshold Temperature '
+    lnd['mld_DT02'] = 'MLD:Fixed Threshold Temperature'
     lnd['mld_DR003'] = 'MLD:Fixed Threshold Density'
     lnd['mld_DReqDTm02'] = 'MLD:Variable Threshold Density'
+
+    lnd['tnpeo'] = 'Tendency of ocean potential energy content'
+    lnd['mldzintt0_2'] = 'MLD - mldzintt0_2' #  mldr0_3 T based, what was o
+    lnd['mldr0_3'] = 'MLD mldr0_3' #: rho-based, surface reference, output in u-dv346
 
     #####
     # Depth layers/transects.

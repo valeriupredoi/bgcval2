@@ -21,8 +21,8 @@ source /etc/bashrc
 TARGET_DIR="/home/users/ldemora/workspace/bgcval2/shared_mass_scripts/"
 
 # delete old scripts
-find /gws/ssde/j25a/esmeval/bgcval2/shared_mass_scripts -mindepth 1 -mtime +15 -print -delete -name 'u-*.sh'
-
+#ind /gws/ssde/j25a/esmeval/bgcval2/shared_mass_scripts -mindepth 1 -mtime +5 -print -delete -name 'u-*.sh'
+find /gws/nopw/j04/esmeval/bgcval2/shared_mass_scripts -mindepth 1 -mtime +5 -print -delete -name 'u-*.sh'
 
 # Create an array of filenames without extensions
 file_list=()

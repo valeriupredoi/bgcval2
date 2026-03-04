@@ -145,15 +145,38 @@ def maskzeroes(nc, keys):
     print('maskzeroes:', arr.min(), '->', arr.max(), arr.dtype, arr.mean())
     return arr
 
+# def chose_best_mask_zeroes(nc, keys):
+#     """
+#     Chooses the best variable from keys, then masks all instances of exactly zero. 
+#     """
+#     var0 = find_best_var(nc, keys)
+#     arr = np.ma.array(nc.variables[var0][:]) #, dtype=np.float64)
+#     arr = np.ma.masked_where(arr == 0. + arr.mask, arr)
+#     print('chose_best_mask_zeroes:', arr.min(), '->', arr.max(), arr.dtype, arr.mean())
+#     return arr
+
 def sums(nc,keys):
     """
     Loads Key[0] from the netcdf, then sums the other keys.
     """
     a = nc.variables[keys[0]][:]
+    
     for k in keys[1:]:
         a += nc.variables[k]
     a = np.ma.masked_where(a == 0. + a.mask, a)
     return a
+
+
+#def area_sum(nc, keys):
+#    """
+#    Loads Key[0] from the netcdf, then calculates the sum over the area.
+#    """
+#    a = nc.variables[keys[0]][:]
+#    for k in keys[1:]:
+#        a += nc.variables[k]
+#    a = np.ma.masked_where(a == 0. + a.mask, a)
+#    return a
+
 
 
 def oxconvert(nc,keys):

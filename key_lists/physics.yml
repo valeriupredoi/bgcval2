@@ -26,14 +26,14 @@ keys:
     # MinMonthlyMLD: True               # MLD Monthly min
 
     # Ice keys:
-    TotalIceArea: True # work in progress
-    NorthernTotalIceArea: True  # work in progress
-    SouthernTotalIceArea: True  # work in progress
+#    TotalIceArea: True # work in progress
+#    NorthernTotalIceArea: True  # work in progress
+#    SouthernTotalIceArea: True  # work in progress
 
    #WeddelTotalIceArea: True
-    TotalIceExtent: True  # work in progress
-    NorthernTotalIceExtent: True  # work in progress
-    SouthernTotalIceExtent: True  # work in progress
+#    TotalIceExtent: True  # work in progress
+#    NorthernTotalIceExtent: True  # work in progress
+#    SouthernTotalIceExtent: True  # work in progress
     # WeddelIceExent: True       # work in progress
     # NorthernMIZArea: True
     # SouthernMIZArea: True
@@ -52,16 +52,16 @@ keys:
     #	MeridionalCurrent: True        	# Meridional Veloctity
     #	VerticalCurrent: True          	# Vertical Veloctity
     GulfStream: True
-    GulfStream_depth: True
+#    GulfStream_depth: True
 
 
-    somesatr: True # salt flow # Work in progress in debug
+#    somesatr: True # salt flow # Work in progress in debug
 
     ZOS: True # Sea Surface Height
-    sowindsp: True # Wind speed
+#    sowindsp: True # Wind speed
 #    sowflisf: True # Ice flux
     evs: True # Evaporation
-    precip: True # Precipitation
+#    precip: True # Precipitation
 #    fov: True # Fov (Total salt flux in the Atlantic)
 
 

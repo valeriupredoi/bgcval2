@@ -22,7 +22,7 @@ modelFiles      : $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_grid-V.nc
 gridFile        : $PATHS_GRIDFILE
 
 # Model coordinates/dimension names
-model_vars      : hfy
+model_vars      : hfy hfyint 
 model_convert   : maskzeroes
 
 metrics         : mean
