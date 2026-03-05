@@ -1,18 +1,19 @@
 ---
-name            : MLD
-units           : m
+# Tendency of ocean potential energy content
+name            : tnpeo
+units           : W/m2
 dimensions      : 2
 model           : NEMO
-datasource      : IFERMER
+#datasource      : IFERMER
 
 # The filenames
 modelFiles      : $BASEDIR_MODEL/$JOBID/nemo*_$JOBIDo_1y_*_grid-T.nc
 modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*_$JOBIDo_1y_*$YEAR????_grid-T.nc
-dataFile        : $BASEDIR_OBS/IFREMER-MLD/mld_DT02_c1m_reg2.0-annual.nc
+#dataFile        : $BASEDIR_OBS/IFREMER-MLD/mld_DT02_c1m_reg2.0-annual.nc
 
 # Model coordinates/dimension names
-model_vars      : mlotst somxzint1
-model_convert   : choose_best_var
+model_vars      : tnpeo
+model_convert   : NoChange
 layers          : layerless
 
 #model_vars      : somxl010 somxzint1
@@ -22,12 +23,12 @@ layers          : layerless
 #    areafile: $PATHS_GRIDFILE
 #    maskname : tmask
 
-data_vars       : mld
-data_tdict      : ZeroToZero
-data_convert:
-    path: bgcval2/functions/applyLandMask.py
-    function: applyLandMask
-    maskname : mask
-    areafile: $BASEDIR_OBS/IFREMER-MLD/mld_DT02_c1m_reg2.0-annual.nc
+#data_vars       : mld
+#data_tdict      : ZeroToZero
+#data_convert:
+#    path: bgcval2/functions/applyLandMask.py
+#    function: applyLandMask
+#    maskname : mask
+#    areafile: $BASEDIR_OBS/IFREMER-MLD/mld_DT02_c1m_reg2.0-annual.nc
 #layers          : Surface
 regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthAtlanticOcean SouthAtlanticOcean NorthPacificOcean SouthPacificOcean SPNA STNA GINseas LabradorSea NorthEastAtlantic EquatorialAtlanticOcean IrmingerSea LIGINseas LIseas BritishIsles

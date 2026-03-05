@@ -10,7 +10,7 @@ modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*$JOBIDo_1y_*$YEAR????_grid-T.nc
 gridFile        : $PATHS_GRIDFILE
 
 # Model coordinates/dimension names
-model_vars      : evs
+model_vars      : evs soemp_oce # note that soemp_oce is evap minus precip!
 model_convert   : choose_best_var
 
 layers          : layerless

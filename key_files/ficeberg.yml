@@ -1,0 +1,34 @@
+---
+#/home/users/ldemora/tmp_grid_T.txt:     float ficeberg(time_counter, y, x) ;
+#/home/users/ldemora/tmp_grid_T.txt:             ficeberg:standard_name = "water_flux_into_sea_water_from_icebergs" ;
+#/home/users/ldemora/tmp_grid_T.txt:             ficeberg:long_name = "icb melt rate 2 of icebergs" ;
+#/home/users/ldemora/tmp_grid_T.txt:             ficeberg:units = "kg/m2/s" ;
+#/home/users/ldemora/tmp_grid_T.txt:             ficeberg:online_operation = "average" ;
+#/home/users/ldemora/tmp_grid_T.txt:             ficeberg:interval_operation = "2700 s" ;
+#/home/users/ldemora/tmp_grid_T.txt:             ficeberg:interval_write = "1 month" ;
+#/home/users/ldemora/tmp_grid_T.txt:             ficeberg:cell_methods = "time: mean (interval: 2700 s)" ;
+#/home/users/ldemora/tmp_grid_T.txt:             ficeberg:cell_measures = "area: area" ;
+#/home/users/ldemora/tmp_grid_T.txt:             ficeberg:_FillValue = 1.e+20f ;
+#/home/users/ldemora/tmp_grid_T.txt:             ficeberg:missing_value = 1.e+20f ;
+#/home/users/ldemora/tmp_grid_T.txt:             ficeberg:coordinates = "time_centered nav_lat nav_lon" ;
+name            : ficeberg
+units           : kg/m2/s
+dimensions      : 2
+model           : NEMO
+datasource      : WOA
+# The filenames
+modelFiles      : $BASEDIR_MODEL/$JOBID/nemo_$JOBIDo_1y_*_grid-T.nc
+modelFile_p2p   : $BASEDIR_MODEL/$JOBID/nemo*$JOBIDo_1y_*$YEAR????_grid-T.nc
+gridFile        : $PATHS_GRIDFILE
+
+# Model coordinates/dimension names
+model_vars      : ficeberg berg_total_melt
+model_convert   : choose_best_var
+
+layers          : layerless
+regions         : Global SouthernOcean ArcticOcean NorthAtlanticOcean SouthAtlanticOcean SPNA STNA GINseas LabradorSea NorthEastAtlantic IrmingerSea LIGINseas LIseas
+smoothings      : DataOnly 5and30 
+
+
+
+

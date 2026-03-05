@@ -1,0 +1,23 @@
+---
+name            : OCN_RHOSW
+units           : degrees C
+dimensions      : 2
+model           : MEDUSA
+datasource      : WOA
+# The filenames
+modelFiles      : $BASEDIR_MODEL/$JOBID/medusa_$JOBIDo_1y_*_diad-T.nc
+gridFile        : $PATHS_GRIDFILE
+
+# Model coordinates/dimension names
+model_vars      : OCN_RHOSW
+model_convert   : choose_best_var
+
+
+# Data coordinates names
+layers          : layerless
+regions         : Global ignoreInlandSeas SouthernOcean ArcticOcean Equator10 NorthPacificOcean SouthPacificOcean NorthAtlanticOcean  SouthAtlanticOcean SPNA STNA GINseas LabradorSea NorthEastAtlantic IrmingerSea LIGINseas LIseas EquatorialAtlanticOcean subpolar BritishIsles # NorthHemisphere SouthHemisphere
+
+
+
+
+

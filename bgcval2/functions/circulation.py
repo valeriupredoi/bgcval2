@@ -344,13 +344,22 @@ def drakePassage(nc, keys, **kwargs):
 
         if nc.variables['nav_lat'].shape == (332, 362):
             print('Classic grid')
+        elif nc.variables['nav_lat'].shape == (331, 360):
+        # No border here, so 
+        #   (331, 360)
+        # nc.variables[e3u_keys[0]][0, :, LAT0:LAT1, LON]
+        # Lat is the same as there's no soouthern border, but longitude is one less, as there;s not border.
+            LAT0 = 79
+            LAT1 = 109
+            LON = 219-1
         else:
             assert 0
 
     elif grid == 'eORCA025':
-        LON = eORCA025_drake_LON
         LAT0 = eORCA025_drake_LAT0
         LAT1 = eORCA025_drake_LAT1
+        LON = eORCA025_drake_LON
+
         latslice26Nnm = eORCA025_latslice26Nnm
     else:
         assert 0
@@ -400,6 +409,8 @@ def davisstraightflux(nc, keys, straight='Davis', **kwargs):
 
     if nc.variables['nav_lat'].shape == (332, 362):
         print('Classic grid')
+    elif nc.variables['nav_lat'].shape == (331, 360):
+        LON = LON - 1
     else:
         assert 0
 
@@ -740,7 +751,6 @@ def gulfstream_depth(nc, keys, **kwargs):
         loadDataMask(areafile, maskname, grid)
 
     if grid == 'eORCA1':
-        latslice26Nnm = eORCA1_latslice26Nnm
         #data=[-80.5011659 , -79.50119298, -78.50121829, -77.50124181,
         #           -76.50126349, -75.50128329, -74.50130118, -73.50131712,
         #           -72.50133107, -71.50134301, -70.50135293, -69.50136079,
@@ -748,6 +758,9 @@ def gulfstream_depth(nc, keys, **kwargs):
         if nc.variables[keys[0]].shape == (332, 362):
             print('Classic grid')
             lonslice_70W = slice(211, 217)
+            latslice26Nnm = eORCA1_latslice26Nnm
+        elif nc.variables['nav_lat'].shape == (331, 360):
+            lonslice_70W = slice(210, 216)
         else:
             assert 0
         # elif nc.variables[keys[0]].shape == (332, 362):
@@ -843,14 +856,20 @@ def gulfstream(nc, keys, **kwargs):
         #           -76.50126349, -75.50128329, -74.50130118, -73.50131712,
         #           -72.50133107, -71.50134301, -70.50135293, -69.50136079,
         #           -68.50136658],
-        lonslice_70W = slice(207, 220) 
 
         altmaskfile = get_kwarg_file(kwargs, 'altmaskfile', default = 'bgcval2/data/basinlandmask_eORCA1.nc')
         if not loadedAltMask:
              loadAtlanticMask(altmaskfile, maskname='tmaskatl', grid=grid)
 
         if nc.variables[keys[0]].shape == (332, 362):
+            lonslice_70W = slice(207, 220) 
+            gs_e1v = e1v_AMOC26N
             print('Classic grid')
+        elif nc.variables['nav_lat'].shape == (331, 360):
+
+            lonslice_70W = slice(206, 219) 
+            gs_e1v = e1v_AMOC26N
+
         else:
             assert 0
     elif grid == 'eORCA025':
@@ -878,15 +897,15 @@ def gulfstream(nc, keys, **kwargs):
           thickness = nc.variables['thkcellvo'][0,:,latslice26Nnm, lonslice_70W]
 
     depth = np.abs(np.cumsum(thickness, axis=0))# depth array
-    #print(vo.shape, thickness.shape, e1v_AMOC26N.shape)
+    #print(vo.shape, thickness.shape, gs_e1v.shape)
     gs = 0.
     for (z, la, lo), v in np.ndenumerate(vo):
         if depth[z, la,lo] > maxdepth:
             continue
         if v <= 0:
             continue
-        #print((z, la, lo),'depth:', depth[z, la,lo], (lats[la, lo],'N', lons[la, lo], 'E'),  'v:', v, 'thickness:', thickness[z, la, lo], 'width:', e1v_AMOC26N[la, lo])
-        gs += v * thickness[z, la, lo] * e1v_AMOC26N[la, lo] / 1.E06
+        #print((z, la, lo),'depth:', depth[z, la,lo], (lats[la, lo],'N', lons[la, lo], 'E'),  'v:', v, 'thickness:', thickness[z, la, lo], 'width:', gs_e1v[la, lo])
+        gs += v * thickness[z, la, lo] * gs_e1v[la, lo] / 1.E06
 
     print('Gulf Stream:', gs) # expecting a value of 32Sv ish.
     # https://www.sciencedirect.com/science/article/pii/S0079661114001694
