@@ -849,7 +849,7 @@ def gulfstream(nc, keys, **kwargs):
  
     if not loadedArea:
         loadDataMask(areafile, maskname, grid)
-
+ 
     if grid == 'eORCA1':
         latslice26Nnm = eORCA1_latslice26Nnm
         #data=[-80.5011659 , -79.50119298, -78.50121829, -77.50124181,
