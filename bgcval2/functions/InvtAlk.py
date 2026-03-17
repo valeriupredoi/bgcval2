@@ -58,10 +58,13 @@ def calc_total_invtalk(nc, keys, **kwargs):
     """
     This function calculates the total quantity of dissolved alkalinity for the MEDUSA model on the eORCA grid.
     """
-    areafile = get_kwarg_file(kwargs, 'areafile')
+    if 'area' in nc.variables.keys():
+        area = nc.variables['area'][:]
+    else:
+        areafile = get_kwarg_file(kwargs, 'areafile')
 
-    if not loaded_area_and_mask:
-        area = load_area_and_mask(areafile)
+        if not loaded_area_and_mask:
+            area = load_area_and_mask(areafile)
 
     factor =  1. / 1.E18   # meq / m2 -> Peq
     try:   
