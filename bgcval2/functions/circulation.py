@@ -871,6 +871,7 @@ def gulfstream(nc, keys, **kwargs):
             gs_e1v = e1v_AMOC26N
 
         else:
+            print('grid not recognised:', nc.variables[keys[0]].shape, grid)
             assert 0
     elif grid == 'eORCA025':
         latslice26Nnm = eORCA025_latslice26Nnm
