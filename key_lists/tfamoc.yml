@@ -23,9 +23,9 @@ keys:
     # NoCaspianAirSeaFluxCO2: True
     # IntPP_OSU: True
     # GlobalExportRatio: True
-    TotalIceExtent: True
-    NorthernTotalIceExtent: True
-    SouthernTotalIceExtent: True
+#    TotalIceExtent: True
+#    NorthernTotalIceExtent: True
+#    SouthernTotalIceExtent: True
     GlobalMeanSalinity: True
     fsitherm: True
     ficeberg: True
@@ -37,8 +37,8 @@ keys:
 #    hfbasinatlantic: True
 #    sowindsp: True
     friver: True
-    soicecov: True
-    agessc: True
+#    soicecov: True
+#    agessc: True
     RHOSW: True
 #    thkcello: True
 
