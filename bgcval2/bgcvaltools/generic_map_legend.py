@@ -210,6 +210,11 @@ def make_figure(region, orcaGridfn=None):
     #cbar = pyplot.colorbar(ax=ax_pc, cax=im3)
 
     pyplot.suptitle(region+': '+getLongName(region))
+
+    area = calc_area(region, orcaGridfn=orcaGridfn)
+    fig.text(
+        0.5, 0.9, 'Area: '+str(f"{int(area):,d}")+' m$^2$', ha='center', va='center')
+
     print('saving:', fig_fn)
     pyplot.savefig(fig_fn,dpi=300.)
     pyplot.savefig(fig_fn.replace('.png', '_trans.png'), transparent=True)
@@ -251,7 +256,7 @@ def calc_area(region, orcaGridfn = None):
     
     new_area = np.ma.masked_where(region_mask + old_mask_flat, flat_area)
     total_area=new_area.sum() 
-    print('region:', total_area)
+    print(region, ' Area:', total_area, 'm2')
     
     
     out_fn = bvt.folder('region_areas')+region+'.txt'
@@ -259,6 +264,7 @@ def calc_area(region, orcaGridfn = None):
     fn = open(out_fn, 'w')
     fn.write(txt)
     fn.close()
+    return total_area
     
  
 
@@ -274,19 +280,18 @@ def main():
 
 
     regions = [
-#                'LIseas',
-#                'LIGINseas',
+
 #                'GLINseas',
 #                'Ascension',
 #              'ITCZ',
 #               'TristandaCunha',
 #               'Pitcairn',
 #                'Cornwall',
-                'BritishIsles',
+                # 'BritishIsles',
 #                'SubtropicNorthAtlantic',
 #                'SPNA',
 #                'STNA',        
-#                'SouthernOcean',
+               'SouthernOcean',
 #                'subpolar',
 #                'NorthEastAtlantic',
 #                'ArcticOcean',
@@ -298,15 +303,17 @@ def main():
 #                'SouthPacificOcean',
 #                'NorthAtlanticOcean',
 #                'SouthAtlanticOcean',
-#                'GINseas',
-#                'LabradorSea',
-#                'IrmingerSea',
+            #    'GINseas',
+            #    'LabradorSea',
+            #    'IrmingerSea',
+            #    'LIseas',
+               'LIGINseas',               
 #                'EquatorialAtlanticOcean',
 #                'Global',
 #                'ignoreInlandSeas',
     ]
     for region in regions[:]:
-        calc_area(region, orcaGridfn=orcaGridfn)
+        area = calc_area(region, orcaGridfn=orcaGridfn)
         make_figure(region, orcaGridfn=orcaGridfn) 
 
 if __name__ == "__main__":

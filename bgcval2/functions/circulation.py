@@ -73,7 +73,9 @@ eORCA025_AEU_LAT1=704
 
 
 #eORCA1_latslice26N = slice(227,228)
-eORCA1_latslice26Nnm = slice(228,229)
+eORCA1_latslice26Nnm = slice(228,229) #(332, 362
+eORCA1_latslice26Nnm_331_by_360 = slice(228,229) # latitude slice is the same, as extra pixel is at the noirthern edge.
+
 eORCA1_latslice40N = slice(245,246)
 eORCA1_latslice55N = slice(272,273)
 
@@ -108,6 +110,13 @@ tmask_AMOC55N = 0
 alttmask_AMOC26N = 0
 alttmask_AMOC40N = 0
 alttmask_AMOC55N = 0
+atttmask_lats = 0
+atttmask_lons = 0
+
+grid_lons = 0
+grid_lats = 0
+grid_lats_26 = 0
+grid_lons_26 = 0
 
 alttmask = 0
 loadedArea = False
@@ -159,6 +168,10 @@ def loadDataMask(gridfn, maskname, grid):
     global tmask_AMOC26N
     global tmask_AMOC40N
     global tmask_AMOC55N
+    global grid_lons
+    global grid_lats
+    global grid_lats_26
+    global grid_lons_26
     
     global loadedArea
 #    global loadedAltMask
@@ -184,6 +197,8 @@ def loadDataMask(gridfn, maskname, grid):
     nc = dataset(gridfn, 'r')       
     e2u_drake = nc.variables['e2u'][..., LAT0:LAT1, LON]
     umask_drake = nc.variables['umask'][..., LAT0:LAT1, LON]
+    grid_lats = nc.variables['nav_lat'][:]#..., LAT0:LAT1, LON]
+    grid_lons = nc.variables['nav_lon'][:]#..., LAT0:LAT1, LON]   
     print('circulation loadDataMask:', gridfn, nc.variables['e2u'].shape, nc.variables['umask'].shape, e2u_drake.shape, umask_drake.shape)
 
     if 'e3v_0' in nc.variables.keys():
@@ -203,7 +218,8 @@ def loadDataMask(gridfn, maskname, grid):
         e1v_davis = nc.variables['e1v'][eORCA1_davis_LON, eORCA1_davis_LAT0:eORCA1_davis_LAT1]  
         e1v_norway = nc.variables['e1v'][eORCA1_norway_LON, eORCA1_norway_LAT0:eORCA1_norway_LAT1]  
 
-        
+        grid_lats_26 = nc.variables['nav_lat'][latslice26Nnm, lonslice26N]#..., LAT0:LAT1, LON]
+        grid_lons_26 = nc.variables['nav_lon'][latslice26Nnm, lonslice26N]#..., LAT0:LAT1, LON]  
 
     else:
         e3v_AMOC26N = nc.variables['e3v'][..., latslice26Nnm, :]   # z level height 3D
@@ -220,6 +236,9 @@ def loadDataMask(gridfn, maskname, grid):
 
         e1v_davis = nc.variables['e1v'][eORCA1_davis_LON, eORCA1_davis_LAT0:eORCA1_davis_LAT1]
         e1v_norway = nc.variables['e1v'][eORCA1_norway_LON, eORCA1_norway_LAT0:eORCA1_norway_LAT1]  
+
+        grid_lats_26 = nc.variables['nav_lat'][latslice26Nnm, :]#..., LAT0:LAT1, LON]
+        grid_lons_26 = nc.variables['nav_lon'][latslice26Nnm, :]#..., LAT0:LAT1, LON] 
 
     #print('e3v_AMOC26N: loaded')#e3v_AMOC26N, latslice26Nnm, e3v_AMOC26N.shape)
     nc.close()
@@ -252,6 +271,9 @@ def loadAtlanticMask(altmaskfile, maskname='tmaskatl', grid = 'eORCA1'):
     global alttmask_AMOC26N
     global alttmask_AMOC40N
     global alttmask_AMOC55N
+    global atttmask_lons
+    global atttmask_lats
+
 
     global loadedAltMask
     if grid == 'eORCA1':
@@ -265,6 +287,9 @@ def loadAtlanticMask(altmaskfile, maskname='tmaskatl', grid = 'eORCA1'):
     alttmask_AMOC26N = nc.variables[maskname][latslice26Nnm, :]
     alttmask_AMOC40N = nc.variables[maskname][latslice40N, :]
     alttmask_AMOC55N = nc.variables[maskname][latslice55N, :]
+    atttmask_lats = nc.variables['nav_lat'][:]
+    atttmask_lons = nc.variables['nav_lon'][:]
+
     nc.close()
     loadedAltMask = True
 
@@ -316,16 +341,31 @@ def drakePassage(nc, keys, **kwargs):
         LON = eORCA1_drake_LON
         LAT0 = eORCA1_drake_LAT0
         LAT1 = eORCA1_drake_LAT1
+
+        if nc.variables['nav_lat'].shape == (332, 362):
+            print('Classic grid')
+        elif nc.variables['nav_lat'].shape == (331, 360):
+        # No border here, so 
+        #   (331, 360)
+        # nc.variables[e3u_keys[0]][0, :, LAT0:LAT1, LON]
+        # Lat is the same as there's no soouthern border, but longitude is one less, as there;s not border.
+            LAT0 = 79
+            LAT1 = 109
+            LON = 219-1
+        else:
+            assert 0
+
     elif grid == 'eORCA025':
-        LON = eORCA025_drake_LON
         LAT0 = eORCA025_drake_LAT0
         LAT1 = eORCA025_drake_LAT1
+        LON = eORCA025_drake_LON
+
         latslice26Nnm = eORCA025_latslice26Nnm
     else:
         assert 0
     print('drakePassage:', grid, 'LON', LON, 'LAT0',LAT0, 'LAT1', LAT1)
 
-    all_e3u_keys = ['thkcello', 'e3u']
+    all_e3u_keys = ['thkcello', 'thkcelluo', 'e3u']
     e3u_keys = find_keys_in_nc(nc, all_e3u_keys)
     e3u = nc.variables[e3u_keys[0]][0, :, LAT0:LAT1, LON]
 
@@ -367,11 +407,26 @@ def davisstraightflux(nc, keys, straight='Davis', **kwargs):
     else:
         assert 0
 
+    if nc.variables['nav_lat'].shape == (332, 362):
+        print('Classic grid')
+    elif nc.variables['nav_lat'].shape == (331, 360):
+        LON = LON - 1
+    else:
+        assert 0
+
     if keys[0] in ['vo', 'uo']:
         print('These needs to be multiplied by the thkcello.')
         assert 0
 
-    thkcello = nc.variables['thkcello'][0, :, LAT0:LAT1, LON]
+  
+    if 'thkcello' in nc.variables.keys():
+        thkcello = nc.variables['thkcello'][0, :, LAT0:LAT1, LON]
+    elif 'thkcelluo' in nc.variables.keys():
+        thkcello = nc.variables['thkcelluo'][0, :, LAT0:LAT1, LON]
+    elif 'thkcellvo' in nc.variables.keys():
+        thkcello = nc.variables['thkcellvo'][0, :, LAT0:LAT1, LON]
+    else: assert 0
+    #thkcello = nc.variables['thkcello'][0, :, LAT0:LAT1, LON]
 
     print('Davis straight:', grid, 'LON', LON, 'LAT0',LAT0, 'LAT1', LAT1)
 
@@ -464,13 +519,19 @@ def TwentySixNorth(nc, keys, lat='26N', return_max_depth=False, **kwargs):
     if grid == 'eORCA1':
         if lat == '26N':
             latslice = eORCA1_latslice26Nnm
+            latslice2 = eORCA1_latslice26Nnm_331_by_360
+
             e1v_AMOC = e1v_AMOC26N
             alttmask_AMOC = alttmask_AMOC26N[:]
             tmask_AMOC = tmask_AMOC26N
             e3v_AMOC = e3v_AMOC26N
+            grid_amoc_lats = grid_lats_26
+            grid_amoc_lons = grid_lons_26
 
         elif lat == '40N':
             latslice = eORCA1_latslice40N
+            latslice2 = eORCA1_latslice40N
+
             e1v_AMOC = e1v_AMOC40N
             alttmask_AMOC = alttmask_AMOC40N[:]
             tmask_AMOC = tmask_AMOC40N
@@ -478,6 +539,8 @@ def TwentySixNorth(nc, keys, lat='26N', return_max_depth=False, **kwargs):
 
         elif lat == '55N':
             latslice = eORCA1_latslice55N
+            latslice2 = eORCA1_latslice55N
+
             e1v_AMOC = e1v_AMOC55N
             alttmask_AMOC = alttmask_AMOC55N[:]
             tmask_AMOC = tmask_AMOC55N
@@ -498,16 +561,89 @@ def TwentySixNorth(nc, keys, lat='26N', return_max_depth=False, **kwargs):
         # Atlantic Mask not loaded
         raise ValueError('TwentySixNorth: Mask not loaded: ed: %s', grid)
 
-    zv = np.ma.array(nc.variables[keys[0]][..., latslice, :]) # m/s
-    zv = np.ma.masked_where(zv.mask + (zv == 0.), zv)
+    # vshape  = nc.variables[keys[0]].shape
+    # print(vshape)
+
+    # print(grid_lons.shape, grid_lats.shape)
+    live_lons_v = nc.variables['nav_lon'][:]
+    live_lats_v = nc.variables['nav_lat'][:]
+    # print(live_lons.shape, live_lats.shape)
+
+    if live_lons_v.shape == (332, 362):
+        print('Classic grid')
+        # Standard, old school function.
+        zv = np.ma.array(nc.variables[keys[0]][..., latslice, :]) # m/s
+        zv = np.ma.masked_where(zv.mask + (zv == 0.), zv)
+
+        if 'thkcello' in nc.variables.keys():
+            thkcello = nc.variables['thkcello'][0, :, latslice, :]
+        elif 'thkcelluo' in nc.variables.keys():
+            thkcello = nc.variables['thkcelluo'][0, :, latslice, :]
+        elif 'thkcellvo' in nc.variables.keys():
+            thkcello = nc.variables['thkcellvo'][0, :, latslice, :]
+        else:
+            assert 0
+
+            # thkcello = e3v_AMOC[:]
+
+    elif live_lons_v.shape == (331, 360):
+        print('New shorter grid AMOC')
+        
+
+        # we need to account for no border.
+        # Standard, old school function.
+        zv = np.ma.array(nc.variables[keys[0]][..., latslice2, :]) # m/s
+        zv = np.ma.masked_where(zv.mask + (zv == 0.), zv)
+
+        if 'thkcello' in nc.variables.keys():
+            thkcello = nc.variables['thkcello'][0, :, latslice2, :]
+        elif 'thkcelluo' in nc.variables.keys():
+            thkcello = nc.variables['thkcelluo'][0, :, latslice2, :]
+        elif 'thkcellvo' in nc.variables.keys():
+            thkcello = nc.variables['thkcellvo'][0, :, latslice2, :]
+        else:
+            assert 0
+            thkcello = e3v_AMOC[:]
+
+        lats2 = live_lats_v[:, :]
+        lats1 = grid_lats[:-1, 1:-1]
+        lats_diff = lats2 - lats1
+
+        lons2 = live_lons_v[:, :]
+        lons1 = grid_lons[:-1, 1:-1]
+        lons_diff = lons2 - lons1      
+        if alttmask_AMOC.shape == (1, 362):
+            alttmask_AMOC = alttmask_AMOC[:, 1:-1]
+
+        print('alttmask_AMOC:', alttmask_AMOC.shape, live_lons_v.shape)
+
+        print(tmask_AMOC.shape)
+        if tmask_AMOC.shape == (75, 1, 362):
+            tmask_AMOC = tmask_AMOC[:, :, 1:-1]
+
+        # assert 0
+        # WE don't exppect a T grid to match a V grid! 
+        #   
+        # if lats_diff.max()!= 0. or lons_diff.max() !=0.:
+        #     print('lattitude differences:', lats_diff.min(), lats_diff.mean(), lats_diff.max())
+        #     print('longitude differences:', lons_diff.min(), lons_diff.mean(), lons_diff.max())
+        #     print('GRID DOES NOT MATCH EORCA1')
+        #     assert 0
+    else:
+    # if live_lons.shape != grid_lons.shape or live_lats.shape != grid_lats.shape:
+        print('Grid lons/lats shape', grid_lons.shape, grid_lats.shape)
+        print('Live lons/lats shape', live_lons_v.shape, live_lats_v.shape)
+        raise ValueError('Grid lons/lats shape does not match live lons/lats shape. Check the grid and the netcdf file.')
+
+    # assert 0
+
+    #chcek that lat and lon are the same.
+    # grid_amoc_lons
 
     atlmoc = np.array(np.zeros_like(zv[0, :, :, 0]))
 
-    if 'thkcello' in nc.variables.keys():
-        thkcello = nc.variables['thkcello'][0, :, latslice, :]
-        thkcello = np.ma.masked_where(thkcello.mask + zv[0].mask, thkcello)
-    else:
-        thkcello = e3v_AMOC[:]
+    thkcello = np.ma.array(thkcello)
+    thkcello = np.ma.masked_where(thkcello.mask + zv[0].mask, thkcello)
 
     depths = np.ma.abs(np.cumsum(thkcello, axis=0))
 
@@ -615,12 +751,19 @@ def gulfstream_depth(nc, keys, **kwargs):
         loadDataMask(areafile, maskname, grid)
 
     if grid == 'eORCA1':
-        latslice26Nnm = eORCA1_latslice26Nnm
         #data=[-80.5011659 , -79.50119298, -78.50121829, -77.50124181,
         #           -76.50126349, -75.50128329, -74.50130118, -73.50131712,
         #           -72.50133107, -71.50134301, -70.50135293, -69.50136079,
         #           -68.50136658],
-        lonslice_70W = slice(211, 217)
+        if nc.variables[keys[0]].shape == (332, 362):
+            print('Classic grid')
+            lonslice_70W = slice(211, 217)
+            latslice26Nnm = eORCA1_latslice26Nnm
+        elif nc.variables['nav_lat'].shape == (331, 360):
+            lonslice_70W = slice(210, 216)
+        else:
+            assert 0
+        # elif nc.variables[keys[0]].shape == (332, 362):
 
         altmaskfile = get_kwarg_file(kwargs, 'altmaskfile', default = 'bgcval2/data/basinlandmask_eORCA1.nc')
     elif grid == 'eORCA025':
@@ -635,8 +778,15 @@ def gulfstream_depth(nc, keys, **kwargs):
     print(lats, lons)
 
     vo = nc.variables[keys[0]][0, :, latslice26Nnm, lonslice_70W].squeeze() # m/s
-    thickness = nc.variables['thkcello'][0,:,latslice26Nnm, lonslice_70W].squeeze()
+    # thickness = nc.variables['thkcello'][0,:,latslice26Nnm, lonslice_70W].squeeze()
     depth = np.abs(np.cumsum(thickness, axis=0))# depth array
+
+    if 'thkcello' in nc.variables.keys():
+        thickness = nc.variables['thkcello'][0,:,latslice26Nnm, lonslice_70W].squeeze()
+    elif 'thkcelluo' in nc.variables.keys():
+        thickness = nc.variables['thkcelluo'][0,:,latslice26Nnm, lonslice_70W].squeeze()
+    elif 'thkcellvo' in nc.variables.keys():
+        thickness = nc.variables['thkcellvo'][0,:,latslice26Nnm, lonslice_70W].squeeze()
 
     vo = np.ma.masked_where(vo.mask + (vo == 0.), vo)
 
@@ -699,18 +849,31 @@ def gulfstream(nc, keys, **kwargs):
  
     if not loadedArea:
         loadDataMask(areafile, maskname, grid)
-
+ 
     if grid == 'eORCA1':
         latslice26Nnm = eORCA1_latslice26Nnm
         #data=[-80.5011659 , -79.50119298, -78.50121829, -77.50124181,
         #           -76.50126349, -75.50128329, -74.50130118, -73.50131712,
         #           -72.50133107, -71.50134301, -70.50135293, -69.50136079,
         #           -68.50136658],
-        lonslice_70W = slice(207, 220) 
 
         altmaskfile = get_kwarg_file(kwargs, 'altmaskfile', default = 'bgcval2/data/basinlandmask_eORCA1.nc')
         if not loadedAltMask:
              loadAtlanticMask(altmaskfile, maskname='tmaskatl', grid=grid)
+
+        if nc.variables['nav_lat'].shape == (332, 362):
+            lonslice_70W = slice(207, 220) 
+            gs_e1v = e1v_AMOC26N
+            print('Classic grid')
+        elif nc.variables['nav_lat'].shape == (331, 360):
+
+            lonslice_70W = slice(206, 219) 
+            gs_e1v = e1v_AMOC26N
+
+        else:
+            print('grid not recognised:', nc.variables[keys[0]].shape, grid, keys)
+            print('in ', nc.filename)
+            assert 0
     elif grid == 'eORCA025':
         latslice26Nnm = eORCA025_latslice26Nnm
     else:
@@ -722,22 +885,29 @@ def gulfstream(nc, keys, **kwargs):
         raise ValueError('gulfstream: Mask not loaded: ed: %s', grid)
         assert 0
 
+
     lats = nc.variables['nav_lat'][latslice26Nnm, lonslice_70W]
     lons = nc.variables['nav_lon'][latslice26Nnm, lonslice_70W]
     vo = np.ma.array(nc.variables[keys[0]][0, :, latslice26Nnm, lonslice_70W]) # m/s
     vo = np.ma.masked_where(vo.mask + (vo <= 0.), vo) 
+    
+    if 'thkcello' in nc.variables.keys():
+        thickness = nc.variables['thkcello'][0,:,latslice26Nnm, lonslice_70W] 
+    elif 'thkcelluo' in nc.variables.keys():
+          thickness = nc.variables['thkcelluo'][0,:,latslice26Nnm, lonslice_70W]
+    elif 'thkcellvo' in nc.variables.keys():
+          thickness = nc.variables['thkcellvo'][0,:,latslice26Nnm, lonslice_70W]
 
-    thickness = nc.variables['thkcello'][0,:,latslice26Nnm, lonslice_70W] 
     depth = np.abs(np.cumsum(thickness, axis=0))# depth array
-    #print(vo.shape, thickness.shape, e1v_AMOC26N.shape)
+    #print(vo.shape, thickness.shape, gs_e1v.shape)
     gs = 0.
     for (z, la, lo), v in np.ndenumerate(vo):
         if depth[z, la,lo] > maxdepth:
             continue
         if v <= 0:
             continue
-        #print((z, la, lo),'depth:', depth[z, la,lo], (lats[la, lo],'N', lons[la, lo], 'E'),  'v:', v, 'thickness:', thickness[z, la, lo], 'width:', e1v_AMOC26N[la, lo])
-        gs += v * thickness[z, la, lo] * e1v_AMOC26N[la, lo] / 1.E06
+        #print((z, la, lo),'depth:', depth[z, la,lo], (lats[la, lo],'N', lons[la, lo], 'E'),  'v:', v, 'thickness:', thickness[z, la, lo], 'width:', gs_e1v[la, lo])
+        gs += v * thickness[z, la, lo] * gs_e1v[la, lo] / 1.E06
 
     print('Gulf Stream:', gs) # expecting a value of 32Sv ish.
     # https://www.sciencedirect.com/science/article/pii/S0079661114001694
@@ -767,7 +937,16 @@ def twentysixnorth025(nc, keys, **kwargs):
     latslice26N = eORCA025_latslice26Nnm
     lonslice26N = eORCA025_lonslice26Nnm
     vo =  np.ma.array(nc.variables[keys[0]][..., latslice26N, lonslice26N]) # #vo in m/s
-    thkcello = np.ma.array(nc.variables['thkcello'][..., latslice26N, lonslice26N]) # #thickness
+#   thkcello = np.ma.array(nc.variables['thkcello'][..., latslice26N, lonslice26N]) # #thickness
+
+    if 'thkcello' in nc.variables.keys():
+        thkcello = nc.variables['thkcello'][..., latslice26N, lonslice26N] # #thickness
+    elif 'thkcelluo' in nc.variables.keys():
+        thkcello = nc.variables['thkcelluo'][..., latslice26N, lonslice26N] # #thickness
+    elif 'thkcellvo' in nc.variables.keys():
+        thkcello = nc.variables['thkcellvo'][..., latslice26N, lonslice26N] # #thickness
+    thkcello = np.ma.array(thkcello)
+
     depths = np.ma.cumsum(thkcello, axis=1)
 
     depths = np.ma.masked_where(thkcello.mask + np.abs(depths)<500., depths) # masked above 500m depth.

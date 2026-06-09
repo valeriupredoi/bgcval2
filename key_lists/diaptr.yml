@@ -1,0 +1,10 @@
+---
+# diaptr: metrics from nemo's diaptr files.
+#
+keys:
+    hfbasinatlantic: True
+    GulfStream_depth: True
+
+
+
+

@@ -1,0 +1,10 @@
+---
+# MLD:
+# Mixed layer dprth only!v
+keys:
+    # Mixed layer depth keys:
+    MLD: True  # iFERMER Mixed Layer Depth
+    TNPEO: True # Tendency of ocean potential energy content
+    # MaxMonthlyMLD: True               # MLD Monthly max
+    # MinMonthlyMLD: True               # MLD Monthly min
+

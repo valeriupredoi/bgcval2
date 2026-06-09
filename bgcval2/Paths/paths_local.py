@@ -77,7 +77,7 @@ orca1bathy = os.path.join(basedir, "../data/ORCA1bathy.nc")
 
 #####
 # Location of data files.
-ObsFolder = "/gws/nopw/j04/esmeval/example_data/bgc/"
+ObsFolder = "/gws/ssde/j25e/esmeval/example_data/bgc/"
 #	ObsFolder 	= "/group_workspaces/jasmin4/esmeval/example_data/bgc/"
 Dustdir = ObsFolder + "/MahowaldDust/"
 WOAFolder_annual = ObsFolder + "WOA/annual/"

@@ -53,11 +53,19 @@ def loadDataMask(gridfn):
 def TotalIntPP(nc, keys, **kwargs):
     """
     This function calculated the total primary production for the MEDUSA model in the eORCA grid.
-    """
-    areafile = get_kwarg_file(kwargs, 'areafile')
 
-    if not loadedArea:
-        model_area = loadDataMask(areafile)
+    preferentially use area provided in the netcdf.
+    """
+
+    # area provided 
+    area_key = find_best_var(nc, ['area', 'area_grid_T', 'areacello', 'area_cello'])
+    if area_key:
+        model_area = nc.variables[area_key][:]
+    else:
+        areafile = get_kwarg_file(kwargs, 'areafile')
+
+        if not loadedArea:
+            model_area = loadDataMask(areafile)
 
     #    mmolN/m2/d        [mg C /m2/d]   [mgC/m2/yr] [gC/m2/yr]     Gt/m2/yr # MEDUSA UNITS
     factor = 1.     * 6.625 * 12.011 * 365.       / 1000.   /     1E15

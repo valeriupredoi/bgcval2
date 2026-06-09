@@ -43,13 +43,13 @@ loaded_area_and_mask = False
 
 def load_area_and_mask(areafile):
     """Load area file and its mask."""
-    if isinstance(areafile, list) and len(areafile)==1:
+    if 'area' in nc.variables.keys():
+        area = nc.variables['area'][:]
+    elif isinstance(areafile, list) and len(areafile)==1:
         areafile = areafile[0]
-    else:
-        raise ValueError(f"{areafile} must be a length=1 list containing a single file descriptor.")
-    nc = dataset(areafile, 'r')
-    area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
-    nc.close()
+        nc = dataset(areafile, 'r')
+        area = nc.variables['e2t'][:] * nc.variables['e1t'][:]
+        nc.close()
     loaded_area_and_mask = True
     return area
 

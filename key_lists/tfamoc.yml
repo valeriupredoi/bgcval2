@@ -15,13 +15,17 @@ keys:
     AtlanticSubtropicSalinity: True
     GINSalinity: True
     MLD: True
+    somxzint1: True
+    sltbasinatlantic: True
+
+
     TotalAirSeaFluxCO2: True
     # NoCaspianAirSeaFluxCO2: True
     # IntPP_OSU: True
     # GlobalExportRatio: True
-    TotalIceExtent: True
-    NorthernTotalIceExtent: True
-    SouthernTotalIceExtent: True
+#    TotalIceExtent: True
+#    NorthernTotalIceExtent: True
+#    SouthernTotalIceExtent: True
     GlobalMeanSalinity: True
     fsitherm: True
     ficeberg: True
@@ -29,12 +33,12 @@ keys:
     hfds: True
     hfy: True
     sosafldo: True
-    somesatr: True
-    hfbasinatlantic: True
-    sowindsp: True
+#    somesatr: True
+#    hfbasinatlantic: True
+#    sowindsp: True
     friver: True
-    soicecov: True
-    agessc: True
+#    soicecov: True
+#    agessc: True
     RHOSW: True
 #    thkcello: True
 
